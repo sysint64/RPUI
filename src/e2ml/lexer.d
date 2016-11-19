@@ -3,6 +3,7 @@ module e2ml.lexer;
 import std.stdio;
 import std.format : formattedWrite;
 import std.array : appender;
+import std.ascii;
 
 import e2ml.token;
 import e2ml.stream;
@@ -20,10 +21,10 @@ class LexerError : Exception {
 class Lexer {
 private:
     SymbolStream stream;
+    bool negative = false;
+
     int p_tabSize;
     Token p_currentToken;
-
-    @property void tabSize(in int tabSize) { p_tabSize = tabSize; }
 
     Token lexToken() {
         stream.read();
@@ -33,8 +34,17 @@ private:
                 stream.read();
                 break;
 
-            case '0': .. case '9': case '-', '+':
-                return new NumberToken(stream);
+            case '-', '+':
+                negative = stream.lastChar == '-';
+                stream.read();
+
+                if (!isDigit(stream.lastChar)) {
+                    negative = false;
+                    goto default;
+                }
+
+            case '0': .. case '9':
+                return new NumberToken(stream, negative);
 
             case 'A': .. case 'Z': case 'a': .. case 'z': case '_':
                 return new IdToken(stream);
@@ -43,10 +53,12 @@ private:
                 return new StringToken(stream);
 
             case '#':
-                skipComment(); break;
+                skipComment();
+                return lexToken();
 
             default:
-                throw new LexerError(1, 1, "Unknown character " ~ stream.lastChar);
+                auto message = "unknown character " ~ stream.lastChar;
+                throw new LexerError(stream.line, stream.pos, message);
         }
 
         return null;
@@ -58,9 +70,6 @@ private:
     }
 
 public:
-    @property int tabSize() { return this.p_tabSize; }
-    @property Token currentToken() { return this.p_currentToken; }
-
     this(ref SymbolStream stream) {
         this.stream = stream;
     }

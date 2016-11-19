@@ -3,6 +3,7 @@ module e2ml.token;
 import std.ascii;
 import std.uni : toLower;
 import std.algorithm.iteration : map;
+import std.conv;
 
 import e2ml.stream;
 import e2ml.lexer : LexerError;
@@ -89,13 +90,37 @@ private:
 
 // Number Float or Integer: [0-9]+ (.[0-9]+)?
 class NumberToken : Token {
-    this(ref SymbolStream stream) {
+    this(ref SymbolStream stream, in bool negative = false) {
         super(stream);
+        this.negative = negative;
+        lex();
     }
 
 private:
-    void lex() {
+    bool negative = false;
 
+    bool isNumberChar() {
+        return isDigit(stream.lastChar) || stream.lastChar == '.';
+    }
+
+    void lex() {
+        string numStr = negative ? "-" : "";
+        p_code = TokenCode.number;
+        bool hasComma = false;
+
+        while (isNumberChar()) {
+            if (stream.lastChar == '.') {
+                if (hasComma)
+                    break;
+
+                hasComma = true;
+            }
+
+            numStr ~= stream.lastChar;
+            stream.read();
+        }
+
+        p_number = to!float(numStr);
     }
 }
 

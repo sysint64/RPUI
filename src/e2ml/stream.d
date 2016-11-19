@@ -10,10 +10,10 @@ public:
     char read() {
         auto buf = file.rawRead(new char[1]);
 
-        if (file.eof) lastChar = 255;
-        else lastChar = buf[0];
+        if (file.eof) p_lastChar = 255;
+        else p_lastChar = buf[0];
 
-        return lastChar;
+        return p_lastChar;
     }
 
     this(in string fileName) {
@@ -34,6 +34,4 @@ private:
     int p_line, p_pos;
     char p_lastChar;
     bool isLockLineBreak = false;
-
-    @property void lastChar(char val) { p_lastChar = val; }
 }
