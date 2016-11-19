@@ -1,0 +1,9 @@
+{
+	"name": "e2dit-dlang",
+	"authors": [
+		"dev"
+	],
+	"description": "A minimal D application.",
+	"copyright": "Copyright © 2016, dev",
+	"license": "proprietary"
+}
