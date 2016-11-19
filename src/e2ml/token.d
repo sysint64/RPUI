@@ -22,10 +22,11 @@ public:
     @property const string str() { return p_string; }
     @property const TokenCode code() { return p_code; }
     @property const int indent() { return p_indent; }
+    @property const char symbol() { return p_symbol; }
 
 protected:
     SymbolStream stream;
-    char symbol;
+    char p_symbol;
 
     // values
     string p_identifier;
@@ -37,10 +38,10 @@ protected:
 }
 
 
-class CharToken : Token {
+class SymbolToken : Token {
     this(ref SymbolStream stream, in char symbol) {
         super(stream);
-        this.symbol = symbol;
+        this.p_symbol = symbol;
     }
 }
 

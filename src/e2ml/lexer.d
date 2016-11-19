@@ -19,20 +19,42 @@ class LexerError : Exception {
 
 
 class Lexer {
+    this(ref SymbolStream stream) {
+        this.stream = stream;
+        stream.read();
+    }
+
+    Token getNextToken() {
+        if (stackCursor < tokenStack.length) {
+            p_currentToken = tokenStack[stackCursor++];
+        } else {
+            p_currentToken = lexToken();
+            tokenStack ~= p_currentToken;
+            stackCursor = tokenStack.length;
+        }
+
+        return p_currentToken;
+    }
+
+    Token getPrevToken() {
+        --stackCursor;
+        p_currentToken = tokenStack[stackCursor-1];
+        return p_currentToken;
+    }
+
 private:
     SymbolStream stream;
     bool negative = false;
-
-    int p_tabSize;
     Token p_currentToken;
 
-    Token lexToken() {
-        stream.read();
+    Token[] tokenStack;
+    ulong stackCursor = 0;
 
+    Token lexToken() {
         switch (stream.lastChar) {
             case ' ', '\n', '\r':
                 stream.read();
-                break;
+                return lexToken();
 
             case '-', '+':
                 negative = stream.lastChar == '-';
@@ -57,25 +79,14 @@ private:
                 return lexToken();
 
             default:
-                auto message = "unknown character " ~ stream.lastChar;
-                throw new LexerError(stream.line, stream.pos, message);
+                auto token = new SymbolToken(stream, stream.lastChar);
+                stream.read();
+                return token;
         }
-
-        return null;
     }
 
     void skipComment() {
         while (!stream.eof && stream.lastChar != '\n' && stream.lastChar != '\r')
             stream.read();
     }
-
-public:
-    this(ref SymbolStream stream) {
-        this.stream = stream;
-    }
-
-    Token getNextToken() {
-        return lexToken();
-    }
-//    Token lexPrevToken();
 }
