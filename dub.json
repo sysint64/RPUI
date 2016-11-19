@@ -1,9 +1,9 @@
 {
-	"name": "e2dit-dlang",
-	"authors": [
-		"dev"
-	],
-	"description": "A minimal D application.",
-	"copyright": "Copyright © 2016, dev",
-	"license": "proprietary"
+    "name": "e2dit-ml",
+    "authors": [
+        "Kabylin Andrey"
+    ],
+    "description": "E2DIT Minimal Language",
+    "copyright": "Copyright © 2016, Kabylin Andrey",
+    "license": "MIT"
 }
