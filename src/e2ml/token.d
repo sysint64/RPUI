@@ -1,5 +1,9 @@
 module e2ml.token;
 
+import std.ascii;
+import std.uni : toLower;
+import std.algorithm.iteration : map;
+
 import e2ml.stream;
 import e2ml.lexer : LexerError;
 
@@ -11,15 +15,24 @@ public:
         this.stream = stream;
     }
 
+    @property const string identifier() { return p_identifier; }
+    @property const float number() { return p_number; }
+    @property const bool boolean() { return p_boolean; }
+    @property const string str() { return p_string; }
+    @property const TokenCode code() { return p_code; }
+    @property const int indent() { return p_indent; }
+
 protected:
     SymbolStream stream;
-    int indent;
     char symbol;
-    TokenCode code;
-    string identifier;
-    string stringVal;
-    bool boolean;
-    float number;
+
+    // values
+    string p_identifier;
+    float p_number;
+    bool p_boolean;
+    string p_string;
+    TokenCode p_code;
+    int p_indent;
 }
 
 
@@ -36,29 +49,25 @@ class StringToken : Token {
         super(stream);
         this.lex();
     }
-    @property auto ref value() { return m_value; }
 
 private:
-    string m_value;
-    @property void value(ref string value) { m_value = value; }
-
     void lexEscape() {
         stream.read();
 
         switch (stream.lastChar) {
-            case 'n' : value ~= "\n"; break;
-            case 'r' : value ~= "\r"; break;
-            case '\\': value ~= "\\"; break;
-            case '\"': value ~= "\""; break;
-            default: break;
+            case 'n' : p_string ~= "\n"; break;
+            case 'r' : p_string ~= "\r"; break;
+            case '\\': p_string ~= "\\"; break;
+            case '\"': p_string ~= "\""; break;
+            default:
+                auto message = "undefined escape sequence \\" ~ stream.lastChar;
+                throw new LexerError(stream.line, stream.pos, message);
         }
 
         stream.read();
     }
 
     void lex() {
-        ubyte state = 0;
-
         do {
             stream.read();
 
@@ -66,16 +75,19 @@ private:
                 lexEscape();
 
             if (stream.lastChar != '\"')
-                value ~= stream.lastChar;
+                p_string ~= stream.lastChar;
         } while (stream.lastChar != '\"' && !stream.eof);
 
         if (stream.eof)
             throw new LexerError(stream.line, stream.pos, "unexpected end of file");
         else stream.read();
+
+        p_code = TokenCode.string;
     }
 }
 
 
+// Number Float or Integer: [0-9]+ (.[0-9]+)?
 class NumberToken : Token {
     this(ref SymbolStream stream) {
         super(stream);
@@ -92,10 +104,43 @@ private:
 class IdToken : Token {
     this(ref SymbolStream stream) {
         super(stream);
+        p_code = TokenCode.id;
         lex();
     }
 
 private:
+    bool isIdChar() {
+        return isAlphaNum(stream.lastChar) || stream.lastChar == '_';
+    }
+
     void lex() {
+        stream.lockLineBreak();
+
+        while (isIdChar()) {
+            p_identifier ~= stream.lastChar;
+            stream.read();
+        }
+
+        stream.unlockLineBreak();
+        p_identifier = p_identifier.toLower();
+
+        switch (identifier) {
+            case "include":
+                p_code = TokenCode.include;
+                return;
+
+            case "true":
+                p_code = TokenCode.boolean;
+                p_boolean = true;
+                return;
+
+            case "false":
+                p_code = TokenCode.boolean;
+                p_boolean = false;
+                return;
+
+            default:
+                p_code = TokenCode.id;
+        }
     }
 }

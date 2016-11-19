@@ -8,7 +8,11 @@ import core.stdc.stdio;
 class SymbolStream {
 public:
     char read() {
-        lastChar = file.rawRead(new char[1])[0];
+        auto buf = file.rawRead(new char[1]);
+
+        if (file.eof) lastChar = 255;
+        else lastChar = buf[0];
+
         return lastChar;
     }
 
@@ -16,6 +20,9 @@ public:
         assert(fileName.isFile);
         this.file = File(fileName);
     }
+
+    void lockLineBreak() { isLockLineBreak = true; }
+    void unlockLineBreak() { isLockLineBreak = false; }
 
     @property int line() { return p_line; }
     @property int pos() { return p_pos; }
@@ -26,6 +33,7 @@ private:
     File file;
     int p_line, p_pos;
     char p_lastChar;
+    bool isLockLineBreak = false;
 
     @property void lastChar(char val) { p_lastChar = val; }
 }

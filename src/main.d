@@ -17,5 +17,8 @@ void main() {
     Lexer lexer = new Lexer(stream);
 
     Token token = lexer.getNextToken();
-    writeln((cast(StringToken)token).value);
+    writeln((cast(StringToken)token).str);
+
+    Token token2 = lexer.getNextToken();
+    writeln((cast(IdToken)token2).identifier);
 }
