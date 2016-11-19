@@ -26,6 +26,8 @@ private:
     @property void tabSize(in int tabSize) { p_tabSize = tabSize; }
 
     Token lexToken() {
+        stream.read();
+
         switch (stream.lastChar) {
             case ' ', '\n', '\r':
                 stream.read();
@@ -44,7 +46,7 @@ private:
                 skipComment(); break;
 
             default:
-                throw new LexerError(1, 1, "Unknown character");
+                throw new LexerError(1, 1, "Unknown character " ~ stream.lastChar);
         }
 
         return null;
@@ -63,6 +65,8 @@ public:
         this.stream = stream;
     }
 
-//    Token lexNextToken();
+    Token getNextToken() {
+        return lexToken();
+    }
 //    Token lexPrevToken();
 }

@@ -17,6 +17,7 @@ protected:
     char symbol;
     TokenCode code;
     string identifier;
+    string stringVal;
     bool boolean;
     float number;
 }
@@ -35,14 +36,37 @@ class StringToken : Token {
         super(stream);
         this.lex();
     }
+    @property auto ref value() { return m_value; }
 
 private:
+    string m_value;
+    @property void value(ref string value) { m_value = value; }
+
+    void lexEscape() {
+        stream.read();
+
+        switch (stream.lastChar) {
+            case 'n' : value ~= "\n"; break;
+            case 'r' : value ~= "\r"; break;
+            case '\\': value ~= "\\"; break;
+            case '\"': value ~= "\""; break;
+            default: break;
+        }
+
+        stream.read();
+    }
+
     void lex() {
-        string value;
         ubyte state = 0;
 
         do {
+            stream.read();
 
+            if (stream.lastChar == '\\')
+                lexEscape();
+
+            if (stream.lastChar != '\"')
+                value ~= stream.lastChar;
         } while (stream.lastChar != '\"' && !stream.eof);
 
         if (stream.eof)
@@ -64,9 +88,14 @@ private:
 }
 
 
+// Identifier: [a-zA-Z_][a-zA-Z0-9_]*
 class IdToken : Token {
     this(ref SymbolStream stream) {
         super(stream);
+        lex();
+    }
+
+private:
+    void lex() {
     }
 }
-
