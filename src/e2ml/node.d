@@ -1,5 +1,16 @@
 module e2ml.node;
 
-class Node {
 
+class Parameter {
+
+}
+
+
+class Node {
+    this(in string name) {
+        this.name = name;
+    }
+
+    string name;
+    string path;
 }

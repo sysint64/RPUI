@@ -10,11 +10,6 @@ public:
     char read() {
         readChar();
 
-        if (isLockLineBreak) {
-            needCalcIndent = true;
-            return p_lastChar;
-        }
-
         if (p_lastChar == ' ' && tabSize == 0 && needCalcTabSize && needCalcIndent)
             return calcTabSize();
 
@@ -23,9 +18,6 @@ public:
 
         if (p_lastChar == '\r' || p_lastChar == '\n') {
             needCalcIndent = true;
-
-            if (isLockLineBreak)
-                return p_lastChar;
 
             p_indent = 0;
             ++p_line;
@@ -46,9 +38,6 @@ public:
         file.close();
     }
 
-    void lockLineBreak() { isLockLineBreak = true; }
-    void unlockLineBreak() { isLockLineBreak = false; }
-
     @property int line() { return p_line; }
     @property int pos() { return p_pos; }
     @property int indent() { return p_indent; }
@@ -64,7 +53,6 @@ private:
     int  p_indent = 0;
     int  p_tabSize = 0;
 
-    bool isLockLineBreak = false;
     bool needCalcTabSize = true;
     bool needCalcIndent  = true;
 

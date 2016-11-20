@@ -24,7 +24,7 @@ class Lexer {
         stream.read();
     }
 
-    Token getNextToken() {
+    Token nextToken() {
         if (stackCursor < tokenStack.length) {
             p_currentToken = tokenStack[stackCursor++];
         } else {
@@ -33,14 +33,24 @@ class Lexer {
             stackCursor = tokenStack.length;
         }
 
+//        writefln(
+//            "id: %s; code: %s; symbol: %s; number: %f; indent: %d",
+//            p_currentToken.identifier,
+//            p_currentToken.code,
+//            p_currentToken.symbol,
+//            p_currentToken.number,
+//            p_currentToken.indent
+//        );
         return p_currentToken;
     }
 
-    Token getPrevToken() {
+    Token prevToken() {
         --stackCursor;
         p_currentToken = tokenStack[stackCursor-1];
         return p_currentToken;
     }
+
+    @property Token currentToken() { return p_currentToken; }
 
 private:
     SymbolStream stream;

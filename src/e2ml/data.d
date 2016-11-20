@@ -20,7 +20,7 @@ public:
         SymbolStream stream = new SymbolStream(fileName);
 
         this.lexer  = new Lexer(stream);
-        this.parser = new Parser(lexer);
+        this.parser = new Parser(lexer, stream);
 
         this.parser.parse();
     }

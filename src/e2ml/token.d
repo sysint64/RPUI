@@ -9,11 +9,14 @@ import e2ml.stream;
 import e2ml.lexer : LexerError;
 
 
-enum TokenCode {eof, id, number, string, boolean, include};
+enum TokenCode {none, id, number, string, boolean, include};
 class Token {
 public:
     this(ref SymbolStream stream) {
         this.stream = stream;
+        this.p_indent = stream.indent;
+        this.p_line = stream.line;
+        this.p_pos = stream.pos;
     }
 
     @property const string identifier() { return p_identifier; }
@@ -23,6 +26,8 @@ public:
     @property const TokenCode code() { return p_code; }
     @property const int indent() { return p_indent; }
     @property const char symbol() { return p_symbol; }
+    @property const int line() { return p_line; }
+    @property const int pos() { return p_pos; }
 
 protected:
     SymbolStream stream;
@@ -35,6 +40,8 @@ protected:
     string p_string;
     TokenCode p_code;
     int p_indent;
+    int p_line;
+    int p_pos;
 }
 
 
@@ -140,14 +147,14 @@ private:
     }
 
     void lex() {
-        stream.lockLineBreak();
+        uint lastIndent;
 
         while (isIdChar()) {
             p_identifier ~= stream.lastChar;
+            lastIndent = stream.indent;
             stream.read();
         }
 
-        stream.unlockLineBreak();
         p_identifier = p_identifier.toLower();
 
         switch (identifier) {
