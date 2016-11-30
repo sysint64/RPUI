@@ -5,3 +5,5 @@ __dummy.html
 *.obj
 .idea
 e2dit-ml
+\#*
+.projectile
