@@ -3,6 +3,7 @@ module e2ml.parser;
 import std.stdio;
 import std.format : formattedWrite;
 import std.array : appender;
+import std.conv;
 
 import e2ml.lexer;
 import e2ml.token;
@@ -30,7 +31,7 @@ class Parser {
         lexer.nextToken();
 
         switch (lexer.currentToken.code) {
-	    case TokenCode.id: root.insert(parseObject()); break;
+            case TokenCode.id: parseObject(root); break;
             default:
                 throw new ParseError(line, pos, ":(");
         }
@@ -46,12 +47,12 @@ private:
     @property int line()   { return lexer.currentToken.line;   }
     @property int pos()    { return lexer.currentToken.pos;    }
 
-    Node parseObject() {
+    Node parseObject(ref Node parent) {
         string name = lexer.currentToken.identifier;
         string type = "";
         Parameter[] parameters;
 
-        auto node = new Node(name);
+        auto node = new Node(name, parent);
 
         int objectIndent = indent;
         lexer.nextToken();
@@ -74,14 +75,15 @@ private:
         writeln(name ~ "(" ~ type ~ ")");
         parseParameters(objectIndent, node);
 
-	return node;
+        return node;
     }
 
     Parameter[] parseParameters(in int objectIndent, ref Node node) {
-	assert(node !is null);
+        assert(node !is null);
 
         Token objectToken = lexer.currentToken;
-	Parameter[] parameters;
+        Parameter[] parameters;
+        int counter = 0;
 
         while (true) {
             string paramName = lexer.currentToken.identifier;
@@ -102,58 +104,59 @@ private:
 
             if (lexer.currentToken.symbol != ':') {
                 lexer.prevToken();
-                node.insert(parseObject());
+                parseObject(node);
                 continue;
             }
 
+            counter++;
             parameters ~= parseParameter(paramName);
         }
 
         lexer.prevToken();
-	return parameters;
+        return parameters;
     }
 
     Parameter parseParameter(in string name) {
         writeln(name);
+        Value[] values;
 
         while (true) {
-            parseValue("0");
+            string valueName = to!string(values.length);
+            values ~= parseValue(valueName);
             lexer.nextToken();
 
             if (lexer.currentToken.symbol != ',')
                 break;
         }
 
-	return new Parameter();
+        return new Parameter();
     }
 
-    void parseValue(in string name) {
+    Value parseValue(in string name) {
         lexer.nextToken();
 
-        if (lexer.currentToken.symbol == '[') {
-            parseArray(name);
-            return;
-        }
+        if (lexer.currentToken.symbol == '[')
+            return parseArray(name);
 
         switch (lexer.currentToken.code) {
             case TokenCode.number:
-                return;
+                return null;
 
             case TokenCode.string:
-                return;
+                return null;
 
             case TokenCode.id:
-                return;
+                return null;
 
             case TokenCode.boolean:
-                return;
+                return null;
 
             default:
                 throw new ParseError(line, pos, "value error");
         }
     }
 
-    void parseArray(in string name) {
+    Value parseArray(in string name) {
         const auto code = lexer.currentToken.code;
         while (code != ']' || code != TokenCode.none) {
             parseValue("0");
@@ -167,6 +170,8 @@ private:
             if (symbol == ']')
                 break;
         }
+
+        return null;
     }
 
     void parseInclude() {

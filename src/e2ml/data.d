@@ -22,9 +22,9 @@ class Data {
     }
 
     Node getObject(in string path) {
-	Node *object = path in objectMap;
-	assert(object !is null, "Object is null");
-	return *object;
+        Node *object = path in objectMap;
+        assert(object !is null, "Object is null");
+        return *object;
     }
 
     Parser parser;
