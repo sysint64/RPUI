@@ -29,11 +29,13 @@ class Parser {
         lexer.nextToken();
 
         switch (lexer.currentToken.code) {
-            case TokenCode.id: parseObject(); break;
+	    case TokenCode.id: root.insert(parseObject()); break;
             default:
                 throw new ParseError(line, pos, ":(");
         }
     }
+
+    Node  root = new Node("");
 
 private:
     Lexer lexer;
@@ -43,7 +45,7 @@ private:
     @property int line()   { return lexer.currentToken.line;   }
     @property int pos()    { return lexer.currentToken.pos;    }
 
-    void parseObject() {
+    Node parseObject() {
         string name = lexer.currentToken.identifier;
         string type = "";
         Parameter[] parameters;
@@ -69,9 +71,11 @@ private:
 
         writeln(name ~ "(" ~ type ~ ")");
         parseParameters(objectIndent);
+
+	return node;
     }
 
-    void parseParameters(in int objectIndent) {
+    Parameter parseParameters(in int objectIndent) {
         Token objectToken = lexer.currentToken;
 
         while (true) {
@@ -101,6 +105,7 @@ private:
         }
 
         lexer.prevToken();
+	return null;
     }
 
     void parseParameter(in string name) {

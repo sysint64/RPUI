@@ -6,14 +6,10 @@ import std.stdio;
 import e2ml.lexer;
 import e2ml.parser;
 import e2ml.stream;
+import e2ml.node;
 
 
 class Data {
-private:
-    Lexer lexer;
-    Parser parser;
-
-public:
     enum IOType {text, bin};
 
     void load(in string fileName, in IOType rt = IOType.text) {
@@ -24,4 +20,18 @@ public:
 
         this.parser.parse();
     }
+
+    Node getObject(in string path) {
+	Node *object = path in objectMap;
+	assert(object !is null, "Object is null");
+	return *object;
+    }
+
+    Parser parser;
+
+private:
+    Lexer  lexer;
+
+
+    Node[string] objectMap;
 }

@@ -6,33 +6,17 @@ import e2ml.data;
 import e2ml.stream;
 import e2ml.lexer;
 import e2ml.token;
+import e2ml.node;
 
 
 void main() {
     Data data = new Data();
-    data.load("/home/dev/dev/e2dit-dlang/tests/simple.e2t");
-//    writeln(":)");
+    data.load("/home/andrey/dev/e2dit-ml-dlang/tests/simple.e2t");
 
-//    SymbolStream stream = new SymbolStream("/home/dev/dev/e2dit-dlang/tests/simple.e2t");
-//    Lexer lexer = new Lexer(stream);
-//
-//    Token token1 = lexer.getNextToken();
-//    writeln(token1.identifier);
-//
-//    Token token2 = lexer.getNextToken();
-//    writeln(token2.identifier);
-//    writeln(stream.indent);
-//    writeln(stream.tabSize);
-//
-//    Token token3 = lexer.getNextToken();
-//    writeln(token3.identifier);
-//    writeln(token3.symbol);
-//    writeln(stream.indent);
-//    writeln(stream.tabSize);
-//
-//    Token token4 = lexer.getNextToken();
-//    writeln(token4.identifier);
-//    writeln(token4.number);
-//    writeln(stream.indent);
-//    writeln(stream.tabSize);
+    // writeln(data.getObject("Test.Test2").name);
+    writeln("\nNODES:");
+
+    foreach (Node a; data.parser.root.children) {
+	writeln(a.name);
+    }
 }

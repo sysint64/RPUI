@@ -13,4 +13,9 @@ class Node {
 
     string name;
     string path;
+    Node[] children;
+
+    void insert(Node object) {
+	children ~= object;
+    }
 }

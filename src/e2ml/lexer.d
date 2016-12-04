@@ -33,14 +33,15 @@ class Lexer {
             stackCursor = tokenStack.length;
         }
 
-//        writefln(
-//            "id: %s; code: %s; symbol: %s; number: %f; indent: %d",
-//            p_currentToken.identifier,
-//            p_currentToken.code,
-//            p_currentToken.symbol,
-//            p_currentToken.number,
-//            p_currentToken.indent
-//        );
+	// writefln(
+	//     "id: %s; code: %s; symbol: %s; number: %f; indent: %d",
+        //     p_currentToken.identifier,
+        //     p_currentToken.code,
+        //     p_currentToken.symbol,
+        //     p_currentToken.number,
+        //     p_currentToken.indent
+	// );
+
         return p_currentToken;
     }
 
