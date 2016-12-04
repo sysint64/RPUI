@@ -8,6 +8,7 @@ import e2ml.lexer;
 import e2ml.token;
 import e2ml.stream;
 import e2ml.node;
+import e2ml.value;
 
 
 class ParseError : Exception {
@@ -51,6 +52,7 @@ private:
         Parameter[] parameters;
 
         auto node = new Node(name);
+
         int objectIndent = indent;
         lexer.nextToken();
 
@@ -70,13 +72,16 @@ private:
         }
 
         writeln(name ~ "(" ~ type ~ ")");
-        parseParameters(objectIndent);
+        parseParameters(objectIndent, node);
 
 	return node;
     }
 
-    Parameter parseParameters(in int objectIndent) {
+    Parameter[] parseParameters(in int objectIndent, ref Node node) {
+	assert(node !is null);
+
         Token objectToken = lexer.currentToken;
+	Parameter[] parameters;
 
         while (true) {
             string paramName = lexer.currentToken.identifier;
@@ -97,18 +102,18 @@ private:
 
             if (lexer.currentToken.symbol != ':') {
                 lexer.prevToken();
-                parseObject();
+                node.insert(parseObject());
                 continue;
             }
 
-            parseParameter(paramName);
+            parameters ~= parseParameter(paramName);
         }
 
         lexer.prevToken();
-	return null;
+	return parameters;
     }
 
-    void parseParameter(in string name) {
+    Parameter parseParameter(in string name) {
         writeln(name);
 
         while (true) {
@@ -118,6 +123,8 @@ private:
             if (lexer.currentToken.symbol != ',')
                 break;
         }
+
+	return new Parameter();
     }
 
     void parseValue(in string name) {
