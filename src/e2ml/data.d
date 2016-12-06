@@ -27,11 +27,13 @@ class Data {
         return *object;
     }
 
-    Parser parser;
+    @property ref Node root() {
+        return parser.root;
+    }
 
 private:
     Lexer  lexer;
-
+    Parser parser;
 
     Node[string] objectMap;
 }

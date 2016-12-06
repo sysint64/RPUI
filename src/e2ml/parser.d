@@ -3,6 +3,7 @@ module e2ml.parser;
 import std.stdio;
 import std.format : formattedWrite;
 import std.array : appender;
+import std.container;
 import std.conv;
 
 import e2ml.lexer;
@@ -50,7 +51,7 @@ private:
     Node parseObject(ref Node parent) {
         string name = lexer.currentToken.identifier;
         string type = "";
-        Parameter[] parameters;
+        Array!Parameter parameters;
 
         auto node = new Node(name, parent);
 
@@ -78,11 +79,10 @@ private:
         return node;
     }
 
-    Parameter[] parseParameters(in int objectIndent, ref Node node) {
+    void parseParameters(in int objectIndent, ref Node node) {
         assert(node !is null);
 
         Token objectToken = lexer.currentToken;
-        Parameter[] parameters;
         int counter = 0;
 
         while (true) {
@@ -109,16 +109,15 @@ private:
             }
 
             counter++;
-            parameters ~= parseParameter(paramName);
+            parseParameter(paramName, node);
         }
 
         lexer.prevToken();
-        return parameters;
     }
 
-    Parameter parseParameter(in string name) {
+    void parseParameter(in string name, ref Node node) {
         writeln(name);
-        Value[] values;
+        Array!Value values;
 
         while (true) {
             string valueName = to!string(values.length);
@@ -129,7 +128,8 @@ private:
                 break;
         }
 
-        return new Parameter();
+        auto parameter = new Parameter(name, values);
+        node.insertParameter(parameter);
     }
 
     Value parseValue(in string name) {

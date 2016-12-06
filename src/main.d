@@ -21,6 +21,11 @@ void traverse(ref Node node, in int level=0) {
         writeindent(level);
         writeln(a.name ~ "(" ~ a.path ~ ")");
         traverse(a, level+1);
+
+        foreach (Parameter p; a.parameters) {
+            writeindent(level+1);
+            writeln(p.name ~ "(" ~ p.path ~ ")");
+        }
     }
 }
 
@@ -31,6 +36,5 @@ void main() {
 
     // writeln(data.getObject("Test.Test2").name);
     writeln("\n\nTREE:\n");
-
-    traverse(data.parser.root);
+    traverse(data.root);
 }
