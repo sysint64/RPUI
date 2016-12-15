@@ -23,6 +23,7 @@ public:
     @property const float number() { return p_number; }
     @property const bool boolean() { return p_boolean; }
     @property const string str() { return p_string; }
+    @property const string urfStr() { return p_string; }
     @property const TokenCode code() { return p_code; }
     @property const int indent() { return p_indent; }
     @property const char symbol() { return p_symbol; }

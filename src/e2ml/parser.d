@@ -143,21 +143,26 @@ private:
 
         switch (lexer.currentToken.code) {
             case TokenCode.number:
-                // value = new NumberValue();
+                value = new NumberValue(name, lexer.currentToken.number);
                 break;
 
             case TokenCode.string:
-                return;
+                value = new StringValue(name, lexer.currentToken.str);
+                break;
 
             case TokenCode.id:
-                return;
+                value = new StringValue(name, lexer.currentToken.str);
+                break;
 
             case TokenCode.boolean:
-                return;
+                value = new BooleanValue(name, lexer.currentToken.boolean);
+                break;
 
             default:
                 throw new ParseError(line, pos, "value error");
         }
+
+        parent.insert(value);
     }
 
     void parseArray(in string name, Node parent) {

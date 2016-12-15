@@ -7,6 +7,7 @@ import e2ml.stream;
 import e2ml.lexer;
 import e2ml.token;
 import e2ml.node;
+import e2ml.value;
 
 
 void writeindent(in int level = 0) {
@@ -19,7 +20,12 @@ void writeindent(in int level = 0) {
 void traverse(ref Node node, in int level = 0) {
     foreach (Node a; node.children) {
         writeindent(level);
-        writeln(a.name ~ "(" ~ a.path ~ ")");
+
+        if (cast(Value)a)
+            writeln(a.name ~ "(" ~ a.path ~ "): ", a.toString());
+        else
+            writeln(a.name ~ "(" ~ a.path ~ ")");
+
         traverse(a, level+1);
     }
 }

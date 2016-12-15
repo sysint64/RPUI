@@ -2,6 +2,7 @@ module e2ml.value;
 
 import std.container;
 import e2ml.node;
+import std.conv;
 
 
 class Value: Node {
@@ -18,24 +19,32 @@ protected:
 class NumberValue: Value {
     @property float value() { return p_value; }
 
-    this(in string name, in float value, Node parent) {
-        super(name, parent);
+    this(in string name, in float value) {
+        super(name);
         this.p_value = value;
         this.p_type = Type.Number;
     }
 
-private:
+    override string toString() {
+        return to!string(p_value);
+    }
+
+protected:
     float p_value;
 }
 
 
-class BooleanValue: Value {
+class BooleanValue : Value {
     @property bool value() { return p_value; }
 
-    this(in string name, in bool value, Node parent) {
-        super(name, parent);
+    this(in string name, in bool value) {
+        super(name);
         this.p_value = value;
         this.p_type = Type.Boolean;
+    }
+
+    override string toString() {
+        return to!string(p_value);
     }
 
 private:
@@ -43,21 +52,25 @@ private:
 }
 
 
-class StringValue: Value {
+class StringValue : Value {
     @property string value() { return p_value; }
     @property dstring urfValue() { return p_utfValue; }
 
-    this(in string name, in string value, Node parent) {
-        super(name, parent);
+    this(in string name, in string value) {
+        super(name);
         this.p_value = value;
         this.p_type = Type.String;
     }
 
-    this(in string name, in string value, in dstring utfValue, Node parent) {
-        super(name, parent);
+    this(in string name, in string value, in dstring utfValue) {
+        super(name);
         this.p_value = value;
         this.p_utfValue = utfValue;
         this.p_type = Type.String;
+    }
+
+    override string toString() {
+        return to!string(p_value);
     }
 
 private:
@@ -69,7 +82,7 @@ private:
 class ArrayValue: Value {
     @property Array!Value values() { return p_values; }
 
-    this(in string name, Array!Value values, Node parent) {
+    this(in string name, Array!Value values) {
         super(name, parent);
         this.p_values = values;
         this.p_type = Type.Array;
