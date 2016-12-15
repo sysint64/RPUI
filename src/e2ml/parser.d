@@ -117,49 +117,53 @@ private:
 
     void parseParameter(in string name, ref Node node) {
         writeln(name);
-        Array!Value values;
+        auto parameter = new Parameter(name);
 
         while (true) {
-            string valueName = to!string(values.length);
-            values ~= parseValue(valueName);
+            string valueName = to!string(parameter.children.length);
+            parseValue(valueName, parameter);
             lexer.nextToken();
 
             if (lexer.currentToken.symbol != ',')
                 break;
         }
 
-        auto parameter = new Parameter(name, values);
-        node.insertParameter(parameter);
+        node.insert(parameter);
     }
 
-    Value parseValue(in string name) {
+    void parseValue(in string name, Node parent) {
         lexer.nextToken();
 
-        if (lexer.currentToken.symbol == '[')
-            return parseArray(name);
+        if (lexer.currentToken.symbol == '[') {
+            parseArray(name, parent);
+            return;
+        }
+
+        Value value;
 
         switch (lexer.currentToken.code) {
             case TokenCode.number:
-                return null;
+                // value = new NumberValue();
+                break;
 
             case TokenCode.string:
-                return null;
+                return;
 
             case TokenCode.id:
-                return null;
+                return;
 
             case TokenCode.boolean:
-                return null;
+                return;
 
             default:
                 throw new ParseError(line, pos, "value error");
         }
     }
 
-    Value parseArray(in string name) {
+    void parseArray(in string name, Node parent) {
         const auto code = lexer.currentToken.code;
         while (code != ']' || code != TokenCode.none) {
-            parseValue("0");
+            parseValue("0", parent);
             lexer.nextToken();
 
             const auto symbol = lexer.currentToken.symbol;
@@ -170,8 +174,6 @@ private:
             if (symbol == ']')
                 break;
         }
-
-        return null;
     }
 
     void parseInclude() {
