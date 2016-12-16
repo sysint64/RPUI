@@ -80,14 +80,8 @@ private:
 
 
 class ArrayValue: Value {
-    @property Array!Value values() { return p_values; }
-
-    this(in string name, Array!Value values) {
-        super(name, parent);
-        this.p_values = values;
+    this(in string name) {
+        super(name);
         this.p_type = Type.Array;
     }
-
-private:
-    Array!Value p_values;
 }

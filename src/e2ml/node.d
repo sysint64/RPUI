@@ -41,6 +41,9 @@ protected:
     void updatePath() {
         assert(parent !is null);
         p_path = parent.path == "" ? name : parent.path ~ "." ~ name;
+
+        foreach (Node child; p_children)
+            child.updatePath();
     }
 }
 

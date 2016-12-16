@@ -12,7 +12,7 @@ import e2ml.lexer : LexerError;
 enum TokenCode {none, id, number, string, boolean, include};
 class Token {
 public:
-    this(ref SymbolStream stream) {
+    this(SymbolStream stream) {
         this.stream = stream;
         this.p_indent = stream.indent;
         this.p_line = stream.line;
@@ -47,7 +47,7 @@ protected:
 
 
 class SymbolToken : Token {
-    this(ref SymbolStream stream, in char symbol) {
+    this(SymbolStream stream, in char symbol) {
         super(stream);
         this.p_symbol = symbol;
     }
@@ -55,7 +55,7 @@ class SymbolToken : Token {
 
 
 class StringToken : Token {
-    this(ref SymbolStream stream) {
+    this(SymbolStream stream) {
         super(stream);
         this.lex();
     }
@@ -99,7 +99,7 @@ private:
 
 // Number Float or Integer: [0-9]+ (.[0-9]+)?
 class NumberToken : Token {
-    this(ref SymbolStream stream, in bool negative = false) {
+    this(SymbolStream stream, in bool negative = false) {
         super(stream);
         this.negative = negative;
         lex();
@@ -136,7 +136,7 @@ private:
 
 // Identifier: [a-zA-Z_][a-zA-Z0-9_]*
 class IdToken : Token {
-    this(ref SymbolStream stream) {
+    this(SymbolStream stream) {
         super(stream);
         p_code = TokenCode.id;
         lex();

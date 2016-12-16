@@ -17,7 +17,7 @@ void writeindent(in int level = 0) {
 }
 
 
-void traverse(ref Node node, in int level = 0) {
+void traverse(Node node, in int level = 0) {
     foreach (Node a; node.children) {
         writeindent(level);
 

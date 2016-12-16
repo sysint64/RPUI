@@ -19,7 +19,7 @@ class LexerError : Exception {
 
 
 class Lexer {
-    this(ref SymbolStream stream) {
+    this(SymbolStream stream) {
         this.stream = stream;
         stream.read();
     }

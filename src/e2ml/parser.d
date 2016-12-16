@@ -23,7 +23,7 @@ class ParseError : Exception {
 
 
 class Parser {
-    this(ref Lexer lexer, ref SymbolStream stream) {
+    this(Lexer lexer, SymbolStream stream) {
         this.lexer  = lexer;
         this.stream = stream;
     }
@@ -48,7 +48,7 @@ private:
     @property int line()   { return lexer.currentToken.line;   }
     @property int pos()    { return lexer.currentToken.pos;    }
 
-    Node parseObject(ref Node parent) {
+    Node parseObject(Node parent) {
         string name = lexer.currentToken.identifier;
         string type = "";
         Array!Parameter parameters;
@@ -79,7 +79,7 @@ private:
         return node;
     }
 
-    void parseParameters(in int objectIndent, ref Node node) {
+    void parseParameters(in int objectIndent, Node node) {
         assert(node !is null);
 
         Token objectToken = lexer.currentToken;
@@ -115,7 +115,7 @@ private:
         lexer.prevToken();
     }
 
-    void parseParameter(in string name, ref Node node) {
+    void parseParameter(in string name, Node node) {
         writeln(name);
         auto parameter = new Parameter(name);
 
@@ -167,8 +167,11 @@ private:
 
     void parseArray(in string name, Node parent) {
         const auto code = lexer.currentToken.code;
+        ArrayValue array = new ArrayValue(name);
+
         while (code != ']' || code != TokenCode.none) {
-            parseValue("0", parent);
+            string valueName = to!string(array.children.length);
+            parseValue(valueName, array);
             lexer.nextToken();
 
             const auto symbol = lexer.currentToken.symbol;
@@ -179,6 +182,8 @@ private:
             if (symbol == ']')
                 break;
         }
+
+        parent.insert(array);
     }
 
     void parseInclude() {
