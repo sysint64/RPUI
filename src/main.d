@@ -32,8 +32,8 @@ void traverse(Node node, in int level = 0) {
 
 
 void main() {
-    Data data = new Data();
-    data.load("/home/andrey/dev/e2dit-ml-dlang/tests/simple.e2t");
+    Data data = new Data("/home/andrey/dev/e2dit-ml-dlang/tests");
+    data.load("simple.e2t");
 
     // writeln(data.getObject("Test.Test2.param.0.1").name);
     writeln("\n\nTREE:\n");

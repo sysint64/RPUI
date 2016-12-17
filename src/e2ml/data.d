@@ -12,13 +12,18 @@ import e2ml.node;
 class Data {
     enum IOType {text, bin};
 
+    this() {}
+    this(in string rootDirectory) {
+        this.p_rootDirectory = rootDirectory;
+    }
+
     void load(in string fileName, in IOType rt = IOType.text) {
-        SymbolStream stream = new SymbolStream(fileName);
-
-        this.lexer  = new Lexer(stream);
-        this.parser = new Parser(lexer, stream);
-
-        this.parser.parse();
+        switch (rt) {
+            case IOType.text: loadText(fileName); break;
+            case IOType.bin: break;
+            default:
+                break;
+        }
     }
 
     Node getObject(in string path) {
@@ -27,8 +32,22 @@ class Data {
         return *object;
     }
 
-    @property ref Node root() {
+    @property Node root() {
         return parser.root;
+    }
+
+    @property string rootDirectory() {
+        return p_rootDirectory;
+    }
+
+package:
+    void loadText(in string fileName, Node root = null) {
+        SymbolStream stream = new SymbolStream(rootDirectory ~ "/" ~ fileName);
+
+        this.lexer  = new Lexer(stream);
+        this.parser = new Parser(lexer, stream, root);
+
+        this.parser.parse();
     }
 
 private:
@@ -36,4 +55,5 @@ private:
     Parser parser;
 
     Node[string] objectMap;
+    string p_rootDirectory;
 }
