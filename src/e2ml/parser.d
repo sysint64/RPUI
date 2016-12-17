@@ -24,10 +24,9 @@ class ParseError : Exception {
 
 
 class Parser {
-    this(Lexer lexer, SymbolStream stream) {
-        this.lexer  = lexer;
-        this.stream = stream;
-        this.p_root = new Node("");
+    this(Lexer lexer, Data data) {
+        this.lexer = lexer;
+        this.data = data;
     }
 
     void parse() {
@@ -35,7 +34,7 @@ class Parser {
 
         while (lexer.currentToken.code != Token.Code.none) {
             switch (lexer.currentToken.code) {
-                case Token.Code.id: parseObject(p_root); break;
+                case Token.Code.id: parseObject(data.root); break;
                 case Token.Code.include: parseInclude(); break;
                 default:
                     throw new ParseError(line, pos, "unknown identifier");
@@ -43,22 +42,13 @@ class Parser {
         }
     }
 
-    @property int  indent() { return lexer.currentToken.indent; }
-    @property int  line()   { return lexer.currentToken.line;   }
-    @property int  pos()    { return lexer.currentToken.pos;    }
-    @property Node root()   { return p_root; }
-
-package:
-    this(Lexer lexer, SymbolStream stream, Node root) {
-        this.lexer  = lexer;
-        this.stream = stream;
-        this.p_root = root is null ? new Node("") : root;
-    }
+    @property int indent() { return lexer.currentToken.indent; }
+    @property int line()   { return lexer.currentToken.line;   }
+    @property int pos()    { return lexer.currentToken.pos;    }
 
 private:
-    Node p_root;
+    Data data;
     Lexer lexer;
-    SymbolStream stream;
 
     Node parseObject(Node parent) {
         string name = lexer.currentToken.identifier;
@@ -204,10 +194,7 @@ private:
         if (lexer.currentToken.code != Token.Code.string)
             throw new ParseError(line, pos, "expected '\"'");
 
-        writeln(lexer.currentToken.str);
-        Data data = new Data("/home/andrey/dev/e2dit-ml-dlang/tests");
-        data.loadText(lexer.currentToken.str, p_root);
-
+        data.loadText(lexer.currentToken.str);
         lexer.nextToken();
     }
 }

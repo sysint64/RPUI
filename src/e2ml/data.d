@@ -12,9 +12,13 @@ import e2ml.node;
 class Data {
     enum IOType {text, bin};
 
-    this() {}
+    this() {
+        p_root = new Node("");
+    }
+
     this(in string rootDirectory) {
         this.p_rootDirectory = rootDirectory;
+        p_root = new Node("");
     }
 
     void load(in string fileName, in IOType rt = IOType.text) {
@@ -33,19 +37,18 @@ class Data {
     }
 
     @property Node root() {
-        return parser.root;
+        return p_root;
     }
 
     @property string rootDirectory() {
         return p_rootDirectory;
     }
 
-package:
-    void loadText(in string fileName, Node root = null) {
+    void loadText(in string fileName) {
         SymbolStream stream = new SymbolStream(rootDirectory ~ "/" ~ fileName);
 
         this.lexer  = new Lexer(stream);
-        this.parser = new Parser(lexer, stream, root);
+        this.parser = new Parser(lexer, this);
 
         this.parser.parse();
     }
@@ -56,4 +59,5 @@ private:
 
     Node[string] objectMap;
     string p_rootDirectory;
+    Node p_root;
 }
