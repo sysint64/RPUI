@@ -9,9 +9,9 @@ import e2ml.stream;
 import e2ml.lexer : LexerError;
 
 
-enum TokenCode {none, id, number, string, boolean, include};
 class Token {
 public:
+    enum Code {none, id, number, string, boolean, include};
     this(SymbolStream stream) {
         this.stream = stream;
         this.p_indent = stream.indent;
@@ -24,7 +24,7 @@ public:
     @property const bool boolean() { return p_boolean; }
     @property const string str() { return p_string; }
     @property const string urfStr() { return p_string; }
-    @property const TokenCode code() { return p_code; }
+    @property const Code code() { return p_code; }
     @property const int indent() { return p_indent; }
     @property const char symbol() { return p_symbol; }
     @property const int line() { return p_line; }
@@ -39,7 +39,7 @@ protected:
     float p_number;
     bool p_boolean;
     string p_string;
-    TokenCode p_code;
+    Code p_code;
     int p_indent;
     int p_line;
     int p_pos;
@@ -92,7 +92,7 @@ private:
             throw new LexerError(stream.line, stream.pos, "unexpected end of file");
         else stream.read();
 
-        p_code = TokenCode.string;
+        p_code = Code.string;
     }
 }
 
@@ -114,7 +114,7 @@ private:
 
     void lex() {
         string numStr = negative ? "-" : "";
-        p_code = TokenCode.number;
+        p_code = Code.number;
         bool hasComma = false;
 
         while (isNumberChar()) {
@@ -138,7 +138,7 @@ private:
 class IdToken : Token {
     this(SymbolStream stream) {
         super(stream);
-        p_code = TokenCode.id;
+        p_code = Code.id;
         lex();
     }
 
@@ -160,21 +160,21 @@ private:
 
         switch (identifier) {
             case "include":
-                p_code = TokenCode.include;
+                p_code = Code.include;
                 return;
 
             case "true":
-                p_code = TokenCode.boolean;
+                p_code = Code.boolean;
                 p_boolean = true;
                 return;
 
             case "false":
-                p_code = TokenCode.boolean;
+                p_code = Code.boolean;
                 p_boolean = false;
                 return;
 
             default:
-                p_code = TokenCode.id;
+                p_code = Code.id;
         }
     }
 }

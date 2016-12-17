@@ -31,10 +31,12 @@ class Parser {
     void parse() {
         lexer.nextToken();
 
-        switch (lexer.currentToken.code) {
-            case TokenCode.id: parseObject(root); break;
-            default:
-                throw new ParseError(line, pos, ":(");
+        while (lexer.currentToken.code != Token.Code.none) {
+            switch (lexer.currentToken.code) {
+                case Token.Code.id: parseObject(root); break;
+                default:
+                    throw new ParseError(line, pos, ":(");
+            }
         }
     }
 
@@ -61,7 +63,7 @@ private:
         if (lexer.currentToken.symbol == '(') {
             lexer.nextToken();
 
-            if (lexer.currentToken.code != TokenCode.id)
+            if (lexer.currentToken.code != Token.Code.id)
                 throw new ParseError(line, pos, "expected identifier");
 
             type = lexer.currentToken.identifier;
@@ -99,7 +101,7 @@ private:
             const auto code   = lexer.currentToken.code;
             const auto symbol = lexer.currentToken.symbol;
 
-            if (code != TokenCode.id && symbol != ':' && symbol != '(')
+            if (code != Token.Code.id && symbol != ':' && symbol != '(')
                 break;
 
             if (lexer.currentToken.symbol != ':') {
@@ -142,19 +144,19 @@ private:
         Value value;
 
         switch (lexer.currentToken.code) {
-            case TokenCode.number:
+            case Token.Code.number:
                 value = new NumberValue(name, lexer.currentToken.number);
                 break;
 
-            case TokenCode.string:
+            case Token.Code.string:
                 value = new StringValue(name, lexer.currentToken.str);
                 break;
 
-            case TokenCode.id:
+            case Token.Code.id:
                 value = new StringValue(name, lexer.currentToken.str);
                 break;
 
-            case TokenCode.boolean:
+            case Token.Code.boolean:
                 value = new BooleanValue(name, lexer.currentToken.boolean);
                 break;
 
@@ -169,7 +171,7 @@ private:
         const auto code = lexer.currentToken.code;
         ArrayValue array = new ArrayValue(name);
 
-        while (code != ']' || code != TokenCode.none) {
+        while (code != ']' || code != Token.Code.none) {
             string valueName = to!string(array.children.length);
             parseValue(valueName, array);
             lexer.nextToken();
