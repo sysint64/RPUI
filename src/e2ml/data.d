@@ -7,6 +7,8 @@ import e2ml.lexer;
 import e2ml.parser;
 import e2ml.stream;
 import e2ml.node;
+import e2ml.value;
+import e2ml.exception;
 
 
 class Data {
@@ -30,10 +32,20 @@ class Data {
         }
     }
 
-    Node getObject(in string path) {
-        Node *object = path in objectMap;
-        assert(object !is null, "Object is null");
-        return *object;
+    Node getNode(in string path) {
+        return findNodeByPath(path);
+    }
+
+    ObjectNode getObject(in string path) {
+        return getTypedNode!(ObjectNode, NotObjectException)(path);
+    }
+
+    Parameter getParameter(in string path) {
+        return getTypedNode!(Parameter, NotParameterException)(path);
+    }
+
+    Value getValue(in string path) {
+        return getTypedNode!(Value, NotValueException)(path);
     }
 
     @property Node root() {
@@ -57,7 +69,37 @@ private:
     Lexer  lexer;
     Parser parser;
 
-    Node[string] objectMap;
     string p_rootDirectory;
     Node p_root;
+
+    Node findNodeByPath(in string path, Node root = null) {
+        if (root is null)
+            root = this.p_root;
+
+        foreach (Node child; root.children) {
+            if (child.path == path)
+                return child;
+
+            Node node = findNodeByPath(path, child);
+
+            if (node !is null)
+                return node;
+        }
+
+        return null;
+    }
+
+    T getTypedNode(T : Node, E : E2TMLException)(in string path) {
+        Node node = findNodeByPath(path);
+
+        if (node is null)
+            throw new NotFoundException("Node with path \"" ~ path ~ "\" not found");
+
+        T object = cast(T)(node);
+
+        if (object is null)
+            throw new E("Node with path \"" ~ path ~ "\" is not an " ~ E.typeName);
+
+        return cast(T)(node);
+    }
 }

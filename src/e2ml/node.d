@@ -52,3 +52,9 @@ class Parameter: Node {
     this(in string name) { super(name); }
     this(in string name, Node parent) { super(name, parent); }
 }
+
+
+class ObjectNode: Node {
+    this(in string name) { super(name); }
+    this(in string name, Node parent) { super(name, parent); }
+}

@@ -50,12 +50,12 @@ private:
     Data data;
     Lexer lexer;
 
-    Node parseObject(Node parent) {
+    void parseObject(Node parent) {
         string name = lexer.currentToken.identifier;
         string type = "";
         Array!Parameter parameters;
 
-        auto node = new Node(name, parent);
+        auto node = new ObjectNode(name, parent);
 
         int objectIndent = indent;
         lexer.nextToken();
@@ -75,10 +75,7 @@ private:
             lexer.nextToken();
         }
 
-        writeln(name ~ "(" ~ type ~ ")");
         parseParameters(objectIndent, node);
-
-        return node;
     }
 
     void parseParameters(in int objectIndent, Node node) {
@@ -93,10 +90,8 @@ private:
 
             lexer.nextToken();
 
-            if (objectIndent != targetIndent && lexer.currentToken.line != objectToken.line) {
-                writeln("EXIT");
+            if (objectIndent != targetIndent && lexer.currentToken.line != objectToken.line)
                 break;
-            }
 
             const auto code   = lexer.currentToken.code;
             const auto symbol = lexer.currentToken.symbol;
@@ -118,7 +113,6 @@ private:
     }
 
     void parseParameter(in string name, Node node) {
-        writeln(name);
         auto parameter = new Parameter(name);
 
         while (true) {
