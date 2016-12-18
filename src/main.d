@@ -39,5 +39,5 @@ void main() {
     traverse(data.root);
 
     // data.getParameter("test.test2.p2");
-    writeln(data.getParameter("test.test2.p2").name);
+    writeln(data.optNumber("test.test2.p2.12"));
 }

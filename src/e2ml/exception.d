@@ -32,3 +32,31 @@ class NotValueException : E2TMLException {
     this(in string details) { super(details); }
     static @property string typeName() { return "e2tml.value.Value"; }
 }
+
+
+class NotNumberValueException : E2TMLException {
+    this() { super("it is not a number value"); }
+    this(in string details) { super(details); }
+    static @property string typeName() { return "e2tml.value.NumberValue"; }
+}
+
+
+class NotBooleanValueException : E2TMLException {
+    this() { super("it is not a number value"); }
+    this(in string details) { super(details); }
+    static @property string typeName() { return "e2tml.value.BooleanValue"; }
+}
+
+
+class NotStringValueException : E2TMLException {
+    this() { super("it is not a string value"); }
+    this(in string details) { super(details); }
+    static @property string typeName() { return "e2tml.value.StringValue"; }
+}
+
+
+class NotArrayValueException : E2TMLException {
+    this() { super("it is not an array value"); }
+    this(in string details) { super(details); }
+    static @property string typeName() { return "e2tml.value.ArrayValue"; }
+}

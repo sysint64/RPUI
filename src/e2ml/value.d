@@ -54,7 +54,7 @@ private:
 
 class StringValue : Value {
     @property string value() { return p_value; }
-    @property dstring urfValue() { return p_utfValue; }
+    @property dstring utfValue() { return p_utfValue; }
 
     this(in string name, in string value) {
         super(name);

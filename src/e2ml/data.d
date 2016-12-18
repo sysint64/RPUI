@@ -32,6 +32,25 @@ class Data {
         }
     }
 
+    @property Node root() {
+        return p_root;
+    }
+
+    @property string rootDirectory() {
+        return p_rootDirectory;
+    }
+
+    void loadText(in string fileName) {
+        SymbolStream stream = new SymbolStream(rootDirectory ~ "/" ~ fileName);
+
+        this.lexer  = new Lexer(stream);
+        this.parser = new Parser(lexer, this);
+
+        this.parser.parse();
+    }
+
+    // Access to nodes
+
     Node getNode(in string path) {
         return findNodeByPath(path);
     }
@@ -48,21 +67,100 @@ class Data {
         return getTypedNode!(Value, NotValueException)(path);
     }
 
-    @property Node root() {
-        return p_root;
+    NumberValue getNumberValue(in string path) {
+        return getTypedNode!(NumberValue, NotNumberValueException)(path);
     }
 
-    @property string rootDirectory() {
-        return p_rootDirectory;
+    StringValue getStringValue(in string path) {
+        return getTypedNode!(StringValue, NotStringValueException)(path);
     }
 
-    void loadText(in string fileName) {
-        SymbolStream stream = new SymbolStream(rootDirectory ~ "/" ~ fileName);
+    BooleanValue getBooleanValue(in string path) {
+        return getTypedNode!(BooleanValue, NotBooleanValueException)(path);
+    }
 
-        this.lexer  = new Lexer(stream);
-        this.parser = new Parser(lexer, this);
+    ArrayValue getArrayValue(in string path) {
+        return getTypedNode!(ArrayValue, NotArrayValueException)(path);
+    }
 
-        this.parser.parse();
+    // Optional access to nodes
+
+    Node optNode(in string path, Node defaultVal = null) {
+        Node node = findNodeByPath(path);
+
+        if (node is null)
+            return defaultVal;
+
+        return node;
+    }
+
+    ObjectNode optObject(in string path, ObjectNode defaultVal = null) {
+        return optTypedNode!(ObjectNode, NotObjectException)(path, defaultVal);
+    }
+
+    Parameter optParameter(in string path, Parameter defaultVal = null) {
+        return optTypedNode!(Parameter, NotParameterException)(path, defaultVal);
+    }
+
+    Value optValue(in string path, Value defaultVal = null) {
+        return optTypedNode!(Value, NotValueException)(path, defaultVal);
+    }
+
+    NumberValue optNumberValue(in string path, NumberValue defaultVal = null) {
+        return optTypedNode!(NumberValue, NotNumberValueException)(path, defaultVal);
+    }
+
+    BooleanValue optBooleanValue(in string path, BooleanValue defaultVal = null) {
+        return optTypedNode!(BooleanValue, NotBooleanValueException)(path, defaultVal);
+    }
+
+    StringValue optStringValue(in string path, StringValue defaultVal = null) {
+        return optTypedNode!(StringValue, NotStringValueException)(path, defaultVal);
+    }
+
+    ArrayValue optArrayValue(in string path, ArrayValue defaultVal = null) {
+        return optTypedNode!(ArrayValue, NotArrayValueException)(path, defaultVal);
+    }
+
+    // Access to values
+
+    float getNumber(in string path) {
+        return getTypedNode!(NumberValue, NotNumberValueException)(path).value;
+    }
+
+    bool getBoolean(in string path) {
+        return getTypedNode!(BooleanValue, NotBooleanValueException)(path).value;
+    }
+
+    string getString(in string path) {
+        return getTypedNode!(StringValue, NotStringValueException)(path).value;
+    }
+
+    dstring getUTFString(in string path) {
+        return getTypedNode!(StringValue, NotStringValueException)(path).utfValue;
+    }
+
+    // Optional access to values
+
+    float optNumber(in string path, float defaultVal = 0) {
+        return optTypedValue!(float, NumberValue, NotNumberValueException)(path, defaultVal);
+    }
+
+    bool optBoolean(in string path, bool defaultVal = false) {
+        return optTypedValue!(bool, BooleanValue, NotNumberValueException)(path, defaultVal);
+    }
+
+    string optString(in string path, string defaultVal = null) {
+        return optTypedValue!(string, StringValue, NotStringValueException)(path, defaultVal);
+    }
+
+    dstring optUTFString(in string path, dstring defaultVal = null) {
+        StringValue node = optTypedNode!(StringValue, NotStringValueException)(path, null);
+
+        if (node is null)
+            return defaultVal;
+
+        return node.utfValue;
     }
 
 private:
@@ -89,6 +187,7 @@ private:
         return null;
     }
 
+    // Helper methods for access to nodes and values by path
     T getTypedNode(T : Node, E : E2TMLException)(in string path) {
         Node node = findNodeByPath(path);
 
@@ -101,5 +200,28 @@ private:
             throw new E("Node with path \"" ~ path ~ "\" is not an " ~ E.typeName);
 
         return cast(T)(node);
+    }
+
+    T optTypedNode(T : Node, E : E2TMLException)(in string path, T defaultVal) {
+        Node node = findNodeByPath(path);
+
+        if (node is null)
+            return defaultVal;
+
+        T object = cast(T)(node);
+
+        if (object is null)
+            throw new E("Node with path \"" ~ path ~ "\" is not an " ~ E.typeName);
+
+        return cast(T)(node);
+    }
+
+    T optTypedValue(T, N : Node, E : E2TMLException)(in string path, T defaultVal) {
+        N node = optTypedNode!(N, E)(path, null);
+
+        if (node is null)
+            return defaultVal;
+
+        return node.value;
     }
 }
