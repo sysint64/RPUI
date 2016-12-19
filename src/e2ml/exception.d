@@ -60,3 +60,7 @@ class NotArrayValueException : E2TMLException {
     this(in string details) { super(details); }
     static @property string typeName() { return "e2tml.value.ArrayValue"; }
 }
+
+
+class WrongNodeType : E2TMLException {
+}

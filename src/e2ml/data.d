@@ -9,6 +9,7 @@ import e2ml.stream;
 import e2ml.node;
 import e2ml.value;
 import e2ml.exception;
+import e2ml.writer;
 
 
 class Data {
@@ -30,6 +31,19 @@ class Data {
             default:
                 break;
         }
+    }
+
+    void save(in string fileName, in IOType wt = IOType.text) {
+        Writer writer;
+
+        switch (wt) {
+            case IOType.text: writer = new TextWriter(p_root); break;
+            case IOType.bin: writer = new BinWriter(p_root); break;
+            default:
+                return;
+        }
+
+        writer.save(fileName);
     }
 
     @property Node root() {

@@ -19,6 +19,7 @@ Test(Hello)
 
     Test2
         p2: 2, true, "Hello"
+        unicode: "Привет мир"
         p3: 3, 2
 
         Test3 p4: aaa p5: bbb
