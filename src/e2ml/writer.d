@@ -35,6 +35,11 @@ protected:
         write(ch);
     }
 
+    void rawWrite(in ubyte ch) {
+        //file.rawWrite([ch]);
+        write(ch);
+    }
+
     void rawWrite(string str) {
         //file.rawWrite(str);
         write(str);
@@ -49,28 +54,32 @@ protected:
     void writeValue(Value value) {
     }
 
-    void writeNumber(NumberValue value) {
+    void writeNumberValue(NumberValue value) {
     }
 
-    void writeBoolean(BooleanValue value) {
+    void writeBooleanValue(BooleanValue value) {
     }
 
-    void writeString(StringValue value) {
+    void writeStringValue(StringValue value) {
     }
 
-    void writeArray(ArrayValue array) {
+    void writeArrayValue(ArrayValue array) {
     }
 }
 
 
 class TextWriter : Writer {
-    this(Node root, in int indentSize = 4) { super(root); }
+    this(Node root, in int indentSize = 4) {
+        super(root);
+        this.indentSize = indentSize;
+    }
 
 protected:
     int depth = 0;
+    int indentSize = 0;
 
     void writeIndent() {
-        for (int i = 0; i < depth*4; ++i)
+        for (int i = 0; i < depth*indentSize; ++i)
             rawWrite(' ');
     }
 
@@ -112,33 +121,33 @@ protected:
 
     override void writeValue(Value value) {
         if (cast(NumberValue)(value))
-            writeNumber(cast(NumberValue)(value));
+            writeNumberValue(cast(NumberValue)(value));
 
         if (cast(BooleanValue)(value))
-            writeBoolean(cast(BooleanValue)(value));
+            writeBooleanValue(cast(BooleanValue)(value));
 
         if (cast(StringValue)(value))
-            writeString(cast(StringValue)(value));
+            writeStringValue(cast(StringValue)(value));
 
         if (cast(ArrayValue)(value))
-            writeArray(cast(ArrayValue)(value));
+            writeArrayValue(cast(ArrayValue)(value));
     }
 
-    override void writeNumber(NumberValue node) {
+    override void writeNumberValue(NumberValue node) {
         rawWrite(to!string(node.value));
     }
 
-    override void writeBoolean(BooleanValue node) {
+    override void writeBooleanValue(BooleanValue node) {
         rawWrite(to!string(node.value));
     }
 
-    override void writeString(StringValue node) {
+    override void writeStringValue(StringValue node) {
         rawWrite('"');
         rawWrite(node.value);
         rawWrite('"');
     }
 
-    override void writeArray(ArrayValue array) {
+    override void writeArrayValue(ArrayValue array) {
         rawWrite("[");
         int i = 0;
 
@@ -157,4 +166,96 @@ protected:
 
 class BinWriter : Writer {
     this(Node root) { super(root); }
+
+protected:
+    enum OpCode {
+        none = 0x00,
+        end = 0x01,
+        object = 0x02,
+        klass = 0x03,
+        parameter = 0x04,
+        numberValue = 0x05,
+        booleanValue = 0x06,
+        stringValue = 0x07,
+        arrayValue = 0x08
+    }
+
+    void writeName(Node node) {
+        rawWrite(cast(ubyte)(node.name.length));
+        rawWrite(node.name);
+    }
+
+    void writeString(string str) {
+        rawWrite(cast(ubyte)(str.length));
+        rawWrite(str);
+    }
+
+    void writeOpCode(OpCode code) {
+        rawWrite(cast(ubyte)(code));
+    }
+
+    override void writeObject(ObjectNode object) {
+        writeOpCode(OpCode.object);
+        writeName(object);
+
+        foreach (Node child; object.children) {
+            if (cast(Parameter)(child))
+                writeParameter(cast(Parameter)(child));
+
+            if (cast(ObjectNode)(child))
+                writeObject(cast(ObjectNode)(child));
+        }
+
+        writeOpCode(OpCode.end);
+    }
+
+    override void writeParameter(Parameter parameter) {
+        writeOpCode(OpCode.parameter);
+        writeName(parameter);
+
+        foreach (Node child; parameter.children) {
+            if (cast(Value)(child))
+                writeValue(cast(Value)(child));
+        }
+
+        writeOpCode(OpCode.end);
+    }
+
+    override void writeValue(Value value) {
+        if (cast(NumberValue)(value))
+            writeNumberValue(cast(NumberValue)(value));
+
+        if (cast(BooleanValue)(value))
+            writeBooleanValue(cast(BooleanValue)(value));
+
+        if (cast(StringValue)(value))
+            writeStringValue(cast(StringValue)(value));
+
+        if (cast(ArrayValue)(value))
+            writeArrayValue(cast(ArrayValue)(value));
+    }
+
+    override void writeNumberValue(NumberValue node) {
+        writeOpCode(OpCode.numberValue);
+        rawWrite(to!string(node.value));
+    }
+
+    override void writeBooleanValue(BooleanValue node) {
+        writeOpCode(OpCode.booleanValue);
+        rawWrite(to!string(node.value));
+    }
+
+    override void writeStringValue(StringValue node) {
+        writeOpCode(OpCode.stringValue);
+        writeString(node.value);
+    }
+
+    override void writeArrayValue(ArrayValue array) {
+        writeOpCode(OpCode.arrayValue);
+
+        foreach (Node node; array.children)
+            writeValue(cast(Value)(node));
+
+        writeOpCode(OpCode.end);
+    }
 }

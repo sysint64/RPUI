@@ -40,5 +40,5 @@ void main() {
 
     // data.getParameter("test.test2.p2");
     writeln(data.optNumber("test.test2.p2.12"));
-    data.save("");
+    data.save("", Data.IOType.bin);
 }
