@@ -6,6 +6,7 @@ import std.conv;
 
 import e2ml.node;
 import e2ml.value;
+import e2ml.exception;
 
 
 abstract class Writer {
@@ -14,7 +15,7 @@ abstract class Writer {
     }
 
     void save(in string fileName) {
-        //this.file = File(fileName, "w");
+        this.file = File(fileName, "w");
 
         foreach (Node node; root.children) {
             writeObject(cast(ObjectNode)(node));
@@ -25,33 +26,69 @@ protected:
     Node root;
     File file;
 
-    void rawWrite(in char[] buffer) {
-        // file.rawWrite(buffer);
-        write(buffer);
-    }
-
-    void rawWrite(in char ch) {
-        //file.rawWrite([ch]);
-        write(ch);
-    }
-
     void rawWrite(in ubyte ch) {
-        //file.rawWrite([ch]);
-        write(ch);
+        file.rawWrite([ch]);
+    }
+
+    void rawWrite(in bool value) {
+        file.rawWrite([value]);
+    }
+
+    void rawWrite(in int value) {
+        file.rawWrite([value]);
+    }
+
+    void rawWrite(in float value) {
+        file.rawWrite([value]);
     }
 
     void rawWrite(string str) {
-        //file.rawWrite(str);
-        write(str);
+        file.rawWrite(str);
     }
 
     void writeObject(ObjectNode object) {
+        foreach (Node child; object.children) {
+            if (cast(Parameter)(child)) {
+                writeParameter(cast(Parameter)(child));
+            } else if (cast(ObjectNode)(child)) {
+                writeObject(cast(ObjectNode)(child));
+            } else {
+                throw new NotParameterOrValueException();
+            }
+        }
     }
 
     void writeParameter(Parameter parameter) {
+        foreach (Node child; parameter.children) {
+            if (cast(Value)(child)) {
+                writeValue(cast(Value)(child));
+            } else {
+                throw new NotValueException();
+            }
+        }
     }
 
     void writeValue(Value value) {
+        switch (value.type) {
+            case Value.Type.Number:
+                writeNumberValue(cast(NumberValue)(value));
+                break;
+
+            case Value.Type.Boolean:
+                writeBooleanValue(cast(BooleanValue)(value));
+                break;
+
+            case Value.Type.String:
+                writeStringValue(cast(StringValue)(value));
+                break;
+
+            case Value.Type.Array:
+                writeArrayValue(cast(ArrayValue)(value));
+                break;
+
+            default:
+                throw new WrongNodeType();
+        }
     }
 
     void writeNumberValue(NumberValue value) {
@@ -64,6 +101,8 @@ protected:
     }
 
     void writeArrayValue(ArrayValue array) {
+        foreach (Node node; array.children)
+            writeValue(cast(Value)(node));
     }
 }
 
@@ -88,15 +127,7 @@ protected:
         rawWrite(object.name);
         rawWrite('\n');
         ++depth;
-
-        foreach (Node child; object.children) {
-            if (cast(Parameter)(child))
-                writeParameter(cast(Parameter)(child));
-
-            if (cast(ObjectNode)(child))
-                writeObject(cast(ObjectNode)(child));
-        }
-
+        super.writeObject(object);
         --depth;
     }
 
@@ -117,20 +148,6 @@ protected:
         }
 
         rawWrite('\n');
-    }
-
-    override void writeValue(Value value) {
-        if (cast(NumberValue)(value))
-            writeNumberValue(cast(NumberValue)(value));
-
-        if (cast(BooleanValue)(value))
-            writeBooleanValue(cast(BooleanValue)(value));
-
-        if (cast(StringValue)(value))
-            writeStringValue(cast(StringValue)(value));
-
-        if (cast(ArrayValue)(value))
-            writeArrayValue(cast(ArrayValue)(value));
     }
 
     override void writeNumberValue(NumberValue node) {
@@ -197,52 +214,25 @@ protected:
     override void writeObject(ObjectNode object) {
         writeOpCode(OpCode.object);
         writeName(object);
-
-        foreach (Node child; object.children) {
-            if (cast(Parameter)(child))
-                writeParameter(cast(Parameter)(child));
-
-            if (cast(ObjectNode)(child))
-                writeObject(cast(ObjectNode)(child));
-        }
-
+        super.writeObject(object);
         writeOpCode(OpCode.end);
     }
 
     override void writeParameter(Parameter parameter) {
         writeOpCode(OpCode.parameter);
         writeName(parameter);
-
-        foreach (Node child; parameter.children) {
-            if (cast(Value)(child))
-                writeValue(cast(Value)(child));
-        }
-
+        super.writeParameter(parameter);
         writeOpCode(OpCode.end);
-    }
-
-    override void writeValue(Value value) {
-        if (cast(NumberValue)(value))
-            writeNumberValue(cast(NumberValue)(value));
-
-        if (cast(BooleanValue)(value))
-            writeBooleanValue(cast(BooleanValue)(value));
-
-        if (cast(StringValue)(value))
-            writeStringValue(cast(StringValue)(value));
-
-        if (cast(ArrayValue)(value))
-            writeArrayValue(cast(ArrayValue)(value));
     }
 
     override void writeNumberValue(NumberValue node) {
         writeOpCode(OpCode.numberValue);
-        rawWrite(to!string(node.value));
+        rawWrite(node.value);
     }
 
     override void writeBooleanValue(BooleanValue node) {
         writeOpCode(OpCode.booleanValue);
-        rawWrite(to!string(node.value));
+        rawWrite(node.value);
     }
 
     override void writeStringValue(StringValue node) {
@@ -252,10 +242,7 @@ protected:
 
     override void writeArrayValue(ArrayValue array) {
         writeOpCode(OpCode.arrayValue);
-
-        foreach (Node node; array.children)
-            writeValue(cast(Value)(node));
-
+        super.writeArrayValue(array);
         writeOpCode(OpCode.end);
     }
 }

@@ -11,6 +11,8 @@ class Value: Node {
     this(in string name) { super(name); }
     this(in string name, Node) { super(name, parent); }
 
+    @property Type type() { return p_type; }
+
 protected:
     Type p_type;
 }

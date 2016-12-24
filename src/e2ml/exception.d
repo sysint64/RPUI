@@ -34,6 +34,12 @@ class NotValueException : E2TMLException {
 }
 
 
+class NotParameterOrValueException : E2TMLException {
+    this() { super("it is not a parameter or value"); }
+    this(in string details) { super(details); }
+}
+
+
 class NotNumberValueException : E2TMLException {
     this() { super("it is not a number value"); }
     this(in string details) { super(details); }
@@ -63,4 +69,6 @@ class NotArrayValueException : E2TMLException {
 
 
 class WrongNodeType : E2TMLException {
+    this() { super("wrong type of value"); }
+    this(in string details) { super(details); }
 }
