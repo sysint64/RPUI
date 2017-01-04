@@ -156,8 +156,6 @@ private:
             stream.read();
         }
 
-        p_identifier = p_identifier.toLower();
-
         switch (identifier) {
             case "include":
                 p_code = Code.include;

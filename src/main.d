@@ -49,7 +49,7 @@ void main() {
     DerelictGL3.load();
 
     auto app = Application.getInstance();
-    app.loop();
+    app.run();
 
     // DerelictGL3.reload();
 

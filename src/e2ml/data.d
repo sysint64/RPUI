@@ -2,6 +2,8 @@ module e2ml.data;
 
 import std.file;
 import std.stdio;
+import std.math;
+import std.conv;
 
 import e2ml.lexer;
 import e2ml.parser;
@@ -142,6 +144,10 @@ class Data {
         return getTypedNode!(NumberValue, NotNumberValueException)(path).value;
     }
 
+    int getInteger(in string path) {
+        return to!int(getNumber(path));
+    }
+
     bool getBoolean(in string path) {
         return getTypedNode!(BooleanValue, NotBooleanValueException)(path).value;
     }
@@ -160,8 +166,12 @@ class Data {
         return optTypedValue!(float, NumberValue, NotNumberValueException)(path, defaultVal);
     }
 
+    int optInteger(in string path, int defaultVal = 0) {
+        return to!int(optNumber(path, to!float(defaultVal)));
+    }
+
     bool optBoolean(in string path, bool defaultVal = false) {
-        return optTypedValue!(bool, BooleanValue, NotNumberValueException)(path, defaultVal);
+        return optTypedValue!(bool, BooleanValue, NotBooleanValueException)(path, defaultVal);
     }
 
     string optString(in string path, string defaultVal = null) {

@@ -2,6 +2,7 @@ module gapi.shader;
 
 import std.file;
 import std.stdio;
+import std.string;
 
 import derelict.opengl3.gl3;
 
@@ -24,7 +25,28 @@ class Shader {
 
         writeln("VERTEX SHADER");
         writeln(shaderSources[ShaderSource.vertex]);
+
+        createShaders();
     }
+
+    void bind() {
+        glUseProgram(program);
+    }
+
+    void unbind() {
+        glUseProgram(0);
+    }
+
+    this(in string fileName) {
+        load(fileName);
+    }
+
+private:
+    File file;
+    enum ShaderSource {fragment, vertex};
+    string[ShaderSource.max + 1] shaderSources;
+    ShaderSource currentSource = ShaderSource.fragment;
+    GLuint program;
 
     char readChar() {
         auto buf = file.rawRead(new char[1]);
@@ -56,22 +78,23 @@ class Shader {
         }
     }
 
-    void bind() {
-        glUseProgram(program);
-    }
+    void createShaders() {
+        // Create Vertex Shader
+        const char *vertexSource = toStringz(shaderSources[ShaderSource.vertex]);
+        GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertexShader, 1, &vertexSource, null);
+        glCompileShader(vertexShader);
 
-    void unbind() {
-        glUseProgram(0);
-    }
+        // Create Fragment Shader
+        const char *fragmentSource = toStringz(shaderSources[ShaderSource.fragment]);
+        GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragmentShader, 1, &fragmentSource, null);
+        glCompileShader(fragmentShader);
 
-    this(in string fileName) {
-        load(fileName);
+        // Link Shaders
+        program = glCreateProgram();
+        glAttachShader(program, vertexShader);
+        glAttachShader(program, fragmentShader);
+        glLinkProgram(program);
     }
-
-private:
-    File file;
-    enum ShaderSource {fragment, vertex};
-    string[ShaderSource.max + 1] shaderSources;
-    ShaderSource currentSource = ShaderSource.fragment;
-    GLuint program;
 }

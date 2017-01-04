@@ -1,5 +1,6 @@
 module application;
 
+import settings;
 import core.thread;
 import std.stdio;
 import patterns.singleton;
@@ -10,7 +11,7 @@ import derelict.opengl3.gl3;
 class Application {
     mixin Singleton!(Application);
 
-    string binDirectory;
+    string binDirectory = "C:/dev/e2dit";  // TODO: rm hardcode
 
     // Video
     uint screenWidth;
@@ -52,7 +53,6 @@ class Application {
 
     void initGL() {
         glDisable(GL_CULL_FACE);
-
         glDisable(GL_MULTISAMPLE);
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
@@ -91,12 +91,19 @@ class Application {
         }
     }
 
-    void loop() {
-        bool running = true;
+    void run() {
         initSFML();
         initGL();
-
         scope(exit) sfWindow_destroy(window);
+
+        auto settings = Settings.getInstance();
+        settings.load(binDirectory, "settings.e2t");
+
+        writeln(settings.uiTheme);
+    }
+
+    void loop() {
+        bool running = true;
 
         while (running) {
             sfEvent event;
