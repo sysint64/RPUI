@@ -9,6 +9,8 @@ import e2ml.token;
 import e2ml.node;
 import e2ml.value;
 
+import application;
+
 import derelict.opengl3.gl3;
 import derelict.sfml2.system;
 import derelict.sfml2.window;
@@ -44,44 +46,8 @@ void main() {
 
     DerelictGL3.load();
 
-    sfContextSettings settings;
-    settings.depthBits = 24;
-    settings.stencilBits = 8;
-    settings.antialiasingLevel = 0;
-    settings.majorVersion = 2;
-    settings.minorVersion = 1;
-
-    sfVideoMode videoMode;
-    videoMode.width = 1024;
-    videoMode.height = 768;
-    videoMode.bitsPerPixel = 24;
-
-    const(char)* title = "E2DIT";
-    sfWindow* window = sfWindow_create(videoMode, title, sfDefaultStyle, &settings);
-    sfWindow_setVerticalSyncEnabled(window, false);
-    sfWindow_setFramerateLimit(window, 60);
-
-    bool running = true;
-
-    while (running) {
-        sfEvent event;
-
-        while (sfWindow_pollEvent(window, &event)) {
-            if (event.type == sfEvtClosed)
-                running = false;
-            else
-                handleEvent(event.type);
-        }
-
-        // Render
-
-        sfWindow_setActive(window, true);
-        sfWindow_display(window);
-    }
-
-    sfWindow_destroy(window);
-
-    /// .....
+    auto app = Application.getInstance();
+    app.loop();
 
     // DerelictGL3.reload();
 
