@@ -9,6 +9,8 @@ import e2ml.token;
 import e2ml.node;
 import e2ml.value;
 
+import gapi.shader;
+
 import application;
 
 import derelict.opengl3.gl3;
@@ -61,4 +63,6 @@ void main() {
     // data.getParameter("test.test2.p2");
     writeln(data.optNumber("test.test2.p2.12"));
     data.save("export.e2b", Data.IOType.text);
+
+    auto shader = new Shader("C:/dev/e2dit/res/shaders/GL2/transform.glsl");
 }

@@ -53,10 +53,10 @@ class Application {
     void initGL() {
         glDisable(GL_CULL_FACE);
 
-	glDisable(GL_MULTISAMPLE);
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDisable(GL_MULTISAMPLE);
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glClearColor(150.0f/255.0f, 150.0f/255.0f, 150.0f/255.0f, 0);
     }
 
@@ -112,7 +112,6 @@ class Application {
 
             glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             glFlush();
-
             sfWindow_display(window);
         }
     }
