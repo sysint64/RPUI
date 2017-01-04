@@ -50,7 +50,7 @@ private:
     Token p_currentToken;
 
     Token[] tokenStack;
-    ulong stackCursor = 0;
+    size_t stackCursor = 0;
 
     Token lexToken() {
         switch (stream.lastChar) {

@@ -9,6 +9,10 @@ import e2ml.token;
 import e2ml.node;
 import e2ml.value;
 
+import derelict.opengl3.gl3;
+import derelict.sfml2.system;
+import derelict.sfml2.window;
+
 
 void writeindent(in int level = 0) {
     for (int i = 0; i < level*4; ++i) {
@@ -30,9 +34,59 @@ void traverse(Node node, in int level = 0) {
     }
 }
 
+void handleEvent(sfEventType type) {
+
+}
 
 void main() {
-    Data data = new Data("/home/andrey/dev/e2dit-ml-dlang/tests");
+    DerelictSFML2System.load();
+    DerelictSFML2Window.load();
+
+    DerelictGL3.load();
+
+    sfContextSettings settings;
+    settings.depthBits = 24;
+    settings.stencilBits = 8;
+    settings.antialiasingLevel = 0;
+    settings.majorVersion = 2;
+    settings.minorVersion = 1;
+
+    sfVideoMode videoMode;
+    videoMode.width = 1024;
+    videoMode.height = 768;
+    videoMode.bitsPerPixel = 24;
+
+    const(char)* title = "E2DIT";
+    sfWindow* window = sfWindow_create(videoMode, title, sfDefaultStyle, &settings);
+    sfWindow_setVerticalSyncEnabled(window, false);
+    sfWindow_setFramerateLimit(window, 60);
+
+    bool running = true;
+
+    while (running) {
+        sfEvent event;
+
+        while (sfWindow_pollEvent(window, &event)) {
+            if (event.type == sfEvtClosed)
+                running = false;
+            else
+                handleEvent(event.type);
+        }
+
+        // Render
+
+        sfWindow_setActive(window, true);
+        sfWindow_display(window);
+    }
+
+    sfWindow_destroy(window);
+
+    /// .....
+
+    // DerelictGL3.reload();
+
+    // Data data = new Data("/home/andrey/dev/e2dit-ml-dlang/tests");
+    Data data = new Data("C:/dev/e2dit/tests");
     data.load("simple.e2t");
 
     writeln("\n\nTREE:\n");
