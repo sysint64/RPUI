@@ -16,8 +16,8 @@ class Geometry {
 
     ~this() {
         glDeleteBuffers(1, &verticesId);
-	glDeleteBuffers(1, &texCoordsId);
-	glDeleteBuffers(1, &indicesId);
+        glDeleteBuffers(1, &texCoordsId);
+        glDeleteBuffers(1, &indicesId);
     }
 
     void render() {
@@ -84,7 +84,7 @@ private:
     void createVBO() {
         // Vertex buffer
         glGenBuffers(1, &verticesId);
-	glBindBuffer(GL_ARRAY_BUFFER, verticesId);
+        glBindBuffer(GL_ARRAY_BUFFER, verticesId);
 
         const int verticesSize = GLfloat.sizeof*2*vertices.length;
 
@@ -99,14 +99,14 @@ private:
 
         // Texture coordinates buffer
         glGenBuffers(1, &texCoordsId);
-	glBindBuffer(GL_ARRAY_BUFFER, texCoordsId);
+        glBindBuffer(GL_ARRAY_BUFFER, texCoordsId);
 
         const int texCoordsSize = GLfloat.sizeof*2*texCoords.length;
         glBufferData (GL_ARRAY_BUFFER, texCoordsSize, &texCoords[0], GL_STATIC_DRAW);
 
         // Indices buffer
         glGenBuffers(1, &indicesId);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesId);
 
         const int indicesSize = GLuint.sizeof*indices.length;
         glBufferData (GL_ELEMENT_ARRAY_BUFFER, indicesSize, &indices[0], GL_STATIC_DRAW);
@@ -125,16 +125,16 @@ private:
     void bindBuffers() {
         // Texture coordinates
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, texCoordsId);
-	glTexCoordPointer(2, GL_FLOAT, 0, null);
+        glBindBuffer(GL_ARRAY_BUFFER, texCoordsId);
+        glTexCoordPointer(2, GL_FLOAT, 0, null);
 
         // Vertices
         const int verticesSize = GLfloat.sizeof*2*vertices.length;
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, verticesSize, null);
 
         glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, verticesId);
-	glVertexPointer(2, GL_FLOAT, 0, null);
+        glBindBuffer(GL_ARRAY_BUFFER, verticesId);
+        glVertexPointer(2, GL_FLOAT, 0, null);
 
         // Indices
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesId);
@@ -142,20 +142,20 @@ private:
 
     void createVAO_21() {
         glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+        glBindVertexArray(VAO);
 
         const int verticesSize = GLfloat.sizeof*2*vertices.length;
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, verticesSize, null);
 
         // Vertices
         glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, verticesId);
-	glVertexPointer(2, GL_FLOAT, 0, null);
+        glBindBuffer(GL_ARRAY_BUFFER, verticesId);
+        glVertexPointer(2, GL_FLOAT, 0, null);
 
         // Texture coordinates
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, texCoordsId);
-	glTexCoordPointer(2, GL_FLOAT, 0, null);
+        glBindBuffer(GL_ARRAY_BUFFER, texCoordsId);
+        glTexCoordPointer(2, GL_FLOAT, 0, null);
     }
 
     void createVAO_33() {
@@ -165,16 +165,16 @@ private:
         }
 
         glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+        glBindVertexArray(VAO);
 
         // Vertices
         glBindBuffer(GL_ARRAY_BUFFER, verticesId);
-	glEnableVertexAttribArray(AttrLocation.in_Position);
-	glVertexAttribPointer(AttrLocation.in_Position, 2, GL_FLOAT, GL_FALSE, 0, null);
+        glEnableVertexAttribArray(AttrLocation.in_Position);
+        glVertexAttribPointer(AttrLocation.in_Position, 2, GL_FLOAT, GL_FALSE, 0, null);
 
         // Texture coordinates
         glBindBuffer(GL_ARRAY_BUFFER, texCoordsId);
-	glEnableVertexAttribArray(AttrLocation.in_TextCoords);
-	glVertexAttribPointer(AttrLocation.in_TextCoords, 2, GL_FLOAT, GL_FALSE, 0, null);
+        glEnableVertexAttribArray(AttrLocation.in_TextCoords);
+        glVertexAttribPointer(AttrLocation.in_TextCoords, 2, GL_FLOAT, GL_FALSE, 0, null);
     }
 }
