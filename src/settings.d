@@ -12,6 +12,10 @@ class Settings {
         data.load(fileName);
     }
 
+    @property bool VAOEXT() {
+        return false;
+    }
+
     @property uint OGLMajor() {
         return data.optInteger("General.opengl_version.0", 2);
     }

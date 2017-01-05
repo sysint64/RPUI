@@ -80,13 +80,13 @@ private:
 
     void createShaders() {
         // Create Vertex Shader
-        const char *vertexSource = toStringz(shaderSources[ShaderSource.vertex]);
+        const char* vertexSource = toStringz(shaderSources[ShaderSource.vertex]);
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShader, 1, &vertexSource, null);
         glCompileShader(vertexShader);
 
         // Create Fragment Shader
-        const char *fragmentSource = toStringz(shaderSources[ShaderSource.fragment]);
+        const char* fragmentSource = toStringz(shaderSources[ShaderSource.fragment]);
         GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShader, 1, &fragmentSource, null);
         glCompileShader(fragmentShader);
