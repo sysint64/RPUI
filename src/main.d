@@ -10,12 +10,14 @@ import e2ml.node;
 import e2ml.value;
 
 import gapi.shader;
+import gapi.texture;
 
 import application;
 
 import derelict.opengl3.gl3;
 import derelict.sfml2.system;
 import derelict.sfml2.window;
+import derelict.sfml2.graphics;
 
 
 void writeindent(in int level = 0) {
@@ -45,6 +47,7 @@ void handleEvent(sfEventType type) {
 void main() {
     DerelictSFML2System.load();
     DerelictSFML2Window.load();
+    DerelictSFML2Graphics.load();
 
     DerelictGL3.load();
 
@@ -65,4 +68,5 @@ void main() {
     data.save("export.e2b", Data.IOType.text);
 
     auto shader = new Shader("C:/dev/e2dit/res/shaders/GL2/transform.glsl");
+    auto texture = new Texture("C:/dev/e2dit/res/ui/skins/light/controls.png");
 }

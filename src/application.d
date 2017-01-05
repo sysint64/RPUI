@@ -11,37 +11,67 @@ import derelict.opengl3.gl3;
 class Application {
     mixin Singleton!(Application);
 
-    string binDirectory = "C:/dev/e2dit";  // TODO: rm hardcode
+    void run() {
+        initSFML();
+        initGL();
+        scope(exit) sfWindow_destroy(window);
+
+        auto settings = Settings.getInstance();
+        settings.load(binDirectory, "settings.e2t");
+
+        writeln(settings.uiTheme);
+        loop();
+    }
+
+    @property string binDirectory() { return p_binDirectory; }
+    @property uint screenWidth() { return p_screenWidth; }
+    @property uint screenHeight() { return p_screenHeight; }
+    @property uint windowWidth() { return p_windowWidth; }
+    @property uint windowHeight() { return p_windowHeight; }
+
+    @property uint mouseX() { return p_mouseX; }
+    @property uint mouseY() { return p_mouseY; }
+    @property uint clickX() { return p_clickX; }
+    @property uint clickY() { return p_clickY; }
+    @property uint mouseButton() { return p_mouseButton; }
+
+private:
+    string p_binDirectory = "C:/dev/e2dit";  // TODO: rm hardcode
+    sfWindow* window;
 
     // Video
-    uint screenWidth;
-    uint screenHeight;
-    uint windowWidth;
-    uint windowHeight;
-    sfWindow* window;
-    bool VAOEXT = false;
+    uint p_screenWidth;
+    uint p_screenHeight;
+    uint p_windowWidth;
+    uint p_windowHeight;
 
     // Cursor
-    uint mouseX, mouseY;
-    uint clickX, clickY;
-    uint mouseButton;
+    uint p_mouseX, p_mouseY;
+    uint p_clickX, p_clickY;
+    uint p_mouseButton;
 
     // Time
     float deltaTime;
     float currentTime;
 
     void initSFML() {
-        sfContextSettings settings;
-        settings.depthBits = 24;
-        settings.stencilBits = 8;
-        settings.antialiasingLevel = 0;
-        settings.majorVersion = 2;
-        settings.minorVersion = 1;
+        p_screenWidth  = sfVideoMode_getDesktopMode().width;
+        p_screenHeight = sfVideoMode_getDesktopMode().height;
 
-        sfVideoMode videoMode;
-        videoMode.width = 1024;
-        videoMode.height = 768;
-        videoMode.bitsPerPixel = 24;
+        p_windowWidth  = 1024;
+        p_windowHeight = 768;
+
+        sfContextSettings settings;
+
+        with (settings) {
+            depthBits = 24;
+            stencilBits = 8;
+            antialiasingLevel = 0;
+            majorVersion = 2;
+            minorVersion = 1;
+        }
+
+        sfVideoMode videoMode = {windowWidth, windowHeight, 24};
 
         const(char)* title = "E2DIT";
         window = sfWindow_create(videoMode, title, sfDefaultStyle, &settings);
@@ -58,6 +88,33 @@ class Application {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glClearColor(150.0f/255.0f, 150.0f/255.0f, 150.0f/255.0f, 0);
+    }
+
+    void loop() {
+        bool running = true;
+
+        while (running) {
+            auto mousePos = sfMouse_getPosition(window);
+
+            p_mouseX = mousePos.x;
+            p_mouseY = mousePos.x;
+
+            sfEvent event;
+
+            while (sfWindow_pollEvent(window, &event)) {
+                if (event.type == sfEvtClosed)
+                    running = false;
+                else
+                    handleEvents(event.type);
+            }
+
+            sfWindow_setActive(window, true);
+
+            glViewport(0, 0, screenWidth, screenHeight);
+            glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            glFlush();
+            sfWindow_display(window);
+        }
     }
 
     void handleEvents(sfEventType type) {
@@ -88,38 +145,6 @@ class Application {
 
             default:
                 break;
-        }
-    }
-
-    void run() {
-        initSFML();
-        initGL();
-        scope(exit) sfWindow_destroy(window);
-
-        auto settings = Settings.getInstance();
-        settings.load(binDirectory, "settings.e2t");
-
-        writeln(settings.uiTheme);
-    }
-
-    void loop() {
-        bool running = true;
-
-        while (running) {
-            sfEvent event;
-
-            while (sfWindow_pollEvent(window, &event)) {
-                if (event.type == sfEvtClosed)
-                    running = false;
-                else
-                    handleEvents(event.type);
-            }
-
-            sfWindow_setActive(window, true);
-
-            glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-            glFlush();
-            sfWindow_display(window);
         }
     }
 }
