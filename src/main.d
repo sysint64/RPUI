@@ -12,7 +12,7 @@ import e2ml.value;
 import gapi.shader;
 import gapi.texture;
 
-import application;
+import editor.mapeditor;
 
 import derelict.opengl3.gl3;
 import derelict.sfml2.system;
@@ -51,7 +51,7 @@ void main() {
 
     DerelictGL3.load();
 
-    auto app = Application.getInstance();
+    auto app = MapEditor.getInstance();
     app.run();
 
     // DerelictGL3.reload();

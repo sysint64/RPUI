@@ -1,16 +1,13 @@
 module application;
 
 import settings;
-import core.thread;
 import std.stdio;
-import patterns.singleton;
+import std.conv;
 import derelict.sfml2.window;
 import derelict.opengl3.gl3;
 
 
-class Application {
-    mixin Singleton!(Application);
-
+abstract class Application {
     void run() {
         initSFML();
         initGL();
@@ -22,6 +19,19 @@ class Application {
         writeln(settings.uiTheme);
         loop();
     }
+
+    void render() {}
+
+    // Events
+    void onKeyPressed(in uint key) {}
+    void onKeyReleased(in uint key) {}
+    void onTextEntered(in uint key) {}
+    void onMouseDown(in uint x, in uint y, in uint button) {}
+    void onMouseUp(in uint x, in uint y, in uint button) {}
+    void onDblClick(in uint x, in uint y, in uint button) {}
+    void onMouseMove(in uint x, in uint y) {}
+    void onMouseWheel(in uint dx, in uint dy) {}
+    void onResize(in uint width, in uint height) {}
 
     @property string binDirectory() { return p_binDirectory; }
     @property uint screenWidth() { return p_screenWidth; }
@@ -105,7 +115,7 @@ private:
                 if (event.type == sfEvtClosed)
                     running = false;
                 else
-                    handleEvents(event.type);
+                    handleEvents(event);
             }
 
             sfWindow_setActive(window, true);
@@ -117,30 +127,56 @@ private:
         }
     }
 
-    void handleEvents(sfEventType type) {
-        switch (type) {
+    void handleEvents(in sfEvent event) {
+        switch (event.type) {
             case sfEvtResized:
+                onResize(event.size.width, event.size.height);
                 break;
 
             case sfEvtTextEntered:
+                onTextEntered(event.text.unicode);
                 break;
 
             case sfEvtKeyPressed:
+                onKeyPressed(event.key.code);
                 break;
 
             case sfEvtKeyReleased:
-                break;
-
-            case sfEvtMouseWheelScrolled:
+                onKeyReleased(event.key.code);
                 break;
 
             case sfEvtMouseButtonPressed:
+                with (event.mouseButton)
+                    onMouseDown(x, y, button);
+
                 break;
 
             case sfEvtMouseButtonReleased:
+                with (event.mouseButton)
+                    onMouseUp(x, y, button);
+
                 break;
 
             case sfEvtMouseMoved:
+                onMouseMove(event.mouseMove.x, event.mouseMove.y);
+                break;
+
+            case sfEvtMouseWheelScrolled:
+                const uint delta = to!uint(event.mouseWheelScroll.delta);
+
+                switch (event.mouseWheelScroll.wheel) {
+                    case sfMouseVerticalWheel:
+                        onMouseWheel(0, delta);
+                        break;
+
+                    case sfMouseHorizontalWheel:
+                        onMouseWheel(delta, 0);
+                        break;
+
+                    default:
+                        break;
+                }
+
                 break;
 
             default:
