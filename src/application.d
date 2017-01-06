@@ -122,6 +122,7 @@ private:
 
             glViewport(0, 0, screenWidth, screenHeight);
             glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            render();
             glFlush();
             sfWindow_display(window);
         }

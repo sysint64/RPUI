@@ -12,6 +12,9 @@ class Geometry {
         this.dynamic = dynamic;
         this.renderMode = renderMode;
         this.settings = Settings.getInstance();
+
+        init();
+        createVBO();
     }
 
     ~this() {
@@ -20,17 +23,14 @@ class Geometry {
         glDeleteBuffers(1, &indicesId);
     }
 
-    void render() {
-        if (!vboCreated)
-            createVBO();
+    void init() {
+    }
 
-        renderElements();
+    void render() {
+        glDrawElements(renderMode, indices.length, GL_UNSIGNED_INT, null);
     }
 
     void bind() {
-        if (!vboCreated)
-            createVBO();
-
         if (settings.VAOEXT) {
             glBindVertexArray(VAO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesId);
@@ -61,9 +61,8 @@ class Geometry {
         indices.insert(index);
     }
 
-protected:
-    void renderElements() {
-        glDrawElements(renderMode, indices.length, GL_UNSIGNED_INT, null);
+    void addIndices(in GLuint[] indices) {
+        this.indices ~= indices;
     }
 
 private:
@@ -77,7 +76,6 @@ private:
     Array!vec2 texCoords;
     Array!GLuint indices;
 
-    bool vboCreated = false;
     bool dynamic;
     GLuint renderMode;
 
@@ -117,8 +115,6 @@ private:
             if (settings.OGLMajor >= 3) createVAO_33();
             else createVAO_21();
         }
-
-        vboCreated = true;
     }
 
     // Binding buffers without VAO
