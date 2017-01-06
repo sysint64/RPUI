@@ -37,6 +37,7 @@ class Shader {
     }
 
     void bind() {
+        nextTextureID = 1;
         glUseProgram(program);
     }
 
@@ -57,6 +58,7 @@ private:
     ShaderSource currentSource = ShaderSource.fragment;
     GLuint program;
     GLuint[string] locations;
+    uint nextTextureID = 1;
 
     void chechOrCreateLocation(in string location) {
         if ((location in locations) is null) {

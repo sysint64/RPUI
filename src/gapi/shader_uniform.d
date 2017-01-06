@@ -18,11 +18,13 @@ mixin template ShaderUniform() {
     }
 
     void setUniformTexture(in string location, Texture texture) {
-        glActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE0 + nextTextureID);
 	glBindTexture(GL_TEXTURE_2D, texture.handle);
 
         chechOrCreateLocation(location);
-        glUniform1i(locations[location], 1);
+        glUniform1i(locations[location], nextTextureID);
+
+        ++nextTextureID;
     }
 
     // Float Vector
