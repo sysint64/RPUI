@@ -1,12 +1,12 @@
 module gapi.sprite;
 
 import gapi.geometry;
-import derelict.opengl3.gl3;
+import derelict.opengl3.gl;
 import gl3n.linalg;
 
 
 class SpriteGeometry: Geometry {
-    this(in bool dynamic = false, in bool center = true, in bool strip = false) {
+    this(in bool dynamic = false, in bool center = true, in bool strip = true) {
         GLuint renderMode = strip ? GL_TRIANGLE_STRIP : GL_TRIANGLES;
         this.center = center;
         this.strip = strip;

@@ -1,57 +1,81 @@
+
 module gapi.texture;
 
 import std.string;
 import std.stdio;
 import std.conv;
+import std.exception;
+
 import derelict.sfml2.graphics;
+import derelict.opengl3.gl;
 
 
 class Texture {
     this(in string fileName) {
         const char* fileNamez = toStringz(fileName);
-        texture = sfTexture_createFromFile(fileNamez, null);
+        image = sfImage_createFromFile(fileNamez);
 
-        if (!texture) {
+        if (!image) {
             // Error
+            throw new Error("Can't load image '" ~ fileName ~ "'");
         }
+
+        glGenTextures(1, &p_handle);
+        update();
     }
 
     ~this() {
-        sfTexture_destroy(texture);
+        glDeleteTextures(1, &p_handle);
+        sfImage_destroy(image);
     }
 
     void bind() {
-        sfTexture_bind(texture);
+        glBindTexture(GL_TEXTURE_2D, p_handle);
     }
 
     void unbind() {
-        sfTexture_bind(null);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    @property bool repeated() {
-        return to!bool(sfTexture_isRepeated(texture));
+    void update() {
+        const(ubyte)* data = sfImage_getPixelsPtr(image);
+        glBindTexture(GL_TEXTURE_2D, p_handle);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+        GLuint wrap = repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE;
+        GLuint filter = smooth ? GL_LINEAR : GL_NEAREST;
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
     }
 
+    @property GLuint handle() { return p_handle; }
+    @property ref bool repeated() { return p_repeated; }
     @property void repeated(bool val) {
-        sfTexture_setRepeated(texture, to!int(val));
+        p_repeated = val;
+        update();
     }
 
-    @property bool smooth() {
-        return to!bool(sfTexture_isSmooth(texture));
-    }
-
+    @property ref bool smooth() { return p_smooth; }
     @property void smooth(bool val) {
-        sfTexture_setSmooth(texture, to!int(val));
+        p_smooth = val;
+        update();
     }
 
     @property uint width() {
-        return sfTexture_getSize(texture).x;
+        return sfImage_getSize(image).x;
     }
 
     @property uint height() {
-        return sfTexture_getSize(texture).y;
+        return sfImage_getSize(image).y;
     }
 
 private:
-    sfTexture* texture;
+    sfImage* image;
+    GLuint p_handle;
+
+    bool p_smooth = false;
+    bool p_repeated = false;
 }

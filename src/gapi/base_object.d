@@ -4,15 +4,25 @@ import gapi.geometry;
 import gapi.camera;
 
 import gl3n.linalg;
+import std.stdio;
 
 
 class BaseObject {
-    void render() {
+    this(Geometry geometry) {
+        p_geometry = geometry;
+    }
+
+    void render(Camera camera) {
         if (!visible)
             return;
 
-        if (needUpdateMatrices)
-            updateMatrices();
+        if (lastCamera != camera) {
+            lastCamera = camera;
+            needUpdateMatrices = true;
+        }
+
+        // if (needUpdateMatrices)
+            updateMatrices(camera);
 
         geometry.render();
     }
@@ -22,10 +32,13 @@ class BaseObject {
         return position-camera.position;
     }
 
-    void updateMatrices() {
-        p_translateMatrix = mat4.translation(vec3(p_position, 0.0f));
-        p_rotateMatrix = mat4.rotation(p_rotation, 0.0f, 0.0f, 1.0f);
-        p_scaleMatrix = mat4.scaling(p_scaling.x, p_scaling.y, 0.0f);
+    void updateMatrices(Camera camera) {
+        mat4 translateMatrix = mat4.translation(vec3(p_position, 0.0f));
+        mat4 rotateMatrix = mat4.rotation(p_rotation, 0.0f, 0.0f, 1.0f);
+        mat4 scaleMatrix = mat4.scaling(p_scaling.x, p_scaling.y, 0.0f);
+
+        p_modelMatrix = translateMatrix * rotateMatrix * scaleMatrix;
+        p_lastMVPMatrix = camera.MVPMatrix * modelMatrix;
 
         needUpdateMatrices = false;
     }
@@ -56,9 +69,8 @@ class BaseObject {
 
     @property Geometry geometry() { return p_geometry; }
 
-    @property mat4 scaleMatrix() { return p_scaleMatrix; }
-    @property mat4 rotateMatrix() { return p_rotateMatrix; }
-    @property mat4 translateMatrix() { return p_translateMatrix; }
+    @property mat4 modelMatrix() { return p_modelMatrix; }
+    @property mat4 lastMVPMatrix() { return p_lastMVPMatrix; }
 
     @property ref bool visible() { return p_visible; }
     @property void visible(bool val) { p_visible = val; }
@@ -91,14 +103,14 @@ private:
     Geometry p_geometry;
     bool p_visible = true;
 
-    vec2  p_position;
-    float p_rotation;
+    vec2  p_position = vec2(0, 0);
+    float p_rotation = 0.0f;
     vec2  p_scaling;
     vec2  p_pivot;
 
-    mat4  p_scaleMatrix;
-    mat4  p_rotateMatrix;
-    mat4  p_translateMatrix;
+    mat4  p_modelMatrix;
+    mat4  p_lastMVPMatrix;
+    Camera lastCamera;
 
     bool needUpdateMatrices = true;
 }

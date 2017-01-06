@@ -4,7 +4,7 @@ import settings;
 import std.stdio;
 import std.conv;
 import derelict.sfml2.window;
-import derelict.opengl3.gl3;
+import derelict.opengl3.gl;
 
 
 abstract class Application {
@@ -17,12 +17,14 @@ abstract class Application {
         settings.load(binDirectory, "settings.e2t");
 
         writeln(settings.uiTheme);
+        onCreate();
         loop();
     }
 
     void render() {}
 
     // Events
+    void onCreate() {}
     void onKeyPressed(in uint key) {}
     void onKeyReleased(in uint key) {}
     void onTextEntered(in uint key) {}
@@ -88,7 +90,7 @@ private:
         sfWindow_setVerticalSyncEnabled(window, false);
         sfWindow_setFramerateLimit(window, 60);
 
-        DerelictGL3.reload();
+        DerelictGL.reload();
     }
 
     void initGL() {

@@ -14,7 +14,7 @@ import gapi.texture;
 
 import editor.mapeditor;
 
-import derelict.opengl3.gl3;
+import derelict.opengl3.gl;
 import derelict.sfml2.system;
 import derelict.sfml2.window;
 import derelict.sfml2.graphics;
@@ -49,7 +49,7 @@ void main() {
     DerelictSFML2Window.load();
     DerelictSFML2Graphics.load();
 
-    DerelictGL3.load();
+    DerelictGL.load();
 
     auto app = MapEditor.getInstance();
     app.run();
@@ -57,16 +57,13 @@ void main() {
     // DerelictGL3.reload();
 
     // Data data = new Data("/home/andrey/dev/e2dit-ml-dlang/tests");
-    Data data = new Data("C:/dev/e2dit/tests");
-    data.load("simple.e2t");
+    // Data data = new Data("C:/dev/e2dit/tests");
+    // data.load("simple.e2t");
 
-    writeln("\n\nTREE:\n");
-    traverse(data.root);
+    // writeln("\n\nTREE:\n");
+    // traverse(data.root);
 
     // data.getParameter("test.test2.p2");
-    writeln(data.optNumber("test.test2.p2.12"));
-    data.save("export.e2b", Data.IOType.text);
-
-    auto shader = new Shader("C:/dev/e2dit/res/shaders/GL2/transform.glsl");
-    auto texture = new Texture("C:/dev/e2dit/res/ui/skins/light/controls.png");
+    // writeln(data.optNumber("test.test2.p2.12"));
+    // data.save("export.e2b", Data.IOType.text);
 }

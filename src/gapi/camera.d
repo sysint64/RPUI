@@ -1,33 +1,36 @@
 module gapi.camera;
 
-import gl3n.linalg;
+import math.linalg;
+import std.stdio;
 
 
 class Camera {
     this(in float viewWidth, in float viewHeight) {
-        this.viewWidth = viewWidth;
+        this.viewWidth  = viewWidth;
         this.viewHeight = viewHeight;
     }
 
     void updateMatrices() {
-        immutable vec3 eye = vec3(p_position, 1);
-        immutable vec3 target = vec3(p_position, 0);
-        immutable vec3 up = vec3(0, 1, 0);
+        immutable vec3 eye = vec3(p_position, 1.0f);
+        immutable vec3 target = vec3(p_position, 0.0f);
+        immutable vec3 up = vec3(0.0f, 1.0f, 0.0f);
 
         p_viewMatrix = mat4.look_at(eye, target, up);
-        p_projectionMatrix = mat4.orthographic(0.0f, p_viewWidth, 0.0f, p_viewHeight,
-                                               1.0f, 10.0f);
+        p_projectionMatrix = mat4.orthographic(0.0f, viewWidth,
+                                               0.0f, viewHeight,
+                                               0.0f, 10.0f);
 
         if (p_zoom > 1.0f)
-            p_scaleMatrix = mat4.scaling(p_zoom, p_zoom, 1.0f);
+            p_modelMatrix = mat4.scaling(p_zoom, p_zoom, 1.0f);
         else
-            p_scaleMatrix = mat4.identity;
+            p_modelMatrix = mat4.identity;
 
+        p_MVPMatrix = p_projectionMatrix * p_viewMatrix;
         needUpdateMatrices = false;
     }
 
     void update() {
-        if (needUpdateMatrices)
+        // if (needUpdateMatrices)
             updateMatrices();
     }
 
@@ -45,8 +48,8 @@ class Camera {
 
     @property mat4 viewMatrix() { return p_viewMatrix; }
     @property mat4 projectionMatrix() { return p_projectionMatrix; }
-    @property mat4 scaleMatrix() { return p_scaleMatrix; }
-    @property mat4 rotateMatrix() { return p_rotateMatrix; }
+    @property mat4 modelMatrix() { return p_modelMatrix; }
+    @property mat4 MVPMatrix() { return p_MVPMatrix; }
 
     @property ref float zoom() { return p_zoom; }
     @property void zoom(float val) {
@@ -79,13 +82,13 @@ class Camera {
     }
 
 private:
-    float p_zoom;
+    float p_zoom = 1.0f;
     vec2  p_position;
     float p_rotation;
     mat4  p_viewMatrix;
     mat4  p_projectionMatrix;
-    mat4  p_scaleMatrix;
-    mat4  p_rotateMatrix;
+    mat4  p_modelMatrix;
+    mat4  p_MVPMatrix;
     float p_viewWidth;
     float p_viewHeight;
 
