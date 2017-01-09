@@ -19,7 +19,7 @@ mixin template ShaderUniform() {
 
     void setUniformTexture(in string location, Texture texture) {
         glActiveTexture(GL_TEXTURE0 + nextTextureID);
-	glBindTexture(GL_TEXTURE_2D, texture.handle);
+        texture.bind();
 
         chechOrCreateLocation(location);
         glUniform1i(locations[location], nextTextureID);

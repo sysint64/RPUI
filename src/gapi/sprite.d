@@ -6,7 +6,7 @@ import gl3n.linalg;
 
 
 class SpriteGeometry: Geometry {
-    this(in bool dynamic = false, in bool center = true, in bool strip = true) {
+    this(in bool dynamic = false, in bool center = false, in bool strip = true) {
         GLuint renderMode = strip ? GL_TRIANGLE_STRIP : GL_TRIANGLES;
         this.center = center;
         this.strip = strip;

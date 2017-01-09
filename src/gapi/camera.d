@@ -25,7 +25,7 @@ class Camera {
         else
             p_modelMatrix = mat4.identity;
 
-        p_MVPMatrix = p_projectionMatrix * p_viewMatrix;
+        p_MVPMatrix = p_projectionMatrix * p_modelMatrix * p_viewMatrix;
         needUpdateMatrices = false;
     }
 

@@ -33,7 +33,11 @@ abstract class Application {
     void onDblClick(in uint x, in uint y, in uint button) {}
     void onMouseMove(in uint x, in uint y) {}
     void onMouseWheel(in uint dx, in uint dy) {}
-    void onResize(in uint width, in uint height) {}
+
+    void onResize(in uint width, in uint height) {
+        p_windowWidth = width;
+        p_windowHeight = height;
+    }
 
     @property string binDirectory() { return p_binDirectory; }
     @property uint screenWidth() { return p_screenWidth; }
@@ -48,7 +52,7 @@ abstract class Application {
     @property uint mouseButton() { return p_mouseButton; }
 
 private:
-    string p_binDirectory = "C:/dev/e2dit";  // TODO: rm hardcode
+    string p_binDirectory = "/home/andrey/dev/e2dit-ml-dlang";  // TODO: rm hardcode
     sfWindow* window;
 
     // Video
@@ -67,8 +71,12 @@ private:
     float currentTime;
 
     void initSFML() {
-        p_screenWidth  = sfVideoMode_getDesktopMode().width;
-        p_screenHeight = sfVideoMode_getDesktopMode().height;
+        sfVideoMode desktomVideoMode = sfVideoMode_getDesktopMode();
+        // TODO: uncomment, in my linux this return garbage
+        // p_screenWidth  = desktomVideoMode.width;
+        // p_screenHeight = desktomVideoMode.height;
+        p_screenWidth = 9999;
+        p_screenHeight = 9999;
 
         p_windowWidth  = 1024;
         p_windowHeight = 768;
@@ -122,7 +130,7 @@ private:
 
             sfWindow_setActive(window, true);
 
-            glViewport(0, 0, screenWidth, screenHeight);
+            glViewport(0, 0, windowWidth, windowHeight);
             glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             render();
             glFlush();

@@ -25,7 +25,19 @@ class Settings {
     }
 
     @property string uiTheme() {
-        return data.optString("General.theme.0", "dark");
+        return data.optString("Appearance.theme.0", "dark");
+    }
+
+    @property string font() {
+        return data.optString("Appearance.font.0", "DejaVuSans");
+    }
+
+    @property uint textSize() {
+        return data.optInteger("Appearance.font.1", 12);
+    }
+
+    @property string language() {
+        return data.optString("General.language.0", "en");
     }
 
 private:

@@ -2,6 +2,7 @@ module gapi.geometry;
 
 import settings;
 import std.container;
+import std.conv;
 import derelict.opengl3.gl;
 // import derelict.opengl3.gl3;
 import std.stdio;
@@ -28,7 +29,7 @@ class Geometry {
     }
 
     void render() {
-        glDrawElements(renderMode, indices.length, GL_UNSIGNED_INT, null);
+        glDrawElements(renderMode, to!int(indices.length), GL_UNSIGNED_INT, null);
     }
 
     void bind() {
@@ -85,7 +86,7 @@ private:
         glGenBuffers(1, &verticesId);
         glBindBuffer(GL_ARRAY_BUFFER, verticesId);
 
-        const int verticesSize = GLfloat.sizeof*2*vertices.length;
+        const int verticesSize = to!int(GLfloat.sizeof*2*vertices.length);
 
         if (!dynamic) {
             // Static object
@@ -100,14 +101,14 @@ private:
         glGenBuffers(1, &texCoordsId);
         glBindBuffer(GL_ARRAY_BUFFER, texCoordsId);
 
-        const int texCoordsSize = GLfloat.sizeof*2*texCoords.length;
+        const int texCoordsSize = to!int(GLfloat.sizeof*2*texCoords.length);
         glBufferData (GL_ARRAY_BUFFER, texCoordsSize, &texCoords[0], GL_STATIC_DRAW);
 
         // Indices buffer
         glGenBuffers(1, &indicesId);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesId);
 
-        const int indicesSize = GLuint.sizeof*indices.length;
+        const int indicesSize = to!int(GLuint.sizeof*indices.length);
         glBufferData (GL_ELEMENT_ARRAY_BUFFER, indicesSize, &indices[0], GL_STATIC_DRAW);
 
         //auto settings = Settings.getInstance();
@@ -126,7 +127,7 @@ private:
         glTexCoordPointer(2, GL_FLOAT, 0, null);
 
         // Vertices
-        const int verticesSize = GLfloat.sizeof*2*vertices.length;
+        const int verticesSize = to!int(GLfloat.sizeof*2*vertices.length);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, verticesSize, null);
 
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -141,7 +142,7 @@ private:
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
 
-        const int verticesSize = GLfloat.sizeof*2*vertices.length;
+        const int verticesSize = to!int(GLfloat.sizeof*2*vertices.length);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, verticesSize, null);
 
         // Vertices

@@ -1,4 +1,3 @@
-
 module gapi.texture;
 
 import std.string;
@@ -11,26 +10,40 @@ import derelict.opengl3.gl;
 
 
 class Texture {
+    // this(in string fileName) {
+    //     const char* fileNamez = toStringz(fileName);
+    //     image = sfImage_createFromFile(fileNamez);
+
+    //     if (!image) {
+    //         throw new Error("Can't load image '" ~ fileName ~ "'");
+    //     }
+
+    //     glGenTextures(1, &p_handle);
+    //     update();
+    // }
+
     this(in string fileName) {
         const char* fileNamez = toStringz(fileName);
-        image = sfImage_createFromFile(fileNamez);
+        sf_texture = sfTexture_createFromFile(fileNamez, null);
 
-        if (!image) {
-            // Error
+        if (!sf_texture) {
             throw new Error("Can't load image '" ~ fileName ~ "'");
         }
-
-        glGenTextures(1, &p_handle);
-        update();
     }
 
     ~this() {
-        glDeleteTextures(1, &p_handle);
-        sfImage_destroy(image);
+        if (sf_texture is null) {
+            glDeleteTextures(1, &p_handle);
+            sfImage_destroy(image);
+        }
     }
 
     void bind() {
-        glBindTexture(GL_TEXTURE_2D, p_handle);
+        if (sf_texture !is null) {
+            sfTexture_bind(sf_texture);
+        } else {
+            glBindTexture(GL_TEXTURE_2D, p_handle);
+        }
     }
 
     void unbind() {
@@ -51,6 +64,12 @@ class Texture {
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
     }
 
+    void saveToFile(in string fileName) {
+        const char* fileNamez = toStringz(fileName);
+        sfImage* image = sfTexture_copyToImage(sf_texture);
+        sfImage_saveToFile(image, fileNamez);
+    }
+
     @property GLuint handle() { return p_handle; }
     @property ref bool repeated() { return p_repeated; }
     @property void repeated(bool val) {
@@ -65,11 +84,26 @@ class Texture {
     }
 
     @property uint width() {
-        return sfImage_getSize(image).x;
+        if (sf_texture !is null) {
+            return sfTexture_getSize(sf_texture).x;
+        } else {
+            return sfImage_getSize(image).x;
+        }
     }
 
     @property uint height() {
-        return sfImage_getSize(image).y;
+        if (sf_texture !is null) {
+            return sfTexture_getSize(sf_texture).y;
+        } else {
+            return sfImage_getSize(image).y;
+        }
+    }
+
+package:
+    const(sfTexture)* sf_texture;
+
+    this(const(sfTexture)* sf_texture) {
+        this.sf_texture = sf_texture;
     }
 
 private:

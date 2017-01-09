@@ -1,3 +1,14 @@
 General
     opengl_version: 2, 1
+    language: "en"
+
+Appearance
     theme: "light"
+    font: "DejaVuSans", 12
+
+Meta
+    lastColors: [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]
