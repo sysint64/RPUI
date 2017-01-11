@@ -3,11 +3,18 @@ module application;
 import settings;
 import std.stdio;
 import std.conv;
+
 import derelict.sfml2.window;
 import derelict.opengl3.gl;
 
+import editor.mapeditor : MapEditor;
+
 
 abstract class Application {
+    static Application getInstance() {
+        return MapEditor.getInstance();
+    }
+
     void run() {
         initSFML();
         initGL();
@@ -44,6 +51,8 @@ abstract class Application {
     @property uint screenHeight() { return p_screenHeight; }
     @property uint windowWidth() { return p_windowWidth; }
     @property uint windowHeight() { return p_windowHeight; }
+    @property uint viewportWidth() { return p_windowWidth; }
+    @property uint viewportHeight() { return p_windowHeight; }
 
     @property uint mouseX() { return p_mouseX; }
     @property uint mouseY() { return p_mouseY; }
@@ -130,7 +139,7 @@ private:
 
             sfWindow_setActive(window, true);
 
-            glViewport(0, 0, windowWidth, windowHeight);
+            glViewport(0, 0, viewportWidth, viewportHeight);
             glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             render();
             glFlush();

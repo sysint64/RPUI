@@ -15,6 +15,8 @@ import gapi.texture;
 import editor.mapeditor;
 
 import derelict.opengl3.gl;
+import derelict.freetype.ft;
+
 import derelict.sfml2.system;
 import derelict.sfml2.window;
 import derelict.sfml2.graphics;
@@ -49,6 +51,7 @@ void main() {
     DerelictSFML2Window.load();
     DerelictSFML2Graphics.load();
 
+    DerelictFT.load();
     DerelictGL.load();
 
     auto app = MapEditor.getInstance();

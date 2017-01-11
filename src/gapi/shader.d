@@ -12,6 +12,8 @@ import math.linalg;
 
 
 class Shader {
+    mixin ShaderUniform;
+
     void load(in string fileName) {
         this.file = File(fileName, "r");
 
@@ -44,8 +46,6 @@ class Shader {
     void unbind() {
         glUseProgram(0);
     }
-
-    mixin ShaderUniform;
 
     this(in string fileName) {
         load(fileName);

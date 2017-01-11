@@ -6,6 +6,8 @@
     "description": "E2DIT Minimal Language",
     "copyright": "Copyright © 2016, Kabylin Andrey",
     "license": "MIT",
+    "libs-posix": ["ftgl", "glu"],
+    "libs-windows": ["ftgl", "glu32"],
     "dependencies": {
         "derelict-sfml2": "~>3.0.2",
         "derelict-gl3": "~>1.0.21",

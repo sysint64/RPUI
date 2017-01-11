@@ -53,7 +53,7 @@ class MapEditor: Application {
     Text text;
 
     override void onCreate() {
-        camera = new Camera(windowWidth, windowHeight);
+        camera = new Camera(viewportWidth, viewportHeight);
         spriteGeometry = new SpriteGeometry();
         sprite = new BaseObject(spriteGeometry);
         shader = new Shader("/home/andrey/dev/e2dit-ml-dlang/res/shaders/GL2/transform.glsl");
@@ -116,7 +116,7 @@ class MapEditor: Application {
     override void onResize(in uint width, in uint height) {
         super.onResize(width, height);
 
-        camera.viewWidth  = width;
-        camera.viewHeight = height;
+        camera.viewportWidth  = viewportWidth;
+        camera.viewportHeight = viewportHeight;
     }
 }

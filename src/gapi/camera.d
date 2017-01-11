@@ -5,9 +5,9 @@ import std.stdio;
 
 
 class Camera {
-    this(in float viewWidth, in float viewHeight) {
-        this.viewWidth  = viewWidth;
-        this.viewHeight = viewHeight;
+    this(in float viewportWidth, in float viewportHeight) {
+        this.viewportWidth  = viewportWidth;
+        this.viewportHeight = viewportHeight;
     }
 
     void updateMatrices() {
@@ -16,8 +16,8 @@ class Camera {
         immutable vec3 up = vec3(0.0f, 1.0f, 0.0f);
 
         p_viewMatrix = mat4.look_at(eye, target, up);
-        p_projectionMatrix = mat4.orthographic(0.0f, viewWidth,
-                                               0.0f, viewHeight,
+        p_projectionMatrix = mat4.orthographic(0.0f, viewportWidth,
+                                               0.0f, viewportHeight,
                                                0.0f, 10.0f);
 
         if (p_zoom > 1.0f)
@@ -69,15 +69,15 @@ class Camera {
         needUpdateMatrices = true;
     }
 
-    @property ref float viewWidth() { return p_viewWidth; }
-    @property void viewWidth(float val) {
-        p_viewWidth = val;
+    @property ref float viewportWidth() { return p_viewportWidth; }
+    @property void viewportWidth(float val) {
+        p_viewportWidth = val;
         needUpdateMatrices = true;
     }
 
-    @property ref float viewHeight() { return p_viewHeight; }
-    @property void viewHeight(float val) {
-        p_viewHeight = val;
+    @property ref float viewportHeight() { return p_viewportHeight; }
+    @property void viewportHeight(float val) {
+        p_viewportHeight = val;
         needUpdateMatrices = true;
     }
 
@@ -89,8 +89,8 @@ private:
     mat4  p_projectionMatrix;
     mat4  p_modelMatrix;
     mat4  p_MVPMatrix;
-    float p_viewWidth;
-    float p_viewHeight;
+    float p_viewportWidth;
+    float p_viewportHeight;
 
     bool  needUpdateMatrices = true;
 }
