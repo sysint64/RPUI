@@ -24,14 +24,14 @@ class MapEditor: Application {
     override void render() {
         camera.update();
 
-        Texture texture = font.getTexture(text.textSize);
+        // Texture texture = font.getTexture(text.textSize);
 
         texture.bind();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         shader.setUniformMatrix("MVP", sprite.lastMVPMatrix);
-        shader.setUniformTexture("texture", texture);
+        // shader.setUniformTexture("texture", texture);
         // shader.setUniformTexture("texture", texture);
 
         // sprite.rotate(0.01f);

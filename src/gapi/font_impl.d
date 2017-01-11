@@ -3,6 +3,7 @@ module gapi.font_impl;
 import ftgl;
 import derelict.sfml2.graphics;
 
+import gapi.font;
 import gapi.texture;
 
 
@@ -13,7 +14,7 @@ struct FontHandles {
 
 
 interface FontImpl {
-    FontHandles createFont(in string fileName);
-    void setTextSize(in uint textSize);
-    Texture getTexture();
+    bool createFont(ref FontHandles handles, in string fileName);
+    void setTextSize(Font font, in uint textSize);
+    Texture getTexture(Font font);
 }

@@ -3,26 +3,29 @@ module gapi.font_ftgl_impl;
 import std.string;
 
 import ftgl;
+import derelict.freetype.ft;
 
+import gapi.font;
 import gapi.font_impl;
 import gapi.texture;
 
 
 class FontFTGLImpl : FontImpl {
-    FontHandles createFont(in string fileName) {
+    bool createFont(ref FontHandles handles, in string fileName) {
         const char* fileNamez = toStringz(fileName);
         FTGLfont* font = ftglCreateTextureFont(fileNamez);
-
-        FontHandles handles;
+        ftglSetFontCharMap(font, FT_ENCODING_UNICODE);
         handles.ftglHandle = font;
 
-        return handles;
+        return handles.ftglHandle !is null;
     }
 
-    void setTextSize(in uint textSize) {
+    void setTextSize(Font font, in uint textSize) {
+        FTGLfont* ftglFont = font.handles.ftglHandle;
+        ftglSetFontFaceSize(ftglFont, textSize, textSize);
     }
 
-    Texture getTexture() {
+    Texture getTexture(Font font) {
         return null;
     }
 }

@@ -20,7 +20,7 @@ import derelict.sfml2.graphics;
 class Text: BaseObject {
     this(Geometry geometry) {
         super(geometry);
-        impl = new TextFTGLImpl();
+        // impl = new TextFTGLImpl();
     }
 
     this(Geometry geometry, Font font) {
@@ -41,7 +41,7 @@ class Text: BaseObject {
         if (!visible)
             return;
 
-        impl.render(font, p_text, vec3(0, 0, 0), position, camera);
+        // impl.render(font, p_text, vec3(0, 0, 0), position, camera);
     }
 
     // override void render(Camera camera) {
