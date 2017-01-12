@@ -26,17 +26,20 @@ class MapEditor: Application {
 
         // Texture texture = font.getTexture(text.textSize);
 
-        texture.bind();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        // texture.bind();
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+        shader.bind();
         shader.setUniformMatrix("MVP", sprite.lastMVPMatrix);
-        // shader.setUniformTexture("texture", texture);
+        shader.setUniformTexture("texture", texture);
+
+        sprite.render(camera);
         // shader.setUniformTexture("texture", texture);
 
-        // sprite.rotate(0.01f);
+        sprite.rotate(0.01f);
         // sprite.move(0.0f, 1.0f);
-        // sprite.render(camera);
+        sprite.render(camera);
 
         // shader.setUniformMatrix("MVP", text.lastMVPMatrix);
         // shader.setUniformTexture("texture", font.getTexture(text.textSize));
@@ -54,7 +57,7 @@ class MapEditor: Application {
 
     override void onCreate() {
         camera = new Camera(viewportWidth, viewportHeight);
-        spriteGeometry = new SpriteGeometry();
+        spriteGeometry = new SpriteGeometry(false, true, true);
         sprite = new BaseObject(spriteGeometry);
         shader = new Shader("/home/andrey/dev/e2dit-ml-dlang/res/shaders/GL2/transform.glsl");
         texture = new Texture("/home/andrey/dev/e2dit-ml-dlang/res/test.jpg");
@@ -62,23 +65,18 @@ class MapEditor: Application {
         camera.position = vec2(0.0f, 0.0f);
         camera.zoom = 1.0f;
 
-        sprite.position = vec2(100.0f, 100.0f);
+        sprite.position = vec2(200.0f, 100.0f);
         sprite.scaling = vec2(200.0f, 200.0f);
         sprite.rotation = 0.5f;
 
-        shader.bind();
+        // shader.bind();
         // texture.bind();
         spriteGeometry.bind();
 
         font = new Font("/home/andrey/dev/e2dit-ml-dlang/res/fonts/ttf-dejavu/DejaVuSans.ttf");
-        text = new Text(spriteGeometry, shader, font, "Hello World!");
+        text = new Text(spriteGeometry, shader, font, "Hello world!");
 
         text.position = vec2(30.0f, 30.0f);
-
-        // text = sfText_create();
-        // sfText_setFont(text, font);
-        // sfText_setString(text, "Hello world");
-        // sfText_setCharacterSize(text, 24);
     }
 
     override void onKeyPressed(in uint key) {

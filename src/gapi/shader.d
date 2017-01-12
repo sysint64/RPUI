@@ -4,11 +4,13 @@ import std.file;
 import std.stdio;
 import std.string;
 
+import derelict.opengl3.gl;
+
+import application;
+import math.linalg;
+
 import gapi.shader_uniform;
 import gapi.texture;
-
-import derelict.opengl3.gl;
-import math.linalg;
 
 
 class Shader {
@@ -41,17 +43,21 @@ class Shader {
     void bind() {
         nextTextureID = 1;
         glUseProgram(program);
+        app.setLastShader(this);
     }
 
     void unbind() {
         glUseProgram(0);
+        app.setLastShader(null);
     }
 
     this(in string fileName) {
         load(fileName);
+        app = Application.getInstance();
     }
 
 private:
+    Application app;
     File file;
     enum ShaderSource {fragment, vertex};
     string[ShaderSource.max + 1] shaderSources;

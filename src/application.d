@@ -1,13 +1,14 @@
 module application;
 
-import settings;
 import std.stdio;
 import std.conv;
 
 import derelict.sfml2.window;
 import derelict.opengl3.gl;
 
+import settings;
 import editor.mapeditor : MapEditor;
+import gapi.shader;
 
 
 abstract class Application {
@@ -29,6 +30,22 @@ abstract class Application {
     }
 
     void render() {}
+
+    private Shader lastShader = null;
+
+    void setLastShader(Shader lastShader) {
+        this.lastShader = lastShader;
+    }
+
+    void unbindLastShader() {
+        if (lastShader !is null)
+            lastShader.unbind();
+    }
+
+    void bindLastShader() {
+        if (lastShader !is null)
+            lastShader.bind();
+    }
 
     // Events
     void onCreate() {}

@@ -20,12 +20,13 @@ import derelict.sfml2.graphics;
 class Text: BaseObject {
     this(Geometry geometry) {
         super(geometry);
-        // impl = new TextFTGLImpl();
+        impl = new TextFTGLImpl();
     }
 
     this(Geometry geometry, Font font) {
         super(geometry);
         this.p_font = font;
+        this.impl = new TextFTGLImpl();
     }
 
     this(Geometry geometry, Shader shader, Font font, dstring text) {
@@ -33,15 +34,18 @@ class Text: BaseObject {
         this.p_font = font;
         this.p_text = text;
         this.shader = shader;
+        this.impl = new TextFTGLImpl();
+        font.setTextSize(textSize);
     }
 
     override void render(Camera camera) {
         debug assert(font !is null);
+        debug assert(impl !is null);
 
         if (!visible)
             return;
 
-        // impl.render(font, p_text, vec3(0, 0, 0), position, camera);
+        impl.render(font, p_text, vec3(0, 0, 0), position, camera);
     }
 
     // override void render(Camera camera) {
