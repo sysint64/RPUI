@@ -43,12 +43,12 @@ class Shader {
     void bind() {
         nextTextureID = 1;
         glUseProgram(program);
-        app.setLastShader(this);
+        app.lastShader = this;
     }
 
     void unbind() {
         glUseProgram(0);
-        app.setLastShader(null);
+        app.lastShader = null;
     }
 
     this(in string fileName) {

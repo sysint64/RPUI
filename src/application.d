@@ -31,22 +31,6 @@ abstract class Application {
 
     void render() {}
 
-    private Shader lastShader = null;
-
-    void setLastShader(Shader lastShader) {
-        this.lastShader = lastShader;
-    }
-
-    void unbindLastShader() {
-        if (lastShader !is null)
-            lastShader.unbind();
-    }
-
-    void bindLastShader() {
-        if (lastShader !is null)
-            lastShader.bind();
-    }
-
     // Events
     void onCreate() {}
     void onKeyPressed(in uint key) {}
@@ -77,9 +61,14 @@ abstract class Application {
     @property uint clickY() { return p_clickY; }
     @property uint mouseButton() { return p_mouseButton; }
 
+    @property Shader lastShader() { return p_lastShader; }
+    @property void lastShader(Shader shader) { p_lastShader = shader; }
+
 private:
     string p_binDirectory = "/home/andrey/dev/e2dit-ml-dlang";  // TODO: rm hardcode
     sfWindow* window;
+
+    Shader p_lastShader = null;
 
     // Video
     uint p_screenWidth;

@@ -21,7 +21,11 @@ class TextFTGLImpl: TextImpl {
         auto app = Application.getInstance();
         auto ftglFont = font.handles.ftglHandle;
 
-        app.unbindLastShader();
+        auto lastShader = app.lastShader;
+
+        if (lastShader !is null)
+            lastShader.unbind();
+
         glBegin2D();
 
         glActiveTexture(GL_TEXTURE0);
@@ -33,7 +37,9 @@ class TextFTGLImpl: TextImpl {
         ftglRenderFont(ftglFont, text_z, RENDER_ALL);
 
         glEnd2D();
-        app.bindLastShader();
+
+        if (lastShader !is null)
+            lastShader.bind();
     }
 
     size_t charIndexUnderPoint(in Font font, in dstring text, in uint x, in uint y) {
