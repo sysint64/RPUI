@@ -20,6 +20,9 @@ class FontFTGLImpl : FontImpl {
         return handles.ftglHandle !is null;
     }
 
+    void destroyFont(ref FontHandles handles) {
+    }
+
     void setTextSize(Font font, in uint textSize) {
         FTGLfont* ftglFont = font.handles.ftglHandle;
         ftglSetFontFaceSize(ftglFont, textSize, textSize);

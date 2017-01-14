@@ -1,3 +1,4 @@
+
 {
     "name": "e2dit-ml",
     "authors": [
@@ -8,7 +9,7 @@
     "license": "MIT",
     "libs-posix": ["ftgl", "glu"],
     "libs-windows": ["ftgl", "glu32"],
-    "versions": ["FTGLFont"],
+    "versions": ["SFMLFont"],
     "dependencies": {
         "derelict-sfml2": "~>3.0.2",
         "derelict-gl3": "~>1.0.21",

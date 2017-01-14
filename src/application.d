@@ -68,6 +68,7 @@ private:
     string p_binDirectory = "/home/andrey/dev/e2dit-ml-dlang";  // TODO: rm hardcode
     sfWindow* window;
 
+    // GAPI
     Shader p_lastShader = null;
 
     // Video
