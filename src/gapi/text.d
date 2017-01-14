@@ -8,25 +8,26 @@ import gapi.shader;
 import gapi.base_object;
 import gapi.text_impl;
 import gapi.text_ftgl_impl;
+import gapi.text_sfml_impl;
 
 import math.linalg;
 
 import std.conv;
 import std.stdio;
 
-import derelict.sfml2.graphics;
-
 
 class Text: BaseObject {
     this(Geometry geometry) {
         super(geometry);
-        impl = new TextFTGLImpl();
+        createImpl();
+        font.setTextSize(textSize);
     }
 
     this(Geometry geometry, Font font) {
         super(geometry);
         this.p_font = font;
-        this.impl = new TextFTGLImpl();
+        createImpl();
+        font.setTextSize(textSize);
     }
 
     this(Geometry geometry, Shader shader, Font font, dstring text) {
@@ -34,7 +35,7 @@ class Text: BaseObject {
         this.p_font = font;
         this.p_text = text;
         this.shader = shader;
-        this.impl = new TextFTGLImpl();
+        createImpl();
         font.setTextSize(textSize);
     }
 
@@ -45,7 +46,7 @@ class Text: BaseObject {
         if (!visible)
             return;
 
-        impl.render(font, p_text, vec3(0, 0, 0), position, camera);
+        impl.render(this, camera);
     }
 
     // override void render(Camera camera) {
@@ -126,12 +127,23 @@ class Text: BaseObject {
     @property uint textSize() { return p_textSize; }
     @property dstring text() { return p_text; }
     @property bool bold() { return p_bold; }
+    @property ref vec4 color() { return p_color; }
+    @property void color(in vec4 val) { p_color = val; }
 
 private:
     Font p_font;
     uint p_textSize = 32;
     bool p_bold = false;
     dstring p_text = "";
+    vec4 p_color;
     Shader shader;
     TextImpl impl;
+
+    void createImpl() {
+        version (FTGLFont) {
+            impl = new TextFTGLImpl();
+        } else version(SFMLFont) {
+            impl = new TextSFMLImpl();
+        }
+    }
 }

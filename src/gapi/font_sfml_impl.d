@@ -17,8 +17,8 @@ class FontSFMLImpl : FontImpl {
         return handles.sfmlHandle !is null;
     }
 
-    void destroyFont(FontHandles handles) {
-        sfFont_destory(handles.sfmlHandle);
+    void destroyFont(ref FontHandles handles) {
+        sfFont_destroy(handles.sfmlHandle);
     }
 
     void setTextSize(Font font, in uint textSize) {

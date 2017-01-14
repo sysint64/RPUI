@@ -9,7 +9,7 @@
     "license": "MIT",
     "libs-posix": ["ftgl", "glu"],
     "libs-windows": ["ftgl", "glu32"],
-    "versions": ["SFMLFont"],
+    "versions": ["FTGLFont"],
     "dependencies": {
         "derelict-sfml2": "~>3.0.2",
         "derelict-gl3": "~>1.0.21",
