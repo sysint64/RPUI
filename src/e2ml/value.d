@@ -1,6 +1,5 @@
 module e2ml.value;
 
-import std.container;
 import e2ml.node;
 import std.conv;
 

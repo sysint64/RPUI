@@ -16,7 +16,6 @@ mixin template Singleton(T) {
         return instance;
     }
 
-    private this() {}
     private static bool instantiated;
     private __gshared T instance;
 }

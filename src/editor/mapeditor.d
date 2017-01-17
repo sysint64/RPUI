@@ -20,8 +20,10 @@ import derelict.opengl3.gl;
 
 class MapEditor: Application {
     mixin Singleton!(MapEditor);
+    private this() {}
 
     override void render() {
+        onPreRender(camera);
         camera.update();
 
         // Texture texture = font.getTexture(text.textSize);
@@ -43,10 +45,20 @@ class MapEditor: Application {
 
         // shader.setUniformMatrix("MVP", text.lastMVPMatrix);
         // shader.setUniformTexture("texture", font.getTexture(text.textSize));
-        text.render(camera);
+        // text.render(camera);
         // camera.zoom += 0.01f;
+
+        if (!posted) {
+            logError("Error!");
+            logWarning("Warning!");
+            logDebug("Debug!");
+            posted = true;
+        }
+
+        onPostRender(camera);
     }
 
+    bool posted = false;
     Camera camera;
     SpriteGeometry spriteGeometry;
     BaseObject sprite;
@@ -74,7 +86,7 @@ class MapEditor: Application {
         spriteGeometry.bind();
 
         font = new Font("/home/andrey/dev/e2dit-ml-dlang/res/fonts/ttf-dejavu/DejaVuSans.ttf");
-        text = new Text(spriteGeometry, shader, font, "Hello world!");
+        text = new Text(spriteGeometry, font, "Hello world!");
 
         text.position = vec2(30.0f, 30.0f);
     }

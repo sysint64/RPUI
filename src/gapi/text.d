@@ -30,11 +30,19 @@ class Text: BaseObject {
         font.setTextSize(textSize);
     }
 
-    this(Geometry geometry, Shader shader, Font font, dstring text) {
+    this(Geometry geometry, Font font, in dstring text) {
         super(geometry);
         this.p_font = font;
         this.p_text = text;
-        this.shader = shader;
+        createImpl();
+        font.setTextSize(textSize);
+    }
+
+    this(Geometry geometry, Font font, in dstring text, in vec4 color) {
+        super(geometry);
+        this.p_font = font;
+        this.p_text = text;
+        this.p_color = color;
         createImpl();
         font.setTextSize(textSize);
     }
@@ -49,82 +57,18 @@ class Text: BaseObject {
         impl.render(this, camera);
     }
 
-    // override void render(Camera camera) {
-    //     debug assert(font !is null);
-    //     // Texture texture = font.getTexture(p_textSize);
-    //     vec2 lastPosition = position;
-
-    //     if (!visible)
-    //         return;
-
-    //     // writeln(texture.width);
-    //     // writeln(texture.height);
-    //     float offset = 0;
-    //     int index = 0;
-
-    //     sfGlyph glyph = sfFont_getGlyph(font.handle, to!uint(' '), textSize, bold);
-    //     float hspace = glyph.advance;
-
-    //     uint prevChar = 0;
-
-    //     for (size_t i = 0; i < text.length; ++i) {
-    //         uint curChar = text[i];
-
-    //         position = lastPosition;
-    //         offset += font.getKerning(prevChar, curChar, textSize);
-    //         // writeln(prevChar, ",", curChar);
-    //         prevChar = curChar;
-    //         // writeln(font.getKerning(prevChar, curChar, textSize));
-
-    //         glyph = sfFont_getGlyph(font.handle, curChar, textSize, bold);
-    //         offset += glyph.advance * 0.95f;
-
-    //         scaling = vec2(glyph.bounds.width, glyph.bounds.height);
-
-    //         position.x += offset;
-    //         // position += vec2( glyph.bounds.left-to!float(glyph.bounds.width )/2.0f,
-    //         //                  -glyph.bounds.top -to!float(glyph.bounds.height)/2.0f);
-
-    //         position += vec2( glyph.bounds.left-to!float(glyph.bounds.width),
-    //                          -glyph.bounds.top-to!float(glyph.bounds.height));
-
-    //         // vec4 texCoord = vec4(to!float(glyph.textureRect.left) / to!float(texture.width),
-    //         //                      to!float(glyph.textureRect.top) / to!float(texture.height),
-    //         //                      to!float(glyph.textureRect.width) / to!float(texture.width),
-    //         //                      to!float(glyph.textureRect.height) / to!float(texture.height));
-    //         // vec4 texCoord = vec4(to!float(glyph.textureRect.left),
-    //         //                      to!float(glyph.textureRect.top),
-    //         //                      to!float(glyph.textureRect.width),
-    //         //                      to!float(glyph.textureRect.height));
-
-    //         vec4 texCoord;
-
-    //         texCoord.x = to!float(glyph.textureRect.left);
-    //         texCoord.y = to!float(glyph.textureRect.top);
-    //         texCoord.z = to!float(glyph.textureRect.width);
-    //         texCoord.w = to!float(glyph.textureRect.height);
-
-    //         // writeln(glyph.textureRect);
-    //         // writeln(glyph.bounds);
-
-    //         updateMatrices(camera);
-    //         shader.setUniformMatrix("MVP", lastMVPMatrix);
-    //         shader.setUniformVec4f("texCoord", texCoord);
-    //         geometry.render();
-    //         // writeln(glyph.bounds);
-    //         // geometry.
-    //     }
-
-    //     position = lastPosition;
-    //     // writeln("------------");
-    // }
-
     size_t charIndexUnderPoint(in uint x, in uint y) {
         return 0;
     }
 
     @property Font font() { return p_font; }
-    @property uint textSize() { return p_textSize; }
+
+    @property ref uint textSize() { return p_textSize; }
+    @property void textSize(in uint val) {
+        p_textSize = val;
+        font.setTextSize(p_textSize);
+    }
+
     @property dstring text() { return p_text; }
     @property bool bold() { return p_bold; }
     @property ref vec4 color() { return p_color; }
@@ -132,11 +76,10 @@ class Text: BaseObject {
 
 private:
     Font p_font;
-    uint p_textSize = 32;
+    uint p_textSize = 18;
     bool p_bold = false;
     dstring p_text = "";
     vec4 p_color;
-    Shader shader;
     TextImpl impl;
 
     void createImpl() {

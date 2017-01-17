@@ -6,6 +6,7 @@ import e2ml.data;
 
 class Settings {
     mixin Singleton!(Settings);
+    private this() {}
 
     void load(in string rootDirectory, in string fileName) {
         data = new Data(rootDirectory);

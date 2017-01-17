@@ -3,12 +3,17 @@ module application;
 import std.stdio;
 import std.conv;
 
+import derelict.sfml2.system;
 import derelict.sfml2.window;
 import derelict.opengl3.gl;
 
+import log;
 import settings;
 import editor.mapeditor : MapEditor;
+import math.linalg;
+
 import gapi.shader;
+import gapi.camera;
 
 
 abstract class Application {
@@ -19,6 +24,7 @@ abstract class Application {
     void run() {
         initSFML();
         initGL();
+        log = new Log();
         scope(exit) sfWindow_destroy(window);
 
         auto settings = Settings.getInstance();
@@ -31,8 +37,27 @@ abstract class Application {
 
     void render() {}
 
+    void logError(Char, T...)(in Char[] fmt, T args) {
+        debug log.display(vec4(0.8f, 0.1f, 0.1f, 1), fmt, args);
+    }
+
+    void logWarning(Char, T...)(in Char[] fmt, T args) {
+        debug log.display(vec4(0.1f, 0.1f, 0.8f, 1), fmt, args);
+    }
+
+    void logDebug(Char, T...)(in Char[] fmt, T args) {
+        debug log.display(vec4(0.3f, 0.3f, 0.3f, 1), fmt, args);
+    }
+
     // Events
     void onCreate() {}
+
+    void onPostRender(Camera camera) {
+        log.render(camera);
+    }
+
+    void onPreRender(Camera camera) {}
+
     void onKeyPressed(in uint key) {}
     void onKeyReleased(in uint key) {}
     void onTextEntered(in uint key) {}
@@ -63,10 +88,13 @@ abstract class Application {
 
     @property Shader lastShader() { return p_lastShader; }
     @property void lastShader(Shader shader) { p_lastShader = shader; }
+    @property float deltaTime() { return p_deltaTime; }
+    @property float currentTime() { return p_currentTime; }
 
 private:
     string p_binDirectory = "/home/andrey/dev/e2dit-ml-dlang";  // TODO: rm hardcode
     sfWindow* window;
+    Log log;
 
     // GAPI
     Shader p_lastShader = null;
@@ -83,8 +111,10 @@ private:
     uint p_mouseButton;
 
     // Time
-    float deltaTime;
-    float currentTime;
+    float p_deltaTime;
+    float p_currentTime;
+    float lastTime = 0;
+    sfClock *clock;
 
     void initSFML() {
         sfVideoMode desktomVideoMode = sfVideoMode_getDesktopMode();
@@ -115,6 +145,7 @@ private:
         sfWindow_setFramerateLimit(window, 60);
 
         DerelictGL.reload();
+        clock = sfClock_create();
     }
 
     void initGL() {
@@ -124,6 +155,13 @@ private:
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glClearColor(150.0f/255.0f, 150.0f/255.0f, 150.0f/255.0f, 0);
+    }
+
+    void calculateTime() {
+        sfTime time = sfClock_getElapsedTime(clock);
+        p_currentTime = time.microseconds;
+        p_deltaTime = (p_currentTime - lastTime) * 0.001f;
+        lastTime = p_currentTime;
     }
 
     void loop() {
@@ -144,6 +182,7 @@ private:
                     handleEvents(event);
             }
 
+            calculateTime();
             sfWindow_setActive(window, true);
 
             glViewport(0, 0, viewportWidth, viewportHeight);
