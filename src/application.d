@@ -73,6 +73,8 @@ abstract class Application {
     }
 
     @property string binDirectory() { return p_binDirectory; }
+    @property string resourcesDirectory() { return p_resourcesDirectory; }
+
     @property uint screenWidth() { return p_screenWidth; }
     @property uint screenHeight() { return p_screenHeight; }
     @property uint windowWidth() { return p_windowWidth; }
@@ -92,7 +94,8 @@ abstract class Application {
     @property float currentTime() { return p_currentTime; }
 
 private:
-    string p_binDirectory = "/home/andrey/dev/e2dit-ml-dlang";  // TODO: rm hardcode
+    string p_binDirectory = "/home/andrey/projects/e2dit-dlang";  // TODO: rm hardcode
+    string p_resourcesDirectory = p_binDirectory ~ "/res";  // TODO: rm hardcode
     sfWindow* window;
     Log log;
 

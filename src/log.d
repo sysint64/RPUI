@@ -19,7 +19,7 @@ import gapi.camera;
 class Log {
     this() {
         // TODO: move to resources
-        font = new Font("/home/andrey/dev/e2dit-ml-dlang/res/fonts/ttf-dejavu/DejaVuSans.ttf");
+        font = new Font("/home/andrey/projects/e2dit-dlang/res/fonts/ttf-dejavu/DejaVuSans.ttf");
         glyphGeometry = new SpriteGeometry(false, true, true);
     }
 

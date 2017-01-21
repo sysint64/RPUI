@@ -25,6 +25,7 @@ class MapEditor: Application {
     override void render() {
         onPreRender(camera);
         camera.update();
+        // camera.
 
         // Texture texture = font.getTexture(text.textSize);
 
@@ -34,7 +35,7 @@ class MapEditor: Application {
 
         shader.bind();
         shader.setUniformMatrix("MVP", sprite.lastMVPMatrix);
-        shader.setUniformTexture("texture", texture);
+        // shader.setUniformTexture("texture", texture);
 
         sprite.render(camera);
         // shader.setUniformTexture("texture", texture);
@@ -71,8 +72,8 @@ class MapEditor: Application {
         camera = new Camera(viewportWidth, viewportHeight);
         spriteGeometry = new SpriteGeometry(false, true, true);
         sprite = new BaseObject(spriteGeometry);
-        shader = new Shader("/home/andrey/dev/e2dit-ml-dlang/res/shaders/GL2/transform.glsl");
-        texture = new Texture("/home/andrey/dev/e2dit-ml-dlang/res/test.jpg");
+        shader = new Shader(resourcesDirectory ~ "/shaders/GL2/transform.glsl");
+        // texture = new Texture(resourcesDirectory ~ "/test.jpg");
 
         camera.position = vec2(0.0f, 0.0f);
         camera.zoom = 1.0f;
@@ -85,7 +86,7 @@ class MapEditor: Application {
         // texture.bind();
         spriteGeometry.bind();
 
-        font = new Font("/home/andrey/dev/e2dit-ml-dlang/res/fonts/ttf-dejavu/DejaVuSans.ttf");
+        font = new Font(resourcesDirectory ~ "/fonts/ttf-dejavu/DejaVuSans.ttf");
         text = new Text(spriteGeometry, font, "Hello world!");
 
         text.position = vec2(30.0f, 30.0f);
