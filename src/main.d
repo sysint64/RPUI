@@ -12,6 +12,9 @@ import e2ml.value;
 import gapi.shader;
 import gapi.texture;
 
+import ui.widget;
+import ui.cursor;
+
 import editor.mapeditor;
 
 import derelict.opengl3.gl;
@@ -56,6 +59,11 @@ void main() {
 
     auto app = MapEditor.getInstance();
     app.run();
+
+    Widget widget = new Widget(null);
+    widget.onClickListener = function void(Widget widget) {
+        widget.cursor = Cursor.Icon.hand;
+    };
 
     // DerelictGL3.reload();
 

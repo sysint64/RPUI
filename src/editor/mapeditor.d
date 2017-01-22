@@ -1,5 +1,6 @@
 module editor.mapeditor;
 
+import input;
 import patterns.singleton;
 import application;
 
@@ -92,27 +93,27 @@ class MapEditor: Application {
         text.position = vec2(30.0f, 30.0f);
     }
 
-    override void onKeyPressed(in uint key) {
+    override void onKeyPressed(in KeyCode key) {
         super.onKeyPressed(key);
     }
 
-    override void onKeyReleased(in uint key) {
+    override void onKeyReleased(in KeyCode key) {
         super.onKeyReleased(key);
     }
 
-    override void onTextEntered(in uint key) {
+    override void onTextEntered(in utfchar key) {
         super.onTextEntered(key);
     }
 
-    override void onMouseDown(in uint x, in uint y, in uint button) {
+    override void onMouseDown(in uint x, in uint y, in MouseButton button) {
         super.onMouseDown(x, y, button);
     }
 
-    override void onMouseUp(in uint x, in uint y, in uint button) {
+    override void onMouseUp(in uint x, in uint y, in MouseButton button) {
         super.onMouseUp(x, y, button);
     }
 
-    override void onDblClick(in uint x, in uint y, in uint button) {
+    override void onDblClick(in uint x, in uint y, in MouseButton button) {
         super.onDblClick(x, y, button);
     }
 

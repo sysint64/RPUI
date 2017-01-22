@@ -7,6 +7,7 @@ import derelict.sfml2.system;
 import derelict.sfml2.window;
 import derelict.opengl3.gl;
 
+import input;
 import log;
 import settings;
 import editor.mapeditor : MapEditor;
@@ -58,12 +59,12 @@ abstract class Application {
 
     void onPreRender(Camera camera) {}
 
-    void onKeyPressed(in uint key) {}
-    void onKeyReleased(in uint key) {}
-    void onTextEntered(in uint key) {}
-    void onMouseDown(in uint x, in uint y, in uint button) {}
-    void onMouseUp(in uint x, in uint y, in uint button) {}
-    void onDblClick(in uint x, in uint y, in uint button) {}
+    void onKeyPressed(in KeyCode key) {}
+    void onKeyReleased(in KeyCode key) {}
+    void onTextEntered(in utfchar key) {}
+    void onMouseDown(in uint x, in uint y, in MouseButton button) {}
+    void onMouseUp(in uint x, in uint y, in MouseButton button) {}
+    void onDblClick(in uint x, in uint y, in MouseButton button) {}
     void onMouseMove(in uint x, in uint y) {}
     void onMouseWheel(in uint dx, in uint dy) {}
 
@@ -94,8 +95,8 @@ abstract class Application {
     @property float currentTime() { return p_currentTime; }
 
 private:
-    string p_binDirectory = "/home/andrey/projects/e2dit-dlang";  // TODO: rm hardcode
-    string p_resourcesDirectory = p_binDirectory ~ "/res";  // TODO: rm hardcode
+    immutable string p_binDirectory = "/home/andrey/projects/e2dit-dlang";  // TODO: rm hardcode
+    immutable string p_resourcesDirectory = p_binDirectory ~ "/res";  // TODO: rm hardcode
     sfWindow* window;
     Log log;
 
@@ -207,22 +208,22 @@ private:
                 break;
 
             case sfEvtKeyPressed:
-                onKeyPressed(event.key.code);
+                onKeyPressed(to!KeyCode(event.key.code));
                 break;
 
             case sfEvtKeyReleased:
-                onKeyReleased(event.key.code);
+                onKeyReleased(to!KeyCode(event.key.code));
                 break;
 
             case sfEvtMouseButtonPressed:
                 with (event.mouseButton)
-                    onMouseDown(x, y, button);
+                    onMouseDown(x, y, to!MouseButton(button));
 
                 break;
 
             case sfEvtMouseButtonReleased:
                 with (event.mouseButton)
-                    onMouseUp(x, y, button);
+                    onMouseUp(x, y, to!MouseButton(button));
 
                 break;
 
