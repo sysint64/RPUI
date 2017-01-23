@@ -4,11 +4,13 @@ import std.container;
 import std.conv;
 
 import input;
+import gapi;
 import application;
 import math.linalg;
 
 import ui.manager;
 import ui.precompute.helper_methods;
+import ui.render_helper_methods;
 import ui.cursor;
 
 
@@ -53,13 +55,12 @@ class Widget {
     void blur() {
     }
 
-    void precompute() {
-    }
-
     void render() {
     }
 
     // Properties
+    @property uint id() { return p_id; }
+
     @property bool focused() { return p_focused; }
     @property string style() { return p_style; }
 
@@ -95,6 +96,12 @@ class Widget {
     @property ref bool autoHeight() { return p_autoHeight; }
     @property void autoHeight(in bool val) { p_autoHeight = val; }
 
+    @property Widget[uint] children() { return p_children; }
+
+    @property bool isEnter() { return p_isEnter; }
+    @property bool isClick() { return p_isClick; }
+    @property bool isOver() { return p_isOver; }
+
 
     // Event Listeners
     @property void onClickListener(in OnClickListener val) { p_onClickListener = val; }
@@ -110,6 +117,17 @@ class Widget {
 
 protected:
     enum PartDraws {all, left, center, right};
+    struct PrecomputeCoords {
+        vec2 normOffset;  // normalized by 1 offset
+        vec2 normSize;  // normalized by 1 size
+        vec2i offset;
+        vec2i size;
+    }
+
+    struct PrecomputeText {
+        vec4 color;
+        vec2i offset;
+    }
 
     Application app;
     Manager manager;
@@ -124,21 +142,13 @@ protected:
     void updateAbsolutePosition() {
     }
 
+    void precompute() {
+    }
+
     mixin PrecomputeHelperMethods;
+    mixin RenderHelperMethods;
 
 private:
-    struct PrecomputeCoords {
-        vec2 normOffset;  // normalized by 1 offset
-        vec2 normSize;  // normalized by 1 size
-        vec2i offset;
-        vec2i size;
-    }
-
-    struct PrecomputeText {
-        vec4 color;
-        vec2i offset;
-    }
-
     PrecomputeCoords[32] precomputeCoords;
     PrecomputeText[32] precomputeTexts;
 
@@ -149,12 +159,15 @@ private:
     Widget firstWidget = null;
 
     // Properties data
+    uint p_id;
+
     vec2i p_position;
     vec2i p_absolutePosition;
     vec2i p_size;
     vec4i p_margin;
     vec4i p_padding;
 
+    Widget[uint] p_children;
     bool p_focused = false;
     bool p_withoutSkin = false;
     bool p_visible = true;
