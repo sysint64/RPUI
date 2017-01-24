@@ -149,6 +149,8 @@ protected:
     mixin RenderHelperMethods;
 
 private:
+    Camera camera;
+
     PrecomputeCoords[32] precomputeCoords;
     PrecomputeText[32] precomputeTexts;
 

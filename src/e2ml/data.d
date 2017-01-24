@@ -5,6 +5,8 @@ import std.stdio;
 import std.math;
 import std.conv;
 
+import math.linalg;
+
 import e2ml.lexer;
 import e2ml.parser;
 import e2ml.stream;
@@ -97,6 +99,22 @@ class Data {
 
     ArrayValue getArrayValue(in string path) {
         return getTypedNode!(ArrayValue, NotArrayValueException)(path);
+    }
+
+    vec2 getVec2f(in string path) {
+        ArrayValue vec = getArrayValue(path);
+
+        if (vec !is null) {
+            if (vec.length != 2)
+                return vec2(0, 0);
+
+            NumberValue x = cast(NumberValue)(vec.getAtIndex(0));
+            NumberValue y = cast(NumberValue)(vec.getAtIndex(1));
+
+            return vec2(x.value, y.value);
+        }
+
+        return vec2(0, 0);
     }
 
     // Optional access to nodes
@@ -248,4 +266,27 @@ private:
 
         return node.value;
     }
+}
+
+
+unittest {
+    Data data = new Data("/home/andrey/projects/e2dit-dlang/tests");
+    data.load("simple.e2t");
+
+    assert(data.getNumber("Test.Test2.p2.0") == 2);
+    assert(data.getBoolean("Test.Test2.p2.1") == true);
+    assert(data.getString("Test.Test2.p2.2") == "Hello");
+    assert(data.getString("TestInclude.Linux.0") == "Arch");
+    assert(data.getInteger("TestInclude.Test2.param.3.2") == 4);
+
+    // Non standart types
+    // assert(data.getVec2f("Rombik.position") == vec2(1, 3));
+    // assert(data.getVec2i("Rombik.position") == vec2i(1, 3));
+    // assert(data.getVec2ui("Rombik.position") == vec2ui(1, 3));
+
+    auto vec = data.getVec2f("Rombik.size.0");
+    writeln(vec);
+    assert(data.getVec2f("Rombik.size.0") == vec2(320, 128));
+    // assert(data.getVec2i("Rombik.size.0") == vec2i(320, 128));
+    // assert(data.getVec2ui("Rombik.size.0") == vec2ui(320, 128));
 }
