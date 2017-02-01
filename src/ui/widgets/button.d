@@ -103,6 +103,8 @@ protected:
 
     // precomputer
     override void precompute() {
-
+        // skinRenderObjects[0] = new UIQuad(style, "", leaveElement);
+        // skinRenderObjects[1] = new UIQuad(style, "", leaveElement);
+        // skinRenderObjects[2] = new UIQuad(style, "", leaveElement);
     }
 }

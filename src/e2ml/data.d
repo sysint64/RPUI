@@ -101,21 +101,19 @@ class Data {
         return getTypedNode!(ArrayValue, NotArrayValueException)(path);
     }
 
-    vec2 getVec2f(in string path) {
-        ArrayValue vec = getArrayValue(path);
+    //
 
-        if (vec !is null) {
-            if (vec.length != 2)
-                return vec2(0, 0);
+    alias getVec2f = getVecValue!(float, 2, NotVec2Exception);
+    alias getVec3f = getVecValue!(float, 3, NotVec3Exception);
+    alias getVec4f = getVecValue!(float, 4, NotVec4Exception);
 
-            NumberValue x = cast(NumberValue)(vec.getAtIndex(0));
-            NumberValue y = cast(NumberValue)(vec.getAtIndex(1));
+    alias getVec2i = getVecValue!(int, 2, NotVec2Exception);
+    alias getVec3i = getVecValue!(int, 3, NotVec3Exception);
+    alias getVec4i = getVecValue!(int, 4, NotVec4Exception);
 
-            return vec2(x.value, y.value);
-        }
-
-        return vec2(0, 0);
-    }
+    alias getVec2ui = getVecValue!(uint, 2, NotVec2Exception);
+    alias getVec3ui = getVecValue!(uint, 3, NotVec3Exception);
+    alias getVec4ui = getVecValue!(uint, 4, NotVec4Exception);
 
     // Optional access to nodes
 
@@ -266,6 +264,28 @@ private:
 
         return node.value;
     }
+
+    vec!(T, n) getVecValue(T, int n, E : E2TMLException)(in string path) {
+        Node node = getNode(path);
+        ArrayValue vecArray = cast(ArrayValue) node;
+
+        if (vecArray !is null && vecArray.length != n)
+            throw new E();
+
+        NumberValue[n] vectorComponents;
+        T[n] values;
+
+        for (int i = 0; i < n; ++i) {
+            vectorComponents[i] = cast(NumberValue) node.getAtIndex(i);
+
+            if (vectorComponents[i] is null)
+                throw new E();
+
+            values[i] = to!T(vectorComponents[i].value);
+        }
+
+        return vec!(T, n)(values);
+    }
 }
 
 
@@ -280,13 +300,11 @@ unittest {
     assert(data.getInteger("TestInclude.Test2.param.3.2") == 4);
 
     // Non standart types
-    // assert(data.getVec2f("Rombik.position") == vec2(1, 3));
-    // assert(data.getVec2i("Rombik.position") == vec2i(1, 3));
-    // assert(data.getVec2ui("Rombik.position") == vec2ui(1, 3));
+    assert(data.getVec2f("Rombik.position") == vec2(1, 3));
+    assert(data.getVec2i("Rombik.position") == vec2i(1, 3));
+    assert(data.getVec2ui("Rombik.position") == vec2ui(1, 3));
 
-    auto vec = data.getVec2f("Rombik.size.0");
-    writeln(vec);
     assert(data.getVec2f("Rombik.size.0") == vec2(320, 128));
-    // assert(data.getVec2i("Rombik.size.0") == vec2i(320, 128));
-    // assert(data.getVec2ui("Rombik.size.0") == vec2ui(320, 128));
+    assert(data.getVec2f("Rombik.size2") == vec2(64, 1024));
+    try { data.getVec2f("Rombik.size.1"); assert(false); } catch(NotVec2Exception) {}
 }

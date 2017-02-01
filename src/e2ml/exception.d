@@ -68,6 +68,30 @@ class NotArrayValueException : E2TMLException {
 }
 
 
+class NotVec2Exception : E2TMLException {
+    this() { super("it is not a vec2 value"); }
+    this(in string details) { super(details); }
+}
+
+
+class NotVec3Exception : E2TMLException {
+    this() { super("it is not a vec3 value"); }
+    this(in string details) { super(details); }
+}
+
+
+class NotVec4Exception : E2TMLException {
+    this() { super("it is not a vec4 value"); }
+    this(in string details) { super(details); }
+}
+
+
+class NotTextureCoordException : E2TMLException {
+    this() { super("it is not a texture coordinate value"); }
+    this(in string details) { super(details); }
+}
+
+
 class WrongNodeType : E2TMLException {
     this() { super("wrong type of value"); }
     this(in string details) { super(details); }

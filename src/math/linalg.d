@@ -3,6 +3,7 @@ module math.linalg;
 import gl3n.linalg;
 
 
+alias Vector vec;
 alias Vector!(float, 2) vec2;
 alias Vector!(float, 3) vec3;
 alias Vector!(float, 4) vec4;
