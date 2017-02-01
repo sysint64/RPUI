@@ -15,6 +15,8 @@ import e2ml.value;
 import e2ml.exception;
 import e2ml.writer;
 
+import gapi.texture;
+
 
 class Data {
     enum IOType {text, bin};
@@ -92,6 +94,14 @@ class Data {
     alias getVec2ui = getVecValue!(uint, 2, NotVec2Exception);
     alias getVec3ui = getVecValue!(uint, 3, NotVec3Exception);
     alias getVec4ui = getVecValue!(uint, 4, NotVec4Exception);
+
+    Texture.Coord getTexCoord(in string path) {
+        Texture.Coord texCoord;
+        vec4 coord = getVec4f(path);
+        texCoord.offset = vec2(coord.x, coord.y);
+        texCoord.size = vec2(coord.z, coord.w);
+        return texCoord;
+    }
 
     // Optional access to nodes
 
