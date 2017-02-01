@@ -6,4 +6,5 @@ __dummy.html
 *.dll
 .idea
 e2dit
+__test__library__
 \#*
