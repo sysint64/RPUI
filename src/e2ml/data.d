@@ -155,6 +155,33 @@ class Data {
         return to!int(optNumber(path, to!float(defaultVal)));
     }
 
+    alias optVec2f = optVecValue!(float, 2, NotVec2Exception);
+    alias optVec3f = optVecValue!(float, 3, NotVec3Exception);
+    alias optVec4f = optVecValue!(float, 4, NotVec4Exception);
+
+    alias optVec2i = optVecValue!(int, 2, NotVec2Exception);
+    alias optVec3i = optVecValue!(int, 3, NotVec3Exception);
+    alias optVec4i = optVecValue!(int, 4, NotVec4Exception);
+
+    alias optVec2ui = optVecValue!(uint, 2, NotVec2Exception);
+    alias optVec3ui = optVecValue!(uint, 3, NotVec3Exception);
+    alias optVec4ui = optVecValue!(uint, 4, NotVec4Exception);
+
+    Texture.Coord optTexCoord(in string path, Texture.Coord defaultVal = Texture.Coord.init) {
+        Texture.Coord texCoord;
+
+        try {
+            vec4 coord = getVec4f(path);
+
+            texCoord.offset = vec2(coord.x, coord.y);
+            texCoord.size = vec2(coord.z, coord.w);
+
+            return texCoord;
+        } catch (NotFoundException) {
+            return defaultVal;
+        }
+    }
+
 private:
     Lexer  lexer;
     Parser parser;
@@ -223,6 +250,10 @@ private:
 
     vec!(T, n) getVecValue(T, int n, E : E2TMLException)(in string path) {
         Node node = getNode(path);
+        return getVecValueFromNode!(T, n, E)(path, node);
+    }
+
+    vec!(T, n) getVecValueFromNode(T, int n, E : E2TMLException)(in string path, Node node) {
         ArrayValue vecArray = cast(ArrayValue) node;
 
         if (vecArray !is null && vecArray.length != n)
@@ -241,6 +272,17 @@ private:
         }
 
         return vec!(T, n)(values);
+    }
+
+    vec!(T, n) optVecValue(T, int n, E : E2TMLException)(in string path,
+        vec!(T, n) defaultVal = vec!(T, n).init)
+    {
+        Node node = findNodeByPath(path);
+
+        if (node is null)
+            return defaultVal;
+
+        return getVecValueFromNode!(T, n, E)(path, node);
     }
 }
 
@@ -266,4 +308,7 @@ unittest {
 
     assert(data.getVec4f("Rombik.texCoord.0") == vec4(10, 15, 32, 64));
     assert(data.getVec4f("Rombik.texCoord2") == vec4(5, 3, 16, 24));
+
+    assert(data.optVec4f("Rombik.texCoord2", vec4(0, 1, 2, 3)) == vec4(5, 3, 16, 24));
+    assert(data.optVec4f("Rombik.texCoord3", vec4(0, 1, 2, 3)) == vec4(0, 1, 2, 3));
 }
