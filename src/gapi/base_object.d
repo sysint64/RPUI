@@ -28,6 +28,7 @@ class BaseObject {
         if (p_material !is null)
             p_material.bind(this);
 
+        geometry.bind();
         geometry.render();
     }
 

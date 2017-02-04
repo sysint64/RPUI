@@ -2,6 +2,8 @@ module application;
 
 import std.stdio;
 import std.conv;
+import std.path;
+import std.file : thisExePath;
 
 import derelict.sfml2.system;
 import derelict.sfml2.window;
@@ -22,7 +24,13 @@ abstract class Application {
         return MapEditor.getInstance();
     }
 
+    void initPath() {
+        p_binDirectory = dirName(thisExePath());
+        p_resourcesDirectory = buildPath(p_binDirectory, "res");
+    }
+
     void run() {
+        initPath();
         initSFML();
         initGL();
         log = new Log();
@@ -108,8 +116,8 @@ abstract class Application {
     @property float currentTime() { return p_currentTime; }
 
 private:
-    immutable string p_binDirectory = "/home/andrey/projects/e2dit-dlang";  // TODO: rm hardcode
-    immutable string p_resourcesDirectory = p_binDirectory ~ "/res";  // TODO: rm hardcode
+    string p_binDirectory;
+    string p_resourcesDirectory;
     sfWindow* window;
     Log log;
 

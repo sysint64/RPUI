@@ -10,12 +10,14 @@ class BaseRenderObject : gapi.BaseObject {
         super(geometry);
     }
 
-    void addTexCoord(gapi.Texture.Coord coord) {
-        texCoordinates.insert(coord);
+    void addTexCoord(in string state, gapi.Texture.Coord coord) {
+        // texCoordinates.insert(coord);
+        texCoordinates[state] = coord;
     }
 
-private:
-    Array!(gapi.Texture.Coord) texCoordinates;
+package:
+    // Array!(gapi.Texture.Coord) texCoordinates;
+    gapi.Texture.Coord[string] texCoordinates;
 }
 
 

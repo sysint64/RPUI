@@ -3,6 +3,8 @@ module gapi.shader;
 import std.file;
 import std.stdio;
 import std.string;
+import std.path;
+import std.conv : to;
 
 import derelict.opengl3.gl;
 
@@ -16,28 +18,14 @@ import gapi.texture;
 class Shader {
     mixin ShaderUniform;
 
-    void load(in string fileName) {
-        this.file = File(fileName, "r");
+    static Shader createFromFile(in string relativeFileName) {
+        Application app = Application.getInstance();
 
-        while (!file.eof) {
-            char ch = readChar();
+        const string gl = "GL" ~ to!string(app.settings.OGLMajor);
+        const string absoluteFileName = buildPath(app.resourcesDirectory, "shaders",
+                                                  gl, relativeFileName);
 
-            if (file.eof)
-                break;
-
-            if (ch == '#')
-                parseHeader();
-            else
-                shaderSources[currentSource] ~= ch;
-        }
-
-        writeln("FRAGMENT SHADER");
-        writeln(shaderSources[ShaderSource.fragment]);
-
-        writeln("VERTEX SHADER");
-        writeln(shaderSources[ShaderSource.vertex]);
-
-        createShaders();
+        return new Shader(absoluteFileName);
     }
 
     void bind() {
@@ -65,6 +53,24 @@ private:
     GLuint program;
     GLuint[string] locations;
     uint nextTextureID = 1;
+
+    void load(in string fileName) {
+        this.file = File(fileName, "r");
+
+        while (!file.eof) {
+            char ch = readChar();
+
+            if (file.eof)
+                break;
+
+            if (ch == '#')
+                parseHeader();
+            else
+                shaderSources[currentSource] ~= ch;
+        }
+
+        createShaders();
+    }
 
     void chechOrCreateLocation(in string location) {
         if ((location in locations) is null) {
@@ -132,7 +138,6 @@ private:
         glShaderSource(vertexShader, 1, &vertexSource, null);
         glCompileShader(vertexShader);
 
-        writeln("Vertex Shader");
         shaderStatus(vertexShader, GL_COMPILE_STATUS);
 
         // Create Fragment Shader
@@ -141,7 +146,6 @@ private:
         glShaderSource(fragmentShader, 1, &fragmentSource, null);
         glCompileShader(fragmentShader);
 
-        writeln("Fragment Shader");
         shaderStatus(fragmentShader, GL_COMPILE_STATUS);
 
         // Link Shaders

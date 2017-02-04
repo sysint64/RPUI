@@ -12,9 +12,10 @@ import containers.treemap;
 
 import ui.manager;
 import ui.precompute.helper_methods;
-import ui.render_helper_methods;
 import ui.render_factory;
+import ui.render_objects;
 import ui.cursor;
+import ui.renderer;
 
 
 enum Align {
@@ -168,13 +169,13 @@ protected:
     }
 
     void updateAbsolutePosition() {
+        p_absolutePosition = position;
     }
 
     void precompute() {
     }
 
-    mixin PrecomputeHelperMethods;
-    mixin RenderHelperMethods;
+    @property Renderer renderer() { return manager.renderer; }
 
 package:
     this(Manager manager) {

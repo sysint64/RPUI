@@ -39,6 +39,9 @@ class Geometry {
         }
     }
 
+    void unbind() {
+    }
+
     void addVertex(in float x, in float y) {
         vertices.insert(vec2(x, y));
     }

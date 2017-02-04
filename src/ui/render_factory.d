@@ -13,19 +13,16 @@ class RenderFactory {
         this.quadGeometry = gapi.GeometryFactory.createSprite();
     }
 
-    BaseRenderObject createQuad(string style, string[] elements, string part = "") {
+    BaseRenderObject createQuad(in string style, in string[] states, in string part) {
         BaseRenderObject object = new BaseRenderObject(quadGeometry);
 
-        foreach (string element; elements) {
-            string path = style ~ "." ~ element;
-
-            if (part != "")
-                path ~= "." ~ part;
+        foreach (string state; states) {
+            string path = style ~ "." ~ state ~ "." ~ part;
 
             Application app = Application.getInstance();
             gapi.Texture.Coord texCoord = manager.theme.data.getTexCoord(path);
             texCoord.normalize(manager.theme.skin);
-            object.addTexCoord(texCoord);
+            object.addTexCoord(state, texCoord);
         }
 
         return object;

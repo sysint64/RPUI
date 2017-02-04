@@ -85,7 +85,7 @@ class MapEditor: Application {
 
         // shader.bind();
         // texture.bind();
-        spriteGeometry.bind();
+        // spriteGeometry.bind();
 
         font = new Font(resourcesDirectory ~ "/fonts/ttf-dejavu/DejaVuSans.ttf");
         text = new Text(spriteGeometry, font, "Hello world!");
@@ -93,6 +93,8 @@ class MapEditor: Application {
         text.position = vec2(30.0f, 30.0f);
         uiManager = new ui.Manager(settings.theme);
         Button button = new Button("Button");
+        button.size = vec2i(100, 21);
+        button.position = vec2i(100, 100);
         uiManager.addWidget(button);
     }
 

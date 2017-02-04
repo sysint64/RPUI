@@ -10,6 +10,7 @@ import ui.theme;
 import ui.widget;
 import ui.cursor;
 import ui.render_factory;
+import ui.renderer;
 
 
 class Manager {
@@ -19,9 +20,11 @@ class Manager {
 
         p_theme = new Theme(theme);
         p_renderFactory = new RenderFactory(this);
+        p_renderer = new Renderer(this);
     }
 
     void render(Camera camera) {
+        p_renderer.camera = camera;
         root.render(camera);
     }
 
@@ -54,6 +57,7 @@ class Manager {
     @property Theme theme() { return p_theme; }
     @property Cursor.Icon cursor() { return p_cursor; }
     @property RenderFactory renderFactory() { return p_renderFactory; }
+    @property Renderer renderer() { return p_renderer; }
 
 private:
     Application app;
@@ -62,6 +66,7 @@ private:
     Theme p_theme;
     Cursor.Icon p_cursor = Cursor.Icon.normal;
     RenderFactory p_renderFactory;
+    Renderer p_renderer;
 
     Widget root;
     Widget focusedWidget = null;

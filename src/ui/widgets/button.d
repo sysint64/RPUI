@@ -20,8 +20,8 @@ class Button : Widget {
     }
 
     override void render(Camera camera) {
-        if (drawChildren)
-            super.render(camera);
+        // if (drawChildren)
+        super.render(camera);
 
         updateAbsolutePosition();
         renderSkin();
@@ -60,8 +60,8 @@ protected:
     string clickElement = "Click";
     string focusElement = "Focus";
 
-    BaseRenderObject[3] skinRenderObjects;
-    BaseRenderObject[3] skinFocusRenderObjects;
+    BaseRenderObject[string] skinRenderObjects;
+    BaseRenderObject[string] skinFocusRenderObjects;
 
     BaseRenderObject icon1RenderObject;
     BaseRenderObject icon2RenderObject;
@@ -76,15 +76,18 @@ protected:
         size_t[3] coordIndices;
 
         with (RenderPartIndex) {
-            coordIndices = [leaveLeft, leaveCenter, leaveRight];
+            string state = "Leave";
+            // coordIndices = [leaveLeft, leaveCenter, leaveRight];
 
             if (isEnter)
-                coordIndices = [enterLeft, enterCenter, enterRight];
+                state = "Enter";
+                // coordIndices = [enterLeft, enterCenter, enterRight];
 
             if (isClick)
-                coordIndices = [clickLeft, clickCenter, clickRight];
+                state = "Click";
+                // coordIndices = [clickLeft, clickCenter, clickRight];
 
-            // renderPartsHorizontal(skinRenderObjects, coordIndices, absolutePosition, size);
+            renderer.renderPartsHorizontal(skinRenderObjects, state, absolutePosition, size);
 
             // if (focused) {
             //     immutable vec2i focusPos = absolutePosition + focusOffsets;
@@ -105,9 +108,9 @@ protected:
     // precomputer
     override void precompute() {
         string[4] elements = [leaveElement, enterElement, clickElement, focusElement];
-        skinRenderObjects[0] = renderFactory.createQuad(style, elements, "left");
-        // skinRenderObjects[1] = renderFactory.createQuad(style, elements, "center");
-        // skinRenderObjects[2] = renderFactory.createQuad(style, elements, "right");
+        skinRenderObjects["left"] = renderFactory.createQuad(style, elements, "left");
+        skinRenderObjects["center"] = renderFactory.createQuad(style, elements, "center");
+        skinRenderObjects["right"] = renderFactory.createQuad(style, elements, "right");
         app.logDebug("Precomputed button");
         // skinRenderObjects[0] = new QuadRenderObject(manager, style, leaveElement, "left");
         // skinRenderObjects[1] = new QuadRenderObject(manager, style, leaveElement, "center");
