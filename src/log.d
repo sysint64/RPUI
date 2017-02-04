@@ -12,7 +12,6 @@ import math.linalg;
 import gapi.text;
 import gapi.font;
 import gapi.geometry;
-import gapi.sprite;
 import gapi.camera;
 
 
@@ -20,7 +19,6 @@ class Log {
     this() {
         // TODO: move to resources
         font = new Font("/home/andrey/projects/e2dit-dlang/res/fonts/ttf-dejavu/DejaVuSans.ttf");
-        glyphGeometry = new SpriteGeometry(false, true, true);
     }
 
     void display(vec4, Char, T...)(in vec4 color, in Char[] fmt, T args) {
@@ -57,7 +55,7 @@ class Log {
 
 private:
     Font font;
-    SpriteGeometry glyphGeometry;
+    Geometry glyphGeometry;
     Array!LogText texts;
     Application app;
     vec2i padding = vec2i(10, 10);

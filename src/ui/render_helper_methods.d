@@ -1,3 +1,4 @@
+
 module ui.render_helper_methods;
 
 
@@ -7,7 +8,7 @@ mixin template RenderHelperMethods() {
     {
         renderObject.position = position;
         renderObject.scaling = size;
-        renderObject.render(camera);
+        // renderObject.render(camera);
     }
 
     void renderPartsHorizontal(gapi.BaseObject[3] renderObjects, in size_t[3] coordIndices,
@@ -28,7 +29,7 @@ mixin template RenderHelperMethods() {
         const vec2 rightPos = centerPos + vec2(centerWidth, 0);
 
         renderPart(renderObjects[0], leftIndex, leftPos, vec2(leftWidth, height));
-        renderPart(renderObjects[1], centerIndex, centerPos, vec2(centerWidth, height));
-        renderPart(renderObjects[2], rightIndex, rightPos, vec2(rightWidth, height));
+        // renderPart(renderObjects[1], centerIndex, centerPos, vec2(centerWidth, height));
+        // renderPart(renderObjects[2], rightIndex, rightPos, vec2(rightWidth, height));
     }
 }

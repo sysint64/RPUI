@@ -4,19 +4,32 @@ import application;
 import std.container;
 import math.linalg;
 
+import gapi.camera;
+
 import ui.theme;
 import ui.widget;
 import ui.cursor;
+import ui.render_factory;
 
 
 class Manager {
-    void render() {
+    this(in string theme) {
+        root = new Widget(this);
+        app = Application.getInstance();
+
+        p_theme = new Theme(theme);
+        p_renderFactory = new RenderFactory(this);
+    }
+
+    void render(Camera camera) {
+        root.render(camera);
     }
 
     void poll() {
     }
 
     void addWidget(Widget widget) {
+        root.addWidget(widget);
     }
 
     void deleteWidget(Widget widget) {
@@ -40,6 +53,7 @@ class Manager {
 
     @property Theme theme() { return p_theme; }
     @property Cursor.Icon cursor() { return p_cursor; }
+    @property RenderFactory renderFactory() { return p_renderFactory; }
 
 private:
     Application app;
@@ -47,8 +61,17 @@ private:
 
     Theme p_theme;
     Cursor.Icon p_cursor = Cursor.Icon.normal;
+    RenderFactory p_renderFactory;
 
     Widget root;
     Widget focusedWidget = null;
     Widget underMouseWidget = null;
+
+package:
+    uint lastIndex = 0;
+
+    uint getNextIndex() {
+        ++lastIndex  ;
+        return lastIndex;
+    }
 }

@@ -8,9 +8,12 @@ import gapi;
 import application;
 import math.linalg;
 
+import containers.treemap;
+
 import ui.manager;
 import ui.precompute.helper_methods;
 import ui.render_helper_methods;
+import ui.render_factory;
 import ui.cursor;
 
 
@@ -31,6 +34,8 @@ enum VerticalAlign {
 }
 
 class Widget {
+    alias TreeMap!(uint, Widget) Children;
+
     // Events aliases
     alias void function(Widget) OnClickListener;
     alias void function(Widget) OnDblClickistener;
@@ -45,8 +50,13 @@ class Widget {
     alias void function(Widget, in uint x, in uint y, in MouseButton button) OnMouseDownListener;
     alias void function(Widget, in uint x, in uint y, in MouseButton button) OnMouseUpListener;
 
-    this(Manager manager) {
-        this.manager = manager;
+    this() {
+        app = Application.getInstance();
+    }
+
+    this(in string style) {
+        app = Application.getInstance();
+        this.p_style = style;
     }
 
     void focus() {
@@ -55,7 +65,23 @@ class Widget {
     void blur() {
     }
 
-    void render() {
+    void render(Camera camera) {
+        this.camera = camera;
+
+        foreach (uint index, Widget widget; children) {
+            if (!widget.visible)
+                continue;
+
+            widget.render(camera);
+        }
+    }
+
+    void addWidget(Widget widget) {
+        uint index = manager.getNextIndex();
+        app.logDebug("Added widget with index: %d", index);
+        widget.manager = manager;
+        children[index] = widget;
+        widget.precompute();
     }
 
     // Properties
@@ -96,11 +122,13 @@ class Widget {
     @property ref bool autoHeight() { return p_autoHeight; }
     @property void autoHeight(in bool val) { p_autoHeight = val; }
 
-    @property Widget[uint] children() { return p_children; }
+    @property ref Children children() { return p_children; }
 
     @property bool isEnter() { return p_isEnter; }
     @property bool isClick() { return p_isClick; }
     @property bool isOver() { return p_isOver; }
+
+    @property RenderFactory renderFactory() { return manager.renderFactory; }
 
 
     // Event Listeners
@@ -148,8 +176,14 @@ protected:
     mixin PrecomputeHelperMethods;
     mixin RenderHelperMethods;
 
+package:
+    this(Manager manager) {
+        this.manager = manager;
+        app = Application.getInstance();
+    }
+
 private:
-    Camera camera;
+    Camera camera = null;
 
     PrecomputeCoords[32] precomputeCoords;
     PrecomputeText[32] precomputeTexts;
@@ -169,7 +203,7 @@ private:
     vec4i p_margin;
     vec4i p_padding;
 
-    Widget[uint] p_children;
+    Children p_children;
     bool p_focused = false;
     bool p_withoutSkin = false;
     bool p_visible = true;

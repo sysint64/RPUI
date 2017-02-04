@@ -59,22 +59,4 @@ void main() {
 
     auto app = MapEditor.getInstance();
     app.run();
-
-    Widget widget = new Widget(null);
-    widget.onClickListener = function void(Widget widget) {
-        widget.cursor = Cursor.Icon.hand;
-    };
-
-    // DerelictGL3.reload();
-
-    // Data data = new Data("/home/andrey/dev/e2dit-ml-dlang/tests");
-    // Data data = new Data("C:/dev/e2dit/tests");
-    // data.load("simple.e2t");
-
-    // writeln("\n\nTREE:\n");
-    // traverse(data.root);
-
-    // data.getParameter("test.test2.p2");
-    // writeln(data.optNumber("test.test2.p2.12"));
-    // data.save("export.e2b", Data.IOType.text);
 }

@@ -33,11 +33,10 @@ class TexAtlasMaterial : Material {
 
     @property ref Texture.Coord texCoord() { return p_texCoord; }
     @property void texCoord(Texture.Coord val) {
-        if (val.normalized) {
-            p_texCoord = val;
-        } else {
-            p_texCoord = val.getNrom(p_texture);
-        }
+        if (!val.isNormalized)
+            val.normalize(p_texture);
+
+        p_texCoord = val;
     }
 
     @property Shader shader() { return p_shader; }

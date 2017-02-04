@@ -5,12 +5,16 @@ import patterns.singleton;
 import application;
 
 import gapi.camera;
-import gapi.sprite;
+import gapi.geometry;
+import gapi.geometry_factory;
 import gapi.shader;
 import gapi.texture;
 import gapi.base_object;
 import gapi.font;
 import gapi.text;
+
+import ui;
+import ui.widgets.button;
 
 import math.linalg;
 import std.stdio;
@@ -36,7 +40,7 @@ class MapEditor: Application {
 
         shader.bind();
         shader.setUniformMatrix("MVP", sprite.lastMVPMatrix);
-        // shader.setUniformTexture("texture", texture);
+        shader.setUniformTexture("texture", texture);
 
         sprite.render(camera);
         // shader.setUniformTexture("texture", texture);
@@ -50,31 +54,27 @@ class MapEditor: Application {
         // text.render(camera);
         // camera.zoom += 0.01f;
 
-        if (!posted) {
-            logError("Error!");
-            logWarning("Warning!");
-            logDebug("Debug!");
-            posted = true;
-        }
-
+        uiManager.render(camera);
         onPostRender(camera);
     }
 
-    bool posted = false;
     Camera camera;
-    SpriteGeometry spriteGeometry;
+    Geometry spriteGeometry;
     BaseObject sprite;
     Shader shader;
     Texture texture;
     Font font;
     Text text;
+    ui.Manager uiManager;
 
     override void onCreate() {
         camera = new Camera(viewportWidth, viewportHeight);
-        spriteGeometry = new SpriteGeometry(false, true, true);
+        // spriteGeometry = new SpriteGeometry(false, true, true);
+
+        spriteGeometry = GeometryFactory.createSprite(false, true);
         sprite = new BaseObject(spriteGeometry);
         shader = new Shader(resourcesDirectory ~ "/shaders/GL2/transform.glsl");
-        // texture = new Texture(resourcesDirectory ~ "/test.jpg");
+        texture = new Texture(resourcesDirectory ~ "/test.jpg");
 
         camera.position = vec2(0.0f, 0.0f);
         camera.zoom = 1.0f;
@@ -91,6 +91,9 @@ class MapEditor: Application {
         text = new Text(spriteGeometry, font, "Hello world!");
 
         text.position = vec2(30.0f, 30.0f);
+        uiManager = new ui.Manager(settings.theme);
+        Button button = new Button("Button");
+        uiManager.addWidget(button);
     }
 
     override void onKeyPressed(in KeyCode key) {

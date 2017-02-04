@@ -7,10 +7,10 @@ mixin template PrecomputeHelperMethods() {
         PrecomputeCoords coord;
 
         with (manager.theme) {
-            coord.offset.x = atlasData.getInteger(selector ~ ".0");
-            coord.offset.y = atlasData.getInteger(selector ~ ".1");
-            coord.size.x = atlasData.getInteger(selector ~ ".2");
-            coord.size.y = atlasData.getInteger(selector ~ ".3");
+            coord.offset.x = data.getInteger(selector ~ ".0");
+            coord.offset.y = data.getInteger(selector ~ ".1");
+            coord.size.x = data.getInteger(selector ~ ".2");
+            coord.size.y = data.getInteger(selector ~ ".3");
 
             coord.normOffset.x = to!float(coord.offset.x) / to!float(skin.width);
             coord.normOffset.y = to!float(coord.offset.y) / to!float(skin.height);
@@ -31,12 +31,12 @@ mixin template PrecomputeHelperMethods() {
         PrecomputeText text;
 
         with (manager.theme) {
-            text.color.r = atlasData.getNumber(textColorSelector ~ ".0") / 255.0f;
-            text.color.g = atlasData.getNumber(textColorSelector ~ ".1") / 255.0f;
-            text.color.b = atlasData.getNumber(textColorSelector ~ ".2") / 255.0f;
+            text.color.r = data.getNumber(textColorSelector ~ ".0") / 255.0f;
+            text.color.g = data.getNumber(textColorSelector ~ ".1") / 255.0f;
+            text.color.b = data.getNumber(textColorSelector ~ ".2") / 255.0f;
 
-            text.offset.x = atlasData.getInteger(textOffsetSelector ~ ".0");
-            text.offset.y = atlasData.getInteger(textOffsetSelector ~ ".1");
+            text.offset.x = data.getInteger(textOffsetSelector ~ ".0");
+            text.offset.y = data.getInteger(textOffsetSelector ~ ".1");
         }
     }
 }

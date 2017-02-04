@@ -38,6 +38,14 @@ class Text: BaseObject {
         font.setTextSize(textSize);
     }
 
+    this(Geometry geometry, Font font, in vec4 color) {
+        super(geometry);
+        this.p_font = font;
+        this.p_color = color;
+        createImpl();
+        font.setTextSize(textSize);
+    }
+
     this(Geometry geometry, Font font, in dstring text, in vec4 color) {
         super(geometry);
         this.p_font = font;

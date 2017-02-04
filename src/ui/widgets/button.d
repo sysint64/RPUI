@@ -6,21 +6,22 @@ import math.linalg;
 
 import ui.widget;
 import ui.manager;
+import ui.render_objects;
 
 
 class Button : Widget {
-    this(Manager manager) {
-        super(manager);
+    this(in string style) {
+        super(style);
     }
 
-    this(Manager manager, bool allowCheck) {
-        super(manager);
+    this(bool allowCheck) {
+        super();
         this.p_allowCheck = allowCheck;
     }
 
-    override void render() {
+    override void render(Camera camera) {
         if (drawChildren)
-            super.render();
+            super.render(camera);
 
         updateAbsolutePosition();
         renderSkin();
@@ -54,17 +55,17 @@ protected:
     vec2i focusOffsets;
     uint focusResize;
 
-    string leaveElement = "leave";
-    string enterElement = "enter";
-    string clickElement = "click";
-    string focusElement = "focus";
+    string leaveElement = "Leave";
+    string enterElement = "Enter";
+    string clickElement = "Click";
+    string focusElement = "Focus";
 
-    gapi.BaseObject[3] skinRenderObjects;
-    gapi.BaseObject[3] skinFocusRenderObjects;
+    BaseRenderObject[3] skinRenderObjects;
+    BaseRenderObject[3] skinFocusRenderObjects;
 
-    gapi.BaseObject icon1RenderObject;
-    gapi.BaseObject icon2RenderObject;
-    gapi.Text textRenderObject;
+    BaseRenderObject icon1RenderObject;
+    BaseRenderObject icon2RenderObject;
+    TextRenderObject textRenderObject;
 
     bool p_allowCheck = false;
     utfstring p_caption;
@@ -83,14 +84,14 @@ protected:
             if (isClick)
                 coordIndices = [clickLeft, clickCenter, clickRight];
 
-            renderPartsHorizontal(skinRenderObjects, coordIndices, absolutePosition, size);
+            // renderPartsHorizontal(skinRenderObjects, coordIndices, absolutePosition, size);
 
-            if (focused) {
-                immutable vec2i focusPos = absolutePosition + focusOffsets;
-                immutable vec2i focusSize = size + vec2i(focusResize, 0);
-                coordIndices = [focusLeft, focusCenter, focusRight];
-                renderPartsHorizontal(skinFocusRenderObjects, coordIndices, focusPos, focusSize);
-            }
+            // if (focused) {
+            //     immutable vec2i focusPos = absolutePosition + focusOffsets;
+            //     immutable vec2i focusSize = size + vec2i(focusResize, 0);
+            //     coordIndices = [focusLeft, focusCenter, focusRight];
+            //     renderPartsHorizontal(skinFocusRenderObjects, coordIndices, focusPos, focusSize);
+            // }
         }
     }
 
@@ -103,8 +104,13 @@ protected:
 
     // precomputer
     override void precompute() {
-        // skinRenderObjects[0] = new UIQuad(style, "", leaveElement);
-        // skinRenderObjects[1] = new UIQuad(style, "", leaveElement);
-        // skinRenderObjects[2] = new UIQuad(style, "", leaveElement);
+        string[4] elements = [leaveElement, enterElement, clickElement, focusElement];
+        skinRenderObjects[0] = renderFactory.createQuad(style, elements, "left");
+        // skinRenderObjects[1] = renderFactory.createQuad(style, elements, "center");
+        // skinRenderObjects[2] = renderFactory.createQuad(style, elements, "right");
+        app.logDebug("Precomputed button");
+        // skinRenderObjects[0] = new QuadRenderObject(manager, style, leaveElement, "left");
+        // skinRenderObjects[1] = new QuadRenderObject(manager, style, leaveElement, "center");
+        // skinRenderObjects[2] = new QuadRenderObject(manager, style, leaveElement, "right");
     }
 }

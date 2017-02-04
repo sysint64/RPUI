@@ -14,9 +14,6 @@ class Geometry {
         this.dynamic = dynamic;
         this.renderMode = renderMode;
         this.settings = Settings.getInstance();
-
-        init();
-        createVBO();
     }
 
     ~this() {
@@ -26,6 +23,7 @@ class Geometry {
     }
 
     void init() {
+        createVBO();
     }
 
     void render() {

@@ -28,10 +28,10 @@ abstract class Application {
         log = new Log();
         scope(exit) sfWindow_destroy(window);
 
-        auto settings = Settings.getInstance();
+        p_settings = Settings.getInstance();
         settings.load(binDirectory, "settings.e2t");
 
-        writeln(settings.uiTheme);
+        writeln(settings.theme);
         onCreate();
         loop();
     }
@@ -48,6 +48,18 @@ abstract class Application {
 
     void logDebug(Char, T...)(in Char[] fmt, T args) {
         debug log.display(vec4(0.3f, 0.3f, 0.3f, 1), fmt, args);
+    }
+
+    void warning(Char, T...)(in Char[] fmt, T args) {
+
+    }
+
+    void error(Char, T...)(in Char[] fmt, T args) {
+
+    }
+
+    void criticalError(Char, T...)(in Char[] fmt, T args) {
+        logError(fmt, args);
     }
 
     // Events
@@ -75,6 +87,7 @@ abstract class Application {
 
     @property string binDirectory() { return p_binDirectory; }
     @property string resourcesDirectory() { return p_resourcesDirectory; }
+    @property Settings settings() { return p_settings; }
 
     @property uint screenWidth() { return p_screenWidth; }
     @property uint screenHeight() { return p_screenHeight; }
@@ -99,6 +112,8 @@ private:
     immutable string p_resourcesDirectory = p_binDirectory ~ "/res";  // TODO: rm hardcode
     sfWindow* window;
     Log log;
+
+    Settings p_settings;
 
     // GAPI
     Shader p_lastShader = null;

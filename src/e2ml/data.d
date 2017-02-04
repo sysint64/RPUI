@@ -4,6 +4,7 @@ import std.file;
 import std.stdio;
 import std.math;
 import std.conv;
+import std.path;
 
 import math.linalg;
 
@@ -61,7 +62,7 @@ class Data {
     }
 
     void loadText(in string fileName) {
-        SymbolStream stream = new SymbolStream(rootDirectory ~ "/" ~ fileName);
+        SymbolStream stream = new SymbolStream(rootDirectory ~ dirSeparator ~ fileName);
 
         this.lexer  = new Lexer(stream);
         this.parser = new Parser(lexer, this);
@@ -250,6 +251,10 @@ private:
 
     vec!(T, n) getVecValue(T, int n, E : E2TMLException)(in string path) {
         Node node = getNode(path);
+
+        if (node is null)
+            throw new NotFoundException("Node with path \"" ~ path ~ "\" not found");
+
         return getVecValueFromNode!(T, n, E)(path, node);
     }
 

@@ -15,16 +15,14 @@ class Texture {
     struct Coord {
         vec2 offset;
         vec2 size;
-        bool normalized = false;
+        vec2 normOffset;
+        vec2 normSize;
+        bool isNormalized = false;
 
-        Coord getNrom(Texture texture) {
-            Coord coord;
-
-            coord.offset = vec2(offset.x / texture.width, offset.y / texture.height);
-            coord.size = vec2(size.x / texture.width, size.y / texture.height);
-            coord.normalized = true;
-
-            return coord;
+        void normalize(Texture texture) {
+            normOffset = vec2(offset.x / texture.width, offset.y / texture.height);
+            normSize = vec2(size.x / texture.width, size.y / texture.height);
+            isNormalized = true;
         }
 
     private:

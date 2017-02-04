@@ -25,8 +25,12 @@ class Settings {
         return data.optInteger("General.opengl_version.1", 1);
     }
 
-    @property string uiTheme() {
+    @property string theme() {
         return data.optString("Appearance.theme.0", "dark");
+    }
+
+    @property string defaultTheme() {
+        return "dark";
     }
 
     @property string font() {
