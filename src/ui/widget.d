@@ -69,6 +69,9 @@ class Widget {
     void render(Camera camera) {
         this.camera = camera;
 
+        if (!drawChildren)
+            return;
+
         foreach (uint index, Widget widget; children) {
             if (!widget.visible)
                 continue;
@@ -178,6 +181,8 @@ protected:
     @property Renderer renderer() { return manager.renderer; }
 
 package:
+    bool drawChildren = true;
+
     this(Manager manager) {
         this.manager = manager;
         app = Application.getInstance();

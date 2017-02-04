@@ -23,9 +23,9 @@ Button
         textColor  : 200, 200, 200
 
     Focus
-        left       : 55, 107, 5, 21
-        center     : 68, 107, 5, 21
-        right      : 81, 107, 5, 21
+        left       : 53, 105, 6, 25
+        center     : 68, 105, 6, 25
+        right      : 82, 105, 6, 25
         offsets    : -2, -2, 4
         textOffset : 0,  0
         textColor  : 20, 20, 20

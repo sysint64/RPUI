@@ -13,6 +13,22 @@ class RenderFactory {
         this.quadGeometry = gapi.GeometryFactory.createSprite();
     }
 
+    void createQuad(ref BaseRenderObject[string] renderObjects, in string style,
+                    in string[] states, in string part)
+    {
+        renderObjects[part] = createQuad(style, states, part);
+    }
+
+    void createQuad(ref BaseRenderObject[string] renderObjects, in string style,
+                    in string state, in string part)
+    {
+        renderObjects[part] = createQuad(style, state, part);
+    }
+
+    BaseRenderObject createQuad(in string style, in string state, in string part) {
+        return createQuad(style, [state], part);
+    }
+
     BaseRenderObject createQuad(in string style, in string[] states, in string part) {
         BaseRenderObject object = new BaseRenderObject(quadGeometry);
 

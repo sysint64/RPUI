@@ -1,6 +1,7 @@
 module ui.renderer;
 
 import std.conv;
+import std.math;
 import gapi;
 import math.linalg;
 
@@ -17,10 +18,10 @@ class Renderer {
     }
 
     void renderPart(BaseRenderObject renderObject, in string state,
-                    in vec2 position, in vec2 size)
+                    in vec2 position, in vec2 size1)
     {
         renderObject.position = position;
-        renderObject.scaling = size;
+        renderObject.scaling = size1;
 
         with (renderObject.texCoordinates[state]) {
             p_texAtlasShader.setUniformMatrix("MVP", renderObject.lastMVPMatrix);

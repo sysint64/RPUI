@@ -68,7 +68,9 @@ private:
                 }
 
             case '0': .. case '9':
-                return new NumberToken(stream, negative);
+                auto token = new NumberToken(stream, negative);
+                negative = false;
+                return token;
 
             case 'A': .. case 'Z': case 'a': .. case 'z': case '_':
                 return new IdToken(stream);
