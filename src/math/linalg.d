@@ -26,3 +26,44 @@ alias Matrix!(float, 2, 4) mat24;
 alias Matrix!(float, 4, 2) mat42;
 alias Matrix!(float, 3, 4) mat34;
 alias Matrix!(float, 4, 3) mat43;
+
+
+struct Rect {
+    uint left;
+    uint top;
+    uint width;
+    uint height;
+
+    this(in uint left, in uint top, in uint width, in uint height) {
+        this.left = left;
+        this.top = top;
+        this.width = width;
+        this.height = height;
+    }
+
+    this(in vec4i rect) {
+        this.left = rect.x;
+        this.top = rect.y;
+        this.width = rect.z;
+        this.height = rect.w;
+    }
+}
+
+
+bool pointInRect(in vec2i point, in vec4i vec) {
+    const Rect rect = Rect(vec);
+    return pointInRect(point, rect);
+}
+
+
+bool pointInRect(in uint x, in uint y, in uint left, in uint top, in uint width, in uint height) {
+    const vec2i point = vec2i(x, y);
+    const Rect rect = Rect(left, top, width, height);
+    return pointInRect(point, rect);
+}
+
+
+bool pointInRect(in vec2i point, in Rect rect) {
+    return (point.x <= rect.left+rect.width ) && (point.x >= rect.left) &&
+           (point.y <= rect.top +rect.height) && (point.y >= rect.top);
+}

@@ -82,8 +82,15 @@ abstract class Application {
     void onKeyPressed(in KeyCode key) {}
     void onKeyReleased(in KeyCode key) {}
     void onTextEntered(in utfchar key) {}
-    void onMouseDown(in uint x, in uint y, in MouseButton button) {}
-    void onMouseUp(in uint x, in uint y, in MouseButton button) {}
+
+    void onMouseDown(in uint x, in uint y, in MouseButton button) {
+        p_mouseButton = button;
+    }
+
+    void onMouseUp(in uint x, in uint y, in MouseButton button) {
+        p_mouseButton = MouseButton.mouseNone;
+    }
+
     void onDblClick(in uint x, in uint y, in MouseButton button) {}
     void onMouseMove(in uint x, in uint y) {}
     void onMouseWheel(in uint dx, in uint dy) {}
@@ -104,10 +111,9 @@ abstract class Application {
     @property uint viewportWidth() { return p_windowWidth; }
     @property uint viewportHeight() { return p_windowHeight; }
 
-    @property uint mouseX() { return p_mouseX; }
-    @property uint mouseY() { return p_mouseY; }
-    @property uint clickX() { return p_clickX; }
-    @property uint clickY() { return p_clickY; }
+
+    @property vec2i mousePos() { return p_mousePos; }
+    @property vec2i mouseClickPos() { return p_mouseClickPos; }
     @property uint mouseButton() { return p_mouseButton; }
 
     @property Shader lastShader() { return p_lastShader; }
@@ -133,9 +139,9 @@ private:
     uint p_windowHeight;
 
     // Cursor
-    uint p_mouseX, p_mouseY;
-    uint p_clickX, p_clickY;
-    uint p_mouseButton;
+    vec2i p_mousePos;
+    vec2i p_mouseClickPos;
+    uint p_mouseButton = MouseButton.mouseNone;
 
     // Time
     float p_deltaTime;
@@ -196,9 +202,7 @@ private:
 
         while (running) {
             auto mousePos = sfMouse_getPosition(window);
-
-            p_mouseX = mousePos.x;
-            p_mouseY = mousePos.x;
+            p_mousePos = vec2i(mousePos.x, mousePos.y);
 
             sfEvent event;
 

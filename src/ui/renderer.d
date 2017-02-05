@@ -17,11 +17,15 @@ class Renderer {
         app = Application.getInstance();
     }
 
+    vec2 toScreenPosition(in vec2 position, in vec2 size) {
+        return vec2(position.x, app.windowHeight - size.y - position.y);
+    }
+
     void renderPart(BaseRenderObject renderObject, in string state,
-                    in vec2 position, in vec2 size1)
+                    in vec2 position, in vec2 size)
     {
-        renderObject.position = position;
-        renderObject.scaling = size1;
+        renderObject.position = toScreenPosition(position, size);
+        renderObject.scaling = size;
 
         with (renderObject.texCoordinates[state]) {
             p_texAtlasShader.setUniformMatrix("MVP", renderObject.lastMVPMatrix);

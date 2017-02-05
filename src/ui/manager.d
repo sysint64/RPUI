@@ -1,7 +1,10 @@
 module ui.manager;
 
-import application;
 import std.container;
+import containers.treemap;
+
+import input;
+import application;
 import math.linalg;
 
 import gapi.camera;
@@ -16,6 +19,8 @@ import ui.renderer;
 class Manager {
     this(in string theme) {
         root = new Widget(this);
+        root.isOver = true;
+
         app = Application.getInstance();
 
         p_theme = new Theme(theme);
@@ -26,9 +31,49 @@ class Manager {
     void render(Camera camera) {
         p_renderer.camera = camera;
         root.render(camera);
+        poll();
     }
 
     void poll() {
+        foreach_reverse (Widget widget; widgetOrdering) {
+            if (widget is null)
+                continue;
+
+            widget.isEnter = false;
+
+            if (!widget.visible)
+                continue;
+
+            vec2i size = vec2i(widget.overSize.x > 0 ? widget.overSize.x : widget.size.x,
+                               widget.overSize.y > 0 ? widget.overSize.y : widget.size.y);
+            Rect rect = Rect(widget.absolutePosition.x, widget.absolutePosition.y, size.x, size.y);
+            widget.isOver = widget.parent.isOver && pointInRect(app.mousePos, rect);
+        }
+
+        widgetUnderMouse = null;
+        Widget found = null;
+
+        foreach_reverse (Widget widget; widgetOrdering) {
+            // if (found !is null && !widget.overlay)
+            //     continue;
+
+            if (widget is null || !widget.isOver || !widget.visible)
+                continue;
+
+            if (found !is null) {
+                found.isEnter = false;
+                found.isClick = false;
+            }
+
+            if (widget.pointIsEnter(app.mousePos)) {
+                widget.isEnter = true;
+                widgetUnderMouse = widget;
+                found = widget;
+            }
+
+            widget.isClick = (widget.isClick || widget.focused) && widget.isEnter &&
+                app.mouseButton == MouseButton.mouseLeft;
+        }
     }
 
     void addWidget(Widget widget) {
@@ -54,6 +99,52 @@ class Manager {
     void applyScissor() {
     }
 
+    // Events --------------------------------------------------------------------------------------
+
+    void onKeyPressed(in KeyCode key) {
+        root.onKeyPressed(key);
+    }
+
+    void onKeyReleased(in KeyCode key) {
+        root.onKeyReleased(key);
+    }
+
+    void onTextEntered(in utfchar key) {
+        root.onTextEntered(key);
+    }
+
+    void onMouseDown(in uint x, in uint y, in MouseButton button) {
+        foreach_reverse (Widget widget; widgetOrdering) {
+            if (widget is null)
+                continue;
+
+            if (widget.isEnter) {
+                widget.isClick = true;
+                break;
+            }
+        }
+
+        root.onMouseDown(x, y, button);
+    }
+
+    void onMouseUp(in uint x, in uint y, in MouseButton button) {
+        root.onMouseDown(x, y, button);
+    }
+
+    void onDblClick(in uint x, in uint y, in MouseButton button) {
+        root.onDblClick(x, y, button);
+    }
+
+    void onMouseMove(in uint x, in uint y) {
+        root.onMouseMove(x, y);
+    }
+
+    void onMouseWheel(in uint dx, in uint dy) {
+        root.onMouseWheel(dx, dy);
+    }
+
+    // Properties ----------------------------------------------------------------------------------
+
     @property Theme theme() { return p_theme; }
     @property Cursor.Icon cursor() { return p_cursor; }
     @property RenderFactory renderFactory() { return p_renderFactory; }
@@ -70,10 +161,11 @@ private:
 
     Widget root;
     Widget focusedWidget = null;
-    Widget underMouseWidget = null;
+    Widget widgetUnderMouse = null;
 
 package:
     uint lastIndex = 0;
+    Array!Widget widgetOrdering;
 
     uint getNextIndex() {
         ++lastIndex  ;

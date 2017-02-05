@@ -100,34 +100,42 @@ class MapEditor: Application {
 
     override void onKeyPressed(in KeyCode key) {
         super.onKeyPressed(key);
+        uiManager.onKeyPressed(key);
     }
 
     override void onKeyReleased(in KeyCode key) {
         super.onKeyReleased(key);
+        uiManager.onKeyPressed(key);
     }
 
     override void onTextEntered(in utfchar key) {
         super.onTextEntered(key);
+        uiManager.onTextEntered(key);
     }
 
     override void onMouseDown(in uint x, in uint y, in MouseButton button) {
         super.onMouseDown(x, y, button);
+        uiManager.onMouseDown(x, y, button);
     }
 
     override void onMouseUp(in uint x, in uint y, in MouseButton button) {
         super.onMouseUp(x, y, button);
+        uiManager.onMouseUp(x, y, button);
     }
 
     override void onDblClick(in uint x, in uint y, in MouseButton button) {
         super.onDblClick(x, y, button);
+        uiManager.onDblClick(x, y, button);
     }
 
     override void onMouseMove(in uint x, in uint y) {
         super.onMouseMove(x, y);
+        uiManager.onMouseMove(x, y);
     }
 
     override void onMouseWheel(in uint dx, in uint dy) {
         super.onMouseWheel(dx, dy);
+        uiManager.onMouseWheel(dx, dy);
     }
 
     override void onResize(in uint width, in uint height) {

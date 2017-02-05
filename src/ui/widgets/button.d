@@ -3,6 +3,7 @@ module ui.widgets.button;
 import input;
 import gapi;
 import math.linalg;
+import std.stdio;
 
 import ui.widget;
 import ui.manager;
@@ -73,14 +74,12 @@ protected:
         if (isClick)
             state = clickElement;
 
-        with (renderer) {
-            renderPartsHorizontal(skinRenderObjects, state, absolutePosition, size);
+        renderer.renderPartsHorizontal(skinRenderObjects, state, absolutePosition, size);
 
-            if (focused) {
-                const vec2i focusPos = absolutePosition + focusOffsets;
-                const vec2i focusSize = size + vec2i(focusResize, focusResize);
-                renderPartsHorizontal(skinFocusRenderObjects, focusElement, focusPos, focusSize);
-            }
+        if (focused) {
+            const vec2i focusPos = absolutePosition + focusOffsets;
+            const vec2i focusSize = size + vec2i(focusResize, focusResize);
+            renderer.renderPartsHorizontal(skinFocusRenderObjects, focusElement, focusPos, focusSize);
         }
     }
 

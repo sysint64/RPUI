@@ -82,14 +82,48 @@ class Widget {
 
     void addWidget(Widget widget) {
         uint index = manager.getNextIndex();
-        app.logDebug("Added widget with index: %d", index);
         widget.manager = manager;
+        widget.p_parent = this;
         children[index] = widget;
+        manager.widgetOrdering.insert(widget);
         widget.precompute();
     }
 
-    // Properties
+    bool pointIsEnter(in vec2i point) {
+        const Rect rect = Rect(absolutePosition.x, absolutePosition.y, size.x, size.y);
+        return pointInRect(point, rect);
+    }
+
+    // Events --------------------------------------------------------------------------------------
+
+    void onKeyPressed(in KeyCode key) {
+    }
+
+    void onKeyReleased(in KeyCode key) {
+    }
+
+    void onTextEntered(in utfchar key) {
+    }
+
+    void onMouseDown(in uint x, in uint y, in MouseButton button) {
+    }
+
+    void onMouseUp(in uint x, in uint y, in MouseButton button) {
+    }
+
+    void onDblClick(in uint x, in uint y, in MouseButton button) {
+    }
+
+    void onMouseMove(in uint x, in uint y) {
+    }
+
+    void onMouseWheel(in uint dx, in uint dy) {
+    }
+
+    // Properties ----------------------------------------------------------------------------------
+
     @property uint id() { return p_id; }
+    @property Widget parent() { return p_parent; }
 
     @property bool focused() { return p_focused; }
     @property string style() { return p_style; }
@@ -163,7 +197,6 @@ protected:
 
     Application app;
     Manager manager;
-    Widget parent;
 
     void updateAlign() {
     }
@@ -188,6 +221,11 @@ package:
         app = Application.getInstance();
     }
 
+    @property void isEnter(in bool val) { p_isEnter = val; }
+    @property void isClick(in bool val) { p_isClick = val; }
+    @property void isOver(in bool val) { p_isOver = val; }
+    @property vec2i overSize() { return p_overSize; }
+
 private:
     Camera camera = null;
 
@@ -202,10 +240,12 @@ private:
 
     // Properties data
     uint p_id;
+    Widget p_parent;
 
     vec2i p_position;
     vec2i p_absolutePosition;
     vec2i p_size;
+    vec2i p_overSize = vec2i(0, 0);
     vec4i p_margin;
     vec4i p_padding;
 
