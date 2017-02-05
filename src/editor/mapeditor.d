@@ -3,6 +3,7 @@ module editor.mapeditor;
 import input;
 import patterns.singleton;
 import application;
+import basic_types: utfchar;
 
 import gapi.camera;
 import gapi.geometry;
@@ -63,8 +64,6 @@ class MapEditor: Application {
     BaseObject sprite;
     Shader shader;
     Texture texture;
-    Font font;
-    Text text;
     ui.Manager uiManager;
 
     override void onCreate() {
@@ -87,10 +86,6 @@ class MapEditor: Application {
         // texture.bind();
         // spriteGeometry.bind();
 
-        font = new Font(resourcesDirectory ~ "/fonts/ttf-dejavu/DejaVuSans.ttf");
-        text = new Text(spriteGeometry, font, "Hello world!");
-
-        text.position = vec2(30.0f, 30.0f);
         uiManager = new ui.Manager(settings.theme);
         Button button = new Button("Button");
         button.size = vec2i(100, 21);

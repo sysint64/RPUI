@@ -28,7 +28,6 @@ class Button : Widget {
         updateAbsolutePosition();
         renderSkin(camera);
         renderIcon(camera);
-        // renderText(camera);
     }
 
     // Properties
@@ -61,7 +60,7 @@ protected:
     TextRenderObject textRenderObject;
 
     bool p_allowCheck = false;
-    utfstring p_caption = "Test";
+    utfstring p_caption = "Button";
     Align p_textAlign = Align.center;
     VerticalAlign p_textVerticalAlign = VerticalAlign.middle;
 
@@ -73,8 +72,11 @@ protected:
         if (isClick) state = clickElement;
 
         textRenderObject.text = caption;
+        textRenderObject.textAlign = textAlign;
+        textRenderObject.textVerticalAlign = textVerticalAlign;
+
         renderer.renderChain(skinRenderObjects, state, absolutePosition, size);
-        renderer.renderText(textRenderObject, state, absolutePosition, vec2i(size.x, 12));
+        renderer.renderText(textRenderObject, state, absolutePosition, size);
 
         if (focused) {
             const vec2i focusPos = absolutePosition + focusOffsets;
@@ -84,9 +86,6 @@ protected:
     }
 
     void renderIcon(Camera camera) {
-    }
-
-    void renderText(Camera camera) {
     }
 
     override void onCreate() {

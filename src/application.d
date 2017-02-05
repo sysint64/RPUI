@@ -9,6 +9,7 @@ import derelict.sfml2.system;
 import derelict.sfml2.window;
 import derelict.opengl3.gl;
 
+import basic_types: utfchar;
 import input;
 import log;
 import settings;

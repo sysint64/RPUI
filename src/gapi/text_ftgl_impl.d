@@ -29,13 +29,18 @@ class TextFTGLImpl: TextImpl {
 
         glBegin2D();
 
+        const float posY = textObject.getTextPosition().y;
+        const float posX = textObject.getTextPosition().x;
+
         glActiveTexture(GL_TEXTURE0);
         glColor3fv(textObject.color.value_ptr);
-        glTranslatef(textObject.position.x, textObject.position.y, 0);
+        glTranslatef(posX, posY, 0);
 
         string text_s = to!string(textObject.text);
         const char* text_z = toStringz(text_s);
         ftglRenderFont(ftglFont, text_z, RENDER_ALL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         glEnd2D();
 
@@ -62,6 +67,6 @@ class TextFTGLImpl: TextImpl {
         ftglGetFontBBox(ftglFont, text_z, n, bounds);
 
         float width = bounds[3] - bounds[0];
-        return to!uint(round(width));
+        return to!uint(width);
     }
 }

@@ -10,10 +10,12 @@ import gapi.text_impl;
 import gapi.text_ftgl_impl;
 import gapi.text_sfml_impl;
 
+import basic_types;
 import math.linalg;
 
 import std.conv;
 import std.stdio;
+import std.math;
 
 
 class Text: BaseObject {
@@ -64,31 +66,6 @@ class Text: BaseObject {
         font.setTextSize(textSize);
     }
 
-    this(Geometry geometry, Font font, in dstring text) {
-        super(geometry);
-        this.p_font = font;
-        this.p_text = text;
-        createImpl();
-        font.setTextSize(textSize);
-    }
-
-    this(Geometry geometry, Font font, in vec4 color) {
-        super(geometry);
-        this.p_font = font;
-        this.p_color = color;
-        createImpl();
-        font.setTextSize(textSize);
-    }
-
-    this(Geometry geometry, Font font, in dstring text, in vec4 color) {
-        super(geometry);
-        this.p_font = font;
-        this.p_text = text;
-        this.p_color = color;
-        createImpl();
-        font.setTextSize(textSize);
-    }
-
     override void render(Camera camera) {
         debug assert(font !is null);
         debug assert(impl !is null);
@@ -119,12 +96,60 @@ class Text: BaseObject {
     @property ref vec4 color() { return p_color; }
     @property void color(in vec4 val) { p_color = val; }
 
+    @property Align textAlign() { return p_textAlign; }
+    @property void textAlign(in Align val) { p_textAlign = val; }
+
+    @property VerticalAlign textVerticalAlign() { return p_textVerticalAlign; }
+    @property void textVerticalAlign(in VerticalAlign val) { p_textVerticalAlign = val; }
+
+    // TODO: Remove hardcode
+    @property uint lineHeight() { return p_textSize - 4; }
+
+package:
+    vec2 getTextPosition() {
+        vec2 textPosition = position;
+        const uint textWidth = impl.getWidth(this);
+
+        switch (textAlign) {
+            case Align.center:
+                textPosition.x += round((scaling.x - textWidth) / 2);
+                break;
+
+            case Align.right:
+                textPosition.x += scaling.x - textWidth;
+                break;
+
+            default:
+                break;
+        }
+
+        switch (textVerticalAlign) {
+            case VerticalAlign.top:
+                textPosition.y += scaling.y - lineHeight;
+                break;
+
+            case VerticalAlign.middle:
+                textPosition.y += round((scaling.y - lineHeight) / 2);
+                break;
+
+            default:
+                break;
+        }
+
+        return textPosition;
+    }
+
 private:
     Font p_font;
     uint p_textSize = 12;
     bool p_bold = false;
-    dstring p_text = "";
+    utfstring p_text = "";
     vec4 p_color;
+    Align p_textAlign = Align.center;
+    VerticalAlign p_textVerticalAlign = VerticalAlign.middle;
+    bool p_autoWidth = false;
+    bool p_autoHeight = false;
+
     TextImpl impl;
 
     void createImpl() {

@@ -61,6 +61,7 @@ class Renderer {
     void renderText(TextRenderObject text, in string state, in vec2i position, in vec2i size) {
         vec2 textPos = position + text.offsets[state];
         text.color = text.colors[state];
+        text.scaling = vec2(size);
         text.position = toScreenPosition(textPos, vec2(size));
         text.render(camera);
     }

@@ -63,16 +63,12 @@ private:
     uint p_textSize = 18;
 
     class LogText : Text {
-        this(Geometry geometry, Font font, dstring text) {
-            super(geometry, font, text);
-            leftTime = deadTime;
-            app = Application.getInstance();
-        }
-
         this(Geometry geometry, Font font, in dstring text, in vec4 color) {
-            super(geometry, font, text, color);
+            super(geometry, font);
             leftTime = deadTime;
             app = Application.getInstance();
+            this.text = text;
+            this.color = color;
         }
 
         override void render(Camera camera) {

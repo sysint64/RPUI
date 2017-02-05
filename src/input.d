@@ -2,9 +2,6 @@ module input;
 
 import derelict.sfml2.window;
 
-alias utfchar = dchar;
-alias utfstring = dstring;
-
 // break the dependence on SFML Mouse
 enum MouseButton {
     mouseNone = -1,

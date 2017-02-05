@@ -3,6 +3,9 @@ module basic_types;
 import math.linalg;
 
 
+alias utfchar = dchar;
+alias utfstring = dstring;
+
 enum Align {
     none,
     left,
