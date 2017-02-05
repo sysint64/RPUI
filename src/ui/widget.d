@@ -7,32 +7,16 @@ import input;
 import gapi;
 import application;
 import math.linalg;
+import basic_types;
 
 import containers.treemap;
 
 import ui.manager;
-import ui.precompute.helper_methods;
 import ui.render_factory;
 import ui.render_objects;
 import ui.cursor;
 import ui.renderer;
 
-
-enum Align {
-    none,
-    left,
-    center,
-    right,
-    client,
-};
-
-enum VerticalAlign {
-    none,
-    top,
-    middle,
-    bottom,
-    client,
-}
 
 class Widget {
     alias TreeMap!(uint, Widget) Children;
@@ -86,7 +70,7 @@ class Widget {
         widget.p_parent = this;
         children[index] = widget;
         manager.widgetOrdering.insert(widget);
-        widget.precompute();
+        widget.onCreate();
     }
 
     bool pointIsEnter(in vec2i point) {
@@ -95,6 +79,9 @@ class Widget {
     }
 
     // Events --------------------------------------------------------------------------------------
+
+    void onCreate() {
+    }
 
     void onKeyPressed(in KeyCode key) {
     }
@@ -183,17 +170,6 @@ class Widget {
 
 protected:
     enum PartDraws {all, left, center, right};
-    struct PrecomputeCoords {
-        vec2 normOffset;  // normalized by 1 offset
-        vec2 normSize;  // normalized by 1 size
-        vec2i offset;
-        vec2i size;
-    }
-
-    struct PrecomputeText {
-        vec4 color;
-        vec2i offset;
-    }
 
     Application app;
     Manager manager;
@@ -206,9 +182,6 @@ protected:
 
     void updateAbsolutePosition() {
         p_absolutePosition = position;
-    }
-
-    void precompute() {
     }
 
     @property Renderer renderer() { return manager.renderer; }
@@ -228,9 +201,6 @@ package:
 
 private:
     Camera camera = null;
-
-    PrecomputeCoords[32] precomputeCoords;
-    PrecomputeText[32] precomputeTexts;
 
     // Navigation (for focus)
     Widget nextWidget = null;

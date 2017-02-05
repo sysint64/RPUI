@@ -38,8 +38,8 @@ class Renderer {
         renderObject.render(camera);
     }
 
-    void renderPartsHorizontal(BaseRenderObject[string] renderObjects, in string state,
-                               in vec2i position, in vec2i size)
+    void renderChain(BaseRenderObject[string] renderObjects, in string state,
+                     in vec2i position, in vec2i size)
     {
         p_texAtlasShader.bind();
 
@@ -56,6 +56,13 @@ class Renderer {
         renderPart(renderObjects["left"], state, leftPos, vec2(leftWidth, height));
         renderPart(renderObjects["center"], state, centerPos, vec2(centerWidth, height));
         renderPart(renderObjects["right"], state, rightPos, vec2(rightWidth, height));
+    }
+
+    void renderText(TextRenderObject text, in string state, in vec2i position, in vec2i size) {
+        vec2 textPos = position + text.offsets[state];
+        text.color = text.colors[state];
+        text.position = toScreenPosition(textPos, vec2(size));
+        text.render(camera);
     }
 
     @property gapi.Camera camera() { return p_camera; }

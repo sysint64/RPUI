@@ -17,10 +17,44 @@ import std.stdio;
 
 
 class Text: BaseObject {
+    static class Builder(T: Text) {
+        this(Geometry geometry) {
+            this.geometry = geometry;
+        }
+
+        Builder!T setColor(in vec4 color) {
+            this.color = color;
+            return this;
+        }
+
+        Builder!T setFont(Font font) {
+            this.font = font;
+            return this;
+        }
+
+        Builder!T setTextSize(in uint textSize) {
+            this.textSize = textSize;
+            return this;
+        }
+
+        T build() {
+            T text = new T(geometry);
+            text.font = font;
+            text.color = color;
+            text.textSize = textSize;
+            return text;
+        }
+
+    private:
+        Geometry geometry;
+        vec4 color = vec4(0, 0, 0, 1);
+        uint textSize = 12;
+        Font font;
+    }
+
     this(Geometry geometry) {
         super(geometry);
         createImpl();
-        font.setTextSize(textSize);
     }
 
     this(Geometry geometry, Font font) {
@@ -62,6 +96,7 @@ class Text: BaseObject {
         if (!visible)
             return;
 
+        font.bind(this);
         impl.render(this, camera);
     }
 
@@ -70,6 +105,7 @@ class Text: BaseObject {
     }
 
     @property Font font() { return p_font; }
+    @property void font(Font val) { p_font = val; }
 
     @property ref uint textSize() { return p_textSize; }
     @property void textSize(in uint val) {
@@ -77,14 +113,15 @@ class Text: BaseObject {
         font.setTextSize(p_textSize);
     }
 
-    @property dstring text() { return p_text; }
+    @property ref dstring text() { return p_text; }
+    @property void text(in dstring val) { p_text = val; }
     @property bool bold() { return p_bold; }
     @property ref vec4 color() { return p_color; }
     @property void color(in vec4 val) { p_color = val; }
 
 private:
     Font p_font;
-    uint p_textSize = 18;
+    uint p_textSize = 12;
     bool p_bold = false;
     dstring p_text = "";
     vec4 p_color;

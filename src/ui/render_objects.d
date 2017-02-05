@@ -22,23 +22,21 @@ package:
 
 
 class TextRenderObject : gapi.Text {
+    alias gapi.Text.Builder!TextRenderObject Builder;
+
     this(Geometry geometry) {
         super(geometry);
     }
 
-    this(Geometry geometry, Font font) {
-        super(geometry, font);
+    void addOffset(in string state, in vec2i offset) {
+        offsets[state] = offset;
     }
 
-    this(Geometry geometry, Font font, in vec4 color) {
-        super(geometry, font, color);
+    void addColor(in string state, in vec4 color) {
+        colors[state] = color;
     }
 
-    this(Geometry geometry, Font font, in dstring text) {
-        super(geometry, font, text);
-    }
-
-    this(Geometry geometry, Font font, in dstring text, in vec4 color) {
-        super(geometry, font, text, color);
-    }
+package:
+    vec2i[string] offsets;
+    vec4[string] colors;
 }

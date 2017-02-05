@@ -25,6 +25,7 @@ class Log {
         auto writer = appender!dstring();
         formattedWrite(writer, fmt, args);
         LogText text = new LogText(glyphGeometry, font, writer.data, color);
+        text.textSize = p_textSize;
         texts.insertBack(text);
     }
 

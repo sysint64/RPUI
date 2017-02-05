@@ -86,6 +86,12 @@ class NotVec4Exception : E2TMLException {
 }
 
 
+class NotVec3OrVec4Exception : E2TMLException {
+    this() { super("it is not a vec3 or vec4 value"); }
+    this(in string details) { super(details); }
+}
+
+
 class NotTextureCoordException : E2TMLException {
     this() { super("it is not a texture coordinate value"); }
     this(in string details) { super(details); }

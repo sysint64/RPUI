@@ -1,0 +1,34 @@
+General
+    regularFont     : "ttf-dejavu/DejaVuSans.ttf", 12
+
+Button
+    split           : 44, 35, 3, 21
+    iconMarginLeft  : 9
+    iconMarginRight : 9
+
+    Leave
+        left        : 55, 35, 5, 21
+        center      : 68, 35, 5, 21
+        right       : 81, 35, 5, 21
+        textOffset  : 0,  0
+        textColor   : 20, 20, 20
+
+    Enter
+        left        : 55, 59, 5, 21
+        center      : 68, 59, 5, 21
+        right       : 81, 59, 5, 21
+        textOffset  : 0,  0
+        textColor   : 40, 40, 40
+
+    Click
+        left        : 55, 83, 5, 21
+        center      : 68, 83, 5, 21
+        right       : 81, 83, 5, 21
+        textOffset  : 0,  1
+        textColor   : 0, 0, 0
+
+    Focus
+        left        : 53, 105, 6, 25
+        center      : 68, 105, 6, 25
+        right       : 82, 105, 6, 25
+        offsets     : [-2, -2], 4

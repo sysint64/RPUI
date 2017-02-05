@@ -4,6 +4,7 @@ import input;
 import gapi;
 import math.linalg;
 import std.stdio;
+import basic_types;
 
 import ui.widget;
 import ui.manager;
@@ -25,9 +26,9 @@ class Button : Widget {
     override void render(Camera camera) {
         super.render(camera);
         updateAbsolutePosition();
-        renderSkin();
-        renderIcon();
-        renderText();
+        renderSkin(camera);
+        renderIcon(camera);
+        // renderText(camera);
     }
 
     // Properties
@@ -45,7 +46,7 @@ class Button : Widget {
 
 protected:
     vec2i focusOffsets;
-    uint focusResize;
+    uint  focusResize;
 
     string leaveElement = "Leave";
     string enterElement = "Enter";
@@ -60,37 +61,37 @@ protected:
     TextRenderObject textRenderObject;
 
     bool p_allowCheck = false;
-    utfstring p_caption;
+    utfstring p_caption = "Test";
     Align p_textAlign = Align.center;
     VerticalAlign p_textVerticalAlign = VerticalAlign.middle;
 
-    void renderSkin() {
+    void renderSkin(Camera camera) {
         size_t[3] coordIndices;
+
         string state = leaveElement;
+        if (isEnter) state = enterElement;
+        if (isClick) state = clickElement;
 
-        if (isEnter)
-            state = enterElement;
-
-        if (isClick)
-            state = clickElement;
-
-        renderer.renderPartsHorizontal(skinRenderObjects, state, absolutePosition, size);
+        textRenderObject.text = caption;
+        renderer.renderChain(skinRenderObjects, state, absolutePosition, size);
+        renderer.renderText(textRenderObject, state, absolutePosition, vec2i(size.x, 12));
 
         if (focused) {
             const vec2i focusPos = absolutePosition + focusOffsets;
             const vec2i focusSize = size + vec2i(focusResize, focusResize);
-            renderer.renderPartsHorizontal(skinFocusRenderObjects, focusElement, focusPos, focusSize);
+            renderer.renderChain(skinFocusRenderObjects, focusElement, focusPos, focusSize);
         }
     }
 
-    void renderIcon() {
+    void renderIcon(Camera camera) {
     }
 
-    void renderText() {
-
+    void renderText(Camera camera) {
     }
 
-    override void precompute() {
+    override void onCreate() {
+        super.onCreate();
+
         string[3] elements = [leaveElement, enterElement, clickElement];
         string[3] keys = ["left", "center", "right"];
 
@@ -101,8 +102,10 @@ protected:
 
         const string focusKey = style ~ "." ~ focusElement;
         with (manager.theme) {
-            focusOffsets = data.getVec2i(focusKey ~ ".offsets");
-            focusResize = data.getInteger(focusKey ~ ".offsets.2");
+            focusOffsets = data.getVec2i(focusKey ~ ".offsets.0");
+            focusResize = data.getInteger(focusKey ~ ".offsets.1");
         }
+
+        textRenderObject = renderFactory.createText(style, elements);
     }
 }

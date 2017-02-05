@@ -59,4 +59,8 @@ void main() {
 
     auto app = MapEditor.getInstance();
     app.run();
+
+    Data data = new Data("/home/andrey/projects/e2dit-dlang/res/ui/themes/light");
+    data.load("theme.e2t");
+    traverse(data.root);
 }

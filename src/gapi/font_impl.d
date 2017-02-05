@@ -4,6 +4,7 @@ import ftgl;
 import derelict.sfml2.graphics;
 
 import gapi.font;
+import gapi.text;
 import gapi.texture;
 
 
@@ -18,4 +19,5 @@ interface FontImpl {
     void destroyFont(ref FontHandles handles);
     void setTextSize(Font font, in uint textSize);
     Texture getTexture(Font font);
+    void bind(ref FontHandles handles, Text text);
 }

@@ -1,6 +1,7 @@
 module math.linalg;
 
 import gl3n.linalg;
+import basic_types;
 
 
 alias Vector vec;
@@ -26,28 +27,6 @@ alias Matrix!(float, 2, 4) mat24;
 alias Matrix!(float, 4, 2) mat42;
 alias Matrix!(float, 3, 4) mat34;
 alias Matrix!(float, 4, 3) mat43;
-
-
-struct Rect {
-    uint left;
-    uint top;
-    uint width;
-    uint height;
-
-    this(in uint left, in uint top, in uint width, in uint height) {
-        this.left = left;
-        this.top = top;
-        this.width = width;
-        this.height = height;
-    }
-
-    this(in vec4i rect) {
-        this.left = rect.x;
-        this.top = rect.y;
-        this.width = rect.z;
-        this.height = rect.w;
-    }
-}
 
 
 bool pointInRect(in vec2i point, in vec4i vec) {

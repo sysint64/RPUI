@@ -104,6 +104,22 @@ class Data {
         return texCoord;
     }
 
+    vec4 getNormColor(in string path) {
+        vec4 color;
+
+        try {
+            color = getVec4f(path);
+        } catch(NotVec4Exception) {
+            vec3 color3 = getVec3f(path);
+            color = vec4(color3, 100.0);
+        } catch(NotVec3Exception) {
+            throw new NotVec3OrVec4Exception();
+        }
+
+        color = vec4(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 100.0f);
+        return color;
+    }
+
     // Optional access to nodes
 
     Node optNode(in string path, Node defaultVal = null) {
@@ -259,9 +275,7 @@ private:
     }
 
     vec!(T, n) getVecValueFromNode(T, int n, E : E2TMLException)(in string path, Node node) {
-        ArrayValue vecArray = cast(ArrayValue) node;
-
-        if (vecArray !is null && vecArray.length != n)
+        if (node.length != n)
             throw new E();
 
         NumberValue[n] vectorComponents;
