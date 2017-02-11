@@ -127,19 +127,22 @@ class Widget {
     @property ref bool enabled() { return p_enabled; }
     @property void enabled(in bool val) { p_enabled = val; }
 
-    @property ref vec2i position() { return p_position; }
-    @property void position(in vec2i val) { p_position = val; }
+    @property ref vec2 position() { return p_position; }
+    @property void position(in vec2 val) { p_position = val; }
 
-    @property vec2i absolutePosition() { return p_absolutePosition; }
+    @property vec2 absolutePosition() { return p_absolutePosition; }
+    @property vec2 scroll() { return p_scroll; }
 
-    @property ref vec2i size() { return p_size; }
-    @property void size(in vec2i val) { p_size = val; }
+    @property ref vec2 size() { return p_size; }
+    @property void size(in vec2 val) { p_size = val; }
 
-    @property ref vec4i margin() { return p_margin; }
-    @property void margin(in vec4i val) { p_margin = val; }
+    @property ref FrameRect margin() { return p_margin; }
+    @property void margin(in vec4 val) { p_margin = FrameRect(val); }
+    @property void margin(in FrameRect val) { p_margin = val; }
 
-    @property ref vec4i padding() { return p_padding; }
-    @property void padding(in vec4i val) { p_padding = val; }
+    @property ref FrameRect padding() { return p_padding; }
+    @property void padding(in vec4 val) { p_padding = FrameRect(val); }
+    @property void padding(in FrameRect val) { p_padding = val; }
 
     @property ref bool autoWidth() { return p_autoWidth; }
     @property void autoWidth(in bool val) { p_autoWidth = val; }
@@ -152,9 +155,11 @@ class Widget {
     @property bool isEnter() { return p_isEnter; }
     @property bool isClick() { return p_isClick; }
     @property bool isOver() { return p_isOver; }
+    @property bool overlay() { return p_overlay; }
 
     @property RenderFactory renderFactory() { return manager.renderFactory; }
-
+    @property Align locationAlign() { return p_locationAlign; }
+    @property VerticalAlign locationVerticalAlign() { return p_locationVerticalAlign; }
 
     // Event Listeners
     @property void onClickListener(in OnClickListener val) { p_onClickListener = val; }
@@ -180,8 +185,12 @@ protected:
     void updateVerticalAlign() {
     }
 
-    void updateAbsolutePosition() {
-        p_absolutePosition = position;
+    float offsetSizeX() {
+        return 0;
+    }
+
+    float offsetSizeY() {
+        return 0;
     }
 
     @property Renderer renderer() { return manager.renderer; }
@@ -194,10 +203,28 @@ package:
         app = Application.getInstance();
     }
 
+    void updateAbsolutePosition() {
+        vec2 res = vec2(0, 0);
+	Widget lastParent = parent;
+
+        while (lastParent !is null) {
+            res.x += lastParent.position.x - lastParent.scroll.x + lastParent.padding.left +
+                lastParent.margin.left;
+
+            res.y += lastParent.position.y - lastParent.scroll.y + lastParent.padding.top +
+                lastParent.margin.top;
+
+            lastParent = lastParent.parent;
+        }
+
+        p_absolutePosition.x = position.x + res.x + margin.left;
+        p_absolutePosition.y = position.y + res.y + margin.top;
+    }
+
     @property void isEnter(in bool val) { p_isEnter = val; }
     @property void isClick(in bool val) { p_isClick = val; }
     @property void isOver(in bool val) { p_isOver = val; }
-    @property vec2i overSize() { return p_overSize; }
+    @property vec2 overSize() { return p_overSize; }
 
 private:
     Camera camera = null;
@@ -212,25 +239,28 @@ private:
     uint p_id;
     Widget p_parent;
 
-    vec2i p_position;
-    vec2i p_absolutePosition;
-    vec2i p_size;
-    vec2i p_overSize = vec2i(0, 0);
-    vec4i p_margin;
-    vec4i p_padding;
+    vec2 p_position = vec2(0, 0);
+    vec2 p_absolutePosition;
+    vec2 p_size = vec2(0, 0);
+    vec2 p_overSize = vec2(0, 0);
+    vec2 p_scroll = vec2(0, 0);
+    FrameRect p_margin = FrameRect(0, 0, 0, 0);
+    FrameRect p_padding = FrameRect(0, 0, 0, 0);
 
     Children p_children;
     bool p_focused = false;
     bool p_withoutSkin = false;
     bool p_visible = true;
     bool p_enabled = true;
+    bool p_overlay = false;
     string p_style = "";
     string p_name = "";
     int p_tag = -1;
     utfstring p_hint = "";
     Cursor.Icon p_cursor;
     PartDraws p_partDraws = PartDraws.all;
-    Align p_align = Align.none;
+    Align p_locationAlign = Align.none;
+    VerticalAlign p_locationVerticalAlign = VerticalAlign.none;
     bool p_isEnter = false;
     bool p_isClick = false;
     bool p_isOver = false;  // When in rect of element but if another element over this

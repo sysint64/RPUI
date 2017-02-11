@@ -16,12 +16,15 @@ import gapi.text;
 
 import ui;
 import ui.widgets.button;
+import ui.widgets.stack_layout;
 
 import math.linalg;
 import std.stdio;
 
 import derelict.sfml2.graphics;
 import derelict.opengl3.gl;
+
+import entitysysd;
 
 
 class MapEditor: Application {
@@ -87,9 +90,26 @@ class MapEditor: Application {
         // spriteGeometry.bind();
 
         uiManager = new ui.Manager(settings.theme);
+        StackLayout stackLayout = new StackLayout();
+        stackLayout.position = vec2(100, 100);
+        uiManager.addWidget(stackLayout);
+
         Button button = new Button("Button");
-        button.size = vec2i(100, 21);
-        button.position = vec2i(100, 100);
+        button.size = vec2(100, 21);
+        button.position = vec2(0, 0);
+        button.margin = vec4(5, 5, 5, 5);
+        stackLayout.addWidget(button);
+
+        button = new Button("Button");
+        button.size = vec2(100, 21);
+        button.position = vec2(0, 0);
+        button.caption = "test";
+        stackLayout.addWidget(button);
+
+        button = new Button("Button");
+        button.size = vec2(100, 21);
+        button.position = vec2(0, 0);
+        button.caption = "test";
         uiManager.addWidget(button);
     }
 

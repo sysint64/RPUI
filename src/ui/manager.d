@@ -19,10 +19,12 @@ import ui.renderer;
 
 class Manager {
     this(in string theme) {
+        app = Application.getInstance();
+
         root = new Widget(this);
         root.isOver = true;
-
-        app = Application.getInstance();
+        root.size.x = app.windowWidth;
+        root.size.y = app.windowHeight;
 
         p_theme = new Theme(theme);
         p_renderFactory = new RenderFactory(this);
@@ -45,18 +47,20 @@ class Manager {
             if (!widget.visible)
                 continue;
 
-            vec2i size = vec2i(widget.overSize.x > 0 ? widget.overSize.x : widget.size.x,
-                               widget.overSize.y > 0 ? widget.overSize.y : widget.size.y);
+            vec2 size = vec2(widget.overSize.x > 0 ? widget.overSize.x : widget.size.x,
+                             widget.overSize.y > 0 ? widget.overSize.y : widget.size.y);
             Rect rect = Rect(widget.absolutePosition.x, widget.absolutePosition.y, size.x, size.y);
             widget.isOver = widget.parent.isOver && pointInRect(app.mousePos, rect);
         }
 
         widgetUnderMouse = null;
         Widget found = null;
+        uint counter = 0;
+        import std.stdio;
 
         foreach_reverse (Widget widget; widgetOrdering) {
-            // if (found !is null && !widget.overlay)
-            //     continue;
+            if (found !is null && !widget.overlay)
+                continue;
 
             if (widget is null || !widget.isOver || !widget.visible)
                 continue;

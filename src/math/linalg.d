@@ -29,15 +29,8 @@ alias Matrix!(float, 3, 4) mat34;
 alias Matrix!(float, 4, 3) mat43;
 
 
-bool pointInRect(in vec2i point, in vec4i vec) {
+bool pointInRect(in vec2i point, in vec4 vec) {
     const Rect rect = Rect(vec);
-    return pointInRect(point, rect);
-}
-
-
-bool pointInRect(in uint x, in uint y, in uint left, in uint top, in uint width, in uint height) {
-    const vec2i point = vec2i(x, y);
-    const Rect rect = Rect(left, top, width, height);
     return pointInRect(point, rect);
 }
 

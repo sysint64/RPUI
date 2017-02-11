@@ -112,7 +112,7 @@ package:
 
         switch (textAlign) {
             case Align.center:
-                textPosition.x += round((scaling.x - textWidth) / 2);
+                textPosition.x += round((scaling.x - textWidth) * 0.5);
                 break;
 
             case Align.right:
@@ -129,7 +129,7 @@ package:
                 break;
 
             case VerticalAlign.middle:
-                textPosition.y += round((scaling.y - lineHeight) / 2);
+                textPosition.y += round((scaling.y - lineHeight) * 0.5);
                 break;
 
             default:

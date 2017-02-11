@@ -28,7 +28,7 @@ class TextRenderObject : gapi.Text {
         super(geometry);
     }
 
-    void addOffset(in string state, in vec2i offset) {
+    void addOffset(in string state, in vec2 offset) {
         offsets[state] = offset;
     }
 
@@ -37,6 +37,6 @@ class TextRenderObject : gapi.Text {
     }
 
 package:
-    vec2i[string] offsets;
+    vec2[string] offsets;
     vec4[string] colors;
 }

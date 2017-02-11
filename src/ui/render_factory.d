@@ -58,7 +58,7 @@ class RenderFactory {
             const string offsetPath = path ~ "Offset";
             const string colorPath = path ~ "Color";
 
-            vec2i offset = manager.theme.data.getVec2i(offsetPath);
+            vec2 offset = manager.theme.data.getVec2f(offsetPath);
             vec4 color = manager.theme.data.getNormColor(colorPath);
 
             text.addOffset(state, offset);

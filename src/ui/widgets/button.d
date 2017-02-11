@@ -44,8 +44,8 @@ class Button : Widget {
     @property void textVerticalAlign(in VerticalAlign val) { p_textVerticalAlign = val; }
 
 protected:
-    vec2i focusOffsets;
-    uint  focusResize;
+    vec2 focusOffsets;
+    float focusResize;
 
     string leaveElement = "Leave";
     string enterElement = "Enter";
@@ -79,8 +79,8 @@ protected:
         renderer.renderText(textRenderObject, state, absolutePosition, size);
 
         if (focused) {
-            const vec2i focusPos = absolutePosition + focusOffsets;
-            const vec2i focusSize = size + vec2i(focusResize, focusResize);
+            const vec2 focusPos = absolutePosition + focusOffsets;
+            const vec2 focusSize = size + vec2(focusResize, focusResize);
             renderer.renderChain(skinFocusRenderObjects, focusElement, focusPos, focusSize);
         }
     }
@@ -101,8 +101,8 @@ protected:
 
         const string focusKey = style ~ "." ~ focusElement;
         with (manager.theme) {
-            focusOffsets = data.getVec2i(focusKey ~ ".offsets.0");
-            focusResize = data.getInteger(focusKey ~ ".offsets.1");
+            focusOffsets = data.getVec2f(focusKey ~ ".offsets.0");
+            focusResize = data.getNumber(focusKey ~ ".offsets.1");
         }
 
         textRenderObject = renderFactory.createText(style, elements);

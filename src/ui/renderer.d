@@ -39,7 +39,7 @@ class Renderer {
     }
 
     void renderChain(BaseRenderObject[string] renderObjects, in string state,
-                     in vec2i position, in vec2i size)
+                     in vec2 position, in vec2 size)
     {
         p_texAtlasShader.bind();
 
@@ -47,7 +47,7 @@ class Renderer {
         const float rightWidth = renderObjects["right"].texCoordinates[state].size.x;
         const float centerWidth = size.x - leftWidth - rightWidth;
 
-        const uint height = size.y;
+        const float height = size.y;
 
         const vec2 leftPos = position;
         const vec2 centerPos = leftPos + vec2(leftWidth, 0);
@@ -58,7 +58,7 @@ class Renderer {
         renderPart(renderObjects["right"], state, rightPos, vec2(rightWidth, height));
     }
 
-    void renderText(TextRenderObject text, in string state, in vec2i position, in vec2i size) {
+    void renderText(TextRenderObject text, in string state, in vec2 position, in vec2 size) {
         vec2 textPos = position + text.offsets[state];
         text.color = text.colors[state];
         text.scaling = vec2(size);

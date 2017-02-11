@@ -22,20 +22,41 @@ enum VerticalAlign {
     client,
 }
 
-struct Rect {
-    uint left;
-    uint top;
-    uint width;
-    uint height;
+struct FrameRect {
+    float left;
+    float right;
+    float top;
+    float bottom;
 
-    this(in uint left, in uint top, in uint width, in uint height) {
+    this(in float left, in float top, in float right, in float bottom) {
+        this.left = left;
+        this.top = top;
+        this.right = right;
+        this.bottom = bottom;
+    }
+
+    this(in vec4 rect) {
+        this.left = rect.x;
+        this.top = rect.y;
+        this.right = rect.z;
+        this.bottom = rect.w;
+    }
+}
+
+struct Rect {
+    float left;
+    float top;
+    float width;
+    float height;
+
+    this(in float left, in float top, in float width, in float height) {
         this.left = left;
         this.top = top;
         this.width = width;
         this.height = height;
     }
 
-    this(in vec4i rect) {
+    this(in vec4 rect) {
         this.left = rect.x;
         this.top = rect.y;
         this.width = rect.z;

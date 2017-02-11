@@ -45,10 +45,6 @@ void traverse(Node node, in int level = 0) {
     }
 }
 
-void handleEvent(sfEventType type) {
-
-}
-
 void main() {
     DerelictSFML2System.load();
     DerelictSFML2Window.load();
@@ -60,7 +56,7 @@ void main() {
     auto app = MapEditor.getInstance();
     app.run();
 
-    Data data = new Data("/home/andrey/projects/e2dit-dlang/res/ui/themes/light");
-    data.load("theme.e2t");
-    traverse(data.root);
+    // Data data = new Data("/home/andrey/projects/e2dit-dlang/res/ui/themes/light");
+    // data.load("theme.e2t");
+    // traverse(data.root);
 }
