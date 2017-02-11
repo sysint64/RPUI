@@ -12,7 +12,6 @@ import math.linalg;
 import gapi.text;
 import gapi.font;
 import gapi.geometry;
-import gapi.sprite;
 import gapi.camera;
 
 
@@ -20,13 +19,13 @@ class Log {
     this() {
         // TODO: move to resources
         font = new Font("/home/andrey/projects/e2dit-dlang/res/fonts/ttf-dejavu/DejaVuSans.ttf");
-        glyphGeometry = new SpriteGeometry(false, true, true);
     }
 
     void display(vec4, Char, T...)(in vec4 color, in Char[] fmt, T args) {
         auto writer = appender!dstring();
         formattedWrite(writer, fmt, args);
         LogText text = new LogText(glyphGeometry, font, writer.data, color);
+        text.textSize = p_textSize;
         texts.insertBack(text);
     }
 
@@ -57,23 +56,19 @@ class Log {
 
 private:
     Font font;
-    SpriteGeometry glyphGeometry;
+    Geometry glyphGeometry;
     Array!LogText texts;
     Application app;
     vec2i padding = vec2i(10, 10);
     uint p_textSize = 18;
 
     class LogText : Text {
-        this(Geometry geometry, Font font, dstring text) {
-            super(geometry, font, text);
-            leftTime = deadTime;
-            app = Application.getInstance();
-        }
-
         this(Geometry geometry, Font font, in dstring text, in vec4 color) {
-            super(geometry, font, text, color);
+            super(geometry, font);
             leftTime = deadTime;
             app = Application.getInstance();
+            this.text = text;
+            this.color = color;
         }
 
         override void render(Camera camera) {

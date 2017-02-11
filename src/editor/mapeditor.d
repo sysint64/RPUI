@@ -1,21 +1,30 @@
 module editor.mapeditor;
 
+import input;
 import patterns.singleton;
 import application;
+import basic_types: utfchar;
 
 import gapi.camera;
-import gapi.sprite;
+import gapi.geometry;
+import gapi.geometry_factory;
 import gapi.shader;
 import gapi.texture;
 import gapi.base_object;
 import gapi.font;
 import gapi.text;
 
+import ui;
+import ui.widgets.button;
+import ui.widgets.stack_layout;
+
 import math.linalg;
 import std.stdio;
 
 import derelict.sfml2.graphics;
 import derelict.opengl3.gl;
+
+import entitysysd;
 
 
 class MapEditor: Application {
@@ -35,7 +44,7 @@ class MapEditor: Application {
 
         shader.bind();
         shader.setUniformMatrix("MVP", sprite.lastMVPMatrix);
-        // shader.setUniformTexture("texture", texture);
+        shader.setUniformTexture("texture", texture);
 
         sprite.render(camera);
         // shader.setUniformTexture("texture", texture);
@@ -49,31 +58,25 @@ class MapEditor: Application {
         // text.render(camera);
         // camera.zoom += 0.01f;
 
-        if (!posted) {
-            logError("Error!");
-            logWarning("Warning!");
-            logDebug("Debug!");
-            posted = true;
-        }
-
+        uiManager.render(camera);
         onPostRender(camera);
     }
 
-    bool posted = false;
     Camera camera;
-    SpriteGeometry spriteGeometry;
+    Geometry spriteGeometry;
     BaseObject sprite;
     Shader shader;
     Texture texture;
-    Font font;
-    Text text;
+    ui.Manager uiManager;
 
     override void onCreate() {
         camera = new Camera(viewportWidth, viewportHeight);
-        spriteGeometry = new SpriteGeometry(false, true, true);
+        // spriteGeometry = new SpriteGeometry(false, true, true);
+
+        spriteGeometry = GeometryFactory.createSprite(false, true);
         sprite = new BaseObject(spriteGeometry);
         shader = new Shader(resourcesDirectory ~ "/shaders/GL2/transform.glsl");
-        // texture = new Texture(resourcesDirectory ~ "/test.jpg");
+        texture = new Texture(resourcesDirectory ~ "/test.jpg");
 
         camera.position = vec2(0.0f, 0.0f);
         camera.zoom = 1.0f;
@@ -84,44 +87,70 @@ class MapEditor: Application {
 
         // shader.bind();
         // texture.bind();
-        spriteGeometry.bind();
+        // spriteGeometry.bind();
 
-        font = new Font(resourcesDirectory ~ "/fonts/ttf-dejavu/DejaVuSans.ttf");
-        text = new Text(spriteGeometry, font, "Hello world!");
+        uiManager = new ui.Manager(settings.theme);
+        StackLayout stackLayout = new StackLayout();
+        stackLayout.position = vec2(100, 100);
+        uiManager.addWidget(stackLayout);
 
-        text.position = vec2(30.0f, 30.0f);
+        Button button = new Button("Button");
+        button.size = vec2(100, 21);
+        button.position = vec2(0, 0);
+        button.margin = vec4(5, 5, 5, 5);
+        stackLayout.addWidget(button);
+
+        button = new Button("Button");
+        button.size = vec2(100, 21);
+        button.position = vec2(0, 0);
+        button.caption = "test";
+        stackLayout.addWidget(button);
+
+        button = new Button("Button");
+        button.size = vec2(100, 21);
+        button.position = vec2(0, 0);
+        button.caption = "test";
+        uiManager.addWidget(button);
     }
 
-    override void onKeyPressed(in uint key) {
+    override void onKeyPressed(in KeyCode key) {
         super.onKeyPressed(key);
+        uiManager.onKeyPressed(key);
     }
 
-    override void onKeyReleased(in uint key) {
+    override void onKeyReleased(in KeyCode key) {
         super.onKeyReleased(key);
+        uiManager.onKeyPressed(key);
     }
 
-    override void onTextEntered(in uint key) {
+    override void onTextEntered(in utfchar key) {
         super.onTextEntered(key);
+        uiManager.onTextEntered(key);
     }
 
-    override void onMouseDown(in uint x, in uint y, in uint button) {
+    override void onMouseDown(in uint x, in uint y, in MouseButton button) {
         super.onMouseDown(x, y, button);
+        uiManager.onMouseDown(x, y, button);
     }
 
-    override void onMouseUp(in uint x, in uint y, in uint button) {
+    override void onMouseUp(in uint x, in uint y, in MouseButton button) {
         super.onMouseUp(x, y, button);
+        uiManager.onMouseUp(x, y, button);
     }
 
-    override void onDblClick(in uint x, in uint y, in uint button) {
+    override void onDblClick(in uint x, in uint y, in MouseButton button) {
         super.onDblClick(x, y, button);
+        uiManager.onDblClick(x, y, button);
     }
 
     override void onMouseMove(in uint x, in uint y) {
         super.onMouseMove(x, y);
+        uiManager.onMouseMove(x, y);
     }
 
     override void onMouseWheel(in uint dx, in uint dy) {
         super.onMouseWheel(dx, dy);
+        uiManager.onMouseWheel(dx, dy);
     }
 
     override void onResize(in uint width, in uint height) {

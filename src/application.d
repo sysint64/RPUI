@@ -2,11 +2,15 @@ module application;
 
 import std.stdio;
 import std.conv;
+import std.path;
+import std.file : thisExePath;
 
 import derelict.sfml2.system;
 import derelict.sfml2.window;
 import derelict.opengl3.gl;
 
+import basic_types: utfchar;
+import input;
 import log;
 import settings;
 import editor.mapeditor : MapEditor;
@@ -21,16 +25,22 @@ abstract class Application {
         return MapEditor.getInstance();
     }
 
+    void initPath() {
+        p_binDirectory = dirName(thisExePath());
+        p_resourcesDirectory = buildPath(p_binDirectory, "res");
+    }
+
     void run() {
+        initPath();
         initSFML();
         initGL();
         log = new Log();
         scope(exit) sfWindow_destroy(window);
 
-        auto settings = Settings.getInstance();
+        p_settings = Settings.getInstance();
         settings.load(binDirectory, "settings.e2t");
 
-        writeln(settings.uiTheme);
+        writeln(settings.theme);
         onCreate();
         loop();
     }
@@ -49,6 +59,18 @@ abstract class Application {
         debug log.display(vec4(0.3f, 0.3f, 0.3f, 1), fmt, args);
     }
 
+    void warning(Char, T...)(in Char[] fmt, T args) {
+
+    }
+
+    void error(Char, T...)(in Char[] fmt, T args) {
+
+    }
+
+    void criticalError(Char, T...)(in Char[] fmt, T args) {
+        logError(fmt, args);
+    }
+
     // Events
     void onCreate() {}
 
@@ -58,12 +80,19 @@ abstract class Application {
 
     void onPreRender(Camera camera) {}
 
-    void onKeyPressed(in uint key) {}
-    void onKeyReleased(in uint key) {}
-    void onTextEntered(in uint key) {}
-    void onMouseDown(in uint x, in uint y, in uint button) {}
-    void onMouseUp(in uint x, in uint y, in uint button) {}
-    void onDblClick(in uint x, in uint y, in uint button) {}
+    void onKeyPressed(in KeyCode key) {}
+    void onKeyReleased(in KeyCode key) {}
+    void onTextEntered(in utfchar key) {}
+
+    void onMouseDown(in uint x, in uint y, in MouseButton button) {
+        p_mouseButton = button;
+    }
+
+    void onMouseUp(in uint x, in uint y, in MouseButton button) {
+        p_mouseButton = MouseButton.mouseNone;
+    }
+
+    void onDblClick(in uint x, in uint y, in MouseButton button) {}
     void onMouseMove(in uint x, in uint y) {}
     void onMouseWheel(in uint dx, in uint dy) {}
 
@@ -74,6 +103,7 @@ abstract class Application {
 
     @property string binDirectory() { return p_binDirectory; }
     @property string resourcesDirectory() { return p_resourcesDirectory; }
+    @property Settings settings() { return p_settings; }
 
     @property uint screenWidth() { return p_screenWidth; }
     @property uint screenHeight() { return p_screenHeight; }
@@ -82,10 +112,9 @@ abstract class Application {
     @property uint viewportWidth() { return p_windowWidth; }
     @property uint viewportHeight() { return p_windowHeight; }
 
-    @property uint mouseX() { return p_mouseX; }
-    @property uint mouseY() { return p_mouseY; }
-    @property uint clickX() { return p_clickX; }
-    @property uint clickY() { return p_clickY; }
+
+    @property vec2i mousePos() { return p_mousePos; }
+    @property vec2i mouseClickPos() { return p_mouseClickPos; }
     @property uint mouseButton() { return p_mouseButton; }
 
     @property Shader lastShader() { return p_lastShader; }
@@ -94,10 +123,12 @@ abstract class Application {
     @property float currentTime() { return p_currentTime; }
 
 private:
-    string p_binDirectory = "/home/andrey/projects/e2dit-dlang";  // TODO: rm hardcode
-    string p_resourcesDirectory = p_binDirectory ~ "/res";  // TODO: rm hardcode
+    string p_binDirectory;
+    string p_resourcesDirectory;
     sfWindow* window;
     Log log;
+
+    Settings p_settings;
 
     // GAPI
     Shader p_lastShader = null;
@@ -109,9 +140,9 @@ private:
     uint p_windowHeight;
 
     // Cursor
-    uint p_mouseX, p_mouseY;
-    uint p_clickX, p_clickY;
-    uint p_mouseButton;
+    vec2i p_mousePos;
+    vec2i p_mouseClickPos;
+    uint p_mouseButton = MouseButton.mouseNone;
 
     // Time
     float p_deltaTime;
@@ -172,9 +203,7 @@ private:
 
         while (running) {
             auto mousePos = sfMouse_getPosition(window);
-
-            p_mouseX = mousePos.x;
-            p_mouseY = mousePos.x;
+            p_mousePos = vec2i(mousePos.x, mousePos.y);
 
             sfEvent event;
 
@@ -207,22 +236,22 @@ private:
                 break;
 
             case sfEvtKeyPressed:
-                onKeyPressed(event.key.code);
+                onKeyPressed(to!KeyCode(event.key.code));
                 break;
 
             case sfEvtKeyReleased:
-                onKeyReleased(event.key.code);
+                onKeyReleased(to!KeyCode(event.key.code));
                 break;
 
             case sfEvtMouseButtonPressed:
                 with (event.mouseButton)
-                    onMouseDown(x, y, button);
+                    onMouseDown(x, y, to!MouseButton(button));
 
                 break;
 
             case sfEvtMouseButtonReleased:
                 with (event.mouseButton)
-                    onMouseUp(x, y, button);
+                    onMouseUp(x, y, to!MouseButton(button));
 
                 break;
 

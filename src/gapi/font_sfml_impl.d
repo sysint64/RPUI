@@ -5,6 +5,7 @@ import std.string;
 import derelict.sfml2.graphics;
 
 import gapi.font;
+import gapi.text;
 import gapi.font_impl;
 import gapi.texture;
 
@@ -37,6 +38,9 @@ class FontSFMLImpl : FontImpl {
         }
 
         return texture[characterSize];
+    }
+
+    void bind(ref FontHandles handles, Text text) {
     }
 
 private:

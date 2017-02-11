@@ -1,11 +1,10 @@
-
 {
-    "name": "e2dit-ml",
+    "name": "e2dit",
     "authors": [
-        "Kabylin Andrey"
+        "Andrey Kabylin"
     ],
-    "description": "E2DIT Minimal Language",
-    "copyright": "Copyright © 2016, Kabylin Andrey",
+    "description": "E2DIT - 2D Map Editor for games",
+    "copyright": "Copyright © 2016, Andrey Kabylin",
     "license": "MIT",
     "libs-posix": ["ftgl", "glu"],
     "libs-windows": ["ftgl", "glu32"],
@@ -13,8 +12,10 @@
     "dependencies": {
         "derelict-sfml2": "~>3.0.2",
         "derelict-gl3": "~>1.0.21",
-        "d-vulkan": "~>0.3.1",
         "derelict-ft": "~>1.1.3",
-        "gl3n": "~>1.3.1"
+        "gl3n": "~>1.3.1",
+        "x11": "~>1.0.16",
+        "emsi_containers": "~>0.5.3",
+        "entitysysd": "~>2.6.0"
     }
 }

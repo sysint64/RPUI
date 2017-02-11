@@ -8,8 +8,28 @@ import std.exception;
 import derelict.sfml2.graphics;
 import derelict.opengl3.gl;
 
+import math.linalg;
+
 
 class Texture {
+    struct Coord {
+        vec2 offset;
+        vec2 size;
+        vec2 normOffset;
+        vec2 normSize;
+        bool isNormalized = false;
+
+        void normalize(Texture texture) {
+            normOffset = vec2(offset.x / texture.width, offset.y / texture.height);
+            normSize = vec2(size.x / texture.width, size.y / texture.height);
+            isNormalized = true;
+        }
+
+    private:
+        float normX, normY;
+        float normWidth, normHeight;
+    };
+
     // this(in string fileName) {
     //     const char* fileNamez = toStringz(fileName);
     //     image = sfImage_createFromFile(fileNamez);

@@ -12,6 +12,9 @@ import e2ml.value;
 import gapi.shader;
 import gapi.texture;
 
+import ui.widget;
+import ui.cursor;
+
 import editor.mapeditor;
 
 import derelict.opengl3.gl;
@@ -42,10 +45,6 @@ void traverse(Node node, in int level = 0) {
     }
 }
 
-void handleEvent(sfEventType type) {
-
-}
-
 void main() {
     DerelictSFML2System.load();
     DerelictSFML2Window.load();
@@ -57,16 +56,7 @@ void main() {
     auto app = MapEditor.getInstance();
     app.run();
 
-    // DerelictGL3.reload();
-
-    // Data data = new Data("/home/andrey/dev/e2dit-ml-dlang/tests");
-    // Data data = new Data("C:/dev/e2dit/tests");
-    // data.load("simple.e2t");
-
-    // writeln("\n\nTREE:\n");
+    // Data data = new Data("/home/andrey/projects/e2dit-dlang/res/ui/themes/light");
+    // data.load("theme.e2t");
     // traverse(data.root);
-
-    // data.getParameter("test.test2.p2");
-    // writeln(data.optNumber("test.test2.p2.12"));
-    // data.save("export.e2b", Data.IOType.text);
 }

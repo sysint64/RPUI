@@ -1,8 +1,12 @@
 module gapi.font;
 
 import std.string;
-import std.conv;
+import std.conv : to;
+import std.path : buildPath;
 
+import application;
+
+import gapi.text;
 import gapi.font_impl;
 import gapi.font_ftgl_impl;
 import gapi.font_sfml_impl;
@@ -22,12 +26,23 @@ class Font {
         }
     }
 
+    static Font createFromFile(in string relativeFileName) {
+        Application app = Application.getInstance();
+        const string absoluteFileName = buildPath(app.resourcesDirectory, "fonts",
+                                                  relativeFileName);
+        return new Font(absoluteFileName);
+    }
+
     ~this() {
         impl.destroyFont(handles);
     }
 
     Texture getTexture(in uint characterSize) {
         return impl.getTexture(this);
+    }
+
+    void bind(Text text) {
+        impl.bind(handles, text);
     }
 
 private:

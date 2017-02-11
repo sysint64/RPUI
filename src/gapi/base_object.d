@@ -2,6 +2,7 @@ module gapi.base_object;
 
 import gapi.geometry;
 import gapi.camera;
+import gapi.material;
 
 import gl3n.linalg;
 import std.stdio;
@@ -22,8 +23,12 @@ class BaseObject {
         }
 
         // if (needUpdateMatrices)
-            updateMatrices(camera);
+        updateMatrices(camera);
 
+        if (p_material !is null)
+            p_material.bind(this);
+
+        geometry.bind();
         geometry.render();
     }
 
@@ -110,6 +115,7 @@ private:
 
     mat4  p_modelMatrix;
     mat4  p_lastMVPMatrix;
+    Material p_material = null;
     Camera lastCamera;
 
     bool needUpdateMatrices = true;

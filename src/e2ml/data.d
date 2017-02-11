@@ -4,6 +4,9 @@ import std.file;
 import std.stdio;
 import std.math;
 import std.conv;
+import std.path;
+
+import math.linalg;
 
 import e2ml.lexer;
 import e2ml.parser;
@@ -12,6 +15,8 @@ import e2ml.node;
 import e2ml.value;
 import e2ml.exception;
 import e2ml.writer;
+
+import gapi.texture;
 
 
 class Data {
@@ -57,7 +62,7 @@ class Data {
     }
 
     void loadText(in string fileName) {
-        SymbolStream stream = new SymbolStream(rootDirectory ~ "/" ~ fileName);
+        SymbolStream stream = new SymbolStream(rootDirectory ~ dirSeparator ~ fileName);
 
         this.lexer  = new Lexer(stream);
         this.parser = new Parser(lexer, this);
@@ -71,32 +76,48 @@ class Data {
         return findNodeByPath(path);
     }
 
-    ObjectNode getObject(in string path) {
-        return getTypedNode!(ObjectNode, NotObjectException)(path);
+    alias getObject = getTypedNode!(ObjectNode, NotObjectException);
+    alias getParameter = getTypedNode!(Parameter, NotParameterException);
+    alias getValue = getTypedNode!(Value, NotValueException);
+    alias getNumberValue = getTypedNode!(NumberValue, NotNumberValueException);
+    alias getStringValue = getTypedNode!(StringValue, NotStringValueException);
+    alias getBooleanValue = getTypedNode!(BooleanValue, NotBooleanValueException);
+    alias getArrayValue = getTypedNode!(ArrayValue, NotArrayValueException);
+
+    alias getVec2f = getVecValue!(float, 2, NotVec2Exception);
+    alias getVec3f = getVecValue!(float, 3, NotVec3Exception);
+    alias getVec4f = getVecValue!(float, 4, NotVec4Exception);
+
+    alias getVec2i = getVecValue!(int, 2, NotVec2Exception);
+    alias getVec3i = getVecValue!(int, 3, NotVec3Exception);
+    alias getVec4i = getVecValue!(int, 4, NotVec4Exception);
+
+    alias getVec2ui = getVecValue!(uint, 2, NotVec2Exception);
+    alias getVec3ui = getVecValue!(uint, 3, NotVec3Exception);
+    alias getVec4ui = getVecValue!(uint, 4, NotVec4Exception);
+
+    Texture.Coord getTexCoord(in string path) {
+        Texture.Coord texCoord;
+        vec4 coord = getVec4f(path);
+        texCoord.offset = vec2(coord.x, coord.y);
+        texCoord.size = vec2(coord.z, coord.w);
+        return texCoord;
     }
 
-    Parameter getParameter(in string path) {
-        return getTypedNode!(Parameter, NotParameterException)(path);
-    }
+    vec4 getNormColor(in string path) {
+        vec4 color;
 
-    Value getValue(in string path) {
-        return getTypedNode!(Value, NotValueException)(path);
-    }
+        try {
+            color = getVec4f(path);
+        } catch(NotVec4Exception) {
+            vec3 color3 = getVec3f(path);
+            color = vec4(color3, 100.0);
+        } catch(NotVec3Exception) {
+            throw new NotVec3OrVec4Exception();
+        }
 
-    NumberValue getNumberValue(in string path) {
-        return getTypedNode!(NumberValue, NotNumberValueException)(path);
-    }
-
-    StringValue getStringValue(in string path) {
-        return getTypedNode!(StringValue, NotStringValueException)(path);
-    }
-
-    BooleanValue getBooleanValue(in string path) {
-        return getTypedNode!(BooleanValue, NotBooleanValueException)(path);
-    }
-
-    ArrayValue getArrayValue(in string path) {
-        return getTypedNode!(ArrayValue, NotArrayValueException)(path);
+        color = vec4(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 100.0f);
+        return color;
     }
 
     // Optional access to nodes
@@ -110,81 +131,72 @@ class Data {
         return node;
     }
 
-    ObjectNode optObject(in string path, ObjectNode defaultVal = null) {
-        return optTypedNode!(ObjectNode, NotObjectException)(path, defaultVal);
-    }
-
-    Parameter optParameter(in string path, Parameter defaultVal = null) {
-        return optTypedNode!(Parameter, NotParameterException)(path, defaultVal);
-    }
-
-    Value optValue(in string path, Value defaultVal = null) {
-        return optTypedNode!(Value, NotValueException)(path, defaultVal);
-    }
-
-    NumberValue optNumberValue(in string path, NumberValue defaultVal = null) {
-        return optTypedNode!(NumberValue, NotNumberValueException)(path, defaultVal);
-    }
-
-    BooleanValue optBooleanValue(in string path, BooleanValue defaultVal = null) {
-        return optTypedNode!(BooleanValue, NotBooleanValueException)(path, defaultVal);
-    }
-
-    StringValue optStringValue(in string path, StringValue defaultVal = null) {
-        return optTypedNode!(StringValue, NotStringValueException)(path, defaultVal);
-    }
-
-    ArrayValue optArrayValue(in string path, ArrayValue defaultVal = null) {
-        return optTypedNode!(ArrayValue, NotArrayValueException)(path, defaultVal);
-    }
+    alias optObject = optTypedNode!(ObjectNode, NotObjectException);
+    alias optParameter = optTypedNode!(Parameter, NotParameterException);
+    alias optValue = optTypedNode!(Value, NotValueException);
+    alias optNumberValue = optTypedNode!(NumberValue, NotNumberValueException);
+    alias optBooleanValue = optTypedNode!(BooleanValue, NotBooleanValueException);
+    alias optStringValue = optTypedNode!(StringValue, NotStringValueException);
+    alias optArrayValue = optTypedNode!(ArrayValue, NotArrayValueException);
 
     // Access to values
 
-    float getNumber(in string path) {
-        return getTypedNode!(NumberValue, NotNumberValueException)(path).value;
+    alias getNumber = getTypedValue!(float, NumberValue, NotNumberValueException);
+    alias getBoolean = getTypedValue!(bool, BooleanValue, NotBooleanValueException);
+    alias getString = getTypedValue!(string, StringValue, NotStringValueException);
+
+    dstring getUTFString(in string path) {
+        return getTypedNode!(StringValue, NotStringValueException)(path).utfValue;
     }
 
     int getInteger(in string path) {
         return to!int(getNumber(path));
     }
 
-    bool getBoolean(in string path) {
-        return getTypedNode!(BooleanValue, NotBooleanValueException)(path).value;
-    }
-
-    string getString(in string path) {
-        return getTypedNode!(StringValue, NotStringValueException)(path).value;
-    }
-
-    dstring getUTFString(in string path) {
-        return getTypedNode!(StringValue, NotStringValueException)(path).utfValue;
-    }
-
     // Optional access to values
 
-    float optNumber(in string path, float defaultVal = 0) {
-        return optTypedValue!(float, NumberValue, NotNumberValueException)(path, defaultVal);
-    }
+    alias optNumber = optTypedValue!(float, NumberValue, NotNumberValueException);
+    alias optBoolean = optTypedValue!(bool, BooleanValue, NotBooleanValueException);
+    alias optString = optTypedValue!(string, StringValue, NotStringValueException);
 
-    int optInteger(in string path, int defaultVal = 0) {
-        return to!int(optNumber(path, to!float(defaultVal)));
-    }
-
-    bool optBoolean(in string path, bool defaultVal = false) {
-        return optTypedValue!(bool, BooleanValue, NotBooleanValueException)(path, defaultVal);
-    }
-
-    string optString(in string path, string defaultVal = null) {
-        return optTypedValue!(string, StringValue, NotStringValueException)(path, defaultVal);
-    }
-
-    dstring optUTFString(in string path, dstring defaultVal = null) {
+    dstring optUTFString(in string path, dstring defaultVal = dstring.init) {
         StringValue node = optTypedNode!(StringValue, NotStringValueException)(path, null);
 
         if (node is null)
             return defaultVal;
 
         return node.utfValue;
+    }
+
+    int optInteger(in string path, int defaultVal = 0) {
+        return to!int(optNumber(path, to!float(defaultVal)));
+    }
+
+    alias optVec2f = optVecValue!(float, 2, NotVec2Exception);
+    alias optVec3f = optVecValue!(float, 3, NotVec3Exception);
+    alias optVec4f = optVecValue!(float, 4, NotVec4Exception);
+
+    alias optVec2i = optVecValue!(int, 2, NotVec2Exception);
+    alias optVec3i = optVecValue!(int, 3, NotVec3Exception);
+    alias optVec4i = optVecValue!(int, 4, NotVec4Exception);
+
+    alias optVec2ui = optVecValue!(uint, 2, NotVec2Exception);
+    alias optVec3ui = optVecValue!(uint, 3, NotVec3Exception);
+    alias optVec4ui = optVecValue!(uint, 4, NotVec4Exception);
+
+    Texture.Coord optTexCoord(in string path, Texture.Coord defaultVal = Texture.Coord.init) {
+        Texture.Coord texCoord;
+
+        try {
+            vec4 coord = getVec4f(path);
+
+            texCoord.offset = vec2(coord.x, coord.y);
+            texCoord.size = vec2(coord.z, coord.w);
+
+            return texCoord;
+        } catch (NotFoundException) {
+            return defaultVal;
+        }
     }
 
 private:
@@ -226,6 +238,10 @@ private:
         return cast(T)(node);
     }
 
+    T getTypedValue(T, N : Node, E : E2TMLException)(in string path) {
+        return getTypedNode!(N, E)(path).value;
+    }
+
     T optTypedNode(T : Node, E : E2TMLException)(in string path, T defaultVal) {
         Node node = findNodeByPath(path);
 
@@ -240,7 +256,7 @@ private:
         return cast(T)(node);
     }
 
-    T optTypedValue(T, N : Node, E : E2TMLException)(in string path, T defaultVal) {
+    T optTypedValue(T, N : Node, E : E2TMLException)(in string path, T defaultVal = T.init) {
         N node = optTypedNode!(N, E)(path, null);
 
         if (node is null)
@@ -248,4 +264,70 @@ private:
 
         return node.value;
     }
+
+    vec!(T, n) getVecValue(T, int n, E : E2TMLException)(in string path) {
+        Node node = getNode(path);
+
+        if (node is null)
+            throw new NotFoundException("Node with path \"" ~ path ~ "\" not found");
+
+        return getVecValueFromNode!(T, n, E)(path, node);
+    }
+
+    vec!(T, n) getVecValueFromNode(T, int n, E : E2TMLException)(in string path, Node node) {
+        if (node.length != n)
+            throw new E();
+
+        NumberValue[n] vectorComponents;
+        T[n] values;
+
+        for (int i = 0; i < n; ++i) {
+            vectorComponents[i] = cast(NumberValue) node.getAtIndex(i);
+
+            if (vectorComponents[i] is null)
+                throw new E();
+
+            values[i] = to!T(vectorComponents[i].value);
+        }
+
+        return vec!(T, n)(values);
+    }
+
+    vec!(T, n) optVecValue(T, int n, E : E2TMLException)(in string path,
+        vec!(T, n) defaultVal = vec!(T, n).init)
+    {
+        Node node = findNodeByPath(path);
+
+        if (node is null)
+            return defaultVal;
+
+        return getVecValueFromNode!(T, n, E)(path, node);
+    }
+}
+
+
+unittest {
+    Data data = new Data("/home/andrey/projects/e2dit-dlang/tests");
+    data.load("simple.e2t");
+
+    assert(data.getNumber("Test.Test2.p2.0") == 2);
+    assert(data.getBoolean("Test.Test2.p2.1") == true);
+    assert(data.getString("Test.Test2.p2.2") == "Hello");
+    assert(data.getString("TestInclude.Linux.0") == "Arch");
+    assert(data.getInteger("TestInclude.Test2.param.3.2") == 4);
+
+    // Non standart types
+    assert(data.getVec2f("Rombik.position") == vec2(1, 3));
+    assert(data.getVec2i("Rombik.position") == vec2i(1, 3));
+    assert(data.getVec2ui("Rombik.position") == vec2ui(1, 3));
+
+    assert(data.getVec2f("Rombik.size.0") == vec2(320, 128));
+    assert(data.getVec2f("Rombik.size2") == vec2(64, 1024));
+    try { data.getVec2f("Rombik.size.1"); assert(false); } catch(NotVec2Exception) {}
+
+    assert(data.getVec4f("Rombik.texCoord.0") == vec4(10, 15, 32, 64));
+    assert(data.getVec4f("Rombik.texCoord2") == vec4(5, 3, 16, 24));
+
+    assert(data.optVec4f("Rombik.texCoord2", vec4(0, 1, 2, 3)) == vec4(5, 3, 16, 24));
+    assert(data.optVec4f("Rombik.texCoord3", vec4(0, 1, 2, 3)) == vec4(0, 1, 2, 3));
 }

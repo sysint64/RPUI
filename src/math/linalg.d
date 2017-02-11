@@ -1,8 +1,10 @@
 module math.linalg;
 
 import gl3n.linalg;
+import basic_types;
 
 
+alias Vector vec;
 alias Vector!(float, 2) vec2;
 alias Vector!(float, 3) vec3;
 alias Vector!(float, 4) vec4;
@@ -25,3 +27,15 @@ alias Matrix!(float, 2, 4) mat24;
 alias Matrix!(float, 4, 2) mat42;
 alias Matrix!(float, 3, 4) mat34;
 alias Matrix!(float, 4, 3) mat43;
+
+
+bool pointInRect(in vec2i point, in vec4 vec) {
+    const Rect rect = Rect(vec);
+    return pointInRect(point, rect);
+}
+
+
+bool pointInRect(in vec2i point, in Rect rect) {
+    return (point.x <= rect.left+rect.width ) && (point.x >= rect.left) &&
+           (point.y <= rect.top +rect.height) && (point.y >= rect.top);
+}

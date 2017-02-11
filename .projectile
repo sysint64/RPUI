@@ -1,3 +1,4 @@
 -/.dub
 -/res
--/e2dit-ml
+-/e2dit
+-/__test__library__

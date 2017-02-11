@@ -3,9 +3,7 @@
 uniform mat4 MVP;
 
 void main() {
-    vec4 position = gl_Vertex;
-
-    gl_Position = MVP*position;
+    gl_Position = MVP*gl_Vertex;
     gl_TexCoord[0] = gl_MultiTexCoord0;
 }
 

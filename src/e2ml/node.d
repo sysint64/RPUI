@@ -19,10 +19,15 @@ class Node {
     @property string path() { return p_path; }
     @property Node   parent() { return p_parent; }
     @property Array!Node children() { return p_children; }
+    @property size_t length() { return p_children.length; }
 
     @property void name(in string value) {
         p_name = value;
         updatePath();
+    }
+
+    Node getAtIndex(in size_t index) {
+        return p_children[index];
     }
 
     void insert(Node object) {
