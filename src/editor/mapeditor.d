@@ -17,6 +17,7 @@ import gapi.text;
 import ui;
 import ui.widgets.button;
 import ui.widgets.stack_layout;
+import ui.widgets.panel;
 
 import math.linalg;
 import std.stdio;
@@ -111,6 +112,11 @@ class MapEditor: Application {
         button.position = vec2(0, 0);
         button.caption = "test";
         uiManager.addWidget(button);
+
+        Panel panel = new Panel("Panel");
+        panel.size = vec2(100, 100);
+        panel.position = vec2(100, 300);
+        uiManager.addWidget(panel);
     }
 
     override void onKeyPressed(in KeyCode key) {

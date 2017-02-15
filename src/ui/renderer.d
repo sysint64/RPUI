@@ -66,17 +66,31 @@ class Renderer {
         text.render(camera);
     }
 
-    @property gapi.Camera camera() { return p_camera; }
-    @property void camera(gapi.Camera val) { p_camera = val; }
-    @property gapi.Shader texAtlasShader() { return p_texAtlasShader; }
-    @property gapi.Shader maskTexAtlasShader() { return p_maskTexAtlasShader; }
-    @property gapi.Shader colorizeShader() { return p_colorizeShader; }
+    void renderColorQuad(BaseRenderObject renderObject, in vec4 color,
+                         in vec2 position, in vec2 size)
+    {
+        p_colorShader.bind();
+
+        renderObject.position = toScreenPosition(position, size);
+        renderObject.scaling = size;
+
+        p_colorShader.setUniformMatrix("MVP", renderObject.lastMVPMatrix);
+        p_colorShader.setUniformVec4f("color", color);
+
+        renderObject.render(camera);
+    }
+
+    @property Camera camera() { return p_camera; }
+    @property void camera(Camera val) { p_camera = val; }
+    @property Shader texAtlasShader() { return p_texAtlasShader; }
+    @property Shader maskTexAtlasShader() { return p_maskTexAtlasShader; }
+    @property Shader colorShader() { return p_colorShader; }
 
 private:
-    gapi.Shader p_texAtlasShader;
-    gapi.Shader p_maskTexAtlasShader;
-    gapi.Shader p_colorizeShader;
-    gapi.Camera p_camera;
+    Shader p_texAtlasShader;
+    Shader p_maskTexAtlasShader;
+    Shader p_colorShader;
+    Camera p_camera;
 
     Manager manager;
     Application app;
@@ -84,6 +98,6 @@ private:
     void createShaders() {
         p_texAtlasShader = Shader.createFromFile("tex_atlas.glsl");
         p_maskTexAtlasShader = Shader.createFromFile("mask_tex_atlas.glsl");
-        p_colorizeShader = Shader.createFromFile("colorize.glsl");
+        p_colorShader = Shader.createFromFile("color.glsl");
     }
 }

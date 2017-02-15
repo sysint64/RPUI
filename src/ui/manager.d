@@ -56,7 +56,6 @@ class Manager {
         widgetUnderMouse = null;
         Widget found = null;
         uint counter = 0;
-        import std.stdio;
 
         foreach_reverse (Widget widget; widgetOrdering) {
             if (found !is null && !widget.overlay)

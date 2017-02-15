@@ -28,6 +28,14 @@ class RenderFactory {
         renderObjects[part] = createQuad(style, state, part);
     }
 
+    BaseRenderObject createQuad() {
+        return new BaseRenderObject(quadGeometry);
+    }
+
+    void createQuad(ref BaseRenderObject renderObject) {
+        renderObject = new BaseRenderObject(quadGeometry);
+    }
+
     BaseRenderObject createQuad(in string style, in string state, in string part) {
         return createQuad(style, [state], part);
     }
