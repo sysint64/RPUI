@@ -8,6 +8,7 @@ import application;
 import math.linalg;
 import basic_types;
 
+import derelict.opengl3.gl;
 import gapi.camera;
 
 import ui.theme;
@@ -94,13 +95,48 @@ class Manager {
         return null;
     }
 
-    void pushScissor(in vec4i scissor) {
+    void pushScissor(in Rect scissor) {
+        if (scissorStack.length == 0)
+            glEnable(GL_SCISSOR_TEST);
+
+        scissorStack.insertBack(scissor);
+        applyScissor();
     }
 
     void popScissor() {
+        scissorStack.removeBack(1);
+
+        if (scissorStack.length == 0) {
+            glDisable(GL_SCISSOR_TEST);
+        } else {
+            applyScissor();
+        }
     }
 
     void applyScissor() {
+        Rect currentScissor = scissorStack.back;
+
+        if (scissorStack.length >= 2) {
+            foreach (Rect scissor; scissorStack) {
+                if (currentScissor.left < scissor.left)
+                    currentScissor.left = scissor.left;
+
+                if (currentScissor.top < scissor.top)
+                    currentScissor.top = scissor.top;
+
+                if (currentScissor.width > scissor.width)
+                    currentScissor.width = scissor.width;
+
+                if (currentScissor.height > scissor.height)
+                    currentScissor.height = scissor.height;
+            }
+        }
+
+        IntRect intScissor = IntRect(currentScissor);
+        glScissor(intScissor.left,
+                  app.windowHeight - intScissor.top - intScissor.height,
+                  intScissor.width,
+                  intScissor.height);
     }
 
     // Events --------------------------------------------------------------------------------------
@@ -143,7 +179,7 @@ class Manager {
         root.onMouseMove(x, y);
     }
 
-    void onMouseWheel(in uint dx, in uint dy) {
+    void onMouseWheel(in int dx, in int dy) {
         root.onMouseWheel(dx, dy);
     }
 
@@ -156,7 +192,7 @@ class Manager {
 
 private:
     Application app;
-    Array!vec4i scissorStack;
+    Array!Rect scissorStack;
 
     Theme p_theme;
     Cursor.Icon p_cursor = Cursor.Icon.normal;

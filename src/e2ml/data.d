@@ -135,8 +135,8 @@ class Data {
     alias optParameter = optTypedNode!(Parameter, NotParameterException);
     alias optValue = optTypedNode!(Value, NotValueException);
     alias optNumberValue = optTypedNode!(NumberValue, NotNumberValueException);
-    alias optBooleanValue = optTypedNode!(BooleanValue, NotBooleanValueException);
     alias optStringValue = optTypedNode!(StringValue, NotStringValueException);
+    alias optBooleanValue = optTypedNode!(BooleanValue, NotBooleanValueException);
     alias optArrayValue = optTypedNode!(ArrayValue, NotArrayValueException);
 
     // Access to values

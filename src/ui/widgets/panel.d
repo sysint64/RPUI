@@ -41,6 +41,16 @@ class Panel : Widget {
             return;
         }
 
+        // Render children
+        Rect scissor;
+        scissor.point = vec2(absolutePosition.x, absolutePosition.y + scissorHeader);
+        scissor.size = vec2(size.x, size.y - scissorHeader);
+        manager.pushScissor(scissor);
+
+        super.render(camera);
+
+        manager.popScissor();
+
         renderScroll();
         renderSplit();
 	updateAlign();

@@ -25,12 +25,12 @@ abstract class Application {
         return MapEditor.getInstance();
     }
 
-    void initPath() {
+    final void initPath() {
         p_binDirectory = dirName(thisExePath());
         p_resourcesDirectory = buildPath(p_binDirectory, "res");
     }
 
-    void run() {
+    final void run() {
         initPath();
         initSFML();
         initGL();
@@ -47,27 +47,27 @@ abstract class Application {
 
     void render() {}
 
-    void logError(Char, T...)(in Char[] fmt, T args) {
+    final void logError(Char, T...)(in Char[] fmt, T args) {
         debug log.display(vec4(0.8f, 0.1f, 0.1f, 1), fmt, args);
     }
 
-    void logWarning(Char, T...)(in Char[] fmt, T args) {
+    final void logWarning(Char, T...)(in Char[] fmt, T args) {
         debug log.display(vec4(0.1f, 0.1f, 0.8f, 1), fmt, args);
     }
 
-    void logDebug(Char, T...)(in Char[] fmt, T args) {
+    final void logDebug(Char, T...)(in Char[] fmt, T args) {
         debug log.display(vec4(0.3f, 0.3f, 0.3f, 1), fmt, args);
     }
 
-    void warning(Char, T...)(in Char[] fmt, T args) {
+    final void warning(Char, T...)(in Char[] fmt, T args) {
 
     }
 
-    void error(Char, T...)(in Char[] fmt, T args) {
+    final void error(Char, T...)(in Char[] fmt, T args) {
 
     }
 
-    void criticalError(Char, T...)(in Char[] fmt, T args) {
+    final void criticalError(Char, T...)(in Char[] fmt, T args) {
         logError(fmt, args);
     }
 
@@ -94,7 +94,7 @@ abstract class Application {
 
     void onDblClick(in uint x, in uint y, in MouseButton button) {}
     void onMouseMove(in uint x, in uint y) {}
-    void onMouseWheel(in uint dx, in uint dy) {}
+    void onMouseWheel(in int dx, in int dy) {}
 
     void onResize(in uint width, in uint height) {
         p_windowWidth = width;
@@ -260,7 +260,7 @@ private:
                 break;
 
             case sfEvtMouseWheelScrolled:
-                const uint delta = to!uint(event.mouseWheelScroll.delta);
+                const int delta = to!int(event.mouseWheelScroll.delta);
 
                 switch (event.mouseWheelScroll.wheel) {
                     case sfMouseVerticalWheel:

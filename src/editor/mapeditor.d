@@ -109,14 +109,23 @@ class MapEditor: Application {
 
         button = new Button("Button");
         button.size = vec2(100, 21);
-        button.position = vec2(0, 0);
+        button.position = vec2(-15, -15);
         button.caption = "test";
-        uiManager.addWidget(button);
+        // uiManager.addWidget(button);
 
         Panel panel = new Panel("Panel");
-        panel.size = vec2(100, 100);
+        panel.size = vec2(200, 300);
         panel.position = vec2(100, 300);
+        panel.padding = vec4(5, 5, 5, 5);
         uiManager.addWidget(panel);
+        panel.addWidget(button);
+
+        button = new Button("Button");
+        button.size = vec2(100, 21);
+        button.position = vec2(0, 285);
+        button.caption = "test2";
+
+        panel.addWidget(button);
     }
 
     override void onKeyPressed(in KeyCode key) {
@@ -154,7 +163,7 @@ class MapEditor: Application {
         uiManager.onMouseMove(x, y);
     }
 
-    override void onMouseWheel(in uint dx, in uint dy) {
+    override void onMouseWheel(in int dx, in int dy) {
         super.onMouseWheel(dx, dy);
         uiManager.onMouseWheel(dx, dy);
     }

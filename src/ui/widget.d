@@ -104,7 +104,7 @@ class Widget {
     void onMouseMove(in uint x, in uint y) {
     }
 
-    void onMouseWheel(in uint dx, in uint dy) {
+    void onMouseWheel(in int dx, in int dy) {
     }
 
     // Properties ----------------------------------------------------------------------------------
