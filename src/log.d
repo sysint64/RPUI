@@ -17,8 +17,7 @@ import gapi.camera;
 
 class Log {
     this() {
-        // TODO: move to resources
-        font = new Font("/home/andrey/projects/e2dit-dlang/res/fonts/ttf-dejavu/DejaVuSans.ttf");
+        font = Font.createFromFile("ttf-dejavu/DejaVuSans.ttf");
     }
 
     void display(vec4, Char, T...)(in vec4 color, in Char[] fmt, T args) {

@@ -66,8 +66,8 @@ protected:
 
     void renderSkin(Camera camera) {
         size_t[3] coordIndices;
-
         string state = leaveElement;
+
         if (isEnter) state = enterElement;
         if (isClick) state = clickElement;
 

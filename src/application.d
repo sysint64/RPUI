@@ -28,6 +28,8 @@ abstract class Application {
     final void initPath() {
         p_binDirectory = dirName(thisExePath());
         p_resourcesDirectory = buildPath(p_binDirectory, "res");
+
+        writeln(p_resourcesDirectory);
     }
 
     final void run() {
