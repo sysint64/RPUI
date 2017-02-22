@@ -238,11 +238,17 @@ private:
                 break;
 
             case sfEvtKeyPressed:
-                onKeyPressed(to!KeyCode(event.key.code));
+                try {
+                    onKeyPressed(to!KeyCode(event.key.code));
+                } catch(ConvException) {}
+
                 break;
 
             case sfEvtKeyReleased:
-                onKeyReleased(to!KeyCode(event.key.code));
+                try {
+                    onKeyReleased(to!KeyCode(event.key.code));
+                } catch(ConvException) {}
+
                 break;
 
             case sfEvtMouseButtonPressed:

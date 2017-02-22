@@ -15,6 +15,22 @@ import gapi.geometry;
 import gapi.camera;
 
 
+void logError(Char, T...)(in Char[] fmt, T args) {
+    auto app = Application.getInstance();
+    debug app.logError(fmt, args);
+}
+
+
+void logWarning(Char, T...)(in Char[] fmt, T args) {
+    debug app.logWarning(fmt, args);
+}
+
+
+void logDebug(Char, T...)(in Char[] fmt, T args) {
+    debug app.logDebug(fmt, args);
+}
+
+
 class Log {
     this() {
         font = Font.createFromFile("ttf-dejavu/DejaVuSans.ttf");
