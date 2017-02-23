@@ -21,9 +21,11 @@ class Renderer {
         return vec2(position.x, app.windowHeight - size.y - position.y);
     }
 
-    void renderPart(BaseRenderObject renderObject, in string state,
+    void renderQuad(BaseRenderObject renderObject, in string state,
                     in vec2 position, in vec2 size)
     {
+        p_texAtlasShader.bind();
+
         renderObject.position = toScreenPosition(position, size);
         renderObject.scaling = size;
 
@@ -53,9 +55,9 @@ class Renderer {
         const vec2 centerPos = leftPos + vec2(leftWidth, 0);
         const vec2 rightPos = centerPos + vec2(centerWidth, 0);
 
-        renderPart(renderObjects["left"], state, leftPos, vec2(leftWidth, height));
-        renderPart(renderObjects["center"], state, centerPos, vec2(centerWidth, height));
-        renderPart(renderObjects["right"], state, rightPos, vec2(rightWidth, height));
+        renderQuad(renderObjects["left"], state, leftPos, vec2(leftWidth, height));
+        renderQuad(renderObjects["center"], state, centerPos, vec2(centerWidth, height));
+        renderQuad(renderObjects["right"], state, rightPos, vec2(rightWidth, height));
     }
 
     void renderText(TextRenderObject text, in string state, in vec2 position, in vec2 size) {

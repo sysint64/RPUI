@@ -133,15 +133,11 @@ class MapEditor: Application {
         panel = new Panel("Panel");
         panel.size = vec2(100, 100);
         panel.regionAlign = RegionAlign.right;
-        panel.margin.top = 5;
-        panel.margin.left = 5;
-        panel.margin.bottom = 15;
-        panel.margin.right = 15;
         uiManager.addWidget(panel);
 
         panel = new Panel("Panel");
         panel.size = vec2(100, 100);
-        panel.regionAlign = RegionAlign.right;
+        panel.regionAlign = RegionAlign.bottom;
         uiManager.addWidget(panel);
     }
 

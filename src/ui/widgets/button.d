@@ -91,8 +91,8 @@ protected:
     override void onCreate() {
         super.onCreate();
 
-        string[3] elements = [leaveElement, enterElement, clickElement];
-        string[3] keys = ["left", "center", "right"];
+        immutable string[3] elements = [leaveElement, enterElement, clickElement];
+        immutable string[3] keys = ["left", "center", "right"];
 
         foreach (string key; keys) {
             renderFactory.createQuad(skinRenderObjects, style, elements, key);

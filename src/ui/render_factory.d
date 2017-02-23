@@ -17,13 +17,19 @@ class RenderFactory {
     }
 
     void createQuad(ref BaseRenderObject[string] renderObjects, in string style,
-                    in string[] states, in string part)
+                    in string[] states, in string part = "")
     {
         renderObjects[part] = createQuad(style, states, part);
     }
 
+    void createQuad(ref BaseRenderObject renderObject, in string style,
+                    in string[] states, in string part = "")
+    {
+        renderObject = createQuad(style, states, part);
+    }
+
     void createQuad(ref BaseRenderObject[string] renderObjects, in string style,
-                    in string state, in string part)
+                    in string state, in string part = "")
     {
         renderObjects[part] = createQuad(style, state, part);
     }
@@ -40,11 +46,14 @@ class RenderFactory {
         return createQuad(style, [state], part);
     }
 
-    BaseRenderObject createQuad(in string style, in string[] states, in string part) {
+    BaseRenderObject createQuad(in string style, in string[] states, in string part = "") {
         BaseRenderObject object = new BaseRenderObject(quadGeometry);
 
         foreach (string state; states) {
-            string path = style ~ "." ~ state ~ "." ~ part;
+            string path = style ~ "." ~ state;
+
+            if (part != "")
+                path ~= "." ~ part;
 
             gapi.Texture.Coord texCoord = manager.theme.data.getTexCoord(path);
             texCoord.normalize(manager.theme.skin);
@@ -66,8 +75,8 @@ class RenderFactory {
             const string offsetPath = path ~ "Offset";
             const string colorPath = path ~ "Color";
 
-            vec2 offset = manager.theme.data.getVec2f(offsetPath);
-            vec4 color = manager.theme.data.getNormColor(colorPath);
+            const vec2 offset = manager.theme.data.getVec2f(offsetPath);
+            const vec4 color = manager.theme.data.getNormColor(colorPath);
 
             text.addOffset(state, offset);
             text.addColor(state, color);

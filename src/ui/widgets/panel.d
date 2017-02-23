@@ -1,6 +1,7 @@
 module ui.widgets.panel;
 
 import std.container;
+import std.algorithm.comparison;
 
 import basic_types;
 import math.linalg;
@@ -29,8 +30,8 @@ class Panel : Widget {
             renderer.renderColorQuad(backgroundRenderObject, backgroundColors[background],
                                      absolutePosition, size);
 
-        if (allowResize || showSplit)
-            calculateSplit();
+        // if (allowResize || showSplit)
+        //     calculateSplit();
 
         if (allowHide) {
         }
@@ -41,6 +42,9 @@ class Panel : Widget {
             renderSplit();
             return;
         }
+
+        if (split.isClick)
+            pollSplitResize();
 
         // Render children
         Rect scissor;
@@ -59,11 +63,22 @@ class Panel : Widget {
 
     override void onCreate() {
         renderFactory.createQuad(backgroundRenderObject);
+        renderFactory.createQuad(splitBorderRenderObject);
+        renderFactory.createQuad(splitInnerRenderObject);
 
         with (manager.theme) {
             backgroundColors[Background.light]  = data.getNormColor(style ~ ".backgroundLight");
             backgroundColors[Background.dark]   = data.getNormColor(style ~ ".backgroundDark");
             backgroundColors[Background.action] = data.getNormColor(style ~ ".backgroundAction");
+
+            const auto addSplitColor = delegate(in string key) {
+                splitColors[key] = manager.theme.data.getNormColor(style ~ "." ~ key);
+            };
+
+            addSplitColor(spliteState(false, false));
+            addSplitColor(spliteState(false, true));
+            addSplitColor(spliteState(true , false));
+            addSplitColor(spliteState(true , true));
         }
     }
 
@@ -107,6 +122,12 @@ class Panel : Widget {
 
     @property ref bool showSplit() { return p_showSplit; }
     @property void showSplit(in bool val) { p_showSplit = val; }
+
+    @property ref float minSize() { return p_minSize; }
+    @property void minSize(in float val) { p_minSize = val; }
+
+    @property ref float maxSize() { return p_maxSize; }
+    @property void maxSize(in float val) { p_maxSize = val; }
 
 protected:
     override void updateAlign() {
@@ -155,20 +176,24 @@ protected:
 private:
     BaseRenderObject[string] scrollBackgroundRenderObjects;
     BaseRenderObject[string] scrollButtonRenderObjects;
-    BaseRenderObject splitRenderObject;
+    BaseRenderObject splitBorderRenderObject;
+    BaseRenderObject splitInnerRenderObject;
     BaseRenderObject headerRenderObject;
     BaseRenderObject expandArrowRenderObject;
     BaseRenderObject backgroundRenderObject;
     TextRenderObject textRenderObject;
 
     vec4[Background] backgroundColors;
+    vec4[string] splitColors;
 
     vec2 widgetsOffset;
 
     struct Split {
         bool isEnter = false;
         bool isClick = false;
-        vec2 position;
+        float thickness = 1;
+        vec2 borderPosition;
+        vec2 innerPosition;
         vec2 size;
     }
 
@@ -197,8 +222,8 @@ private:
 
     //
     int p_scrollDelta = 20;
-    int p_minSize = 40;
-    int p_maxSize = 999;
+    float p_minSize = 40;
+    float p_maxSize = 999;
     bool p_showVerticalScrollButton = true;
     bool p_showHorizontalScrollButton = true;
     Background p_background = Background.light;
@@ -210,6 +235,13 @@ private:
     bool p_blackSplit = false;
     bool p_showSplit = true;
     utfstring p_caption = "Hello World!";
+
+    vec2 lastSize = 0;
+
+    string spliteState(in bool innerColor, in bool useBlackColor = false) const {
+        const string color = innerColor ? "innerColor" : "borderColor";
+        return p_blackSplit || useBlackColor ? "Split.Dark." ~ color : "Split.Light." ~ color;
+    }
 
     @property
     bool scrollButtonIsClicked() {
@@ -257,10 +289,69 @@ private:
     void pollScroll() {
     }
 
-    void calculateSplit() {
+    void pollSplitResize() {
+        switch (regionAlign) {
+            case RegionAlign.top:
+                size.y = lastSize.y + app.mousePos.y - app.mouseClickPos.y;
+                break;
+
+            case RegionAlign.bottom:
+                size.y = lastSize.y - app.mousePos.y + app.mouseClickPos.y;
+                break;
+
+            case RegionAlign.left:
+                size.x = lastSize.x + app.mousePos.x - app.mouseClickPos.x;
+                break;
+
+            case RegionAlign.right:
+                size.x = lastSize.x - app.mousePos.x + app.mouseClickPos.x;
+                break;
+
+            default:
+                break;
+        }
+
+        if (regionAlign == RegionAlign.top || regionAlign == RegionAlign.bottom)
+            size.y = clamp(size.y, minSize, maxSize);
+
+        if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right)
+            size.x = clamp(size.x, minSize, maxSize);
     }
 
     void renderSplit() {
+        switch (regionAlign) {
+            case RegionAlign.top:
+                split.borderPosition = absolutePosition + vec2(0, size.y - split.thickness);
+                split.innerPosition = split.borderPosition - vec2(0, split.thickness);
+                split.size = vec2(size.x, split.thickness);
+                break;
+
+            case RegionAlign.bottom:
+                split.borderPosition = absolutePosition;
+                split.innerPosition = split.borderPosition + vec2(0, split.thickness);
+                split.size = vec2(size.x, split.thickness);
+                break;
+
+            case RegionAlign.left:
+                split.borderPosition = absolutePosition + vec2(size.x - split.thickness, 0);
+                split.innerPosition = split.borderPosition - vec2(split.thickness, 0);
+                split.size = vec2(split.thickness, size.y);
+                break;
+
+            case RegionAlign.right:
+                split.borderPosition = absolutePosition;
+                split.innerPosition = split.borderPosition + vec2(split.thickness, 0);
+                split.size = vec2(split.thickness, size.y);
+                break;
+
+            default:
+                return;
+        }
+
+        renderer.renderColorQuad(splitBorderRenderObject, splitColors[spliteState(false)],
+                                 split.borderPosition, split.size);
+        renderer.renderColorQuad(splitInnerRenderObject, splitColors[spliteState(true)],
+                                 split.innerPosition, split.size);
     }
 
     void renderScroll() {
