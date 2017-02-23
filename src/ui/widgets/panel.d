@@ -71,6 +71,8 @@ class Panel : Widget {
             backgroundColors[Background.dark]   = data.getNormColor(style ~ ".backgroundDark");
             backgroundColors[Background.action] = data.getNormColor(style ~ ".backgroundAction");
 
+            split.thickness = data.getNumber(style ~ ".Split.thickness.0");
+
             const auto addSplitColor = delegate(in string key) {
                 splitColors[key] = manager.theme.data.getNormColor(style ~ "." ~ key);
             };

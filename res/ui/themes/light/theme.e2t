@@ -42,6 +42,8 @@ Panel
     backgroundAction    : 194, 194, 194, 100
 
     Split
+        thickness       : 1
+
         Light
             borderColor : 0, 0, 0, 100
             innerColor  : 255, 255, 255, 100
