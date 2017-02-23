@@ -3,7 +3,7 @@ module editor.mapeditor;
 import input;
 import patterns.singleton;
 import application;
-import basic_types: utfchar;
+import basic_types;
 
 import gapi.camera;
 import gapi.geometry;
@@ -117,6 +117,7 @@ class MapEditor: Application {
         panel.size = vec2(200, 300);
         panel.position = vec2(100, 300);
         panel.padding = vec4(5, 5, 5, 5);
+        panel.regionAlign = RegionAlign.top;
         uiManager.addWidget(panel);
         panel.addWidget(button);
 
@@ -126,6 +127,22 @@ class MapEditor: Application {
         button.caption = "test2";
 
         panel.addWidget(button);
+
+        //
+
+        panel = new Panel("Panel");
+        panel.size = vec2(100, 100);
+        panel.regionAlign = RegionAlign.right;
+        panel.margin.top = 5;
+        panel.margin.left = 5;
+        panel.margin.bottom = 15;
+        panel.margin.right = 15;
+        uiManager.addWidget(panel);
+
+        panel = new Panel("Panel");
+        panel.size = vec2(100, 100);
+        panel.regionAlign = RegionAlign.right;
+        uiManager.addWidget(panel);
     }
 
     override void onKeyPressed(in KeyCode key) {

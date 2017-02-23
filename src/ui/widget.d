@@ -161,6 +161,9 @@ class Widget {
     @property Align locationAlign() { return p_locationAlign; }
     @property VerticalAlign locationVerticalAlign() { return p_locationVerticalAlign; }
 
+    @property RegionAlign regionAlign() { return p_regionAlign; }
+    @property void regionAlign(in RegionAlign val) { p_regionAlign = val; }
+
     // Event Listeners
     @property void onClickListener(in OnClickListener val) { p_onClickListener = val; }
     @property void onDblClickistener(in OnDblClickistener val) { p_onDblClickistener = val; }
@@ -261,6 +264,7 @@ private:
     PartDraws p_partDraws = PartDraws.all;
     Align p_locationAlign = Align.none;
     VerticalAlign p_locationVerticalAlign = VerticalAlign.none;
+    RegionAlign p_regionAlign = RegionAlign.none;
     bool p_isEnter = false;
     bool p_isClick = false;
     bool p_isOver = false;  // When in rect of element but if another element over this

@@ -33,6 +33,9 @@ class Manager {
     }
 
     void render(Camera camera) {
+        root.size.x = app.windowWidth;
+        root.size.y = app.windowHeight;
+
         p_renderer.camera = camera;
         root.render(camera);
         poll();

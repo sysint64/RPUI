@@ -5,6 +5,7 @@ import std.container;
 import basic_types;
 import math.linalg;
 import gapi;
+import log;
 
 import ui.widget;
 import ui.manager;
@@ -107,6 +108,50 @@ class Panel : Widget {
     @property ref bool showSplit() { return p_showSplit; }
     @property void showSplit(in bool val) { p_showSplit = val; }
 
+protected:
+    override void updateAlign() {
+        if (regionAlign == RegionAlign.none)
+            return;
+
+        const FrameRect region = findRegion();
+        const vec2 scrollRegion = vec2(0, 0);  // TODO: make real region
+        const vec2 regionSize = vec2(parent.size.x - region.right  - region.left - scrollRegion.x,
+                                     parent.size.y - region.bottom - region.top  - scrollRegion.y);
+
+        switch (regionAlign) {
+            case RegionAlign.client:
+                size.x = regionSize.x;
+                size.y = regionSize.y;
+                position = vec2(region.left, region.top);
+                break;
+
+            case RegionAlign.top:
+                size.x = regionSize.x;
+                position = vec2(region.left, region.top);
+                break;
+
+            case RegionAlign.bottom:
+                size.x = regionSize.x;
+                position.x = region.left;
+                position.y = parent.size.y - size.y - region.bottom - scrollRegion.y;
+                break;
+
+            case RegionAlign.left:
+                size.y = regionSize.y;
+                position = vec2(region.left, region.top);
+                break;
+
+            case RegionAlign.right:
+                size.y = regionSize.y;
+                position.x = parent.size.x - size.x - region.right - scrollRegion.x;
+                position.y = region.top;
+                break;
+
+            default:
+                break;
+        }
+    }
+
 private:
     BaseRenderObject[string] scrollBackgroundRenderObjects;
     BaseRenderObject[string] scrollButtonRenderObjects;
@@ -169,6 +214,41 @@ private:
     @property
     bool scrollButtonIsClicked() {
         return verticalScrollButton.isClick || horizontalScrollButton.isClick;
+    }
+
+    FrameRect findRegion() {
+        FrameRect region;
+
+        foreach (uint index, Widget widget; parent.children) {
+            if (widget == this)
+                break;
+
+            if (!widget.visible || widget.regionAlign == RegionAlign.none)
+                continue;
+
+            switch (widget.regionAlign) {
+                case RegionAlign.top:
+                    region.top += widget.size.y;
+                    break;
+
+                case RegionAlign.left:
+                    region.left += widget.size.x;
+                    break;
+
+                case RegionAlign.bottom:
+                    region.bottom += widget.size.y;
+                    break;
+
+                case RegionAlign.right:
+                    region.right += widget.size.x;
+                    break;
+
+                default:
+                    continue;
+            }
+        }
+
+        return region;
     }
 
     void updateScroll() {

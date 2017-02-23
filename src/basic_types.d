@@ -7,12 +7,20 @@ import std.conv : to;
 alias utfchar = dchar;
 alias utfstring = dstring;
 
+enum RegionAlign {
+    none,
+    left,
+    right,
+    top,
+    bottom,
+    client,
+}
+
 enum Align {
     none,
     left,
     center,
     right,
-    client,
 };
 
 enum VerticalAlign {
@@ -20,14 +28,13 @@ enum VerticalAlign {
     top,
     middle,
     bottom,
-    client,
 }
 
 struct FrameRect {
-    float left;
-    float right;
-    float top;
-    float bottom;
+    float left = 0;
+    float right = 0;
+    float top = 0;
+    float bottom = 0;
 
     this(in float left, in float top, in float right, in float bottom) {
         this.left = left;
