@@ -93,9 +93,15 @@ class Widget {
     }
 
     void onMouseDown(in uint x, in uint y, in MouseButton button) {
+        foreach (uint index, Widget widget; children) {
+            widget.onMouseDown(x, y, button);
+        }
     }
 
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
+        foreach (uint index, Widget widget; children) {
+            widget.onMouseUp(x, y, button);
+        }
     }
 
     void onDblClick(in uint x, in uint y, in MouseButton button) {
@@ -105,6 +111,9 @@ class Widget {
     }
 
     void onMouseWheel(in int dx, in int dy) {
+    }
+
+    void onCursor() {
     }
 
     // Properties ----------------------------------------------------------------------------------
@@ -163,6 +172,9 @@ class Widget {
 
     @property RegionAlign regionAlign() { return p_regionAlign; }
     @property void regionAlign(in RegionAlign val) { p_regionAlign = val; }
+
+    @property ref bool resizable() { return p_resizable; }
+    @property void resizable(in bool val) { p_resizable = val; }
 
     // Event Listeners
     @property void onClickListener(in OnClickListener val) { p_onClickListener = val; }
@@ -272,6 +284,7 @@ private:
     VerticalAlign p_verticalAlign = VerticalAlign.none;
     bool p_autoWidth = false;
     bool p_autoHeight = false;
+    bool p_resizable = true;
 
     // Event Listeners
     OnClickListener p_onClickListener = null;

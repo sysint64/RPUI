@@ -2,11 +2,13 @@ module ui.widgets.panel;
 
 import std.container;
 import std.algorithm.comparison;
+import std.stdio;
 
 import basic_types;
 import math.linalg;
 import gapi;
 import log;
+import input;
 
 import ui.widget;
 import ui.manager;
@@ -14,6 +16,8 @@ import ui.render_objects;
 
 
 class Panel : Widget {
+    enum Background {transparent, light, dark, action};
+
     this(in string style) {
         super(style);
     }
@@ -30,8 +34,7 @@ class Panel : Widget {
             renderer.renderColorQuad(backgroundRenderObject, backgroundColors[background],
                                      absolutePosition, size);
 
-        // if (allowResize || showSplit)
-        //     calculateSplit();
+        calculateSplit();
 
         if (allowHide) {
         }
@@ -43,14 +46,14 @@ class Panel : Widget {
             return;
         }
 
-        if (split.isClick)
-            pollSplitResize();
-
         // Render children
         Rect scissor;
         scissor.point = vec2(absolutePosition.x, absolutePosition.y + scissorHeader);
         scissor.size = vec2(size.x, size.y - scissorHeader);
         manager.pushScissor(scissor);
+
+        if (split.isClick)
+            pollSplitResize();
 
         super.render(camera);
 
@@ -84,7 +87,47 @@ class Panel : Widget {
         }
     }
 
-    enum Background {transparent, light, dark, action};
+    override void onCursor() {
+        if (!resizable || !isOpen || verticalScrollButton.isClick || horizontalScrollButton.isClick)
+            return;
+
+        if (regionAlign == RegionAlign.top || regionAlign == RegionAlign.bottom) {
+            const Rect rect = Rect(split.borderPosition.x,
+                                   split.borderPosition.y - split.cursorRangeSize / 2.0f,
+                                   split.size.x, split.cursorRangeSize);
+
+            if (pointInRect(app.mousePos, rect) || split.isClick) {
+                // manager.cursor =
+                split.isEnter = true;
+            }
+        } else if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right) {
+            const Rect rect = Rect(split.borderPosition.x - split.cursorRangeSize / 2.0f,
+                                   split.borderPosition.y,
+                                   split.cursorRangeSize, split.size.y);
+
+            if (pointInRect(app.mousePos, rect) || split.isClick) {
+                // manager.cursor =
+                split.isEnter = true;
+            }
+        }
+    }
+
+    override void onMouseDown(in uint x, in uint y, in MouseButton button) {
+        if (split.isEnter && isOpen) {
+            lastSize = size;
+            split.isClick = true;
+        }
+    }
+
+    override void onMouseUp(in uint x, in uint y, in MouseButton button) {
+        super.onMouseDown(x, y, button);
+
+        verticalScrollButton.isClick = false;
+        horizontalScrollButton.isClick = false;
+        split.isClick = false;
+    }
+
+    // Properties ----------------------------------------------------------------------------------
 
     @property ref bool showVerticalScrollButton() { return p_showVerticalScrollButton; }
     @property ref bool showHorizontalScrollButton() { return p_showHorizontalScrollButton; }
@@ -194,6 +237,8 @@ private:
         bool isEnter = false;
         bool isClick = false;
         float thickness = 1;
+        float cursorRangeSize = 8;
+        Rect cursorRangeRect;
         vec2 borderPosition;
         vec2 innerPosition;
         vec2 size;
@@ -320,7 +365,10 @@ private:
             size.x = clamp(size.x, minSize, maxSize);
     }
 
-    void renderSplit() {
+    void calculateSplit() {
+        if (!resizable && !showSplit)
+            return;
+
         switch (regionAlign) {
             case RegionAlign.top:
                 split.borderPosition = absolutePosition + vec2(0, size.y - split.thickness);
@@ -349,6 +397,11 @@ private:
             default:
                 return;
         }
+    }
+
+    void renderSplit() {
+        if (!resizable && !showSplit)
+            return;
 
         renderer.renderColorQuad(splitBorderRenderObject, splitColors[spliteState(false)],
                                  split.borderPosition, split.size);

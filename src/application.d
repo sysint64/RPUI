@@ -252,6 +252,8 @@ private:
                 break;
 
             case sfEvtMouseButtonPressed:
+                p_mouseClickPos = p_mousePos;
+
                 with (event.mouseButton)
                     onMouseDown(x, y, to!MouseButton(button));
 

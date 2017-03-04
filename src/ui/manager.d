@@ -51,6 +51,7 @@ class Manager {
             if (!widget.visible)
                 continue;
 
+            widget.onCursor();
             vec2 size = vec2(widget.overSize.x > 0 ? widget.overSize.x : widget.size.x,
                              widget.overSize.y > 0 ? widget.overSize.y : widget.size.y);
             Rect rect = Rect(widget.absolutePosition.x, widget.absolutePosition.y, size.x, size.y);
@@ -171,7 +172,7 @@ class Manager {
     }
 
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
-        root.onMouseDown(x, y, button);
+        root.onMouseUp(x, y, button);
     }
 
     void onDblClick(in uint x, in uint y, in MouseButton button) {
