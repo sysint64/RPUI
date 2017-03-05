@@ -3,6 +3,8 @@ module ui.cursor;
 import x11.Xlib;
 import x11_cursorfont;
 
+import application;
+
 
 class Cursor {
     enum Icon {
@@ -23,4 +25,36 @@ class Cursor {
         bottomLeftCorner = XC_bottom_left_corner,
         bottomRightCorner = XC_bottom_right_corner
     };
+
+    this() {
+        app = Application.getInstance();
+
+        version (linux) {
+            display = XOpenDisplay(null);
+        }
+    }
+
+    @property Icon icon() { return p_icon; }
+
+    @property void icon(in Icon icon) {
+        if (p_icon == icon)
+            return;
+
+        p_icon = icon;
+
+        version (linux) {
+            cursor = XCreateFontCursor(display, cast(uint) p_icon);
+            XDefineCursor(display, app.windowHandle, cursor);
+            XFlush(display);
+        }
+    }
+
+private:
+    Application app;
+    Icon p_icon = Icon.normal;
+
+    version (linux) {
+        Display *display;
+        ulong cursor;
+    }
 }

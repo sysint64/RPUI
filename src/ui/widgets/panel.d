@@ -12,6 +12,7 @@ import input;
 
 import ui.widget;
 import ui.manager;
+import ui.cursor;
 import ui.render_objects;
 
 
@@ -97,7 +98,7 @@ class Panel : Widget {
                                    split.size.x, split.cursorRangeSize);
 
             if (pointInRect(app.mousePos, rect) || split.isClick) {
-                // manager.cursor =
+                manager.cursor = Cursor.Icon.vDoubleArrow;
                 split.isEnter = true;
             }
         } else if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right) {
@@ -106,7 +107,7 @@ class Panel : Widget {
                                    split.cursorRangeSize, split.size.y);
 
             if (pointInRect(app.mousePos, rect) || split.isClick) {
-                // manager.cursor =
+                manager.cursor = Cursor.Icon.hDoubleArrow;
                 split.isEnter = true;
             }
         }

@@ -18,6 +18,7 @@ import math.linalg;
 
 import gapi.shader;
 import gapi.camera;
+import ui.cursor;
 
 
 abstract class Application {
@@ -33,6 +34,8 @@ abstract class Application {
     }
 
     final void run() {
+        p_cursor = new Cursor();
+
         initPath();
         initSFML();
         initGL();
@@ -124,10 +127,16 @@ abstract class Application {
     @property float deltaTime() { return p_deltaTime; }
     @property float currentTime() { return p_currentTime; }
 
+    @property Cursor.Icon cursor() { return p_cursor.icon; }
+    @property void cursor(in Cursor.Icon val) { p_cursor.icon = val; }
+
+    @property sfWindowHandle windowHandle() { return p_windowHandle; }
+
 private:
     string p_binDirectory;
     string p_resourcesDirectory;
     sfWindow* window;
+    sfWindowHandle p_windowHandle;
     Log log;
 
     Settings p_settings;
@@ -142,6 +151,7 @@ private:
     uint p_windowHeight;
 
     // Cursor
+    Cursor p_cursor;
     vec2i p_mousePos;
     vec2i p_mouseClickPos;
     uint p_mouseButton = MouseButton.mouseNone;
@@ -177,6 +187,7 @@ private:
 
         const(char)* title = "E2DIT";
         window = sfWindow_create(videoMode, title, sfDefaultStyle, &settings);
+        p_windowHandle = sfWindow_getSystemHandle(window);
         sfWindow_setVerticalSyncEnabled(window, false);
         sfWindow_setFramerateLimit(window, 60);
 

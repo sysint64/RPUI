@@ -33,12 +33,14 @@ class Manager {
     }
 
     void render(Camera camera) {
+        cursor = Cursor.Icon.normal;
         root.size.x = app.windowWidth;
         root.size.y = app.windowHeight;
 
         p_renderer.camera = camera;
         root.render(camera);
         poll();
+        app.cursor = cursor;
     }
 
     void poll() {
@@ -190,9 +192,11 @@ class Manager {
     // Properties ----------------------------------------------------------------------------------
 
     @property Theme theme() { return p_theme; }
-    @property Cursor.Icon cursor() { return p_cursor; }
     @property RenderFactory renderFactory() { return p_renderFactory; }
     @property Renderer renderer() { return p_renderer; }
+
+    @property Cursor.Icon cursor() { return p_cursor; }
+    @property void cursor(in Cursor.Icon val) { p_cursor = val; }
 
 private:
     Application app;
