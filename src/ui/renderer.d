@@ -40,8 +40,15 @@ class Renderer {
         renderObject.render(camera);
     }
 
-    void renderChain(BaseRenderObject[string] renderObjects, in string state,
-                     in vec2 position, in vec2 size)
+    void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
+                               in vec2 position, in float size)
+    {
+        const float height = renderObjects["center"].texCoordinates[state].size.y;
+        renderHorizontalChain(renderObjects, state, position, vec2(size, height));
+    }
+
+    void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
+                               in vec2 position, in vec2 size)
     {
         p_texAtlasShader.bind();
 
@@ -49,15 +56,38 @@ class Renderer {
         const float rightWidth = renderObjects["right"].texCoordinates[state].size.x;
         const float centerWidth = size.x - leftWidth - rightWidth;
 
-        const float height = size.y;
-
         const vec2 leftPos = position;
         const vec2 centerPos = leftPos + vec2(leftWidth, 0);
         const vec2 rightPos = centerPos + vec2(centerWidth, 0);
 
-        renderQuad(renderObjects["left"], state, leftPos, vec2(leftWidth, height));
-        renderQuad(renderObjects["center"], state, centerPos, vec2(centerWidth, height));
-        renderQuad(renderObjects["right"], state, rightPos, vec2(rightWidth, height));
+        renderQuad(renderObjects["left"], state, leftPos, vec2(leftWidth, size.y));
+        renderQuad(renderObjects["center"], state, centerPos, vec2(centerWidth, size.y));
+        renderQuad(renderObjects["right"], state, rightPos, vec2(rightWidth, size.y));
+    }
+
+    void renderVerticalChain(BaseRenderObject[string] renderObjects, in string state,
+                             in vec2 position, in float size)
+    {
+        const float width = renderObjects["middle"].texCoordinates[state].size.x;
+        renderVerticalChain(renderObjects, state, position, vec2(width, size));
+    }
+
+    void renderVerticalChain(BaseRenderObject[string] renderObjects, in string state,
+                             in vec2 position, in vec2 size)
+    {
+        p_texAtlasShader.bind();
+
+        const float topHeight = renderObjects["top"].texCoordinates[state].size.y;
+        const float bottomHeight = renderObjects["bottom"].texCoordinates[state].size.y;
+        const float middleHeight = size.y - topHeight - bottomHeight;
+
+        const vec2 topPos = position;
+        const vec2 middlePos = topPos + vec2(0, topHeight);
+        const vec2 bottomPos = middlePos + vec2(0, middleHeight);
+
+        renderQuad(renderObjects["top"], state, topPos, vec2(size.x, topHeight));
+        renderQuad(renderObjects["middle"], state, middlePos, vec2(size.x, middleHeight));
+        renderQuad(renderObjects["bottom"], state, bottomPos, vec2(size.x, bottomHeight));
     }
 
     void renderText(TextRenderObject text, in string state, in vec2 position, in vec2 size) {

@@ -1,59 +1,102 @@
 General
-    regularFont         : "ttf-dejavu/DejaVuSans.ttf", 12
+    regularFont             : "ttf-dejavu/DejaVuSans.ttf", 12
 
 Button
-    split               : 44, 35, 3, 21
-    iconMarginLeft      : 9
-    iconMarginRight     : 9
+    split                   : 44, 35, 3, 21
+    iconMarginLeft          : 9
+    iconMarginRight         : 9
 
     Leave
-        left            : 55, 35, 5, 21
-        center          : 68, 35, 5, 21
-        right           : 81, 35, 5, 21
-        textOffset      : 0,  0
-        textColor       : 20, 20, 20
+        left                : 55, 35, 5, 21
+        center              : 68, 35, 5, 21
+        right               : 81, 35, 5, 21
+        textOffset          : 0,  0
+        textColor           : 20, 20, 20
 
     Enter
-        left            : 55, 59, 5, 21
-        center          : 68, 59, 5, 21
-        right           : 81, 59, 5, 21
-        textOffset      : 0,  0
-        textColor       : 40, 40, 40
+        left                : 55, 59, 5, 21
+        center              : 68, 59, 5, 21
+        right               : 81, 59, 5, 21
+        textOffset          : 0,  0
+        textColor           : 40, 40, 40
 
     Click
-        left            : 55, 83, 5, 21
-        center          : 68, 83, 5, 21
-        right           : 81, 83, 5, 21
-        textOffset      : 0,  1
-        textColor       : 0, 0, 0
+        left                : 55, 83, 5, 21
+        center              : 68, 83, 5, 21
+        right               : 81, 83, 5, 21
+        textOffset          : 0,  1
+        textColor           : 0, 0, 0
 
     Focus
-        left            : 53, 105, 6, 25
-        center          : 68, 105, 6, 25
-        right           : 82, 105, 6, 25
-        offsets         : [-2, -2], 4
+        left                : 53, 105, 6, 25
+        center              : 68, 105, 6, 25
+        right               : 82, 105, 6, 25
+        offsets             : [-2, -2], 4
 
 Panel
-    headerLeave         : 242, 85, 11, 20
-    headerEnter         : 257, 85, 11, 20
+    headerLeave             : 242, 85, 11, 20
+    headerEnter             : 257, 85, 11, 20
 
-    backgroundLight     : 213, 213, 213, 100
-    backgroundDark      : 172, 172, 172, 100
-    backgroundAction    : 194, 194, 194, 100
+    backgroundLight         : 213, 213, 213, 100
+    backgroundDark          : 172, 172, 172, 100
+    backgroundAction        : 194, 194, 194, 100
 
     Split
-        thickness       : 1
+        thickness           : 1
 
         Light
-            borderColor : 0, 0, 0, 100
-            innerColor  : 255, 255, 255, 100
+            borderColor     : 0, 0, 0, 100
+            innerColor      : 255, 255, 255, 100
 
         Dark
-            borderColor : 0, 0, 0, 100
-            innerColor  : 0, 0, 0, 0
+            borderColor     : 0, 0, 0, 100
+            innerColor      : 0, 0, 0, 0
 
-    textOffset          : 0,  0
-    textColor           : 20, 20, 20
+    textOffset              : 0,  0
+    textColor               : 20, 20, 20
 
-    arrowOpen           : 5 , 21, 10, 10
-    arrowClose          : 22, 21, 10, 10
+    arrowOpen               : 5 , 21, 10, 10
+    arrowClose              : 22, 21, 10, 10
+
+    Scroll
+        Horizontal
+            left            : 0, 0, 0, 10
+            center          : 0, 0, 0, 10
+            right           : 0, 0, 0, 10
+
+            Button
+                Leave
+                    left    : 238, 161, 8, 10
+                    center  : 251, 161, 8, 10
+                    right   : 264, 161, 8, 10
+
+                Enter
+                    left    : 238, 161, 8, 10
+                    center  : 251, 161, 8, 10
+                    right   : 264, 161, 8, 10
+
+                Click
+                    left    : 240, 148, 8, 10
+                    center  : 251, 148, 8, 10
+                    right   : 262, 148, 8, 10
+
+        Vertical
+            left            : 0, 0, 0, 10
+            center          : 0, 0, 0, 10
+            right           : 0, 0, 0, 10
+
+            Button
+                Leave
+                    top     : 288, 146, 10, 8
+                    middle  : 288, 159, 10, 8
+                    bottom  : 288, 172, 10, 8
+
+                Enter
+                    top     : 299, 146, 10, 8
+                    middle  : 299, 159, 10, 8
+                    bottom  : 299, 172, 10, 8
+
+                Click
+                    top     : 275, 148, 10, 8
+                    middle  : 275, 159, 10, 8
+                    bottom  : 275, 171, 10, 8

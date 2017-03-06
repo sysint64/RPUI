@@ -47,6 +47,10 @@ class Panel : Widget {
             return;
         }
 
+        string state = "Leave";
+        renderer.renderVerticalChain(verticalScrollButton.buttonRenderObjects,
+                                     state, absolutePosition, vec2(10, 100));
+
         // Render children
         Rect scissor;
         scissor.point = vec2(absolutePosition.x, absolutePosition.y + scissorHeader);
@@ -85,6 +89,23 @@ class Panel : Widget {
             addSplitColor(spliteState(false, true));
             addSplitColor(spliteState(true , false));
             addSplitColor(spliteState(true , true));
+
+            // Scroll
+            immutable string[3] states = ["Leave", "Enter", "Click"];
+            immutable string[3] horizontalParts = ["left", "center", "right"];
+            immutable string[3] verticalParts = ["top", "middle", "bottom"];
+
+            immutable string scrollHorizontalBgStyle = style ~ ".Scroll.Horizontal";
+            immutable string scrollVerticalBgStyle = style ~ ".Scroll.Vertical";
+            immutable string scrollHorizontalButtonStyle = style ~ ".Scroll.Horizontal.Button";
+            immutable string scrollVerticalButtonStyle = style ~ ".Scroll.Vertical.Button";
+
+            foreach (string part; verticalParts) {
+                // renderFactory.createQuad(scrollBackgroundRenderObjects, scrollButtonBgStyle,
+                //                          elements, key);
+                renderFactory.createQuad(verticalScrollButton.buttonRenderObjects,
+                                         scrollVerticalButtonStyle, states, part);
+            }
         }
     }
 
@@ -220,8 +241,6 @@ protected:
     }
 
 private:
-    BaseRenderObject[string] scrollBackgroundRenderObjects;
-    BaseRenderObject[string] scrollButtonRenderObjects;
     BaseRenderObject splitBorderRenderObject;
     BaseRenderObject splitInnerRenderObject;
     BaseRenderObject headerRenderObject;
@@ -254,6 +273,9 @@ private:
     bool headerIsEnter = false;
 
     struct ScrollButton {
+        BaseRenderObject[string] backgroundRenderObjects;
+        BaseRenderObject[string] buttonRenderObjects;
+
         bool isEnter = false;
         bool isClick = false;
         float size = 0;

@@ -7,6 +7,8 @@ import std.conv : to;
 alias utfchar = dchar;
 alias utfstring = dstring;
 
+enum Orientation {horizontal, vertical};
+
 enum RegionAlign {
     none,
     left,

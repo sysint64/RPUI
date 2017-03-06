@@ -75,13 +75,13 @@ protected:
         textRenderObject.textAlign = textAlign;
         textRenderObject.textVerticalAlign = textVerticalAlign;
 
-        renderer.renderChain(skinRenderObjects, state, absolutePosition, size);
+        renderer.renderHorizontalChain(skinRenderObjects, state, absolutePosition, size);
         renderer.renderText(textRenderObject, state, absolutePosition, size);
 
         if (focused) {
             const vec2 focusPos = absolutePosition + focusOffsets;
             const vec2 focusSize = size + vec2(focusResize, focusResize);
-            renderer.renderChain(skinFocusRenderObjects, focusElement, focusPos, focusSize);
+            renderer.renderHorizontalChain(skinFocusRenderObjects, focusElement, focusPos, focusSize);
         }
     }
 

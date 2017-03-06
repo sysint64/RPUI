@@ -7,8 +7,6 @@ import math.linalg;
 
 
 class StackLayout : Widget {
-    enum Orientation {horizontal, vertical};
-
     this() {
         super();
     }
