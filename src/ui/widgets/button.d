@@ -47,11 +47,6 @@ protected:
     vec2 focusOffsets;
     float focusResize;
 
-    string leaveElement = "Leave";
-    string enterElement = "Enter";
-    string clickElement = "Click";
-    string focusElement = "Focus";
-
     BaseRenderObject[string] skinRenderObjects;
     BaseRenderObject[string] skinFocusRenderObjects;
 
@@ -66,10 +61,6 @@ protected:
 
     void renderSkin(Camera camera) {
         size_t[3] coordIndices;
-        string state = leaveElement;
-
-        if (isEnter) state = enterElement;
-        if (isClick) state = clickElement;
 
         textRenderObject.text = caption;
         textRenderObject.textAlign = textAlign;
@@ -81,7 +72,8 @@ protected:
         if (focused) {
             const vec2 focusPos = absolutePosition + focusOffsets;
             const vec2 focusSize = size + vec2(focusResize, focusResize);
-            renderer.renderHorizontalChain(skinFocusRenderObjects, focusElement, focusPos, focusSize);
+
+            renderer.renderHorizontalChain(skinFocusRenderObjects, "Focus", focusPos, focusSize);
         }
     }
 
@@ -91,15 +83,15 @@ protected:
     override void onCreate() {
         super.onCreate();
 
-        immutable string[3] elements = [leaveElement, enterElement, clickElement];
+        immutable string[3] elements = ["Leave", "Enter", "Click"];
         immutable string[3] keys = ["left", "center", "right"];
 
         foreach (string key; keys) {
             renderFactory.createQuad(skinRenderObjects, style, elements, key);
-            renderFactory.createQuad(skinFocusRenderObjects, style, focusElement, key);
+            renderFactory.createQuad(skinFocusRenderObjects, style, "Focus", key);
         }
 
-        const string focusKey = style ~ "." ~ focusElement;
+        const string focusKey = style ~ ".Focus";
         with (manager.theme) {
             focusOffsets = data.getVec2f(focusKey ~ ".offsets.0");
             focusResize = data.getNumber(focusKey ~ ".offsets.1");

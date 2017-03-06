@@ -71,9 +71,9 @@ Panel
                     right   : 264, 161, 8, 10
 
                 Enter
-                    left    : 238, 161, 8, 10
-                    center  : 251, 161, 8, 10
-                    right   : 264, 161, 8, 10
+                    left    : 238, 172, 8, 10
+                    center  : 251, 172, 8, 10
+                    right   : 264, 172, 8, 10
 
                 Click
                     left    : 240, 148, 8, 10
@@ -81,9 +81,9 @@ Panel
                     right   : 262, 148, 8, 10
 
         Vertical
-            left            : 0, 0, 0, 10
-            center          : 0, 0, 0, 10
-            right           : 0, 0, 0, 10
+            top             : 0, 0, 0, 10
+            middle          : 0, 0, 0, 10
+            bottom          : 0, 0, 0, 10
 
             Button
                 Leave

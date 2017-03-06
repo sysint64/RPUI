@@ -24,9 +24,8 @@ class Panel : Widget {
     }
 
     override void render(Camera camera) {
-        split.isEnter = false;
+        // split.isEnter = false;
         float lastPaddingTop = padding.top;
-	uint scissorHeader = 0;
 
         updateAbsolutePosition();
 	updateScroll();
@@ -47,14 +46,18 @@ class Panel : Widget {
             return;
         }
 
-        string state = "Leave";
-        renderer.renderVerticalChain(verticalScrollButton.buttonRenderObjects,
-                                     state, absolutePosition, vec2(10, 100));
+        pollHorizontalScroll();
+        pollVerticalScroll();
+
+        renderVerticalScroll();
+        renderHorizontalScroll();
 
         // Render children
         Rect scissor;
-        scissor.point = vec2(absolutePosition.x, absolutePosition.y + scissorHeader);
-        scissor.size = vec2(size.x, size.y - scissorHeader);
+        scissor.point = vec2(absolutePosition.x + regionOffset().left,
+                             absolutePosition.y + regionOffset().top);
+        scissor.size = vec2(size.x - regionOffset().left - regionOffset().right,
+                            size.y - regionOffset().top - regionOffset().bottom);
         manager.pushScissor(scissor);
 
         if (split.isClick)
@@ -64,7 +67,6 @@ class Panel : Widget {
 
         manager.popScissor();
 
-        renderScroll();
         renderSplit();
 	updateAlign();
     }
@@ -75,10 +77,12 @@ class Panel : Widget {
         renderFactory.createQuad(splitInnerRenderObject);
 
         with (manager.theme) {
+            // Panel background colors
             backgroundColors[Background.light]  = data.getNormColor(style ~ ".backgroundLight");
             backgroundColors[Background.dark]   = data.getNormColor(style ~ ".backgroundDark");
             backgroundColors[Background.action] = data.getNormColor(style ~ ".backgroundAction");
 
+            // Split
             split.thickness = data.getNumber(style ~ ".Split.thickness.0");
 
             const auto addSplitColor = delegate(in string key) {
@@ -101,17 +105,22 @@ class Panel : Widget {
             immutable string scrollVerticalButtonStyle = style ~ ".Scroll.Vertical.Button";
 
             foreach (string part; verticalParts) {
-                // renderFactory.createQuad(scrollBackgroundRenderObjects, scrollButtonBgStyle,
-                //                          elements, key);
                 renderFactory.createQuad(verticalScrollButton.buttonRenderObjects,
                                          scrollVerticalButtonStyle, states, part);
+            }
+
+            foreach (string part; horizontalParts) {
+                renderFactory.createQuad(horizontalScrollButton.buttonRenderObjects,
+                                         scrollHorizontalButtonStyle, states, part);
             }
         }
     }
 
     override void onCursor() {
-        if (!resizable || !isOpen || verticalScrollButton.isClick || horizontalScrollButton.isClick)
+        if (!resizable || !isOpen || verticalScrollButton.isClick || horizontalScrollButton.isClick) {
+            split.isEnter = false;
             return;
+        }
 
         if (regionAlign == RegionAlign.top || regionAlign == RegionAlign.bottom) {
             const Rect rect = Rect(split.borderPosition.x,
@@ -121,6 +130,8 @@ class Panel : Widget {
             if (pointInRect(app.mousePos, rect) || split.isClick) {
                 manager.cursor = Cursor.Icon.vDoubleArrow;
                 split.isEnter = true;
+            } else {
+                split.isEnter = false;
             }
         } else if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right) {
             const Rect rect = Rect(split.borderPosition.x - split.cursorRangeSize / 2.0f,
@@ -130,6 +141,8 @@ class Panel : Widget {
             if (pointInRect(app.mousePos, rect) || split.isClick) {
                 manager.cursor = Cursor.Icon.hDoubleArrow;
                 split.isEnter = true;
+            } else {
+                split.isEnter = false;
             }
         }
     }
@@ -139,6 +152,9 @@ class Panel : Widget {
             lastSize = size;
             split.isClick = true;
         }
+
+        verticalScrollButton.isClick = verticalScrollButton.isEnter;
+        horizontalScrollButton.isClick = horizontalScrollButton.isEnter;
     }
 
     override void onMouseUp(in uint x, in uint y, in MouseButton button) {
@@ -240,6 +256,10 @@ protected:
         }
     }
 
+    override FrameRect regionOffset() {
+        return FrameRect(0, 0, 10, 10);
+    }
+
 private:
     BaseRenderObject splitBorderRenderObject;
     BaseRenderObject splitInnerRenderObject;
@@ -252,9 +272,9 @@ private:
     vec4[string] splitColors;
 
     vec2 widgetsOffset;
+    static uint enteredSplitsCount = 0;
 
     struct Split {
-        bool isEnter = false;
         bool isClick = false;
         float thickness = 1;
         float cursorRangeSize = 8;
@@ -262,6 +282,20 @@ private:
         vec2 borderPosition;
         vec2 innerPosition;
         vec2 size;
+
+        @property ref bool isEnter() { return p_isEnter; }
+        @property void isEnter(in bool val) {
+            if (!val && p_isEnter)
+                enteredSplitsCount -= 1;
+
+            if (val && !p_isEnter)
+                enteredSplitsCount += 1;
+
+            p_isEnter = val;
+        }
+
+    private:
+        bool p_isEnter = false;
     }
 
     Split split;
@@ -278,11 +312,22 @@ private:
 
         bool isEnter = false;
         bool isClick = false;
-        float size = 0;
         float minPos = 0;
         float maxPos = 0;
-        float offset;
+        float offset = 0;
+        float minSize = 10;
+        float size = 100;
         float lastOffset;
+
+        @property string state() {
+            if (isClick) {
+                return "Click";
+            } else if (isEnter){
+                return "Enter";
+            } else {
+                return "Leave";
+            }
+        }
     }
 
     ScrollButton verticalScrollButton;
@@ -432,7 +477,43 @@ private:
                                  split.innerPosition, split.size);
     }
 
-    void renderScroll() {
+    void renderVerticalScroll() {
+        with (verticalScrollButton) {
+            const vec2 buttonOffset = vec2(this.size.x-regionOffset.right, offset);
+            renderer.renderVerticalChain(buttonRenderObjects, state,
+                                         absolutePosition + buttonOffset, size);
+        }
+    }
+
+    void renderHorizontalScroll() {
+        with (horizontalScrollButton) {
+            const vec2 buttonOffset = vec2(offset, this.size.y - regionOffset().bottom);
+            renderer.renderHorizontalChain(buttonRenderObjects, state,
+                                           absolutePosition + buttonOffset, size);
+        }
+    }
+
+    void pollHorizontalScroll() {
+        with (horizontalScrollButton) {
+            const vec2 buttonOffset = vec2(offset, this.size.y - regionOffset().bottom);
+            const Rect rect = Rect(absolutePosition + buttonOffset,
+                                   vec2(size, regionOffset().bottom));
+            isEnter = pointInRect(app.mousePos, rect);
+        }
+    }
+
+    void pollVerticalScroll() {
+        verticalScrollButton.isEnter = false;
+
+        if (enteredSplitsCount > 0)
+            return;
+
+        with (verticalScrollButton) {
+            const vec2 buttonOffset = vec2(this.size.x-regionOffset.right, offset);
+            const Rect rect = Rect(absolutePosition + buttonOffset,
+                                   vec2(regionOffset().right, size));
+            isEnter = pointInRect(app.mousePos, rect);
+        }
     }
 
     void scrollToWidget() {

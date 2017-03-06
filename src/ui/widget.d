@@ -166,6 +166,16 @@ class Widget {
     @property bool isOver() { return p_isOver; }
     @property bool overlay() { return p_overlay; }
 
+    @property string state() {
+        if (isClick) {
+            return "Click";
+        } else if (isEnter) {
+            return "Enter";
+        } else {
+            return "Leave";
+        }
+    }
+
     @property RenderFactory renderFactory() { return manager.renderFactory; }
     @property Align locationAlign() { return p_locationAlign; }
     @property VerticalAlign locationVerticalAlign() { return p_locationVerticalAlign; }
@@ -206,6 +216,10 @@ protected:
 
     float offsetSizeY() {
         return 0;
+    }
+
+    FrameRect regionOffset() {
+        return FrameRect(0, 0, 0, 0);
     }
 
     @property Renderer renderer() { return manager.renderer; }
