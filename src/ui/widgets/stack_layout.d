@@ -40,7 +40,7 @@ class StackLayout : Widget {
                 lastLoc += widget.size.y + widget.margin.top + widget.margin.bottom;
 
                 const float widgetWidth = widget.locationAlign == Align.right ? 0 :
-                    widget.position.x + widget.size.x + offsetSizeX();
+                    widget.position.x + widget.size.x + regionOffset.right;
 
                 if (maxWidth < widgetWidth)
                     maxWidth = widgetWidth;
@@ -54,7 +54,7 @@ class StackLayout : Widget {
                 lastLoc += width;
 
                 const float widgetHeight = widget.locationVerticalAlign == VerticalAlign.bottom ?
-                    0 : widget.position.y + widget.size.y + offsetSizeY();
+                    0 : widget.position.y + widget.size.y + regionOffset.bottom;
 
                 if (maxHeight < widgetHeight)
                     maxHeight = widgetHeight;
@@ -66,12 +66,12 @@ class StackLayout : Widget {
 
         if (orientation == Orientation.vertical) {
             size.x = maxWidth > parent.size.x ? maxWidth : parent.size.x;
-            size.x -= offsetSizeX();
+            size.x -= regionOffset.right;
             size.y = lastLoc;
         } else {
             size.x = lastLoc;
             size.y = maxHeight > parent.size.y ? maxHeight : parent.size.y;
-            size.y -= offsetSizeY();
+            size.y -= regionOffset.bottom;
         }
 
         size = vec2(1000, 1000);

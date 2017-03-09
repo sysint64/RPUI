@@ -2,6 +2,7 @@ module ui.widget;
 
 import std.container;
 import std.conv;
+import std.math;
 
 import input;
 import gapi;
@@ -52,6 +53,7 @@ class Widget {
 
     void render(Camera camera) {
         this.camera = camera;
+        p_innerBoundarySize = vec2(0, 0);
 
         if (!drawChildren)
             return;
@@ -61,7 +63,19 @@ class Widget {
                 continue;
 
             widget.render(camera);
+
+            // if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right)
+            //     innerBoundarySize.x = fmax(innerBoundarySize.x, widget.position.x + widget.size.x);
+
+            // if (regionAlign == RegionAlign.top || regionAlign == RegionAlign.bottom)
+            //     innerBoundarySize.y = fmax(innerBoundarySize.y, widget.position.y + widget.size.y);
+
+            p_innerBoundarySize.x = fmax(p_innerBoundarySize.x, widget.position.x + widget.size.x);
+            p_innerBoundarySize.y = fmax(p_innerBoundarySize.y, widget.position.y + widget.size.y);
         }
+
+        p_innerBoundarySizeClamped.x = fmax(p_innerBoundarySize.x, size.x);
+        p_innerBoundarySizeClamped.y = fmax(p_innerBoundarySize.y, size.y);
     }
 
     void addWidget(Widget widget) {
@@ -153,6 +167,9 @@ class Widget {
     @property void padding(in vec4 val) { p_padding = FrameRect(val); }
     @property void padding(in FrameRect val) { p_padding = val; }
 
+    @property vec2 innerBoundarySize() { return p_innerBoundarySize; }
+    @property vec2 innerBoundarySizeClamped() { return p_innerBoundarySizeClamped; }
+
     @property ref bool autoWidth() { return p_autoWidth; }
     @property void autoWidth(in bool val) { p_autoWidth = val; }
 
@@ -210,22 +227,22 @@ protected:
     void updateVerticalAlign() {
     }
 
-    float offsetSizeX() {
-        return 0;
+    void updateRegionAlign() {
     }
 
-    float offsetSizeY() {
-        return 0;
-    }
+    // float offsetSizeX() {
+    //     return 0;
+    // }
 
-    FrameRect regionOffset() {
-        return FrameRect(0, 0, 0, 0);
-    }
+    // float offsetSizeY() {
+    //     return 0;
+    // }
 
     @property Renderer renderer() { return manager.renderer; }
 
 package:
     bool drawChildren = true;
+    FrameRect regionOffset = FrameRect(0, 0, 0, 0);
 
     this(Manager manager) {
         this.manager = manager;
@@ -299,6 +316,9 @@ private:
     bool p_autoWidth = false;
     bool p_autoHeight = false;
     bool p_resizable = true;
+
+    vec2 p_innerBoundarySize = vec2(0, 0);
+    vec2 p_innerBoundarySizeClamped = vec2(0, 0);
 
     // Event Listeners
     OnClickListener p_onClickListener = null;

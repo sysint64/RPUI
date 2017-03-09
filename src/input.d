@@ -2,6 +2,7 @@ module input;
 
 import derelict.sfml2.window;
 
+
 // break the dependence on SFML Mouse
 enum MouseButton {
     mouseNone = -1,

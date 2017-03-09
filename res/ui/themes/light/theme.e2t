@@ -81,9 +81,9 @@ Panel
                     right   : 262, 148, 8, 10
 
         Vertical
-            top             : 0, 0, 0, 10
-            middle          : 0, 0, 0, 10
-            bottom          : 0, 0, 0, 10
+            top             : 0, 0, 10, 0
+            middle          : 0, 0, 10, 0
+            bottom          : 0, 0, 10, 0
 
             Button
                 Leave

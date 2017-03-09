@@ -25,8 +25,6 @@ import std.stdio;
 import derelict.sfml2.graphics;
 import derelict.opengl3.gl;
 
-import entitysysd;
-
 
 class MapEditor: Application {
     mixin Singleton!(MapEditor);

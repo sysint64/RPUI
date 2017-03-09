@@ -11,6 +11,7 @@ import log;
 import input;
 
 import ui.widget;
+import ui.scroll;
 import ui.manager;
 import ui.cursor;
 import ui.render_objects;
@@ -28,6 +29,7 @@ class Panel : Widget {
         float lastPaddingTop = padding.top;
 
         updateAbsolutePosition();
+        updateRegionOffset();
 	updateScroll();
 
         if (background != Background.transparent)
@@ -54,10 +56,10 @@ class Panel : Widget {
 
         // Render children
         Rect scissor;
-        scissor.point = vec2(absolutePosition.x + regionOffset().left,
-                             absolutePosition.y + regionOffset().top);
-        scissor.size = vec2(size.x - regionOffset().left - regionOffset().right,
-                            size.y - regionOffset().top - regionOffset().bottom);
+        scissor.point = vec2(absolutePosition.x + regionOffset.left,
+                             absolutePosition.y + regionOffset.top);
+        scissor.size = vec2(size.x - regionOffset.left - regionOffset.right,
+                            size.y - regionOffset.top - regionOffset.bottom);
         manager.pushScissor(scissor);
 
         if (split.isClick)
@@ -95,14 +97,34 @@ class Panel : Widget {
             addSplitColor(spliteState(true , true));
 
             // Scroll
-            immutable string[3] states = ["Leave", "Enter", "Click"];
-            immutable string[3] horizontalParts = ["left", "center", "right"];
-            immutable string[3] verticalParts = ["top", "middle", "bottom"];
+            const string[3] states = ["Leave", "Enter", "Click"];
+            const string[3] horizontalParts = ["left", "center", "right"];
+            const string[3] verticalParts = ["top", "middle", "bottom"];
 
-            immutable string scrollHorizontalBgStyle = style ~ ".Scroll.Horizontal";
-            immutable string scrollVerticalBgStyle = style ~ ".Scroll.Vertical";
-            immutable string scrollHorizontalButtonStyle = style ~ ".Scroll.Horizontal.Button";
-            immutable string scrollVerticalButtonStyle = style ~ ".Scroll.Vertical.Button";
+            const string scrollHorizontalBgStyle = style ~ ".Scroll.Horizontal";
+            const string scrollVerticalBgStyle = style ~ ".Scroll.Vertical";
+            const string scrollHorizontalButtonStyle = style ~ ".Scroll.Horizontal.Button";
+            const string scrollVerticalButtonStyle = style ~ ".Scroll.Vertical.Button";
+
+            with (verticalScrollButton) {
+                // button and bg size.x
+                const string buttonSelector = scrollVerticalButtonStyle ~ ".Leave.top.2";
+                const string bgSelector = scrollVerticalBgStyle ~ ".middle.2";
+
+                scrollController = new ScrollController(Orientation.vertical);
+                scrollController.buttonMinSize = data.getNumber(buttonSelector) * 2;
+                buttonWidth = data.getNumber(bgSelector);
+            }
+
+            with (horizontalScrollButton) {
+                // button and bg size.y
+                const string buttonSelector = scrollHorizontalButtonStyle ~ ".Leave.left.3";
+                const string bgSelector = scrollHorizontalBgStyle ~ ".left.3";
+
+                scrollController = new ScrollController(Orientation.horizontal);
+                scrollController.buttonMinSize = data.getNumber(buttonSelector) * 2;
+                buttonWidth = data.getNumber(bgSelector);
+            }
 
             foreach (string part; verticalParts) {
                 renderFactory.createQuad(verticalScrollButton.buttonRenderObjects,
@@ -155,6 +177,9 @@ class Panel : Widget {
 
         verticalScrollButton.isClick = verticalScrollButton.isEnter;
         horizontalScrollButton.isClick = horizontalScrollButton.isEnter;
+
+        verticalScrollButton.scrollController.onMouseDown(x, y, button);
+        horizontalScrollButton.scrollController.onMouseDown(x, y, button);
     }
 
     override void onMouseUp(in uint x, in uint y, in MouseButton button) {
@@ -165,16 +190,20 @@ class Panel : Widget {
         split.isClick = false;
     }
 
+    override void onMouseWheel(in int dx, in int dy) {
+        if (!isEnter)
+            return;
+
+        verticalScrollButton.scrollController.onMouseWheel(dx, dy);
+        horizontalScrollButton.scrollController.onMouseWheel(dx, dy);
+    }
+
     // Properties ----------------------------------------------------------------------------------
 
     @property ref bool showVerticalScrollButton() { return p_showVerticalScrollButton; }
     @property ref bool showHorizontalScrollButton() { return p_showHorizontalScrollButton; }
     @property void showVerticalScrollButton(in bool val) { p_showVerticalScrollButton = val; }
     @property void showHorizontalScrollButton(in bool val) { p_showHorizontalScrollButton = val; }
-
-    @property vec2 scrollInPx() {
-        return vec2(horizontalScrollButton.offset, verticalScrollButton.offset);
-    }
 
     @property
     void showScrollButtons(in bool val) {
@@ -256,8 +285,18 @@ protected:
         }
     }
 
-    override FrameRect regionOffset() {
-        return FrameRect(0, 0, 10, 10);
+    void updateRegionOffset() {
+        if (verticalScrollButton.visible) {
+            regionOffset.right = verticalScrollButton.buttonWidth;
+        } else {
+            regionOffset.right = 0;
+        }
+
+        if (horizontalScrollButton.visible) {
+            regionOffset.bottom = horizontalScrollButton.buttonWidth;
+        } else {
+            regionOffset.right = 0;
+        }
     }
 
 private:
@@ -309,15 +348,12 @@ private:
     struct ScrollButton {
         BaseRenderObject[string] backgroundRenderObjects;
         BaseRenderObject[string] buttonRenderObjects;
+        ScrollController scrollController;
+        float buttonWidth;
 
         bool isEnter = false;
         bool isClick = false;
-        float minPos = 0;
-        float maxPos = 0;
-        float offset = 0;
-        float minSize = 10;
-        float size = 100;
-        float lastOffset;
+        bool visible = true;
 
         @property string state() {
             if (isClick) {
@@ -478,41 +514,76 @@ private:
     }
 
     void renderVerticalScroll() {
+        if (!verticalScrollButton.visible)
+            return;
+
         with (verticalScrollButton) {
-            const vec2 buttonOffset = vec2(this.size.x-regionOffset.right, offset);
+            const vec2 buttonOffset = vec2(this.size.x-regionOffset.right,
+                                           scrollController.buttonOffset);
             renderer.renderVerticalChain(buttonRenderObjects, state,
-                                         absolutePosition + buttonOffset, size);
+                                         absolutePosition + buttonOffset,
+                                         scrollController.buttonSize);
         }
     }
 
     void renderHorizontalScroll() {
+        if (!horizontalScrollButton.visible)
+            return;
+
         with (horizontalScrollButton) {
-            const vec2 buttonOffset = vec2(offset, this.size.y - regionOffset().bottom);
+            const vec2 buttonOffset = vec2(scrollController.buttonOffset,
+                                           this.size.y - regionOffset.bottom);
             renderer.renderHorizontalChain(buttonRenderObjects, state,
-                                           absolutePosition + buttonOffset, size);
+                                           absolutePosition + buttonOffset,
+                                           scrollController.buttonSize);
         }
     }
 
     void pollHorizontalScroll() {
+        if (!horizontalScrollButton.visible)
+            return;
+
+        if (enteredSplitsCount > 0) {
+            horizontalScrollButton.isEnter = false;
+            return;
+        }
+
         with (horizontalScrollButton) {
-            const vec2 buttonOffset = vec2(offset, this.size.y - regionOffset().bottom);
+            const vec2 buttonOffset = vec2(scrollController.buttonOffset,
+                                           this.size.y - regionOffset.bottom);
             const Rect rect = Rect(absolutePosition + buttonOffset,
-                                   vec2(size, regionOffset().bottom));
+                                   vec2(scrollController.buttonSize, regionOffset.bottom));
             isEnter = pointInRect(app.mousePos, rect);
+
+            scrollController.buttonMaxOffset = size.x - regionOffset.right;
+            scrollController.buttonMaxSize = size.x - scrollController.buttonMinSize;
+
+            if (isClick)
+                scrollController.pollButton();
         }
     }
 
     void pollVerticalScroll() {
-        verticalScrollButton.isEnter = false;
-
-        if (enteredSplitsCount > 0)
+        if (!verticalScrollButton.visible)
             return;
 
+        if (enteredSplitsCount > 0) {
+            verticalScrollButton.isEnter = false;
+            return;
+        }
+
         with (verticalScrollButton) {
-            const vec2 buttonOffset = vec2(this.size.x-regionOffset.right, offset);
+            const vec2 buttonOffset = vec2(this.size.x-regionOffset.right,
+                                           scrollController.buttonOffset);
             const Rect rect = Rect(absolutePosition + buttonOffset,
-                                   vec2(regionOffset().right, size));
+                                   vec2(regionOffset.right, scrollController.buttonSize));
             isEnter = pointInRect(app.mousePos, rect);
+
+            scrollController.buttonMaxOffset = size.y - regionOffset.bottom;
+            scrollController.buttonMaxSize = size.y - scrollController.buttonMinSize;
+
+            if (isClick)
+                scrollController.pollButton();
         }
     }
 
