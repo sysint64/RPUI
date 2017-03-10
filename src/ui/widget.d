@@ -154,7 +154,6 @@ class Widget {
     @property void position(in vec2 val) { p_position = val; }
 
     @property vec2 absolutePosition() { return p_absolutePosition; }
-    @property vec2 scroll() { return p_scroll; }
 
     @property ref vec2 size() { return p_size; }
     @property void size(in vec2 val) { p_size = val; }
@@ -254,10 +253,10 @@ package:
 	Widget lastParent = parent;
 
         while (lastParent !is null) {
-            res.x += lastParent.position.x - lastParent.scroll.x + lastParent.padding.left +
+            res.x += lastParent.position.x - lastParent.contentOffset.x + lastParent.padding.left +
                 lastParent.margin.left;
 
-            res.y += lastParent.position.y - lastParent.scroll.y + lastParent.padding.top +
+            res.y += lastParent.position.y - lastParent.contentOffset.y + lastParent.padding.top +
                 lastParent.margin.top;
 
             lastParent = lastParent.parent;
@@ -266,6 +265,8 @@ package:
         p_absolutePosition.x = position.x + res.x + margin.left;
         p_absolutePosition.y = position.y + res.y + margin.top;
     }
+
+    vec2 contentOffset = vec2(0, 0);
 
     @property void isEnter(in bool val) { p_isEnter = val; }
     @property void isClick(in bool val) { p_isClick = val; }
@@ -289,7 +290,6 @@ private:
     vec2 p_absolutePosition;
     vec2 p_size = vec2(0, 0);
     vec2 p_overSize = vec2(0, 0);
-    vec2 p_scroll = vec2(0, 0);
     FrameRect p_margin = FrameRect(0, 0, 0, 0);
     FrameRect p_padding = FrameRect(0, 0, 0, 0);
 

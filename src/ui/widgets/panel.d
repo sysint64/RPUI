@@ -30,7 +30,6 @@ class Panel : Widget {
 
         updateAbsolutePosition();
         updateRegionOffset();
-	updateScroll();
 
         if (background != Background.transparent)
             renderer.renderColorQuad(backgroundRenderObject, backgroundColors[background],
@@ -51,8 +50,8 @@ class Panel : Widget {
         pollHorizontalScroll();
         pollVerticalScroll();
 
-        renderVerticalScroll();
         renderHorizontalScroll();
+        renderVerticalScroll();
 
         // Render children
         Rect scissor;
@@ -113,7 +112,7 @@ class Panel : Widget {
 
                 scrollController = new ScrollController(Orientation.vertical);
                 scrollController.buttonMinSize = data.getNumber(buttonSelector) * 2;
-                buttonWidth = data.getNumber(bgSelector);
+                width = data.getNumber(bgSelector);
             }
 
             with (horizontalScrollButton) {
@@ -123,7 +122,7 @@ class Panel : Widget {
 
                 scrollController = new ScrollController(Orientation.horizontal);
                 scrollController.buttonMinSize = data.getNumber(buttonSelector) * 2;
-                buttonWidth = data.getNumber(bgSelector);
+                width = data.getNumber(bgSelector);
             }
 
             foreach (string part; verticalParts) {
@@ -287,15 +286,15 @@ protected:
 
     void updateRegionOffset() {
         if (verticalScrollButton.visible) {
-            regionOffset.right = verticalScrollButton.buttonWidth;
+            regionOffset.right = verticalScrollButton.width;
         } else {
             regionOffset.right = 0;
         }
 
         if (horizontalScrollButton.visible) {
-            regionOffset.bottom = horizontalScrollButton.buttonWidth;
+            regionOffset.bottom = horizontalScrollButton.width;
         } else {
-            regionOffset.right = 0;
+            regionOffset.bottom = 0;
         }
     }
 
@@ -349,11 +348,11 @@ private:
         BaseRenderObject[string] backgroundRenderObjects;
         BaseRenderObject[string] buttonRenderObjects;
         ScrollController scrollController;
-        float buttonWidth;
+        float width;
 
         bool isEnter = false;
         bool isClick = false;
-        bool visible = true;
+        bool visible = false;
 
         @property string state() {
             if (isClick) {
@@ -434,10 +433,9 @@ private:
         return region;
     }
 
-    void updateScroll() {
-    }
-
-    void pollScroll() {
+    void onResizeScroll() {
+        horizontalScrollButton.scrollController.onResize();
+        verticalScrollButton.scrollController.onResize();
     }
 
     void pollSplitResize() {
@@ -467,6 +465,8 @@ private:
 
         if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right)
             size.x = clamp(size.x, minSize, maxSize);
+
+        onResizeScroll();
     }
 
     void calculateSplit() {
@@ -540,13 +540,14 @@ private:
     }
 
     void pollHorizontalScroll() {
+        horizontalScrollButton.visible = innerBoundarySize.x > size.x;
+        horizontalScrollButton.isEnter = false;
+
         if (!horizontalScrollButton.visible)
             return;
 
-        if (enteredSplitsCount > 0) {
-            horizontalScrollButton.isEnter = false;
-            return;
-        }
+        // if (enteredSplitsCount > 0)
+        //     return;
 
         with (horizontalScrollButton) {
             const vec2 buttonOffset = vec2(scrollController.buttonOffset,
@@ -557,20 +558,17 @@ private:
 
             scrollController.buttonMaxOffset = size.x - regionOffset.right;
             scrollController.buttonMaxSize = size.x - scrollController.buttonMinSize;
+            scrollController.contentSize = innerBoundarySize.x;
+            scrollController.buttonClick = isClick;
 
-            if (isClick)
-                scrollController.pollButton();
+            scrollController.pollButton();
+            contentOffset.x = scrollController.contentOffset;
         }
     }
 
     void pollVerticalScroll() {
-        if (!verticalScrollButton.visible)
-            return;
-
-        if (enteredSplitsCount > 0) {
-            verticalScrollButton.isEnter = false;
-            return;
-        }
+        verticalScrollButton.visible = innerBoundarySize.y > size.y;
+        verticalScrollButton.isEnter = false;
 
         with (verticalScrollButton) {
             const vec2 buttonOffset = vec2(this.size.x-regionOffset.right,
@@ -580,10 +578,14 @@ private:
             isEnter = pointInRect(app.mousePos, rect);
 
             scrollController.buttonMaxOffset = size.y - regionOffset.bottom;
-            scrollController.buttonMaxSize = size.y - scrollController.buttonMinSize;
+            scrollController.buttonMaxSize = size.y - regionOffset.bottom;
+            scrollController.contentSize = innerBoundarySize.y;
+            scrollController.buttonClick = isClick;
+            scrollController.contentMaxOffset =
+                innerBoundarySizeClamped.y - size.y + regionOffset.bottom;
 
-            if (isClick)
-                scrollController.pollButton();
+            scrollController.pollButton();
+            contentOffset.y = scrollController.contentOffset;
         }
     }
 
