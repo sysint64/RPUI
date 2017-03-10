@@ -354,6 +354,32 @@ private:
         bool isClick = false;
         bool visible = false;
 
+        Orientation orientation;
+
+        this(in Orientation orientation) {
+            this.orientation = orientation;
+        }
+
+        void updateController(Panel panel) {
+            float comp(vec2 v, in string c) {
+                return c == "x" ? v.x : v.y;
+            }
+
+            const string vecComponent = orientation == Orientation.vertical ? "y" : "x";
+            const float widgetSize = comp(panel.size, vecComponent);
+            const float widgetRegionOffset = orientation == Orientation.vertical ?
+                panel.regionOffset.bottom : panel.regionOffset.right;
+
+            with (scrollController) {
+                buttonMaxOffset = widgetSize - widgetRegionOffset;
+                buttonMaxSize = widgetSize - widgetRegionOffset;
+                contentSize = comp(panel.innerBoundarySize, vecComponent);
+                buttonClick = isClick;
+                contentMaxOffset = comp(panel.innerBoundarySizeClamped, vecComponent) -
+                    widgetSize + widgetRegionOffset;
+            }
+        }
+
         @property string state() {
             if (isClick) {
                 return "Click";
@@ -365,8 +391,8 @@ private:
         }
     }
 
-    ScrollButton verticalScrollButton;
-    ScrollButton horizontalScrollButton;
+    ScrollButton verticalScrollButton = ScrollButton(Orientation.vertical);
+    ScrollButton horizontalScrollButton = ScrollButton(Orientation.horizontal);
 
     Array!Widget joinedWidgets;
 
@@ -543,23 +569,13 @@ private:
         horizontalScrollButton.visible = innerBoundarySize.x > size.x;
         horizontalScrollButton.isEnter = false;
 
-        if (!horizontalScrollButton.visible)
-            return;
-
-        // if (enteredSplitsCount > 0)
-        //     return;
-
         with (horizontalScrollButton) {
             const vec2 buttonOffset = vec2(scrollController.buttonOffset,
                                            this.size.y - regionOffset.bottom);
             const Rect rect = Rect(absolutePosition + buttonOffset,
                                    vec2(scrollController.buttonSize, regionOffset.bottom));
             isEnter = pointInRect(app.mousePos, rect);
-
-            scrollController.buttonMaxOffset = size.x - regionOffset.right;
-            scrollController.buttonMaxSize = size.x - scrollController.buttonMinSize;
-            scrollController.contentSize = innerBoundarySize.x;
-            scrollController.buttonClick = isClick;
+            updateController(this);
 
             scrollController.pollButton();
             contentOffset.x = scrollController.contentOffset;
@@ -571,18 +587,12 @@ private:
         verticalScrollButton.isEnter = false;
 
         with (verticalScrollButton) {
-            const vec2 buttonOffset = vec2(this.size.x-regionOffset.right,
+            const vec2 buttonOffset = vec2(this.size.x - regionOffset.right,
                                            scrollController.buttonOffset);
             const Rect rect = Rect(absolutePosition + buttonOffset,
                                    vec2(regionOffset.right, scrollController.buttonSize));
             isEnter = pointInRect(app.mousePos, rect);
-
-            scrollController.buttonMaxOffset = size.y - regionOffset.bottom;
-            scrollController.buttonMaxSize = size.y - regionOffset.bottom;
-            scrollController.contentSize = innerBoundarySize.y;
-            scrollController.buttonClick = isClick;
-            scrollController.contentMaxOffset =
-                innerBoundarySizeClamped.y - size.y + regionOffset.bottom;
+            updateController(this);
 
             scrollController.pollButton();
             contentOffset.y = scrollController.contentOffset;

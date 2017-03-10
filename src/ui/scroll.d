@@ -13,7 +13,6 @@ private auto clamp(T1, T2, T3)(T1 val, T2 lower, T3 upper)
     if (val < lower) return lower;
     if (val > upper) return upper;
     return val;
-    // return max(lower, min(upper, val));
 }
 
 
@@ -49,11 +48,6 @@ class ScrollController {
 
         p_buttonOffset = clamp(p_buttonOffset, 0, p_buttonMaxOffset - p_buttonSize);
         p_contentOffset = clamp(p_contentOffset, 0, p_contentMaxOffset);
-
-        // const float contentRatio = p_buttonOffset / p_buttonMaxOffset;
-        // p_contentOffset = p_contentSize * contentRatio;
-        // p_buttonOffset = clamp(p_buttonOffset, p_buttonMinOffset, p_buttonMaxSize - p_buttonSize);
-
     }
 
     void onMouseWheel(in int dx, in int dy) {
