@@ -115,5 +115,22 @@ enum KeyCode {
     F14 = sfKeyF14,
     F15 = sfKeyF15,
     Pause = sfKeyPause,
-    Count = sfKeyCount
+    Count = sfKeyCount,
+    Shift
 };
+
+private static bool[KeyCode] keyPressed;
+
+void setKeyPressed(in KeyCode key, in bool pressed) {
+    keyPressed[key] = pressed;
+
+    with (KeyCode)
+        keyPressed[Shift] = isKeyPressed(LShift) || isKeyPressed(RShift);
+}
+
+bool isKeyPressed(in KeyCode key) {
+    if (key !in keyPressed)
+        return false;
+
+    return keyPressed[key];
+}

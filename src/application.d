@@ -85,8 +85,14 @@ abstract class Application {
 
     void onPreRender(Camera camera) {}
 
-    void onKeyPressed(in KeyCode key) {}
-    void onKeyReleased(in KeyCode key) {}
+    void onKeyPressed(in KeyCode key) {
+        setKeyPressed(key, true);
+    }
+
+    void onKeyReleased(in KeyCode key) {
+        setKeyPressed(key, false);
+    }
+
     void onTextEntered(in utfchar key) {}
 
     void onMouseDown(in uint x, in uint y, in MouseButton button) {

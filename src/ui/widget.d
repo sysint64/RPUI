@@ -17,6 +17,7 @@ import ui.render_factory;
 import ui.render_objects;
 import ui.cursor;
 import ui.renderer;
+import ui.scroll;
 
 
 class Widget {
@@ -125,6 +126,13 @@ class Widget {
     }
 
     void onMouseWheel(in int dx, in int dy) {
+        foreach (uint index, Widget widget; children) {
+            widget.onMouseWheel(dx, dy);
+        }
+
+        // Scrollable scrollable = cast(Scrollable) parent;
+        // if (scrollable)
+        //     scrollable.onMouseWheelHandle(dx, dy);
     }
 
     void onCursor() {

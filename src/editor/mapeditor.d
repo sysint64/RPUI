@@ -126,6 +126,18 @@ class MapEditor: Application {
 
         panel.addWidget(button);
 
+        Panel panel2 = new Panel("Panel");
+        panel2.size = vec2(100, 100);
+        panel2.position = vec2(100, 100);
+        panel.addWidget(panel2);
+
+        button = new Button("Button");
+        button.size = vec2(100, 21);
+        button.position = vec2(0, 285);
+        button.caption = "test2";
+
+        panel2.addWidget(button);
+
         //
 
         panel = new Panel("Panel");

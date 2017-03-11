@@ -12,6 +12,7 @@ import derelict.opengl3.gl;
 import gapi.camera;
 
 import ui.theme;
+import ui.scroll;
 import ui.widget;
 import ui.cursor;
 import ui.render_factory;
@@ -22,10 +23,10 @@ class Manager {
     this(in string theme) {
         app = Application.getInstance();
 
-        root = new Widget(this);
-        root.isOver = true;
-        root.size.x = app.windowWidth;
-        root.size.y = app.windowHeight;
+        rootWidget = new Widget(this);
+        rootWidget.isOver = true;
+        rootWidget.size.x = app.windowWidth;
+        rootWidget.size.y = app.windowHeight;
 
         p_theme = new Theme(theme);
         p_renderFactory = new RenderFactory(this);
@@ -34,11 +35,11 @@ class Manager {
 
     void render(Camera camera) {
         cursor = Cursor.Icon.normal;
-        root.size.x = app.windowWidth;
-        root.size.y = app.windowHeight;
+        rootWidget.size.x = app.windowWidth;
+        rootWidget.size.y = app.windowHeight;
 
         p_renderer.camera = camera;
-        root.render(camera);
+        rootWidget.render(camera);
         poll();
         app.cursor = cursor;
     }
@@ -60,7 +61,7 @@ class Manager {
             widget.isOver = widget.parent.isOver && pointInRect(app.mousePos, rect);
         }
 
-        widgetUnderMouse = null;
+        p_widgetUnderMouse = null;
         Widget found = null;
         uint counter = 0;
 
@@ -78,7 +79,7 @@ class Manager {
 
             if (widget.pointIsEnter(app.mousePos)) {
                 widget.isEnter = true;
-                widgetUnderMouse = widget;
+                p_widgetUnderMouse = widget;
                 found = widget;
             }
 
@@ -88,7 +89,7 @@ class Manager {
     }
 
     void addWidget(Widget widget) {
-        root.addWidget(widget);
+        rootWidget.addWidget(widget);
     }
 
     void deleteWidget(Widget widget) {
@@ -148,15 +149,15 @@ class Manager {
     // Events --------------------------------------------------------------------------------------
 
     void onKeyPressed(in KeyCode key) {
-        root.onKeyPressed(key);
+        rootWidget.onKeyPressed(key);
     }
 
     void onKeyReleased(in KeyCode key) {
-        root.onKeyReleased(key);
+        rootWidget.onKeyReleased(key);
     }
 
     void onTextEntered(in utfchar key) {
-        root.onTextEntered(key);
+        rootWidget.onTextEntered(key);
     }
 
     void onMouseDown(in uint x, in uint y, in MouseButton button) {
@@ -170,23 +171,35 @@ class Manager {
             }
         }
 
-        root.onMouseDown(x, y, button);
+        rootWidget.onMouseDown(x, y, button);
     }
 
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
-        root.onMouseUp(x, y, button);
+        rootWidget.onMouseUp(x, y, button);
     }
 
     void onDblClick(in uint x, in uint y, in MouseButton button) {
-        root.onDblClick(x, y, button);
+        rootWidget.onDblClick(x, y, button);
     }
 
     void onMouseMove(in uint x, in uint y) {
-        root.onMouseMove(x, y);
+        rootWidget.onMouseMove(x, y);
     }
 
     void onMouseWheel(in int dx, in int dy) {
-        root.onMouseWheel(dx, dy);
+        rootWidget.onMouseWheel(dx, dy);
+
+        Scrollable scrollable = null;
+        Widget widget = widgetUnderMouse;
+
+        // Find first scrollable widget
+        while (scrollable is null && widget !is null) {
+            scrollable = cast(Scrollable) widget;
+            widget = widget.parent;
+        }
+
+        if (scrollable !is null)
+            scrollable.onMouseWheelHandle(dx, dy);
     }
 
     // Properties ----------------------------------------------------------------------------------
@@ -198,6 +211,8 @@ class Manager {
     @property Cursor.Icon cursor() { return p_cursor; }
     @property void cursor(in Cursor.Icon val) { p_cursor = val; }
 
+    @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
+
 private:
     Application app;
     Array!Rect scissorStack;
@@ -206,13 +221,13 @@ private:
     Cursor.Icon p_cursor = Cursor.Icon.normal;
     RenderFactory p_renderFactory;
     Renderer p_renderer;
+    Widget p_widgetUnderMouse = null;
 
-    Widget root;
     Widget focusedWidget = null;
-    Widget widgetUnderMouse = null;
 
 package:
     uint lastIndex = 0;
+    Widget rootWidget;
     Array!Widget widgetOrdering;
 
     uint getNextIndex() {

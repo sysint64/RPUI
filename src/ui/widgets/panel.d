@@ -17,7 +17,7 @@ import ui.cursor;
 import ui.render_objects;
 
 
-class Panel : Widget {
+class Panel : Widget, Scrollable {
     enum Background {transparent, light, dark, action};
 
     this(in string style) {
@@ -64,6 +64,7 @@ class Panel : Widget {
         if (split.isClick)
             pollSplitResize();
 
+        updateAbsolutePosition();
         super.render(camera);
 
         manager.popScissor();
@@ -138,7 +139,7 @@ class Panel : Widget {
     }
 
     override void onCursor() {
-        if (!resizable || !isOpen || verticalScrollButton.isClick || horizontalScrollButton.isClick) {
+        if (!resizable || !isOpen || scrollButtonIsClicked) {
             split.isEnter = false;
             return;
         }
@@ -179,22 +180,16 @@ class Panel : Widget {
 
         verticalScrollButton.scrollController.onMouseDown(x, y, button);
         horizontalScrollButton.scrollController.onMouseDown(x, y, button);
+
+        super.onMouseDown(x, y, button);
     }
 
     override void onMouseUp(in uint x, in uint y, in MouseButton button) {
-        super.onMouseDown(x, y, button);
-
         verticalScrollButton.isClick = false;
         horizontalScrollButton.isClick = false;
         split.isClick = false;
-    }
 
-    override void onMouseWheel(in int dx, in int dy) {
-        if (!isEnter)
-            return;
-
-        verticalScrollButton.scrollController.onMouseWheel(dx, dy);
-        horizontalScrollButton.scrollController.onMouseWheel(dx, dy);
+        super.onMouseUp(x, y, button);
     }
 
     // Properties ----------------------------------------------------------------------------------
@@ -295,6 +290,30 @@ protected:
             regionOffset.bottom = horizontalScrollButton.width;
         } else {
             regionOffset.bottom = 0;
+        }
+    }
+
+    void onMouseWheelHandle(in int dx, in int dy) {
+        Scrollable scrollable = cast(Scrollable) parent;
+
+        int horizontalDelta = dx;
+        int verticalDelta = dy;
+
+        if (isKeyPressed(KeyCode.Shift)) { // Inverse
+            horizontalDelta = dy;
+            verticalDelta = dx;
+        }
+
+        if (!verticalScrollButton.scrollController.addOffsetInPx(-verticalDelta*20)) {
+            if (scrollable && parent.isOver) {
+                scrollable.onMouseWheelHandle(0, verticalDelta);
+            }
+        }
+
+        if (!horizontalScrollButton.scrollController.addOffsetInPx(-horizontalDelta*20)) {
+            if (scrollable && parent.isOver) {
+                scrollable.onMouseWheelHandle(horizontalDelta, 0);
+            }
         }
     }
 
