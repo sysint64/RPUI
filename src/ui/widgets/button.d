@@ -19,7 +19,7 @@ class Button : Widget {
 
     this(bool allowCheck) {
         super();
-        this.p_allowCheck = allowCheck;
+        this.allowCheck = allowCheck;
         this.drawChildren = false;
     }
 
@@ -31,17 +31,11 @@ class Button : Widget {
     }
 
     // Properties
-    @property ref bool allowCheck() { return p_allowCheck; }
-    @property void allowCheck(in bool val) { p_allowCheck = val; }
 
-    @property ref utfstring caption() { return p_caption; }
-    @property void caption(in utfstring val) { p_caption = val; }
-
-    @property Align textAlign() { return p_textAlign; }
-    @property void textAlign(in Align val) { p_textAlign = val; }
-
-    @property VerticalAlign textVerticalAlign() { return p_textVerticalAlign; }
-    @property void textVerticalAlign(in VerticalAlign val) { p_textVerticalAlign = val; }
+    bool allowCheck = false;
+    utfstring caption = "Button";
+    Align textAlign = Align.center;
+    VerticalAlign textVerticalAlign = VerticalAlign.middle;
 
 protected:
     vec2 focusOffsets;
@@ -53,11 +47,6 @@ protected:
     BaseRenderObject icon1RenderObject;
     BaseRenderObject icon2RenderObject;
     TextRenderObject textRenderObject;
-
-    bool p_allowCheck = false;
-    utfstring p_caption = "Button";
-    Align p_textAlign = Align.center;
-    VerticalAlign p_textVerticalAlign = VerticalAlign.middle;
 
     void renderSkin(Camera camera) {
         size_t[3] coordIndices;

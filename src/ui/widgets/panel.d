@@ -194,6 +194,17 @@ class Panel : Widget, Scrollable {
 
     // Properties ----------------------------------------------------------------------------------
 
+    float minSize = 40;
+    float maxSize = 999;
+    utfstring caption = "Hello World!";
+    Background background = Background.light;
+    bool allowResize = false;
+    bool allowHide = false;
+    bool allowDrag = false;
+    bool isOpen = true;
+    bool blackSplit = false;
+    bool showSplit = true;
+
     @property ref bool showVerticalScrollButton() { return p_showVerticalScrollButton; }
     @property ref bool showHorizontalScrollButton() { return p_showHorizontalScrollButton; }
     @property void showVerticalScrollButton(in bool val) { p_showVerticalScrollButton = val; }
@@ -204,36 +215,6 @@ class Panel : Widget, Scrollable {
         p_showVerticalScrollButton = val;
         p_showHorizontalScrollButton = val;
     }
-
-    @property ref utfstring caption() { return p_caption; }
-    @property void caption(in utfstring val) { p_caption = val; }
-
-    @property Background background() { return p_background; }
-    @property void background(in Background val) { p_background = val; }
-
-    @property ref bool allowResize() { return p_allowResize; }
-    @property void allowResize(in bool val) { p_allowResize = val; }
-
-    @property ref bool allowHide() { return p_allowHide; }
-    @property void allowHide(in bool val) { p_allowHide = val; }
-
-    @property ref bool allowDrag() { return p_allowDrag; }
-    @property void allowDrag(in bool val) { p_allowDrag = val; }
-
-    @property ref bool isOpen() { return p_isOpen; }
-    @property void isOpen(in bool val) { p_isOpen = val; }
-
-    @property ref bool blackSplit() { return p_blackSplit; }
-    @property void blackSplit(in bool val) { p_blackSplit = val; }
-
-    @property ref bool showSplit() { return p_showSplit; }
-    @property void showSplit(in bool val) { p_showSplit = val; }
-
-    @property ref float minSize() { return p_minSize; }
-    @property void minSize(in float val) { p_minSize = val; }
-
-    @property ref float maxSize() { return p_maxSize; }
-    @property void maxSize(in float val) { p_maxSize = val; }
 
 protected:
     override void updateAlign() {
@@ -417,25 +398,14 @@ private:
 
     //
     int p_scrollDelta = 20;
-    float p_minSize = 40;
-    float p_maxSize = 999;
     bool p_showVerticalScrollButton = true;
     bool p_showHorizontalScrollButton = true;
-    Background p_background = Background.light;
-
-    bool p_allowResize = false;
-    bool p_allowHide = false;
-    bool p_allowDrag = false;
-    bool p_isOpen = true;
-    bool p_blackSplit = false;
-    bool p_showSplit = true;
-    utfstring p_caption = "Hello World!";
 
     vec2 lastSize = 0;
 
     string spliteState(in bool innerColor, in bool useBlackColor = false) const {
         const string color = innerColor ? "innerColor" : "borderColor";
-        return p_blackSplit || useBlackColor ? "Split.Dark." ~ color : "Split.Light." ~ color;
+        return blackSplit || useBlackColor ? "Split.Dark." ~ color : "Split.Light." ~ color;
     }
 
     @property

@@ -11,6 +11,11 @@ class StackLayout : Widget {
         super();
     }
 
+    this(Orientation orientation) {
+        super();
+        p_orientation = orientation;
+    }
+
     override void addWidget(Widget widget) {
         assert(parent !is null, "Can't add widget to widget without parent!");
         Widget cell = new Widget();
@@ -78,7 +83,6 @@ class StackLayout : Widget {
     }
 
     @property Orientation orientation() { return p_orientation; }
-    @property void orientation(in Orientation val) { p_orientation = val; }
 
 private:
     Orientation p_orientation = Orientation.vertical;

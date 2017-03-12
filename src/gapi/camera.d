@@ -11,9 +11,9 @@ class Camera {
     }
 
     void updateMatrices() {
-        immutable vec3 eye = vec3(p_position, 1.0f);
-        immutable vec3 target = vec3(p_position, 0.0f);
-        immutable vec3 up = vec3(0.0f, 1.0f, 0.0f);
+        const vec3 eye = vec3(p_position, 1.0f);
+        const vec3 target = vec3(p_position, 0.0f);
+        const vec3 up = vec3(0.0f, 1.0f, 0.0f);
 
         p_viewMatrix = mat4.look_at(eye, target, up);
         p_projectionMatrix = mat4.orthographic(0.0f, viewportWidth,
@@ -26,24 +26,24 @@ class Camera {
             p_modelMatrix = mat4.identity;
 
         p_MVPMatrix = p_projectionMatrix * p_modelMatrix * p_viewMatrix;
-        needUpdateMatrices = false;
+        p_needUpdateMatrices = false;
     }
 
     void update() {
-        // if (needUpdateMatrices)
+        if (p_needUpdateMatrices)
             updateMatrices();
     }
 
     void move(float x, float y) {
-        position += vec2(x, y);
+        position = position + vec2(x, y);
     }
 
     void move(vec2 delta) {
-        position += delta;
+        position = position + delta;
     }
 
     void rotate(float alpha) {
-        rotation += alpha;
+        rotation = rotation + alpha;
     }
 
     @property mat4 viewMatrix() { return p_viewMatrix; }
@@ -51,35 +51,37 @@ class Camera {
     @property mat4 modelMatrix() { return p_modelMatrix; }
     @property mat4 MVPMatrix() { return p_MVPMatrix; }
 
-    @property ref float zoom() { return p_zoom; }
+    @property float zoom() { return p_zoom; }
     @property void zoom(float val) {
         p_zoom = val;
-        needUpdateMatrices = true;
+        p_needUpdateMatrices = true;
     }
 
-    @property ref vec2 position() { return p_position; }
+    @property vec2 position() { return p_position; }
     @property void position(vec2 val) {
         p_position = val;
-        needUpdateMatrices = true;
+        p_needUpdateMatrices = true;
     }
 
-    @property ref float rotation() { return p_rotation; }
+    @property float rotation() { return p_rotation; }
     @property void rotation(float val) {
         p_rotation = val;
-        needUpdateMatrices = true;
+        p_needUpdateMatrices = true;
     }
 
-    @property ref float viewportWidth() { return p_viewportWidth; }
+    @property float viewportWidth() { return p_viewportWidth; }
     @property void viewportWidth(float val) {
         p_viewportWidth = val;
-        needUpdateMatrices = true;
+        p_needUpdateMatrices = true;
     }
 
-    @property ref float viewportHeight() { return p_viewportHeight; }
+    @property float viewportHeight() { return p_viewportHeight; }
     @property void viewportHeight(float val) {
         p_viewportHeight = val;
-        needUpdateMatrices = true;
+        p_needUpdateMatrices = true;
     }
+
+    @property bool needUpdateMatrices() { return p_needUpdateMatrices; }
 
 private:
     float p_zoom = 1.0f;
@@ -92,5 +94,5 @@ private:
     float p_viewportWidth;
     float p_viewportHeight;
 
-    bool  needUpdateMatrices = true;
+    bool  p_needUpdateMatrices = true;
 }

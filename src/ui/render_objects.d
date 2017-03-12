@@ -11,12 +11,10 @@ class BaseRenderObject : gapi.BaseObject {
     }
 
     void addTexCoord(in string state, gapi.Texture.Coord coord) {
-        // texCoordinates.insert(coord);
         texCoordinates[state] = coord;
     }
 
 package:
-    // Array!(gapi.Texture.Coord) texCoordinates;
     gapi.Texture.Coord[string] texCoordinates;
 }
 

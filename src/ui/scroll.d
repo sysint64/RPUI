@@ -29,10 +29,10 @@ class ScrollController {
     }
 
     void pollButton() {
-        const float buttonRatio = p_buttonMaxSize / p_contentSize;
-        p_buttonSize = p_buttonMaxSize * buttonRatio;
+        const float buttonRatio = buttonMaxSize / contentSize;
+        p_buttonSize = buttonMaxSize * buttonRatio;
 
-        if (!p_buttonClick)
+        if (!buttonClick)
             return;
 
         if (orientation == Orientation.horizontal)
@@ -42,13 +42,13 @@ class ScrollController {
             p_buttonOffset = buttonClickOffset + app.mousePos.y - app.mouseClickPos.y;
 
         clampValues();
-        const float contentRatio = p_buttonOffset / p_buttonMaxOffset;
-        p_contentOffset = p_contentSize * contentRatio;
+        const float contentRatio = p_buttonOffset / buttonMaxOffset;
+        p_contentOffset = contentSize * contentRatio;
     }
 
     void onResize() {
-        const float ratio = p_contentOffset / p_contentSize;
-        p_buttonOffset = p_buttonMaxSize * ratio;
+        const float ratio = p_contentOffset / contentSize;
+        p_buttonOffset = buttonMaxSize * ratio;
         clampValues();
     }
 
@@ -64,53 +64,32 @@ class ScrollController {
         return lastScrollOffset != p_contentOffset;
     }
 
+    // Properties ----------------------------------------------------------------------------------
+
+    float buttonMinOffset = 0;
+    float buttonMaxOffset = 0;
+    float buttonMinSize;
+    float buttonMaxSize;
+    bool  buttonClick = false;
+    float contentMaxOffset = 0;
+    float contentSize = 0;
+
     @property float buttonSize() { return ceil(p_buttonSize); }
     @property float buttonOffset() { return ceil(p_buttonOffset); }
-
-    @property float buttonMinSize() { return ceil(p_buttonMinSize); }
-    @property void buttonMinSize(in float val) { p_buttonMinSize = val; }
-
-    @property float buttonMaxSize() { return ceil(p_buttonMaxSize); }
-    @property void buttonMaxSize(in float val) { p_buttonMaxSize = val; }
-
-    @property float buttonMinOffset() { return ceil(p_buttonMinOffset); }
-    @property void buttonMinOffset(in float val) { p_buttonMinOffset = val; }
-
-    @property float buttonMaxOffset() { return ceil(p_buttonMaxOffset); }
-    @property void buttonMaxOffset(in float val) { p_buttonMaxOffset = val; }
-
-    @property bool buttonClick() { return p_buttonClick; }
-    @property void buttonClick(in bool val) { p_buttonClick = val; }
-
-    @property float contentSize() { return ceil(p_contentSize); }
-    @property void contentSize(in float val) { p_contentSize = val; }
-
     @property float contentOffset() { return ceil(p_contentOffset); }
-
-    @property float contentMaxOffset() { return ceil(p_contentMaxOffset); }
-    @property void contentMaxOffset(in float val) { p_contentMaxOffset = val; }
 
 private:
     Application app;
 
-    float p_buttonMinOffset = 0;
-    float p_buttonMaxOffset = 0;
-    float p_buttonMinSize;
-    float p_buttonMaxSize;
-
     float p_buttonOffset = 0;
     float p_buttonSize = 0;
-    bool  p_buttonClick = false;
-
-    float p_contentMaxOffset = 0;
     float p_contentOffset = 0;
-    float p_contentSize = 0;
 
     Orientation orientation;
     float buttonClickOffset;
 
     private void clampValues() {
-        p_buttonOffset = clamp(p_buttonOffset, 0, p_buttonMaxOffset - p_buttonSize);
-        p_contentOffset = clamp(p_contentOffset, 0, p_contentMaxOffset);
+        p_buttonOffset = clamp(p_buttonOffset, 0, buttonMaxOffset - p_buttonSize);
+        p_contentOffset = clamp(p_contentOffset, 0, contentMaxOffset);
     }
 }

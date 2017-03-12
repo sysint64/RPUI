@@ -32,7 +32,6 @@ class MapEditor: Application {
 
     override void render() {
         onPreRender(camera);
-        camera.update();
         // camera.
 
         // Texture texture = font.getTexture(text.textSize);
@@ -58,6 +57,7 @@ class MapEditor: Application {
         // camera.zoom += 0.01f;
 
         uiManager.render(camera);
+        camera.update();
         onPostRender(camera);
     }
 
@@ -96,7 +96,7 @@ class MapEditor: Application {
         Button button = new Button("Button");
         button.size = vec2(100, 21);
         button.position = vec2(0, 0);
-        button.margin = vec4(5, 5, 5, 5);
+        button.margin = FrameRect(5, 5, 5, 5);
         stackLayout.addWidget(button);
 
         button = new Button("Button");
@@ -114,7 +114,7 @@ class MapEditor: Application {
         Panel panel = new Panel("Panel");
         panel.size = vec2(200, 300);
         panel.position = vec2(100, 300);
-        panel.padding = vec4(5, 5, 5, 5);
+        panel.padding = FrameRect(5, 5, 5, 5);
         panel.regionAlign = RegionAlign.top;
         uiManager.addWidget(panel);
         panel.addWidget(button);

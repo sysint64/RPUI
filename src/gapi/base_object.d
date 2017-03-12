@@ -22,8 +22,8 @@ class BaseObject {
             needUpdateMatrices = true;
         }
 
-        // if (needUpdateMatrices)
-        updateMatrices(camera);
+        if (needUpdateMatrices || camera.needUpdateMatrices)
+            updateMatrices(camera);
 
         if (p_material !is null)
             p_material.bind(this);
@@ -49,56 +49,57 @@ class BaseObject {
     }
 
     void move(float x, float y) {
-        position += vec2(x, y);
+        position = position + vec2(x, y);
     }
 
     void move(vec2 delta) {
-        position += delta;
+        position = position + delta;
     }
 
     void scale(float x, float y) {
-        scaling += vec2(x, y);
+        scaling = scaling + vec2(x, y);
     }
 
     void scale(vec2 delta) {
-        scaling += delta;
+        scaling = scaling + delta;
     }
 
     void scale(float delta) {
-        scaling += vec2(delta, delta);
+        scaling = scaling + vec2(delta, delta);
     }
 
     void rotate(float alpha) {
-        rotation += alpha;
+        rotation = rotation + alpha;
     }
+
+    // Properties ----------------------------------------------------------------------------------
+
+    bool visible = true;
 
     @property Geometry geometry() { return p_geometry; }
 
     @property mat4 modelMatrix() { return p_modelMatrix; }
     @property mat4 lastMVPMatrix() { return p_lastMVPMatrix; }
 
-    @property ref bool visible() { return p_visible; }
-    @property void visible(bool val) { p_visible = val; }
-
-    @property ref vec2 position() { return p_position; }
+    @property vec2 position() { return p_position; }
     @property void position(vec2 val) {
         p_position = val;
         needUpdateMatrices = true;
     }
 
-    @property ref float rotation() { return p_rotation; }
+    @property float rotation() { return p_rotation; }
     @property void rotation(float val) {
         p_rotation = val;
         needUpdateMatrices = true;
     }
 
-    @property ref vec2 scaling() { return p_scaling; }
+    @property vec2 scaling() { return p_scaling; }
     @property void scaling(vec2 val) {
         p_scaling = val;
         needUpdateMatrices = true;
     }
 
-    @property ref vec2 pivot() { return p_pivot; }
+    @property vec2 pivot() { return p_pivot; }
     @property void pivot(vec2 val) {
         p_pivot = val;
         needUpdateMatrices = true;
@@ -106,7 +107,6 @@ class BaseObject {
 
 private:
     Geometry p_geometry;
-    bool p_visible = true;
 
     vec2  p_position = vec2(0, 0);
     float p_rotation = 0.0f;

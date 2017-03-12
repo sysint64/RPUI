@@ -204,13 +204,10 @@ class Manager {
 
     // Properties ----------------------------------------------------------------------------------
 
+    Cursor.Icon cursor = Cursor.Icon.normal;
     @property Theme theme() { return p_theme; }
     @property RenderFactory renderFactory() { return p_renderFactory; }
     @property Renderer renderer() { return p_renderer; }
-
-    @property Cursor.Icon cursor() { return p_cursor; }
-    @property void cursor(in Cursor.Icon val) { p_cursor = val; }
-
     @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
 
 private:
@@ -218,7 +215,6 @@ private:
     Array!Rect scissorStack;
 
     Theme p_theme;
-    Cursor.Icon p_cursor = Cursor.Icon.normal;
     RenderFactory p_renderFactory;
     Renderer p_renderer;
     Widget p_widgetUnderMouse = null;

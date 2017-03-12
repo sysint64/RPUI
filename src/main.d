@@ -45,6 +45,23 @@ void traverse(Node node, in int level = 0) {
     }
 }
 
+class Test {
+private:
+    int _x;
+
+@property:
+    int x() {
+        return _x;
+    }
+
+    int y() {
+        return _y;
+    }
+
+private:
+    int _y;
+}
+
 void main() {
     DerelictSFML2System.load();
     DerelictSFML2Window.load();
