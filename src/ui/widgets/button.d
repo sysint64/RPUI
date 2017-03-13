@@ -5,6 +5,7 @@ import gapi;
 import math.linalg;
 import std.stdio;
 import basic_types;
+import accessors;
 
 import ui.widget;
 import ui.manager;
@@ -33,9 +34,11 @@ class Button : Widget {
     // Properties
 
     bool allowCheck = false;
-    utfstring caption = "Button";
     Align textAlign = Align.center;
     VerticalAlign textVerticalAlign = VerticalAlign.middle;
+
+    utfstring caption_ = "Button";
+    @property ref utfstring caption() { return caption_; }
 
 protected:
     vec2 focusOffsets;

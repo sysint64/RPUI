@@ -4,6 +4,8 @@ import gl3n.linalg;
 import basic_types;
 
 
+public import gl3n.linalg : Vector;
+
 alias Vector vec;
 alias Vector!(float, 2) vec2;
 alias Vector!(float, 3) vec3;

@@ -19,6 +19,10 @@ import ui.cursor;
 import ui.renderer;
 import ui.scroll;
 
+import accessors;
+
+alias Read ReadOnly;
+
 
 class Widget {
     alias TreeMap!(uint, Widget) Children;
@@ -43,7 +47,7 @@ class Widget {
 
     this(in string style) {
         app = Application.getInstance();
-        this.p_style = style;
+        this.style = style;
     }
 
     void focus() {
@@ -54,7 +58,7 @@ class Widget {
 
     void render(Camera camera) {
         this.camera = camera;
-        p_innerBoundarySize = vec2(0, 0);
+        innerBoundarySize = vec2(0, 0);
 
         if (!drawChildren)
             return;
@@ -65,18 +69,18 @@ class Widget {
 
             widget.render(camera);
 
-            p_innerBoundarySize.x = fmax(p_innerBoundarySize.x, widget.position.x + widget.size.x);
-            p_innerBoundarySize.y = fmax(p_innerBoundarySize.y, widget.position.y + widget.size.y);
+            innerBoundarySize.x = fmax(innerBoundarySize.x, widget.position.x + widget.size.x);
+            innerBoundarySize.y = fmax(innerBoundarySize.y, widget.position.y + widget.size.y);
         }
 
-        p_innerBoundarySizeClamped.x = fmax(p_innerBoundarySize.x, size.x);
-        p_innerBoundarySizeClamped.y = fmax(p_innerBoundarySize.y, size.y);
+        innerBoundarySizeClamped.x = fmax(innerBoundarySize.x, size.x);
+        innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, size.y);
     }
 
     void addWidget(Widget widget) {
         uint index = manager.getNextIndex();
         widget.manager = manager;
-        widget.p_parent = this;
+        widget.parent = this;
         children[index] = widget;
         manager.widgetOrdering.insert(widget);
         widget.onCreate();
@@ -145,55 +149,80 @@ class Widget {
 
     // Properties ----------------------------------------------------------------------------------
 
-    bool resizable = false;
-    bool withoutSkin = false;
-    bool visible = true;
-    bool enabled = true;
-    vec2 position = vec2(0, 0);
-    vec2 size = vec2(0, 0);
-    FrameRect margin = FrameRect(0, 0, 0, 0);
-    FrameRect padding = FrameRect(0, 0, 0, 0);
-    bool autoWidth;
-    bool autoHeight;
-    Cursor.Icon cursor;
-    string name = "";
-    int tag = 0;
-    utfstring hint = "";
-    Align locationAlign = Align.none;
-    VerticalAlign locationVerticalAlign = VerticalAlign.none;
-    RegionAlign regionAlign = RegionAlign.none;
-
-    @property {
-        uint id() { return p_id; }
-        Widget parent() { return p_parent; }
-
-        bool focused() { return p_focused; }
-        string style() { return p_style; }
-
-        vec2 absolutePosition() { return p_absolutePosition; }
-
-        vec2 innerBoundarySize() { return p_innerBoundarySize; }
-        vec2 innerBoundarySizeClamped() { return p_innerBoundarySizeClamped; }
-
-        ref Children children() { return p_children; }
-
-        bool isEnter() { return p_isEnter; }
-        bool isClick() { return p_isClick; }
-        bool isOver()  { return p_isOver; }
-        bool overlay() { return p_overlay; }
-
-        string state() {
-            if (isClick) {
-                return "Click";
-            } else if (isEnter) {
-                return "Enter";
-            } else {
-                return "Leave";
-            }
+    @property final inout(string) state() inout {
+        if (isClick) {
+            return "Click";
+        } else if (isEnter) {
+            return "Enter";
+        } else {
+            return "Leave";
         }
-
-        RenderFactory renderFactory() { return manager.renderFactory; }
     }
+
+    @property final RenderFactory renderFactory() { return manager.renderFactory; }
+    // private @RefRead Children children_;
+
+private:
+    @RefRead Children children_;
+    @Read @Write {
+        bool resizable_ = true;
+        bool withoutSkin_ = false;
+        bool visible_ = true;
+        bool enabled_ = true;
+        FrameRect margin_ = FrameRect(0, 0, 0, 0);
+        FrameRect padding_ = FrameRect(0, 0, 0, 0);
+        bool autoWidth_;
+        bool autoHeight_;
+        Cursor.Icon cursor_;
+        string name_ = "";
+        int tag_ = 0;
+        utfstring hint_ = "";
+        Align locationAlign_ = Align.none;
+        VerticalAlign locationVerticalAlign_ = VerticalAlign.none;
+        RegionAlign regionAlign_ = RegionAlign.none;
+    }
+
+    @RefRead @Write {
+        vec2 position_ = vec2(0, 0);
+        vec2 size_ = vec2(0, 0);
+    }
+
+    @Read @Write("package") {
+        bool isEnter_;
+        bool isClick_;
+        bool isOver_;  // When in rect of element but if another element over this
+                       // isOver will still be true
+    }
+
+    @Read @Write("private") {
+        uint id_;
+        string style_;
+        Widget parent_;
+        bool focused_;
+        bool overlay_;
+    }
+
+    @RefRead("package") @Write("private") {
+        vec2 absolutePosition_ = vec2(0, 0);
+        vec2 innerBoundarySizeClamped_ = vec2(0, 0);
+        vec2 innerBoundarySize_ = vec2(0, 0);
+    }
+
+    @Read @Write("protected") {
+        PartDraws partDraws_;
+        vec2 overSize_;
+    }
+
+    mixin(GenerateFieldAccessors);
+
+private:
+    Camera camera = null;
+
+    // Navigation (for focus)
+    Widget nextWidget = null;
+    Widget prevWidget = null;
+    Widget lastWidget = null;
+    Widget firstWidget = null;
 
 protected:
     enum PartDraws {all, left, center, right};
@@ -208,6 +237,81 @@ protected:
     }
 
     void updateRegionAlign() {
+        if (regionAlign == RegionAlign.none)
+            return;
+
+        const FrameRect region = findRegion();
+        const vec2 scrollRegion = vec2(0, 0);  // TODO: make real region
+        const vec2 regionSize = vec2(parent.size.x - region.right  - region.left - scrollRegion.x,
+                                     parent.size.y - region.bottom - region.top  - scrollRegion.y);
+
+        switch (regionAlign) {
+            case RegionAlign.client:
+                size.x = regionSize.x;
+                size.y = regionSize.y;
+                position = vec2(region.left, region.top);
+                break;
+
+            case RegionAlign.top:
+                size.x = regionSize.x;
+                position = vec2(region.left, region.top);
+                break;
+
+            case RegionAlign.bottom:
+                size.x = regionSize.x;
+                position.x = region.left;
+                position.y = parent.size.y - size.y - region.bottom - scrollRegion.y;
+                break;
+
+            case RegionAlign.left:
+                size.y = regionSize.y;
+                position = vec2(region.left, region.top);
+                break;
+
+            case RegionAlign.right:
+                size.y = regionSize.y;
+                position.x = parent.size.x - size.x - region.right - scrollRegion.x;
+                position.y = region.top;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    FrameRect findRegion() {
+        FrameRect region;
+
+        foreach (uint index, Widget widget; parent.children) {
+            if (widget == this)
+                break;
+
+            if (!widget.visible || widget.regionAlign == RegionAlign.none)
+                continue;
+
+            switch (widget.regionAlign) {
+                case RegionAlign.top:
+                    region.top += widget.size.y;
+                    break;
+
+                case RegionAlign.left:
+                    region.left += widget.size.x;
+                    break;
+
+                case RegionAlign.bottom:
+                    region.bottom += widget.size.y;
+                    break;
+
+                case RegionAlign.right:
+                    region.right += widget.size.x;
+                    break;
+
+                default:
+                    continue;
+            }
+        }
+
+        return region;
     }
 
     @property Renderer renderer() { return manager.renderer; }
@@ -235,43 +339,9 @@ package:
             lastParent = lastParent.parent;
         }
 
-        p_absolutePosition.x = position.x + res.x + margin.left;
-        p_absolutePosition.y = position.y + res.y + margin.top;
+        absolutePosition.x = position.x + res.x + margin.left;
+        absolutePosition.y = position.y + res.y + margin.top;
     }
 
     vec2 contentOffset = vec2(0, 0);
-
-    @property void isEnter(in bool val) { p_isEnter = val; }
-    @property void isClick(in bool val) { p_isClick = val; }
-    @property void isOver(in bool val) { p_isOver = val; }
-    @property vec2 overSize() { return p_overSize; }
-
-private:
-    Camera camera = null;
-
-    // Navigation (for focus)
-    Widget nextWidget = null;
-    Widget prevWidget = null;
-    Widget lastWidget = null;
-    Widget firstWidget = null;
-
-    // Properties data
-    uint p_id;
-    Widget p_parent;
-
-    vec2 p_absolutePosition;
-    vec2 p_overSize = vec2(0, 0);
-
-    Children p_children;
-    bool p_focused = false;
-    bool p_overlay = false;
-    string p_style = "";
-    PartDraws p_partDraws = PartDraws.all;
-    bool p_isEnter = false;
-    bool p_isClick = false;
-    bool p_isOver = false;  // When in rect of element but if another element over this
-                            // isOver will still be true
-
-    vec2 p_innerBoundarySize = vec2(0, 0);
-    vec2 p_innerBoundarySizeClamped = vec2(0, 0);
 }

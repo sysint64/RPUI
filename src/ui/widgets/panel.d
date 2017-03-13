@@ -70,7 +70,7 @@ class Panel : Widget, Scrollable {
         manager.popScissor();
 
         renderSplit();
-	updateAlign();
+	updateRegionAlign();
     }
 
     override void onCreate() {
@@ -205,61 +205,16 @@ class Panel : Widget, Scrollable {
     bool blackSplit = false;
     bool showSplit = true;
 
-    @property ref bool showVerticalScrollButton() { return p_showVerticalScrollButton; }
-    @property ref bool showHorizontalScrollButton() { return p_showHorizontalScrollButton; }
-    @property void showVerticalScrollButton(in bool val) { p_showVerticalScrollButton = val; }
-    @property void showHorizontalScrollButton(in bool val) { p_showHorizontalScrollButton = val; }
+    bool showVerticalScrollButton = true;
+    bool showHorizontalScrollButton = true;
 
     @property
     void showScrollButtons(in bool val) {
-        p_showVerticalScrollButton = val;
-        p_showHorizontalScrollButton = val;
+        showVerticalScrollButton = val;
+        showHorizontalScrollButton = val;
     }
 
 protected:
-    override void updateAlign() {
-        if (regionAlign == RegionAlign.none)
-            return;
-
-        const FrameRect region = findRegion();
-        const vec2 scrollRegion = vec2(0, 0);  // TODO: make real region
-        const vec2 regionSize = vec2(parent.size.x - region.right  - region.left - scrollRegion.x,
-                                     parent.size.y - region.bottom - region.top  - scrollRegion.y);
-
-        switch (regionAlign) {
-            case RegionAlign.client:
-                size.x = regionSize.x;
-                size.y = regionSize.y;
-                position = vec2(region.left, region.top);
-                break;
-
-            case RegionAlign.top:
-                size.x = regionSize.x;
-                position = vec2(region.left, region.top);
-                break;
-
-            case RegionAlign.bottom:
-                size.x = regionSize.x;
-                position.x = region.left;
-                position.y = parent.size.y - size.y - region.bottom - scrollRegion.y;
-                break;
-
-            case RegionAlign.left:
-                size.y = regionSize.y;
-                position = vec2(region.left, region.top);
-                break;
-
-            case RegionAlign.right:
-                size.y = regionSize.y;
-                position.x = parent.size.x - size.x - region.right - scrollRegion.x;
-                position.y = region.top;
-                break;
-
-            default:
-                break;
-        }
-    }
-
     void updateRegionOffset() {
         if (verticalScrollButton.visible) {
             regionOffset.right = verticalScrollButton.width;
@@ -391,16 +346,13 @@ private:
         }
     }
 
-    ScrollButton verticalScrollButton = ScrollButton(Orientation.vertical);
+    ScrollButton verticalScrollButton   = ScrollButton(Orientation.vertical);
     ScrollButton horizontalScrollButton = ScrollButton(Orientation.horizontal);
 
     Array!Widget joinedWidgets;
 
     //
     int p_scrollDelta = 20;
-    bool p_showVerticalScrollButton = true;
-    bool p_showHorizontalScrollButton = true;
-
     vec2 lastSize = 0;
 
     string spliteState(in bool innerColor, in bool useBlackColor = false) const {
@@ -411,41 +363,6 @@ private:
     @property
     bool scrollButtonIsClicked() {
         return verticalScrollButton.isClick || horizontalScrollButton.isClick;
-    }
-
-    FrameRect findRegion() {
-        FrameRect region;
-
-        foreach (uint index, Widget widget; parent.children) {
-            if (widget == this)
-                break;
-
-            if (!widget.visible || widget.regionAlign == RegionAlign.none)
-                continue;
-
-            switch (widget.regionAlign) {
-                case RegionAlign.top:
-                    region.top += widget.size.y;
-                    break;
-
-                case RegionAlign.left:
-                    region.left += widget.size.x;
-                    break;
-
-                case RegionAlign.bottom:
-                    region.bottom += widget.size.y;
-                    break;
-
-                case RegionAlign.right:
-                    region.right += widget.size.x;
-                    break;
-
-                default:
-                    continue;
-            }
-        }
-
-        return region;
     }
 
     void onResizeScroll() {

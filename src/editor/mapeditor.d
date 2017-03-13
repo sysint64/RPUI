@@ -67,6 +67,7 @@ class MapEditor: Application {
     Shader shader;
     Texture texture;
     ui.Manager uiManager;
+    Button testButton;
 
     override void onCreate() {
         camera = new Camera(viewportWidth, viewportHeight);
@@ -102,13 +103,13 @@ class MapEditor: Application {
         button = new Button("Button");
         button.size = vec2(100, 21);
         button.position = vec2(0, 0);
-        button.caption = "test";
+        // button.caption = "test";
         stackLayout.addWidget(button);
 
         button = new Button("Button");
         button.size = vec2(100, 21);
         button.position = vec2(-15, -15);
-        button.caption = "test";
+        // button.caption = "test";
         // uiManager.addWidget(button);
 
         Panel panel = new Panel("Panel");
@@ -122,6 +123,7 @@ class MapEditor: Application {
         button = new Button("Button");
         button.size = vec2(100, 21);
         button.position = vec2(0, 285);
+        // button.caption = "test2";
         button.caption = "test2";
 
         panel.addWidget(button);
@@ -134,7 +136,7 @@ class MapEditor: Application {
         button = new Button("Button");
         button.size = vec2(100, 21);
         button.position = vec2(0, 285);
-        button.caption = "test2";
+        // button.caption = "test2";
 
         panel2.addWidget(button);
 
