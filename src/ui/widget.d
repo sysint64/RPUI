@@ -91,7 +91,7 @@ class Widget {
         return pointInRect(point, rect);
     }
 
-    // Events --------------------------------------------------------------------------------------
+// Events ------------------------------------------------------------------------------------------
 
     void onCreate() {
     }
@@ -132,7 +132,7 @@ class Widget {
     void onCursor() {
     }
 
-    // Event Listeners ----------------------------------------------------------------------------
+// Event Listeners ---------------------------------------------------------------------------------
 
     OnClickListener onClickListener = null;
     OnDblClickistener onDblClickistener = null;
@@ -147,7 +147,7 @@ class Widget {
     OnMouseDownListener onMouseDownListener = null;
     OnMouseUpListener onMouseUpListener = null;
 
-    // Properties ----------------------------------------------------------------------------------
+// Properties --------------------------------------------------------------------------------------
 
     @property final inout(string) state() inout {
         if (isClick) {
@@ -169,8 +169,6 @@ private:
         bool withoutSkin_ = false;
         bool visible_ = true;
         bool enabled_ = true;
-        FrameRect margin_ = FrameRect(0, 0, 0, 0);
-        FrameRect padding_ = FrameRect(0, 0, 0, 0);
         bool autoWidth_;
         bool autoHeight_;
         Cursor.Icon cursor_;
@@ -183,6 +181,8 @@ private:
     }
 
     @RefRead @Write {
+        FrameRect margin_ = FrameRect(0, 0, 0, 0);
+        FrameRect padding_ = FrameRect(0, 0, 0, 0);
         vec2 position_ = vec2(0, 0);
         vec2 size_ = vec2(0, 0);
     }
