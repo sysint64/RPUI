@@ -7,6 +7,7 @@ import input;
 import application;
 import math.linalg;
 import basic_types;
+import accessors;
 
 import derelict.opengl3.gl;
 import gapi.camera;
@@ -28,9 +29,9 @@ class Manager {
         rootWidget.size.x = app.windowWidth;
         rootWidget.size.y = app.windowHeight;
 
-        p_theme = new Theme(theme);
-        p_renderFactory = new RenderFactory(this);
-        p_renderer = new Renderer(this);
+        theme_ = new Theme(theme);
+        renderFactory_ = new RenderFactory(this);
+        renderer_ = new Renderer(this);
     }
 
     void render(Camera camera) {
@@ -38,7 +39,7 @@ class Manager {
         rootWidget.size.x = app.windowWidth;
         rootWidget.size.y = app.windowHeight;
 
-        p_renderer.camera = camera;
+        renderer.camera = camera;
         rootWidget.render(camera);
         poll();
         app.cursor = cursor;
@@ -61,7 +62,7 @@ class Manager {
             widget.isOver = widget.parent.isOver && pointInRect(app.mousePos, rect);
         }
 
-        p_widgetUnderMouse = null;
+        widgetUnderMouse = null;
         Widget found = null;
         uint counter = 0;
 
@@ -79,7 +80,7 @@ class Manager {
 
             if (widget.pointIsEnter(app.mousePos)) {
                 widget.isEnter = true;
-                p_widgetUnderMouse = widget;
+                widgetUnderMouse = widget;
                 found = widget;
             }
 
@@ -146,7 +147,7 @@ class Manager {
                   intScissor.height);
     }
 
-    // Events --------------------------------------------------------------------------------------
+// Events ------------------------------------------------------------------------------------------
 
     void onKeyPressed(in KeyCode key) {
         rootWidget.onKeyPressed(key);
@@ -202,23 +203,24 @@ class Manager {
             scrollable.onMouseWheelHandle(dx, dy);
     }
 
-    // Properties ----------------------------------------------------------------------------------
+// Properties --------------------------------------------------------------------------------------
 
-    Cursor.Icon cursor = Cursor.Icon.normal;
-    @property Theme theme() { return p_theme; }
-    @property RenderFactory renderFactory() { return p_renderFactory; }
-    @property Renderer renderer() { return p_renderer; }
-    @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
+private:
+    @Read @Write("private") {
+        Theme theme_;
+        RenderFactory renderFactory_;
+        Renderer renderer_;
+        Widget widgetUnderMouse_ = null;
+    }
+
+    @Read @Write
+    Cursor.Icon cursor_ = Cursor.Icon.normal;
+
+    mixin(GenerateFieldAccessors);
 
 private:
     Application app;
     Array!Rect scissorStack;
-
-    Theme p_theme;
-    RenderFactory p_renderFactory;
-    Renderer p_renderer;
-    Widget p_widgetUnderMouse = null;
-
     Widget focusedWidget = null;
 
 package:

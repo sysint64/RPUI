@@ -2,6 +2,7 @@ module ui.widgets.stack_layout;
 
 import ui.widget;
 import gapi;
+import accessors;
 import basic_types;
 import math.linalg;
 
@@ -13,7 +14,7 @@ class StackLayout : Widget {
 
     this(Orientation orientation) {
         super();
-        p_orientation = orientation;
+        this.orientation = orientation;
     }
 
     override void addWidget(Widget widget) {
@@ -82,8 +83,10 @@ class StackLayout : Widget {
         size = vec2(1000, 1000);
     }
 
-    @property Orientation orientation() { return p_orientation; }
+// Properties --------------------------------------------------------------------------------------
 
 private:
-    Orientation p_orientation = Orientation.vertical;
+    @Read @Write
+    Orientation orientation_ = Orientation.vertical;
+    mixin(GenerateFieldAccessors);
 }

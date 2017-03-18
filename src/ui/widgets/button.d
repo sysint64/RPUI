@@ -31,14 +31,17 @@ class Button : Widget {
         renderIcon(camera);
     }
 
-    // Properties
+// Properties --------------------------------------------------------------------------------------
 
-    bool allowCheck = false;
-    Align textAlign = Align.center;
-    VerticalAlign textVerticalAlign = VerticalAlign.middle;
+private:
+    @Read @Write {
+        bool allowCheck_ = false;
+        Align textAlign_ = Align.center;
+        VerticalAlign textVerticalAlign_ = VerticalAlign.middle;
+        utfstring caption_ = "Button";
+    }
 
-    utfstring caption_ = "Button";
-    @property ref utfstring caption() { return caption_; }
+    mixin(GenerateFieldAccessors);
 
 protected:
     vec2 focusOffsets;

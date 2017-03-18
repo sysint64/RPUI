@@ -160,7 +160,6 @@ class Widget {
     }
 
     @property final RenderFactory renderFactory() { return manager.renderFactory; }
-    // private @RefRead Children children_;
 
 private:
     @RefRead Children children_;

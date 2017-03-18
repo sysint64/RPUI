@@ -9,6 +9,7 @@ import math.linalg;
 import gapi;
 import log;
 import input;
+import accessors;
 
 import ui.widget;
 import ui.scroll;
@@ -192,27 +193,32 @@ class Panel : Widget, Scrollable {
         super.onMouseUp(x, y, button);
     }
 
-    // Properties ----------------------------------------------------------------------------------
-
-    float minSize = 40;
-    float maxSize = 999;
-    utfstring caption = "Hello World!";
-    Background background = Background.light;
-    bool allowResize = false;
-    bool allowHide = false;
-    bool allowDrag = false;
-    bool isOpen = true;
-    bool blackSplit = false;
-    bool showSplit = true;
-
-    bool showVerticalScrollButton = true;
-    bool showHorizontalScrollButton = true;
+// Properties --------------------------------------------------------------------------------------
 
     @property
     void showScrollButtons(in bool val) {
         showVerticalScrollButton = val;
         showHorizontalScrollButton = val;
     }
+
+private:
+    @Read @Write {
+        float minSize_ = 40;
+        float maxSize_ = 999;
+        utfstring caption_ = "Hello World!";
+        Background background_ = Background.light;
+        bool allowResize_ = false;
+        bool allowHide_ = false;
+        bool allowDrag_ = false;
+        bool isOpen_ = true;
+        bool blackSplit_ = false;
+        bool showSplit_ = true;
+
+        bool showVerticalScrollButton_ = true;
+        bool showHorizontalScrollButton_ = true;
+    }
+
+    mixin(GenerateFieldAccessors);
 
 protected:
     void updateRegionOffset() {
@@ -276,19 +282,19 @@ private:
         vec2 innerPosition;
         vec2 size;
 
-        @property ref bool isEnter() { return p_isEnter; }
+        @property bool isEnter() { return isEnter_; }
         @property void isEnter(in bool val) {
-            if (!val && p_isEnter)
+            if (!val && isEnter_)
                 enteredSplitsCount -= 1;
 
-            if (val && !p_isEnter)
+            if (val && !isEnter_)
                 enteredSplitsCount += 1;
 
-            p_isEnter = val;
+            isEnter_ = val;
         }
 
     private:
-        bool p_isEnter = false;
+        bool isEnter_ = false;
     }
 
     Split split;
@@ -351,8 +357,6 @@ private:
 
     Array!Widget joinedWidgets;
 
-    //
-    int p_scrollDelta = 20;
     vec2 lastSize = 0;
 
     string spliteState(in bool innerColor, in bool useBlackColor = false) const {

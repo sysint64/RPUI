@@ -34,16 +34,15 @@ class Cursor {
         }
     }
 
-    @property Icon icon() { return p_icon; }
-
-    @property void icon(in Icon icon) {
-        if (p_icon == icon)
+    @property Icon icon() { return icon_; }
+    @property void icon(in Icon newIcon) {
+        if (this.icon_ == newIcon)
             return;
 
-        p_icon = icon;
+        this.icon_ = newIcon;
 
         version (linux) {
-            cursor = XCreateFontCursor(display, cast(uint) p_icon);
+            cursor = XCreateFontCursor(display, cast(uint) this.icon_);
             XDefineCursor(display, app.windowHandle, cursor);
             XFlush(display);
         }
@@ -51,7 +50,7 @@ class Cursor {
 
 private:
     Application app;
-    Icon p_icon = Icon.normal;
+    Icon icon_ = Icon.normal;
 
     version (linux) {
         Display *display;

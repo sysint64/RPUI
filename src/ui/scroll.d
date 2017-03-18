@@ -4,6 +4,7 @@ module ui.scroll;
 import std.math;
 import std.conv : to;
 
+import accessors;
 import application;
 import basic_types;
 import input;
@@ -30,66 +31,73 @@ class ScrollController {
 
     void pollButton() {
         const float buttonRatio = buttonMaxSize / contentSize;
-        p_buttonSize = buttonMaxSize * buttonRatio;
+        buttonSize_ = buttonMaxSize * buttonRatio;
 
         if (!buttonClick)
             return;
 
         if (orientation == Orientation.horizontal)
-            p_buttonOffset = buttonClickOffset + app.mousePos.x - app.mouseClickPos.x;
+            buttonOffset_ = buttonClickOffset + app.mousePos.x - app.mouseClickPos.x;
 
         if (orientation == Orientation.vertical)
-            p_buttonOffset = buttonClickOffset + app.mousePos.y - app.mouseClickPos.y;
+            buttonOffset_ = buttonClickOffset + app.mousePos.y - app.mouseClickPos.y;
 
         clampValues();
-        const float contentRatio = p_buttonOffset / buttonMaxOffset;
-        p_contentOffset = contentSize * contentRatio;
+        const float contentRatio = buttonOffset_ / buttonMaxOffset;
+        contentOffset_ = contentSize * contentRatio;
     }
 
     void onResize() {
-        const float ratio = p_contentOffset / contentSize;
-        p_buttonOffset = buttonMaxSize * ratio;
+        const float ratio = contentOffset_ / contentSize;
+        buttonOffset_ = buttonMaxSize * ratio;
         clampValues();
     }
 
     void onMouseDown(in uint x, in uint y, in MouseButton button) {
-        buttonClickOffset = p_buttonOffset;
+        buttonClickOffset = buttonOffset_;
     }
 
     bool addOffsetInPx(in float delta) {
-        const float lastScrollOffset = p_contentOffset;
-        p_contentOffset += delta;
+        const float lastScrollOffset = contentOffset_;
+        contentOffset_ += delta;
         onResize();
         clampValues();
-        return lastScrollOffset != p_contentOffset;
+        return lastScrollOffset != contentOffset_;
     }
 
-    // Properties ----------------------------------------------------------------------------------
+// Properties --------------------------------------------------------------------------------------
 
-    float buttonMinOffset = 0;
-    float buttonMaxOffset = 0;
-    float buttonMinSize;
-    float buttonMaxSize;
-    bool  buttonClick = false;
-    float contentMaxOffset = 0;
-    float contentSize = 0;
+private:
+    @Read @Write {
+        float buttonMinOffset_ = 0;
+        float buttonMaxOffset_ = 0;
+        float buttonMinSize_;
+        float buttonMaxSize_;
+        bool  buttonClick_ = false;
+        float contentMaxOffset_ = 0;
+        float contentSize_ = 0;
+    }
 
-    @property float buttonSize() { return ceil(p_buttonSize); }
-    @property float buttonOffset() { return ceil(p_buttonOffset); }
-    @property float contentOffset() { return ceil(p_contentOffset); }
+    float buttonOffset_ = 0;
+    float buttonSize_ = 0;
+    float contentOffset_ = 0;
+
+    public @property {
+        float buttonSize() { return ceil(buttonSize_); }
+        float buttonOffset() { return ceil(buttonOffset_); }
+        float contentOffset() { return ceil(contentOffset_); }
+    }
+
+    mixin(GenerateFieldAccessors);
 
 private:
     Application app;
-
-    float p_buttonOffset = 0;
-    float p_buttonSize = 0;
-    float p_contentOffset = 0;
 
     Orientation orientation;
     float buttonClickOffset;
 
     private void clampValues() {
-        p_buttonOffset = clamp(p_buttonOffset, 0, buttonMaxOffset - p_buttonSize);
-        p_contentOffset = clamp(p_contentOffset, 0, contentMaxOffset);
+        buttonOffset_ = clamp(buttonOffset_, 0, buttonMaxOffset - buttonSize_);
+        contentOffset_ = clamp(contentOffset_, 0, contentMaxOffset);
     }
 }
