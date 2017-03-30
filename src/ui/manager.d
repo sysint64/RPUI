@@ -21,6 +21,9 @@ import ui.renderer;
 
 
 class Manager {
+    private this() {
+    }
+
     this(in string theme) {
         app = Application.getInstance();
 
@@ -121,7 +124,7 @@ class Manager {
         }
     }
 
-    void applyScissor() {
+    Rect applyScissor() {
         Rect currentScissor = scissorStack.back;
 
         if (scissorStack.length >= 2) {
@@ -145,6 +148,8 @@ class Manager {
                   app.windowHeight - intScissor.top - intScissor.height,
                   intScissor.width,
                   intScissor.height);
+
+        return currentScissor;
     }
 
 // Events ------------------------------------------------------------------------------------------
@@ -232,4 +237,10 @@ package:
         ++lastIndex  ;
         return lastIndex;
     }
+}
+
+
+unittest {
+    Manager manager = new Manager();
+
 }

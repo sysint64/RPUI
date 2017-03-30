@@ -1,10 +1,10 @@
 {
-    "name": "e2dit",
+    "name": "sim",
     "authors": [
         "Andrey Kabylin"
     ],
-    "description": "E2DIT - 2D Map Editor for games",
-    "copyright": "Copyright © 2016, Andrey Kabylin",
+    "description": "Simulator",
+    "copyright": "Copyright © 2016 - 2017, Red Paws",
     "license": "MIT",
     "libs-posix": ["ftgl", "glu"],
     "libs-windows": ["ftgl", "glu32"],
