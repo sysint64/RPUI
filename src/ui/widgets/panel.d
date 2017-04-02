@@ -25,55 +25,54 @@ class Panel : Widget, Scrollable {
         super(style);
     }
 
-    override void render(Camera camera) {
-        // split.isEnter = false;
-        float lastPaddingTop = padding.top;
+    void onProgress() {
+        split.isEnter = false;
 
+        handleHorizontalScrollButton();
+        handleVerticalScrollButton();
+        handleResize();
+
+        // Update render elements position and sizes
+        updateRegionAlign();
         updateAbsolutePosition();
         updateRegionOffset();
+        calculateSplit();
+    }
+
+    override void render(Camera camera) {
+        onProgress();
 
         if (background != Background.transparent)
             renderer.renderColorQuad(backgroundRenderObject, backgroundColors[background],
                                      absolutePosition, size);
 
-        calculateSplit();
-
         if (allowHide) {
         }
 
         if (!isOpen) {
-            updateAlign();
-            padding.top = lastPaddingTop;
             renderSplit();
             return;
         }
 
-        pollHorizontalScroll();
-        pollVerticalScroll();
+        renderHorizontalScrollButton();
+        renderVerticalScrollButton();
 
-        renderHorizontalScroll();
-        renderVerticalScroll();
-
-        // Render children
+        // Render children widgets
         Rect scissor;
         scissor.point = vec2(absolutePosition.x + regionOffset.left,
                              absolutePosition.y + regionOffset.top);
         scissor.size = vec2(size.x - regionOffset.left - regionOffset.right,
                             size.y - regionOffset.top - regionOffset.bottom);
-        manager.pushScissor(scissor);
 
-        if (split.isClick)
-            pollSplitResize();
-
-        updateAbsolutePosition();
+        // manager.pushScissor(scissor);
         super.render(camera);
-
-        manager.popScissor();
+        // manager.popScissor();
 
         renderSplit();
-	updateRegionAlign();
     }
 
+    // Create elements for widget rendering (quads, texts etc.)
+    // and read data from theme for these elements (background color, split thickness etc.)
     override void onCreate() {
         renderFactory.createQuad(backgroundRenderObject);
         renderFactory.createQuad(splitBorderRenderObject);
@@ -139,11 +138,10 @@ class Panel : Widget, Scrollable {
         }
     }
 
+    // Change system cursor when mouse entering split
     override void onCursor() {
-        if (!resizable || !isOpen || scrollButtonIsClicked) {
-            split.isEnter = false;
+        if (!resizable || !isOpen || scrollButtonIsClicked)
             return;
-        }
 
         if (regionAlign == RegionAlign.top || regionAlign == RegionAlign.bottom) {
             const Rect rect = Rect(split.borderPosition.x,
@@ -153,8 +151,6 @@ class Panel : Widget, Scrollable {
             if (pointInRect(app.mousePos, rect) || split.isClick) {
                 manager.cursor = Cursor.Icon.vDoubleArrow;
                 split.isEnter = true;
-            } else {
-                split.isEnter = false;
             }
         } else if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right) {
             const Rect rect = Rect(split.borderPosition.x - split.cursorRangeSize / 2.0f,
@@ -164,8 +160,6 @@ class Panel : Widget, Scrollable {
             if (pointInRect(app.mousePos, rect) || split.isClick) {
                 manager.cursor = Cursor.Icon.hDoubleArrow;
                 split.isEnter = true;
-            } else {
-                split.isEnter = false;
             }
         }
     }
@@ -271,30 +265,16 @@ private:
     vec4[string] splitColors;
 
     vec2 widgetsOffset;
-    static uint enteredSplitsCount = 0;
 
     struct Split {
         bool isClick = false;
+        bool isEnter = false;
         float thickness = 1;
         float cursorRangeSize = 8;
         Rect cursorRangeRect;
         vec2 borderPosition;
         vec2 innerPosition;
         vec2 size;
-
-        @property bool isEnter() { return isEnter_; }
-        @property void isEnter(in bool val) {
-            if (!val && isEnter_)
-                enteredSplitsCount -= 1;
-
-            if (val && !isEnter_)
-                enteredSplitsCount += 1;
-
-            isEnter_ = val;
-        }
-
-    private:
-        bool isEnter_ = false;
     }
 
     Split split;
@@ -321,6 +301,8 @@ private:
             this.orientation = orientation;
         }
 
+        // Update scrollController properties
+        // TODO: make the method easier
         void updateController(Panel panel) {
             float comp(vec2 v, in string c) {
                 return c == "x" ? v.x : v.y;
@@ -374,7 +356,11 @@ private:
         verticalScrollButton.scrollController.onResize();
     }
 
-    void pollSplitResize() {
+    // Resize panel when split is clicked
+    void handleResize() {
+        if (!split.isClick)
+            return;
+
         switch (regionAlign) {
             case RegionAlign.top:
                 size.y = lastSize.y + app.mousePos.y - app.mouseClickPos.y;
@@ -405,6 +391,7 @@ private:
         onResizeScroll();
     }
 
+    // Calculate split borderPosition, innerPosition and size
     void calculateSplit() {
         if (!resizable && !showSplit)
             return;
@@ -449,7 +436,7 @@ private:
                                  split.innerPosition, split.size);
     }
 
-    void renderVerticalScroll() {
+    void renderVerticalScrollButton() {
         if (!verticalScrollButton.visible)
             return;
 
@@ -462,7 +449,7 @@ private:
         }
     }
 
-    void renderHorizontalScroll() {
+    void renderHorizontalScrollButton() {
         if (!horizontalScrollButton.visible)
             return;
 
@@ -475,7 +462,7 @@ private:
         }
     }
 
-    void pollHorizontalScroll() {
+    void handleHorizontalScrollButton() {
         horizontalScrollButton.visible = innerBoundarySize.x > size.x;
         horizontalScrollButton.isEnter = false;
 
@@ -492,7 +479,7 @@ private:
         }
     }
 
-    void pollVerticalScroll() {
+    void handleVerticalScrollButton() {
         verticalScrollButton.visible = innerBoundarySize.y > size.y;
         verticalScrollButton.isEnter = false;
 

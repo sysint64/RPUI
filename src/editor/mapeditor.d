@@ -131,6 +131,7 @@ class MapEditor: Application {
         Panel panel2 = new Panel("Panel");
         panel2.size = vec2(100, 100);
         panel2.position = vec2(100, 100);
+        panel2.background = Panel.Background.dark;
         panel.addWidget(panel2);
 
         button = new Button("Button");

@@ -48,6 +48,9 @@ class ScrollController {
     }
 
     void onResize() {
+        if (contentOffset_ == 0)
+            return;
+
         const float ratio = contentOffset_ / contentSize;
         buttonOffset_ = buttonMaxSize * ratio;
         clampValues();

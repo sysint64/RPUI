@@ -5,6 +5,6 @@ __dummy.html
 *.obj
 *.dll
 .idea
-e2dit
+sim
 __test__library__
 \#*

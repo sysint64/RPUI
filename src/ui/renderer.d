@@ -94,9 +94,9 @@ class Renderer {
     void renderText(TextRenderObject text, in string state, in vec2 position, in vec2 size) {
         const vec2 textPos = position + text.offsets[state];
         text.color = text.colors[state];
+        text.render(camera);
         text.scaling = vec2(size);
         text.position = toScreenPosition(textPos, vec2(size));
-        text.render(camera);
     }
 
     void renderColorQuad(BaseRenderObject renderObject, in vec4 color,

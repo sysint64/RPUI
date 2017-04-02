@@ -191,7 +191,7 @@ private:
 
         sfVideoMode videoMode = {windowWidth, windowHeight, 24};
 
-        const(char)* title = "E2DIT";
+        const(char)* title = "Simulator";
         window = sfWindow_create(videoMode, title, sfDefaultStyle, &settings);
         p_windowHandle = sfWindow_getSystemHandle(window);
         sfWindow_setVerticalSyncEnabled(window, false);
