@@ -25,7 +25,7 @@ class Panel : Widget, Scrollable {
         super(style);
     }
 
-    void onProgress() {
+    override void onProgress() {
         split.isEnter = false;
 
         handleHorizontalScrollButton();

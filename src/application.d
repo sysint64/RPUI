@@ -79,6 +79,9 @@ abstract class Application {
     // Events
     void onCreate() {}
 
+    void onProgress() {
+    }
+
     void onPostRender(Camera camera) {
         log.render(camera);
     }
@@ -235,6 +238,8 @@ private:
 
             calculateTime();
             sfWindow_setActive(window, true);
+
+            onProgress();
 
             glViewport(0, 0, viewportWidth, viewportHeight);
             glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

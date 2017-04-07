@@ -37,6 +37,10 @@ class Manager {
         renderer_ = new Renderer(this);
     }
 
+    void onProgress() {
+        rootWidget.onProgress();
+    }
+
     void render(Camera camera) {
         cursor = Cursor.Icon.normal;
         rootWidget.size.x = app.windowWidth;

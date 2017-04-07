@@ -56,6 +56,18 @@ class Widget {
     void blur() {
     }
 
+    void onProgress() {
+        if (!drawChildren)
+            return;
+
+        foreach (uint index, Widget widget; children) {
+            if (!widget.visible)
+                continue;
+
+            widget.onProgress();
+        }
+    }
+
     void render(Camera camera) {
         this.camera = camera;
         innerBoundarySize = vec2(0, 0);

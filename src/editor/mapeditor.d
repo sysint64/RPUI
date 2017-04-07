@@ -30,6 +30,11 @@ class MapEditor: Application {
     mixin Singleton!(MapEditor);
     private this() {}
 
+    override void onProgress() {
+        uiManager.onProgress();
+        camera.update();
+    }
+
     override void render() {
         onPreRender(camera);
         // camera.
@@ -57,7 +62,6 @@ class MapEditor: Application {
         // camera.zoom += 0.01f;
 
         uiManager.render(camera);
-        camera.update();
         onPostRender(camera);
     }
 
