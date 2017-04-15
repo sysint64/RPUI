@@ -55,7 +55,7 @@ class RenderFactory {
             if (part != "")
                 path ~= "." ~ part;
 
-            gapi.Texture.Coord texCoord = manager.theme.data.getTexCoord(path);
+            Texture.Coord texCoord = manager.theme.data.getTexCoord(path);
             texCoord.normalize(manager.theme.skin);
             object.addTexCoord(state, texCoord);
         }

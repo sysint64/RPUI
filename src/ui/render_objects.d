@@ -5,13 +5,17 @@ import math.linalg;
 import std.container;
 
 
-class BaseRenderObject : gapi.BaseObject {
+class BaseRenderObject : BaseObject {
     this(Geometry geometry) {
         super(geometry);
     }
 
-    void addTexCoord(in string state, gapi.Texture.Coord coord) {
+    void addTexCoord(in string state, in Texture.Coord coord) {
         texCoordinates[state] = coord;
+    }
+
+    void addTexCoord(in string state, in Texture.Coord coord, Texture texture) {
+        texCoordinates[state] = Texture.Coord.normalize(coord, texture);
     }
 
 package:

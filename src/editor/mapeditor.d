@@ -1,3 +1,4 @@
+
 module editor.mapeditor;
 
 import input;
@@ -17,7 +18,7 @@ import gapi.text;
 import ui;
 import ui.widgets.button;
 import ui.widgets.stack_layout;
-import ui.widgets.panel;
+import ui.widgets.panel.widget;
 
 import math.linalg;
 import std.stdio;
@@ -121,8 +122,10 @@ class MapEditor: Application {
         panel.position = vec2(100, 300);
         panel.padding = FrameRect(5, 5, 5, 5);
         panel.regionAlign = RegionAlign.top;
+        panel.caption = "Hello world!";
+        panel.allowHide = true;
         uiManager.addWidget(panel);
-        panel.addWidget(button);
+        // panel.addWidget(button);
 
         button = new Button("Button");
         button.size = vec2(100, 21);

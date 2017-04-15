@@ -1,4 +1,4 @@
-module ui.widgets.panel;
+module ui.widgets.panel.widget;
 
 import std.container;
 import std.algorithm.comparison;
@@ -7,6 +7,7 @@ import std.stdio;
 import basic_types;
 import math.linalg;
 import gapi;
+import e2ml;
 import log;
 import input;
 import accessors;
@@ -17,9 +18,33 @@ import ui.manager;
 import ui.cursor;
 import ui.render_objects;
 
+import ui.widgets.panel.split;
+// import ui.widgets.panel.header;
+// import ui.widgets.panel.scroll_button;
+
 
 class Panel : Widget, Scrollable {
     enum Background {transparent, light, dark, action};
+
+    @property
+    void showScrollButtons(in bool val) {
+        showVerticalScrollButton = val;
+        showHorizontalScrollButton = val;
+    }
+
+    float minSize = 40;
+    float maxSize = 999;
+    utfstring caption = "Hello World!";
+    Background background = Background.light;
+    bool allowResize = false;
+    bool allowHide = false;
+    bool allowDrag = false;
+    bool isOpen = true;
+    bool blackSplit = false;
+    bool showSplit = true;
+
+    bool showVerticalScrollButton = true;
+    bool showHorizontalScrollButton = true;
 
     this(in string style) {
         super(style);
@@ -36,7 +61,8 @@ class Panel : Widget, Scrollable {
         updateRegionAlign();
         updateAbsolutePosition();
         updateRegionOffset();
-        calculateSplit();
+
+        split.calculate();
     }
 
     override void render(Camera camera) {
@@ -46,16 +72,15 @@ class Panel : Widget, Scrollable {
             renderer.renderColorQuad(backgroundRenderObject, backgroundColors[background],
                                      absolutePosition, size);
 
-        if (allowHide) {
-        }
+        renderHeader();
 
         if (!isOpen) {
-            renderSplit();
+            split.render();
             return;
         }
 
-        renderHorizontalScrollButton();
-        renderVerticalScrollButton();
+        horizontalScrollButton.render();
+        verticalScrollButton.render();
 
         // Render children widgets
         Rect scissor;
@@ -68,35 +93,50 @@ class Panel : Widget, Scrollable {
         super.render(camera);
         // manager.popScissor();
 
-        renderSplit();
+        split.render();
     }
 
     // Create elements for widget rendering (quads, texts etc.)
     // and read data from theme for these elements (background color, split thickness etc.)
-    override void onCreate() {
-        renderFactory.createQuad(backgroundRenderObject);
-        renderFactory.createQuad(splitBorderRenderObject);
-        renderFactory.createQuad(splitInnerRenderObject);
+    class RenderConfigurator {
+        Data data;
+        Texture skin;
 
-        with (manager.theme) {
+        this() {
+            this.data = manager.theme.data;
+            this.skin = manager.theme.skin;
+        }
+
+        void initBackground() {
+            renderFactory.createQuad(backgroundRenderObject);
+
             // Panel background colors
             backgroundColors[Background.light]  = data.getNormColor(style ~ ".backgroundLight");
             backgroundColors[Background.dark]   = data.getNormColor(style ~ ".backgroundDark");
             backgroundColors[Background.action] = data.getNormColor(style ~ ".backgroundAction");
+        }
 
-            // Split
-            split.thickness = data.getNumber(style ~ ".Split.thickness.0");
+        void initHeader() {
+            header.height = data.getNumber(style ~ ".Header.height.0");
+            renderFactory.createQuad(header.backgroundRenderObject);
 
-            const auto addSplitColor = delegate(in string key) {
-                splitColors[key] = manager.theme.data.getNormColor(style ~ "." ~ key);
-            };
+            const Texture.Coord headerLeave = data.getTexCoord(style ~ ".Header.leave");
+            const Texture.Coord headerEnter = data.getTexCoord(style ~ ".Header.enter");
 
-            addSplitColor(spliteState(false, false));
-            addSplitColor(spliteState(false, true));
-            addSplitColor(spliteState(true , false));
-            addSplitColor(spliteState(true , true));
+            header.backgroundRenderObject.addTexCoord("Leave", headerLeave, skin);
+            header.backgroundRenderObject.addTexCoord("Enter", headerEnter, skin);
 
-            // Scroll
+            // Header arrow (open/close)
+            renderFactory.createQuad(header.arrowRenderObject);
+
+            const Texture.Coord arrowOpen  = data.getTexCoord(style ~ ".Header.arrowOpen");
+            const Texture.Coord arrpwClose = data.getTexCoord(style ~ ".Header.arrowClose");
+
+            header.arrowRenderObject.addTexCoord("Open", headerLeave, skin);
+            header.arrowRenderObject.addTexCoord("Close", headerEnter, skin);
+        }
+
+        void initScroll() {
             const string[3] states = ["Leave", "Enter", "Click"];
             const string[3] horizontalParts = ["left", "center", "right"];
             const string[3] verticalParts = ["top", "middle", "bottom"];
@@ -135,6 +175,22 @@ class Panel : Widget, Scrollable {
                 renderFactory.createQuad(horizontalScrollButton.buttonRenderObjects,
                                          scrollHorizontalButtonStyle, states, part);
             }
+        }
+    }
+
+    override void onCreate() {
+        with (new RenderConfigurator()) {
+            initBackground();
+            initHeader();
+            // initSplit();
+            initScroll();
+        }
+
+        // split = new Split(manager.theme.data);
+        with (manager.theme) {
+            split.onCreate(this, data, renderer);
+            horizontalScrollButton.onCreate(this);
+            verticalScrollButton.onCreate(this);
         }
     }
 
@@ -187,33 +243,6 @@ class Panel : Widget, Scrollable {
         super.onMouseUp(x, y, button);
     }
 
-// Properties --------------------------------------------------------------------------------------
-
-    @property
-    void showScrollButtons(in bool val) {
-        showVerticalScrollButton = val;
-        showHorizontalScrollButton = val;
-    }
-
-private:
-    @Read @Write {
-        float minSize_ = 40;
-        float maxSize_ = 999;
-        utfstring caption_ = "Hello World!";
-        Background background_ = Background.light;
-        bool allowResize_ = false;
-        bool allowHide_ = false;
-        bool allowDrag_ = false;
-        bool isOpen_ = true;
-        bool blackSplit_ = false;
-        bool showSplit_ = true;
-
-        bool showVerticalScrollButton_ = true;
-        bool showHorizontalScrollButton_ = true;
-    }
-
-    mixin(GenerateFieldAccessors);
-
 protected:
     void updateRegionOffset() {
         if (verticalScrollButton.visible) {
@@ -254,36 +283,29 @@ protected:
     }
 
 private:
-    BaseRenderObject splitBorderRenderObject;
-    BaseRenderObject splitInnerRenderObject;
-    BaseRenderObject headerRenderObject;
-    BaseRenderObject expandArrowRenderObject;
     BaseRenderObject backgroundRenderObject;
     TextRenderObject textRenderObject;
 
     vec4[Background] backgroundColors;
-    vec4[string] splitColors;
-
     vec2 widgetsOffset;
 
-    struct Split {
-        bool isClick = false;
+    struct Header {
+        BaseRenderObject backgroundRenderObject;
+        BaseRenderObject arrowRenderObject;
+
+        float height = 0;
         bool isEnter = false;
-        float thickness = 1;
-        float cursorRangeSize = 8;
-        Rect cursorRangeRect;
-        vec2 borderPosition;
-        vec2 innerPosition;
-        vec2 size;
+
+        @property string state() {
+            return isEnter ? "Enter" : "Leave";
+        }
     }
 
     Split split;
+    Header header;
 
     float panelSize;
     float currentPanelSize;
-
-    float headerSize = 0;
-    bool headerIsEnter = false;
 
     struct ScrollButton {
         BaseRenderObject[string] backgroundRenderObjects;
@@ -296,6 +318,7 @@ private:
         bool visible = false;
 
         Orientation orientation;
+        Panel panel;
 
         this(in Orientation orientation) {
             this.orientation = orientation;
@@ -332,6 +355,29 @@ private:
                 return "Leave";
             }
         }
+
+        void render() {
+            if (!visible)
+                return;
+
+            vec2 buttonOffset;
+
+            if (orientation == Orientation.horizontal) {
+                buttonOffset = vec2(scrollController.buttonOffset,
+                                    panel.size.y - panel.regionOffset.bottom);
+            } else if (orientation == Orientation.vertical) {
+                buttonOffset = vec2(panel.size.x - panel.regionOffset.right,
+                                    scrollController.buttonOffset);
+            }
+
+            panel.renderer.renderChain(buttonRenderObjects, orientation, state,
+                                       panel.absolutePosition + buttonOffset,
+                                       scrollController.buttonSize);
+        }
+
+        void onCreate(Panel panel) {
+            this.panel = panel;
+        }
     }
 
     ScrollButton verticalScrollButton   = ScrollButton(Orientation.vertical);
@@ -340,11 +386,6 @@ private:
     Array!Widget joinedWidgets;
 
     vec2 lastSize = 0;
-
-    string spliteState(in bool innerColor, in bool useBlackColor = false) const {
-        const string color = innerColor ? "innerColor" : "borderColor";
-        return blackSplit || useBlackColor ? "Split.Dark." ~ color : "Split.Light." ~ color;
-    }
 
     @property
     bool scrollButtonIsClicked() {
@@ -391,75 +432,16 @@ private:
         onResizeScroll();
     }
 
-    // Calculate split borderPosition, innerPosition and size
-    void calculateSplit() {
-        if (!resizable && !showSplit)
-            return;
+    // void renderSplit() {
 
-        switch (regionAlign) {
-            case RegionAlign.top:
-                split.borderPosition = absolutePosition + vec2(0, size.y - split.thickness);
-                split.innerPosition = split.borderPosition - vec2(0, split.thickness);
-                split.size = vec2(size.x, split.thickness);
-                break;
+    // }
 
-            case RegionAlign.bottom:
-                split.borderPosition = absolutePosition;
-                split.innerPosition = split.borderPosition + vec2(0, split.thickness);
-                split.size = vec2(size.x, split.thickness);
-                break;
+    void renderHeader() {
+        // if (!allowHide)
+        //     return;
 
-            case RegionAlign.left:
-                split.borderPosition = absolutePosition + vec2(size.x - split.thickness, 0);
-                split.innerPosition = split.borderPosition - vec2(split.thickness, 0);
-                split.size = vec2(split.thickness, size.y);
-                break;
-
-            case RegionAlign.right:
-                split.borderPosition = absolutePosition;
-                split.innerPosition = split.borderPosition + vec2(split.thickness, 0);
-                split.size = vec2(split.thickness, size.y);
-                break;
-
-            default:
-                return;
-        }
-    }
-
-    void renderSplit() {
-        if (!resizable && !showSplit)
-            return;
-
-        renderer.renderColorQuad(splitBorderRenderObject, splitColors[spliteState(false)],
-                                 split.borderPosition, split.size);
-        renderer.renderColorQuad(splitInnerRenderObject, splitColors[spliteState(true)],
-                                 split.innerPosition, split.size);
-    }
-
-    void renderVerticalScrollButton() {
-        if (!verticalScrollButton.visible)
-            return;
-
-        with (verticalScrollButton) {
-            const vec2 buttonOffset = vec2(this.size.x-regionOffset.right,
-                                           scrollController.buttonOffset);
-            renderer.renderVerticalChain(buttonRenderObjects, state,
-                                         absolutePosition + buttonOffset,
-                                         scrollController.buttonSize);
-        }
-    }
-
-    void renderHorizontalScrollButton() {
-        if (!horizontalScrollButton.visible)
-            return;
-
-        with (horizontalScrollButton) {
-            const vec2 buttonOffset = vec2(scrollController.buttonOffset,
-                                           this.size.y - regionOffset.bottom);
-            renderer.renderHorizontalChain(buttonRenderObjects, state,
-                                           absolutePosition + buttonOffset,
-                                           scrollController.buttonSize);
-        }
+        // header.isEnter = ;
+        renderer.renderQuad(header.arrowRenderObject, "Close", absolutePosition, vec2(10, 10));
     }
 
     void handleHorizontalScrollButton() {

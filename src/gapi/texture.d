@@ -25,6 +25,12 @@ class Texture {
             isNormalized = true;
         }
 
+        static Coord normalize(in Coord coord, Texture texture) {
+            Coord normCoord = coord;
+            normCoord.normalize(texture);
+            return normCoord;
+        }
+
     private:
         float normX, normY;
         float normWidth, normHeight;

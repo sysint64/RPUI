@@ -5,6 +5,7 @@ import std.math;
 import gapi;
 import math.linalg;
 import accessors;
+import basic_types;
 
 import application;
 import ui.render_objects;
@@ -20,6 +21,13 @@ class Renderer {
 
     vec2 toScreenPosition(in vec2 position, in vec2 size) {
         return vec2(position.x, app.windowHeight - size.y - position.y);
+    }
+
+    void renderQuad(BaseRenderObject renderObject, in string state,
+                    in vec2 position)
+    {
+        vec2 size = renderObject.texCoordinates[state].size;
+        renderQuad(renderObject, state, position, size);
     }
 
     void renderQuad(BaseRenderObject renderObject, in string state,
@@ -41,6 +49,23 @@ class Renderer {
         renderObject.render(camera);
     }
 
+    void renderChain(T)(BaseRenderObject[string] renderObjects, in Orientation orientation,
+                     in string state, in vec2 position, in T size)
+    {
+        switch (orientation) {
+            case Orientation.horizontal:
+                renderHorizontalChain(renderObjects, state, position, size);
+                break;
+
+            case Orientation.vertical:
+                renderVerticalChain(renderObjects, state, position, size);
+                break;
+
+            default:
+                return;
+        }
+    }
+
     void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
                                in vec2 position, in float size)
     {
@@ -51,8 +76,6 @@ class Renderer {
     void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
                                in vec2 position, in vec2 size)
     {
-        texAtlasShader.bind();
-
         const float leftWidth = renderObjects["left"].texCoordinates[state].size.x;
         const float rightWidth = renderObjects["right"].texCoordinates[state].size.x;
         const float centerWidth = size.x - leftWidth - rightWidth;
@@ -76,8 +99,6 @@ class Renderer {
     void renderVerticalChain(BaseRenderObject[string] renderObjects, in string state,
                              in vec2 position, in vec2 size)
     {
-        texAtlasShader.bind();
-
         const float topHeight = renderObjects["top"].texCoordinates[state].size.y;
         const float bottomHeight = renderObjects["bottom"].texCoordinates[state].size.y;
         const float middleHeight = size.y - topHeight - bottomHeight;

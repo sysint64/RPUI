@@ -52,6 +52,13 @@ Panel
             borderColor     : 0, 0, 0, 100
             innerColor      : 0, 0, 0, 0
 
+    Header
+        height              : 20
+        leave               : 242, 85, 11, 20
+        enter               : 257, 85, 11, 20
+        arrowOpen           : 5 , 21, 10, 10
+        arrowClose          : 22, 21, 10, 10
+
     textOffset              : 0,  0
     textColor               : 20, 20, 20
 
