@@ -6,6 +6,7 @@ import math.linalg;
 import basic_types;
 
 import ui.render_objects;
+import ui.render_factory;
 import ui.renderer;
 
 import ui.widgets.panel.widget;

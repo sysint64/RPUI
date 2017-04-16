@@ -20,7 +20,7 @@ import ui.render_objects;
 
 import ui.widgets.panel.split;
 // import ui.widgets.panel.header;
-// import ui.widgets.panel.scroll_button;
+import ui.widgets.panel.scroll_button;
 
 
 class Panel : Widget, Scrollable {
@@ -96,8 +96,6 @@ class Panel : Widget, Scrollable {
         split.render();
     }
 
-    // Create elements for widget rendering (quads, texts etc.)
-    // and read data from theme for these elements (background color, split thickness etc.)
     class RenderConfigurator {
         Data data;
         Texture skin;
@@ -105,15 +103,6 @@ class Panel : Widget, Scrollable {
         this() {
             this.data = manager.theme.data;
             this.skin = manager.theme.skin;
-        }
-
-        void initBackground() {
-            renderFactory.createQuad(backgroundRenderObject);
-
-            // Panel background colors
-            backgroundColors[Background.light]  = data.getNormColor(style ~ ".backgroundLight");
-            backgroundColors[Background.dark]   = data.getNormColor(style ~ ".backgroundDark");
-            backgroundColors[Background.action] = data.getNormColor(style ~ ".backgroundAction");
         }
 
         void initHeader() {
@@ -136,61 +125,26 @@ class Panel : Widget, Scrollable {
             header.arrowRenderObject.addTexCoord("Close", headerEnter, skin);
         }
 
-        void initScroll() {
-            const string[3] states = ["Leave", "Enter", "Click"];
-            const string[3] horizontalParts = ["left", "center", "right"];
-            const string[3] verticalParts = ["top", "middle", "bottom"];
-
-            const string scrollHorizontalBgStyle = style ~ ".Scroll.Horizontal";
-            const string scrollVerticalBgStyle = style ~ ".Scroll.Vertical";
-            const string scrollHorizontalButtonStyle = style ~ ".Scroll.Horizontal.Button";
-            const string scrollVerticalButtonStyle = style ~ ".Scroll.Vertical.Button";
-
-            with (verticalScrollButton) {
-                // button and bg size.x
-                const string buttonSelector = scrollVerticalButtonStyle ~ ".Leave.top.2";
-                const string bgSelector = scrollVerticalBgStyle ~ ".middle.2";
-
-                scrollController = new ScrollController(Orientation.vertical);
-                scrollController.buttonMinSize = data.getNumber(buttonSelector) * 2;
-                width = data.getNumber(bgSelector);
-            }
-
-            with (horizontalScrollButton) {
-                // button and bg size.y
-                const string buttonSelector = scrollHorizontalButtonStyle ~ ".Leave.left.3";
-                const string bgSelector = scrollHorizontalBgStyle ~ ".left.3";
-
-                scrollController = new ScrollController(Orientation.horizontal);
-                scrollController.buttonMinSize = data.getNumber(buttonSelector) * 2;
-                width = data.getNumber(bgSelector);
-            }
-
-            foreach (string part; verticalParts) {
-                renderFactory.createQuad(verticalScrollButton.buttonRenderObjects,
-                                         scrollVerticalButtonStyle, states, part);
-            }
-
-            foreach (string part; horizontalParts) {
-                renderFactory.createQuad(horizontalScrollButton.buttonRenderObjects,
-                                         scrollHorizontalButtonStyle, states, part);
-            }
-        }
     }
 
+    // Create elements for widget rendering (quads, texts etc.)
+    // and read data from theme for these elements (background color, split thickness etc.)
     override void onCreate() {
         with (new RenderConfigurator()) {
-            initBackground();
             initHeader();
-            // initSplit();
-            initScroll();
         }
 
-        // split = new Split(manager.theme.data);
+        renderFactory.createQuad(backgroundRenderObject);
+
         with (manager.theme) {
+            // Panel background colors
+            backgroundColors[Background.light]  = data.getNormColor(style ~ ".backgroundLight");
+            backgroundColors[Background.dark]   = data.getNormColor(style ~ ".backgroundDark");
+            backgroundColors[Background.action] = data.getNormColor(style ~ ".backgroundAction");
+
             split.onCreate(this, data, renderer);
-            horizontalScrollButton.onCreate(this);
-            verticalScrollButton.onCreate(this);
+            horizontalScrollButton.onCreate(this, data, renderer);
+            verticalScrollButton.onCreate(this, data, renderer);
         }
     }
 
@@ -307,79 +261,6 @@ private:
     float panelSize;
     float currentPanelSize;
 
-    struct ScrollButton {
-        BaseRenderObject[string] backgroundRenderObjects;
-        BaseRenderObject[string] buttonRenderObjects;
-        ScrollController scrollController;
-        float width;
-
-        bool isEnter = false;
-        bool isClick = false;
-        bool visible = false;
-
-        Orientation orientation;
-        Panel panel;
-
-        this(in Orientation orientation) {
-            this.orientation = orientation;
-        }
-
-        // Update scrollController properties
-        // TODO: make the method easier
-        void updateController(Panel panel) {
-            float comp(vec2 v, in string c) {
-                return c == "x" ? v.x : v.y;
-            }
-
-            const string vecComponent = orientation == Orientation.vertical ? "y" : "x";
-            const float widgetSize = comp(panel.size, vecComponent);
-            const float widgetRegionOffset = orientation == Orientation.vertical ?
-                panel.regionOffset.bottom : panel.regionOffset.right;
-
-            with (scrollController) {
-                buttonMaxOffset = widgetSize - widgetRegionOffset;
-                buttonMaxSize = widgetSize - widgetRegionOffset;
-                contentSize = comp(panel.innerBoundarySize, vecComponent);
-                buttonClick = isClick;
-                contentMaxOffset = comp(panel.innerBoundarySizeClamped, vecComponent) -
-                    widgetSize + widgetRegionOffset;
-            }
-        }
-
-        @property string state() {
-            if (isClick) {
-                return "Click";
-            } else if (isEnter){
-                return "Enter";
-            } else {
-                return "Leave";
-            }
-        }
-
-        void render() {
-            if (!visible)
-                return;
-
-            vec2 buttonOffset;
-
-            if (orientation == Orientation.horizontal) {
-                buttonOffset = vec2(scrollController.buttonOffset,
-                                    panel.size.y - panel.regionOffset.bottom);
-            } else if (orientation == Orientation.vertical) {
-                buttonOffset = vec2(panel.size.x - panel.regionOffset.right,
-                                    scrollController.buttonOffset);
-            }
-
-            panel.renderer.renderChain(buttonRenderObjects, orientation, state,
-                                       panel.absolutePosition + buttonOffset,
-                                       scrollController.buttonSize);
-        }
-
-        void onCreate(Panel panel) {
-            this.panel = panel;
-        }
-    }
-
     ScrollButton verticalScrollButton   = ScrollButton(Orientation.vertical);
     ScrollButton horizontalScrollButton = ScrollButton(Orientation.horizontal);
 
@@ -431,10 +312,6 @@ private:
 
         onResizeScroll();
     }
-
-    // void renderSplit() {
-
-    // }
 
     void renderHeader() {
         // if (!allowHide)
