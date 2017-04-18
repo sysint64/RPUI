@@ -53,8 +53,12 @@ class Panel : Widget, Scrollable {
     override void onProgress() {
         split.isEnter = false;
 
-        handleHorizontalScrollButton();
-        handleVerticalScrollButton();
+        horizontalScrollButton.onProgress();
+        verticalScrollButton.onProgress();
+
+        contentOffset = vec2(horizontalScrollButton.scrollController.contentOffset,
+                             verticalScrollButton.scrollController.contentOffset);
+
         handleResize();
 
         // Update render elements position and sizes
@@ -227,6 +231,7 @@ private:
         return verticalScrollButton.isClick || horizontalScrollButton.isClick;
     }
 
+    // TODO: Move to onResize Event
     void onResizeScroll() {
         horizontalScrollButton.scrollController.onResize();
         verticalScrollButton.scrollController.onResize();
@@ -265,40 +270,6 @@ private:
             size.x = clamp(size.x, minSize, maxSize);
 
         onResizeScroll();
-    }
-
-    void handleHorizontalScrollButton() {
-        horizontalScrollButton.visible = innerBoundarySize.x > size.x;
-        horizontalScrollButton.isEnter = false;
-
-        with (horizontalScrollButton) {
-            const vec2 buttonOffset = vec2(scrollController.buttonOffset,
-                                           this.size.y - regionOffset.bottom);
-            const Rect rect = Rect(absolutePosition + buttonOffset,
-                                   vec2(scrollController.buttonSize, regionOffset.bottom));
-            isEnter = pointInRect(app.mousePos, rect);
-            updateController(this);
-
-            scrollController.pollButton();
-            contentOffset.x = scrollController.contentOffset;
-        }
-    }
-
-    void handleVerticalScrollButton() {
-        verticalScrollButton.visible = innerBoundarySize.y > size.y;
-        verticalScrollButton.isEnter = false;
-
-        with (verticalScrollButton) {
-            const vec2 buttonOffset = vec2(this.size.x - regionOffset.right,
-                                           scrollController.buttonOffset);
-            const Rect rect = Rect(absolutePosition + buttonOffset,
-                                   vec2(regionOffset.right, scrollController.buttonSize));
-            isEnter = pointInRect(app.mousePos, rect);
-            updateController(this);
-
-            scrollController.pollButton();
-            contentOffset.y = scrollController.contentOffset;
-        }
     }
 
     void scrollToWidget() {

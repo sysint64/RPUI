@@ -4,6 +4,7 @@ import std.typecons;
 
 import gapi;
 import e2ml;
+import application;
 import math.linalg;
 import basic_types;
 
@@ -16,6 +17,8 @@ import ui.widgets.panel.widget;
 
 
 package struct ScrollButton {
+    Application app;
+
     BaseRenderObject[string] backgroundRenderObjects;
     BaseRenderObject[string] buttonRenderObjects;
     ScrollController scrollController;
@@ -36,7 +39,7 @@ package struct ScrollButton {
 
     // Update scrollController properties
     // TODO: make the method easier
-    void updateController(Panel panel) {
+    void updateController() {
         float comp(vec2 v, in string c) {
             return c == "x" ? v.x : v.y;
         }
@@ -86,6 +89,7 @@ package struct ScrollButton {
     }
 
     void onCreate(Panel panel, Theme theme, Renderer renderer) {
+        app = Application.getInstance();
         Data styleData = theme.data;
         this.panel = panel;
         this.renderer = renderer;
@@ -142,5 +146,28 @@ package struct ScrollButton {
         foreach (string part; parts) {
             panel.renderFactory.createQuad(buttonRenderObjects, style, states, part);
         }
+    }
+
+    void onProgress() {
+        visible = panel.innerBoundarySize.y > panel.size.y;
+
+        vec2 buttonOffset;
+        Rect rect;
+
+        if (orientation == Orientation.horizontal) {
+            buttonOffset = vec2(scrollController.buttonOffset,
+                                panel.size.y - panel.regionOffset.bottom);
+            rect = Rect(panel.absolutePosition + buttonOffset,
+                        vec2(scrollController.buttonSize, panel.regionOffset.bottom));
+        } else if (orientation == Orientation.vertical) {
+            buttonOffset = vec2(panel.size.x - panel.regionOffset.right,
+                                scrollController.buttonOffset);
+            rect = Rect(panel.absolutePosition + buttonOffset,
+                        vec2(panel.regionOffset.right, scrollController.buttonSize));
+        }
+
+        isEnter = pointInRect(app.mousePos, rect);
+        updateController();
+        scrollController.pollButton();
     }
 }
