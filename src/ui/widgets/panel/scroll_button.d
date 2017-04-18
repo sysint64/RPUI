@@ -7,6 +7,7 @@ import e2ml;
 import math.linalg;
 import basic_types;
 
+import ui.theme;
 import ui.scroll;
 import ui.render_objects;
 import ui.renderer;
@@ -84,7 +85,8 @@ package struct ScrollButton {
                              scrollController.buttonSize);
     }
 
-    void onCreate(Panel panel, Data styleData, Renderer renderer) {
+    void onCreate(Panel panel, Theme theme, Renderer renderer) {
+        Data styleData = theme.data;
         this.panel = panel;
         this.renderer = renderer;
         this.styleData = styleData;

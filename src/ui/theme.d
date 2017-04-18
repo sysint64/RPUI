@@ -44,8 +44,8 @@ class Theme {
 
 private:
     @Read @Write("private") {
-        e2ml.Data data_;
-        gapi.Texture skin_;
+        Data data_;
+        Texture skin_;
         ThemeFont regularFont_;
     }
 

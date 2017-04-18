@@ -5,6 +5,7 @@ import e2ml;
 import math.linalg;
 import basic_types;
 
+import ui.theme;
 import ui.render_objects;
 import ui.render_factory;
 import ui.renderer;
@@ -33,10 +34,11 @@ package struct Split {
         return panel.blackSplit || useBlackColor ? "Split.Dark." ~ color : "Split.Light." ~ color;
     }
 
-    void onCreate(Panel panel, Data styleData, Renderer renderer) {
+    void onCreate(Panel panel, Theme theme, Renderer renderer) {
         this.panel = panel;
         this.renderer = renderer;
         const string style = panel.style;
+        Data styleData = theme.data;
 
         panel.renderFactory.createQuad(borderRenderObject);
         panel.renderFactory.createQuad(borderInnerRenderObject);

@@ -19,7 +19,7 @@ import ui.cursor;
 import ui.render_objects;
 
 import ui.widgets.panel.split;
-// import ui.widgets.panel.header;
+import ui.widgets.panel.header;
 import ui.widgets.panel.scroll_button;
 
 
@@ -72,7 +72,7 @@ class Panel : Widget, Scrollable {
             renderer.renderColorQuad(backgroundRenderObject, backgroundColors[background],
                                      absolutePosition, size);
 
-        renderHeader();
+        header.render();
 
         if (!isOpen) {
             split.render();
@@ -96,44 +96,9 @@ class Panel : Widget, Scrollable {
         split.render();
     }
 
-    class RenderConfigurator {
-        Data data;
-        Texture skin;
-
-        this() {
-            this.data = manager.theme.data;
-            this.skin = manager.theme.skin;
-        }
-
-        void initHeader() {
-            header.height = data.getNumber(style ~ ".Header.height.0");
-            renderFactory.createQuad(header.backgroundRenderObject);
-
-            const Texture.Coord headerLeave = data.getTexCoord(style ~ ".Header.leave");
-            const Texture.Coord headerEnter = data.getTexCoord(style ~ ".Header.enter");
-
-            header.backgroundRenderObject.addTexCoord("Leave", headerLeave, skin);
-            header.backgroundRenderObject.addTexCoord("Enter", headerEnter, skin);
-
-            // Header arrow (open/close)
-            renderFactory.createQuad(header.arrowRenderObject);
-
-            const Texture.Coord arrowOpen  = data.getTexCoord(style ~ ".Header.arrowOpen");
-            const Texture.Coord arrpwClose = data.getTexCoord(style ~ ".Header.arrowClose");
-
-            header.arrowRenderObject.addTexCoord("Open", headerLeave, skin);
-            header.arrowRenderObject.addTexCoord("Close", headerEnter, skin);
-        }
-
-    }
-
     // Create elements for widget rendering (quads, texts etc.)
     // and read data from theme for these elements (background color, split thickness etc.)
     override void onCreate() {
-        with (new RenderConfigurator()) {
-            initHeader();
-        }
-
         renderFactory.createQuad(backgroundRenderObject);
 
         with (manager.theme) {
@@ -141,11 +106,12 @@ class Panel : Widget, Scrollable {
             backgroundColors[Background.light]  = data.getNormColor(style ~ ".backgroundLight");
             backgroundColors[Background.dark]   = data.getNormColor(style ~ ".backgroundDark");
             backgroundColors[Background.action] = data.getNormColor(style ~ ".backgroundAction");
-
-            split.onCreate(this, data, renderer);
-            horizontalScrollButton.onCreate(this, data, renderer);
-            verticalScrollButton.onCreate(this, data, renderer);
         }
+
+        split.onCreate(this, manager.theme, renderer);
+        horizontalScrollButton.onCreate(this, manager.theme, renderer);
+        verticalScrollButton.onCreate(this, manager.theme, renderer);
+        header.onCreate(this, manager.theme, renderer);
     }
 
     // Change system cursor when mouse entering split
@@ -243,18 +209,6 @@ private:
     vec4[Background] backgroundColors;
     vec2 widgetsOffset;
 
-    struct Header {
-        BaseRenderObject backgroundRenderObject;
-        BaseRenderObject arrowRenderObject;
-
-        float height = 0;
-        bool isEnter = false;
-
-        @property string state() {
-            return isEnter ? "Enter" : "Leave";
-        }
-    }
-
     Split split;
     Header header;
 
@@ -311,14 +265,6 @@ private:
             size.x = clamp(size.x, minSize, maxSize);
 
         onResizeScroll();
-    }
-
-    void renderHeader() {
-        // if (!allowHide)
-        //     return;
-
-        // header.isEnter = ;
-        renderer.renderQuad(header.arrowRenderObject, "Close", absolutePosition, vec2(10, 10));
     }
 
     void handleHorizontalScrollButton() {
