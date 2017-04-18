@@ -60,6 +60,7 @@ class Panel : Widget, Scrollable {
                              verticalScrollButton.scrollController.contentOffset);
 
         handleResize();
+        header.onProgress();
 
         // Update render elements position and sizes
         updateRegionAlign();

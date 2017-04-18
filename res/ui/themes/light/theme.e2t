@@ -56,14 +56,15 @@ Panel
         height              : 20
         leave               : 242, 85, 11, 20
         enter               : 257, 85, 11, 20
-        arrowOpen           : 5 , 21, 10, 10
-        arrowClose          : 22, 21, 10, 10
+
+        Arrow
+            open            : 5 , 21, 10, 10
+            close           : 22, 21, 10, 10
+            size            : 10, 10
+            position        : 6, 4
 
     textOffset              : 0,  0
     textColor               : 20, 20, 20
-
-    arrowOpen               : 5 , 21, 10, 10
-    arrowClose              : 22, 21, 10, 10
 
     Scroll
         Horizontal
