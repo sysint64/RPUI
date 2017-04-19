@@ -129,7 +129,7 @@ class MapEditor: Application {
 
         button = new Button("Button");
         button.size = vec2(100, 21);
-        button.position = vec2(0, 285);
+        button.position = vec2(0, 0);
         // button.caption = "test2";
         button.caption = "test2";
 

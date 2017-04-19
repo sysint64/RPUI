@@ -32,6 +32,8 @@ package struct ScrollButton {
     Orientation orientation;
     Panel panel;
     Data styleData;
+    vec2 buttonOffset;
+    float buttonSize;
 
     this(in Orientation orientation) {
         this.orientation = orientation;
@@ -73,19 +75,9 @@ package struct ScrollButton {
         if (!visible)
             return;
 
-        vec2 buttonOffset;
-
-        if (orientation == Orientation.horizontal) {
-            buttonOffset = vec2(scrollController.buttonOffset,
-                                panel.size.y - panel.regionOffset.bottom);
-        } else if (orientation == Orientation.vertical) {
-            buttonOffset = vec2(panel.size.x - panel.regionOffset.right,
-                                scrollController.buttonOffset);
-        }
-
         renderer.renderChain(buttonRenderObjects, orientation, state,
                              panel.absolutePosition + buttonOffset,
-                             scrollController.buttonSize);
+                             buttonSize);
     }
 
     void onCreate(Panel panel, Theme theme, Renderer renderer) {
@@ -150,20 +142,20 @@ package struct ScrollButton {
 
     void onProgress() {
         visible = panel.innerBoundarySize.y > panel.size.y;
-
-        vec2 buttonOffset;
         Rect rect;
 
         if (orientation == Orientation.horizontal) {
             buttonOffset = vec2(scrollController.buttonOffset,
                                 panel.size.y - panel.regionOffset.bottom);
+            buttonSize = scrollController.buttonSize - panel.regionOffset.left;
             rect = Rect(panel.absolutePosition + buttonOffset,
-                        vec2(scrollController.buttonSize, panel.regionOffset.bottom));
+                        vec2(buttonSize, panel.regionOffset.bottom));
         } else if (orientation == Orientation.vertical) {
             buttonOffset = vec2(panel.size.x - panel.regionOffset.right,
-                                scrollController.buttonOffset);
+                                scrollController.buttonOffset + panel.regionOffset.top);
+            buttonSize = scrollController.buttonSize - panel.regionOffset.top;
             rect = Rect(panel.absolutePosition + buttonOffset,
-                        vec2(panel.regionOffset.right, scrollController.buttonSize));
+                        vec2(panel.regionOffset.right, buttonSize));
         }
 
         isEnter = pointInRect(app.mousePos, rect);

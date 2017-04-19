@@ -59,6 +59,9 @@ class Panel : Widget, Scrollable {
         contentOffset = vec2(horizontalScrollButton.scrollController.contentOffset,
                              verticalScrollButton.scrollController.contentOffset);
 
+        contentOffset.x -= regionOffset.left;
+        contentOffset.y -= regionOffset.top;
+
         handleResize();
         header.onProgress();
 
@@ -195,6 +198,16 @@ protected:
             regionOffset.bottom = horizontalScrollButton.width;
         } else {
             regionOffset.bottom = 0;
+        }
+
+        if (allowHide) {
+            regionOffset.top = header.height;
+        } else {
+            regionOffset.top = 0;
+        }
+
+        if (allowResize || showSplit) {
+            regionOffset.bottom += split.thickness;
         }
     }
 

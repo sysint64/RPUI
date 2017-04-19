@@ -85,6 +85,9 @@ class Widget {
             innerBoundarySize.y = fmax(innerBoundarySize.y, widget.position.y + widget.size.y);
         }
 
+        innerBoundarySize.x += padding.left + padding.right + regionOffset.left + regionOffset.right;
+        innerBoundarySize.y += padding.top + padding.bottom + regionOffset.top + regionOffset.bottom;
+
         innerBoundarySizeClamped.x = fmax(innerBoundarySize.x, size.x);
         innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, size.y);
     }
