@@ -24,9 +24,12 @@ class Button : Widget {
         this.drawChildren = false;
     }
 
+    override void onProgress() {
+        updateAbsolutePosition();
+    }
+
     override void render(Camera camera) {
         super.render(camera);
-        updateAbsolutePosition();
         renderSkin(camera);
         renderIcon(camera);
     }

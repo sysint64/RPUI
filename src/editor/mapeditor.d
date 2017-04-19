@@ -120,7 +120,7 @@ class MapEditor: Application {
         Panel panel = new Panel("Panel");
         panel.size = vec2(200, 300);
         panel.position = vec2(100, 300);
-        panel.padding = FrameRect(5, 5, 5, 5);
+        // panel.padding = FrameRect(5, 5, 5, 5);
         panel.regionAlign = RegionAlign.top;
         panel.caption = "Hello world!";
         panel.allowHide = true;

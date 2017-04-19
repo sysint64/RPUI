@@ -60,26 +60,13 @@ class Widget {
         if (!drawChildren)
             return;
 
+        innerBoundarySize = vec2(0, 0);
+
         foreach (uint index, Widget widget; children) {
             if (!widget.visible)
                 continue;
 
             widget.onProgress();
-        }
-    }
-
-    void render(Camera camera) {
-        this.camera = camera;
-        innerBoundarySize = vec2(0, 0);
-
-        if (!drawChildren)
-            return;
-
-        foreach (uint index, Widget widget; children) {
-            if (!widget.visible)
-                continue;
-
-            widget.render(camera);
 
             innerBoundarySize.x = fmax(innerBoundarySize.x, widget.position.x + widget.size.x);
             innerBoundarySize.y = fmax(innerBoundarySize.y, widget.position.y + widget.size.y);
@@ -90,6 +77,20 @@ class Widget {
 
         innerBoundarySizeClamped.x = fmax(innerBoundarySize.x, size.x);
         innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, size.y);
+    }
+
+    void render(Camera camera) {
+        this.camera = camera;
+
+        if (!drawChildren)
+            return;
+
+        foreach (uint index, Widget widget; children) {
+            if (!widget.visible)
+                continue;
+
+            widget.render(camera);
+        }
     }
 
     void addWidget(Widget widget) {

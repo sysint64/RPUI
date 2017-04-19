@@ -230,10 +230,12 @@ private:
             sfEvent event;
 
             while (sfWindow_pollEvent(window, &event)) {
-                if (event.type == sfEvtClosed)
+                if (event.type == sfEvtClosed) {
                     running = false;
-                else
+                } else {
                     handleEvents(event);
+                    onProgress();
+                }
             }
 
             calculateTime();

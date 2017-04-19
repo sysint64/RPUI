@@ -51,6 +51,7 @@ class Panel : Widget, Scrollable {
     }
 
     override void onProgress() {
+        super.onProgress();
         split.isEnter = false;
 
         // horizontalScrollButton.onProgress();
@@ -74,8 +75,6 @@ class Panel : Widget, Scrollable {
     }
 
     override void render(Camera camera) {
-        onProgress();
-
         if (background != Background.transparent)
             renderer.renderColorQuad(backgroundRenderObject, backgroundColors[background],
                                      absolutePosition, size);
