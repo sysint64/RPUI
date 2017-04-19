@@ -53,7 +53,7 @@ class Panel : Widget, Scrollable {
     override void onProgress() {
         split.isEnter = false;
 
-        horizontalScrollButton.onProgress();
+        // horizontalScrollButton.onProgress();
         verticalScrollButton.onProgress();
 
         contentOffset = vec2(horizontalScrollButton.scrollController.contentOffset,
@@ -157,7 +157,22 @@ class Panel : Widget, Scrollable {
         verticalScrollButton.scrollController.onMouseDown(x, y, button);
         horizontalScrollButton.scrollController.onMouseDown(x, y, button);
 
+        onHeaderMouseDown();
         super.onMouseDown(x, y, button);
+    }
+
+    private void onHeaderMouseDown() {
+        if (!header.isEnter || !allowHide)
+            return;
+
+        if (isOpen) {
+            lastSize = size;
+            size.y = header.height;
+        } else {
+            size = lastSize;
+        }
+
+        isOpen = !isOpen;
     }
 
     override void onMouseUp(in uint x, in uint y, in MouseButton button) {

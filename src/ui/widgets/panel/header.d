@@ -62,16 +62,22 @@ package struct Header {
     }
 
     @property string arrowState() {
-        return "Close";
+        return panel.isOpen ? "Open" : "Close";
     }
 
     void onProgress() {
+        if (!panel.allowHide)
+            return;
+
         const vec2 size = vec2(panel.size.x, height);
         Rect rect = Rect(panel.absolutePosition, size);
         isEnter = pointInRect(app.mousePos, rect);
     }
 
     void render() {
+        if (!panel.allowHide)
+            return;
+
         renderer.renderQuad(backgroundRenderObject, state,
                             panel.absolutePosition, vec2(panel.size.x, height));
         renderer.renderQuad(arrowRenderObject, arrowState,
