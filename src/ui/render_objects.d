@@ -19,12 +19,12 @@ class BaseRenderObject : BaseObject {
     }
 
 package:
-    gapi.Texture.Coord[string] texCoordinates;
+    Texture.Coord[string] texCoordinates;
 }
 
 
-class TextRenderObject : gapi.Text {
-    alias gapi.Text.Builder!TextRenderObject Builder;
+class TextRenderObject : Text {
+    alias Text.Builder!TextRenderObject Builder;
 
     this(Geometry geometry) {
         super(geometry);

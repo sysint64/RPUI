@@ -13,6 +13,11 @@ import ui.render_objects;
 
 
 class Button : Widget {
+    bool allowCheck = false;
+    Align textAlign = Align.center;
+    VerticalAlign textVerticalAlign = VerticalAlign.middle;
+    utfstring caption = "Button";
+
     this(in string style) {
         super(style);
         this.drawChildren = false;
@@ -33,18 +38,6 @@ class Button : Widget {
         renderSkin(camera);
         renderIcon(camera);
     }
-
-// Properties --------------------------------------------------------------------------------------
-
-private:
-    @Read @Write {
-        bool allowCheck_ = false;
-        Align textAlign_ = Align.center;
-        VerticalAlign textVerticalAlign_ = VerticalAlign.middle;
-        utfstring caption_ = "Button";
-    }
-
-    mixin(GenerateFieldAccessors);
 
 protected:
     vec2 focusOffsets;
@@ -81,11 +74,11 @@ protected:
     override void onCreate() {
         super.onCreate();
 
-        immutable string[3] elements = ["Leave", "Enter", "Click"];
+        immutable string[3] states = ["Leave", "Enter", "Click"];
         immutable string[3] keys = ["left", "center", "right"];
 
         foreach (string key; keys) {
-            renderFactory.createQuad(skinRenderObjects, style, elements, key);
+            renderFactory.createQuad(skinRenderObjects, style, states, key);
             renderFactory.createQuad(skinFocusRenderObjects, style, "Focus", key);
         }
 
@@ -95,6 +88,6 @@ protected:
             focusResize = data.getNumber(focusKey ~ ".offsets.1");
         }
 
-        textRenderObject = renderFactory.createText(style, elements);
+        textRenderObject = renderFactory.createText(style, states);
     }
 }

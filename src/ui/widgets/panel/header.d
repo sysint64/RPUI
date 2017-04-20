@@ -19,6 +19,7 @@ package struct Header {
 
     BaseRenderObject backgroundRenderObject;
     BaseRenderObject arrowRenderObject;
+    TextRenderObject textRenderObject;
 
     float height = 0;
     bool isEnter = false;
@@ -29,32 +30,32 @@ package struct Header {
 
     void onCreate(Panel panel, Theme theme, Renderer renderer) {
         app = Application.getInstance();
+        Data styleData = theme.data;
 
         this.panel = panel;
         this.renderer = renderer;
-        const string style = panel.style;
-        Data styleData = theme.data;
+        immutable string style = panel.style;
+        immutable states = ["Leave", "Enter"];
+        immutable headerStyle = style ~ ".Header";
 
-        height = styleData.getNumber(style ~ ".Header.height.0");
-        panel.renderFactory.createQuad(backgroundRenderObject);
-
-        const Texture.Coord leaveTexCoord = styleData.getTexCoord(style ~ ".Header.leave");
-        const Texture.Coord enterTexCoord = styleData.getTexCoord(style ~ ".Header.enter");
-
-        backgroundRenderObject.addTexCoord("Leave", leaveTexCoord, theme.skin);
-        backgroundRenderObject.addTexCoord("Enter", enterTexCoord, theme.skin);
+        height = styleData.getNumber(headerStyle ~ ".height.0");
+        panel.renderFactory.createQuad(backgroundRenderObject, headerStyle, states, "background");
 
         // Header arrow (open/close)
         panel.renderFactory.createQuad(arrowRenderObject);
 
-        const Texture.Coord arrowOpenTexCoord  = styleData.getTexCoord(style ~ ".Header.Arrow.open");
-        const Texture.Coord arrpwCloseTexCoord = styleData.getTexCoord(style ~ ".Header.Arrow.close");
+        const Texture.Coord arrowOpenTexCoord  = styleData.getTexCoord(headerStyle ~ ".Arrow.open");
+        const Texture.Coord arrpwCloseTexCoord = styleData.getTexCoord(headerStyle ~ ".Arrow.close");
 
-        arrowSize = styleData.getVec2f(style ~ ".Header.Arrow.size");
-        arrowPosition = styleData.getVec2f(style ~ ".Header.Arrow.position");
+        arrowSize = styleData.getVec2f(headerStyle ~ ".Arrow.size");
+        arrowPosition = styleData.getVec2f(headerStyle ~ ".Arrow.position");
 
         arrowRenderObject.addTexCoord("Open", arrowOpenTexCoord, theme.skin);
         arrowRenderObject.addTexCoord("Close", arrpwCloseTexCoord, theme.skin);
+
+        textRenderObject = panel.renderFactory.createText(headerStyle, states);
+        textRenderObject.text = panel.caption;
+        textRenderObject.textAlign = Align.left;
     }
 
     @property string state() {
@@ -78,9 +79,15 @@ package struct Header {
         if (!panel.allowHide)
             return;
 
+        immutable vec2 headerSize = vec2(panel.size.x, height);
         renderer.renderQuad(backgroundRenderObject, state,
-                            panel.absolutePosition, vec2(panel.size.x, height));
+                            panel.absolutePosition, headerSize);
         renderer.renderQuad(arrowRenderObject, arrowState,
                             panel.absolutePosition + arrowPosition, arrowSize);
+
+        immutable vec2 textPosition = panel.absolutePosition +
+            vec2(arrowPosition.x + arrowSize.x, 0);
+
+        renderer.renderText(textRenderObject, state, textPosition, headerSize);
     }
 }

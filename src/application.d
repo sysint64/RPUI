@@ -4,6 +4,8 @@ import std.stdio;
 import std.conv;
 import std.path;
 import std.file : thisExePath;
+import std.concurrency;
+import core.thread;
 
 import derelict.sfml2.system;
 import derelict.sfml2.window;

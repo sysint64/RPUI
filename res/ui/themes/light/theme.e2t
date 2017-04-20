@@ -54,17 +54,22 @@ Panel
 
     Header
         height              : 20
-        leave               : 242, 85, 11, 20
-        enter               : 257, 85, 11, 20
+
+        Leave
+            background      : 242, 85, 11, 20
+            textOffset      : 6, 0
+            textColor       : 0, 0, 0
+
+        Enter
+            background      : 257, 85, 11, 20
+            textOffset      : 6, 0
+            textColor       : 0, 0, 0
 
         Arrow
             open            : 5 , 21, 10, 10
             close           : 22, 21, 10, 10
             size            : 10, 10
             position        : 6, 4
-
-    textOffset              : 0,  0
-    textColor               : 20, 20, 20
 
     Scroll
         Horizontal

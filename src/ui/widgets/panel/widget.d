@@ -34,7 +34,6 @@ class Panel : Widget, Scrollable {
 
     float minSize = 40;
     float maxSize = 999;
-    utfstring caption = "Hello World!";
     Background background = Background.light;
     bool allowResize = false;
     bool allowHide = false;
@@ -42,9 +41,24 @@ class Panel : Widget, Scrollable {
     bool isOpen = true;
     bool blackSplit = false;
     bool showSplit = true;
+    utfstring caption = "";
 
     bool showVerticalScrollButton = true;
     bool showHorizontalScrollButton = true;
+
+    // @property utfstring caption() {
+    //     if (header.textRenderObject is null)
+    //         return "";
+
+    //     return header.textRenderObject.text;
+    // }
+
+    // @property void caption(in utfstring text) {
+    //     if (header.textRenderObject is null)
+    //         return;
+
+    //     header.textRenderObject.text = text;
+    // }
 
     this(in string style) {
         super(style);
