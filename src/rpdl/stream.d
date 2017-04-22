@@ -1,4 +1,4 @@
-module e2ml.stream;
+module rpdl.stream;
 
 import std.stdio;
 import std.file;

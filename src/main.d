@@ -2,12 +2,12 @@ module main;
 
 import std.stdio;
 
-import e2ml.data;
-import e2ml.stream;
-import e2ml.lexer;
-import e2ml.token;
-import e2ml.node;
-import e2ml.value;
+import rpdl.tree;
+import rpdl.stream;
+import rpdl.lexer;
+import rpdl.token;
+import rpdl.node;
+import rpdl.value;
 
 import gapi.shader;
 import gapi.texture;
@@ -45,6 +45,11 @@ void traverse(Node node, in int level = 0) {
     }
 }
 
+import ui.views.view;
+import ui.views.attributes;
+import ui.manager;
+
+
 void main() {
     DerelictSFML2System.load();
     DerelictSFML2Window.load();
@@ -56,6 +61,7 @@ void main() {
     auto app = MapEditor.getInstance();
     app.run();
 
+    // Test
     // Data data = new Data("/home/andrey/projects/e2dit-dlang/res/ui/themes/light");
     // data.load("theme.e2t");
     // traverse(data.root);

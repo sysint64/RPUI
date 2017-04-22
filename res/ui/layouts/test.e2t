@@ -1,0 +1,17 @@
+Panel
+    caption: "Hello World"
+    resizable: true
+    hideable: true
+    regionAlign: top
+
+    Button
+        id: "okButton"
+        caption: "OK"
+
+    Button
+        id: "closeButton"
+        caption: "Close"
+
+    Button
+        id: "cancelButton"
+        caption: "Cancel"

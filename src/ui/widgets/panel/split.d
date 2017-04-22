@@ -1,7 +1,7 @@
 module ui.widgets.panel.split;
 
 import gapi;
-import e2ml;
+import rpdl;
 import math.linalg;
 import basic_types;
 
@@ -38,7 +38,7 @@ package struct Split {
         this.panel = panel;
         this.renderer = renderer;
         const string style = panel.style;
-        Data styleData = theme.data;
+        RPDLTree styleData = theme.data;
 
         panel.renderFactory.createQuad(borderRenderObject);
         panel.renderFactory.createQuad(borderInnerRenderObject);

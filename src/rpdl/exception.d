@@ -1,4 +1,4 @@
-module e2ml.exception;
+module rpdl.exception;
 
 
 class E2TMLException : Exception {

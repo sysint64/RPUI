@@ -1,7 +1,7 @@
 module settings;
 
 import patterns.singleton;
-import e2ml.data;
+import rpdl;
 
 
 class Settings {
@@ -9,7 +9,7 @@ class Settings {
     private this() {}
 
     void load(in string rootDirectory, in string fileName) {
-        data = new Data(rootDirectory);
+        data = new RPDLTree(rootDirectory);
         data.load(fileName);
     }
 
@@ -46,5 +46,5 @@ class Settings {
     }
 
 private:
-    Data data;
+    RPDLTree data;
 }

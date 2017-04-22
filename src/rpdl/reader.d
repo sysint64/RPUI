@@ -1,11 +1,11 @@
-module e2ml.reader;
+module rpdl.reader;
 
 import std.file;
 import std.stdio;
 
-import e2ml.node;
-import e2ml.value;
-import e2ml.exception;
+import rpdl.node;
+import rpdl.value;
+import rpdl.exception;
 
 
 abstract class Reader {

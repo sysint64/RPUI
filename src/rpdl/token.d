@@ -1,12 +1,12 @@
-module e2ml.token;
+module rpdl.token;
 
 import std.ascii;
 import std.uni : toLower;
 import std.algorithm.iteration : map;
 import std.conv;
 
-import e2ml.stream;
-import e2ml.lexer : LexerError;
+import rpdl.stream;
+import rpdl.lexer : LexerError;
 
 
 class Token {

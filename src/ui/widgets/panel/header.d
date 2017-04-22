@@ -1,7 +1,7 @@
 module ui.widgets.panel.header;
 
 import gapi;
-import e2ml;
+import rpdl;
 import math.linalg;
 import basic_types;
 import application;
@@ -30,7 +30,7 @@ package struct Header {
 
     void onCreate(Panel panel, Theme theme, Renderer renderer) {
         app = Application.getInstance();
-        Data styleData = theme.data;
+        RPDLTree styleData = theme.data;
 
         this.panel = panel;
         this.renderer = renderer;

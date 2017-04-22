@@ -1,12 +1,12 @@
-module e2ml.lexer;
+module rpdl.lexer;
 
 import std.stdio;
 import std.format : formattedWrite;
 import std.array : appender;
 import std.ascii;
 
-import e2ml.token;
-import e2ml.stream;
+import rpdl.token;
+import rpdl.stream;
 
 
 class LexerError : Exception {

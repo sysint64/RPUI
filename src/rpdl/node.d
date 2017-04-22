@@ -1,7 +1,7 @@
-module e2ml.node;
+module rpdl.node;
 
 import std.container;
-import e2ml.value;
+import rpdl.value;
 
 
 class Node {

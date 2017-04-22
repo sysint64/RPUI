@@ -5,7 +5,7 @@ import std.path;
 import std.file;
 import std.exception;
 import application;
-import e2ml;
+import rpdl;
 import gapi;
 
 
@@ -44,7 +44,7 @@ class Theme {
 
 private:
     @Read @Write("private") {
-        Data data_;
+        RPDLTree data_;
         Texture skin_;
         ThemeFont regularFont_;
     }
@@ -56,7 +56,7 @@ private:
 
     bool load(in string theme, in bool critical = false) {
         string dir = buildPath(app.resourcesDirectory, "ui", "themes", theme);
-        data = new Data(dir);
+        data = new RPDLTree(dir);
         string msg = collectExceptionMsg(data.load("theme.e2t"));
         bool isSuccess = msg is null;
 

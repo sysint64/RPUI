@@ -3,7 +3,7 @@ module ui.widgets.panel.scroll_button;
 import std.typecons;
 
 import gapi;
-import e2ml;
+import rpdl;
 import application;
 import math.linalg;
 import basic_types;
@@ -31,7 +31,7 @@ package struct ScrollButton {
     Renderer renderer;
     Orientation orientation;
     Panel panel;
-    Data styleData;
+    RPDLTree styleData;
     vec2 buttonOffset;
     float buttonSize;
 
@@ -82,7 +82,7 @@ package struct ScrollButton {
 
     void onCreate(Panel panel, Theme theme, Renderer renderer) {
         app = Application.getInstance();
-        Data styleData = theme.data;
+        RPDLTree styleData = theme.data;
         this.panel = panel;
         this.renderer = renderer;
         this.styleData = styleData;

@@ -19,12 +19,32 @@ import ui;
 import ui.widgets.button;
 import ui.widgets.stack_layout;
 import ui.widgets.panel.widget;
+import ui.views.view;
+import ui.views.attributes;
 
 import math.linalg;
 import std.stdio;
 
 import derelict.sfml2.graphics;
 import derelict.opengl3.gl;
+
+
+class MyView : View {
+    this(Manager manager) {
+        super(manager);
+    }
+
+    @OnClickListener("okButton")
+    void onOkButtonClick() {
+        writeln("Hello world!");
+    }
+
+    @OnClickListener("closeButton")
+    @OnClickListener("cancelButton")
+    void onCancelButtonClick() {
+        writeln("Close!");
+    }
+}
 
 
 class MapEditor: Application {
@@ -94,72 +114,74 @@ class MapEditor: Application {
         // texture.bind();
         // spriteGeometry.bind();
 
-        uiManager = new ui.Manager(settings.theme);
-        StackLayout stackLayout = new StackLayout();
-        stackLayout.position = vec2(100, 100);
-        uiManager.addWidget(stackLayout);
+        uiManager = new Manager(settings.theme);
+        View.createFromFile!(MyView)(uiManager, "test.e2t");
 
-        Button button = new Button("Button");
-        button.size = vec2(100, 21);
-        button.position = vec2(0, 0);
-        button.margin = FrameRect(5, 5, 5, 5);
-        stackLayout.addWidget(button);
+        // StackLayout stackLayout = new StackLayout();
+        // stackLayout.position = vec2(100, 100);
+        // uiManager.addWidget(stackLayout);
 
-        button = new Button("Button");
-        button.size = vec2(100, 21);
-        button.position = vec2(0, 0);
-        // button.caption = "test";
-        stackLayout.addWidget(button);
+        // Button button = new Button("Button");
+        // button.size = vec2(100, 21);
+        // button.position = vec2(0, 0);
+        // button.margin = FrameRect(5, 5, 5, 5);
+        // stackLayout.addWidget(button);
 
-        button = new Button("Button");
-        button.size = vec2(100, 21);
-        button.position = vec2(-15, -15);
-        // button.caption = "test";
-        // uiManager.addWidget(button);
+        // button = new Button("Button");
+        // button.size = vec2(100, 21);
+        // button.position = vec2(0, 0);
+        // // button.caption = "test";
+        // stackLayout.addWidget(button);
 
-        Panel panel = new Panel("Panel");
-        panel.size = vec2(200, 300);
-        panel.position = vec2(100, 300);
-        panel.padding = FrameRect(5, 5, 5, 5);
-        panel.regionAlign = RegionAlign.top;
-        panel.allowHide = true;
-        panel.caption = "Hello world!";
-        uiManager.addWidget(panel);
+        // button = new Button("Button");
+        // button.size = vec2(100, 21);
+        // button.position = vec2(-15, -15);
+        // // button.caption = "test";
+        // // uiManager.addWidget(button);
+
+        // Panel panel = new Panel("Panel");
+        // panel.size = vec2(200, 300);
+        // panel.position = vec2(100, 300);
+        // panel.padding = FrameRect(5, 5, 5, 5);
+        // panel.regionAlign = RegionAlign.top;
+        // panel.allowHide = true;
+        // panel.caption = "Hello world!";
+        // uiManager.addWidget(panel);
+
+        // // panel.addWidget(button);
+
+        // button = new Button("Button");
+        // button.size = vec2(100, 21);
+        // button.position = vec2(0, 0);
+        // // button.caption = "test2";
+        // button.caption = "test2";
 
         // panel.addWidget(button);
 
-        button = new Button("Button");
-        button.size = vec2(100, 21);
-        button.position = vec2(0, 0);
-        // button.caption = "test2";
-        button.caption = "test2";
+        // Panel panel2 = new Panel("Panel");
+        // panel2.size = vec2(100, 100);
+        // panel2.position = vec2(100, 100);
+        // panel2.background = Panel.Background.dark;
+        // panel.addWidget(panel2);
 
-        panel.addWidget(button);
+        // button = new Button("Button");
+        // button.size = vec2(100, 21);
+        // button.position = vec2(0, 285);
+        // // button.caption = "test2";
 
-        Panel panel2 = new Panel("Panel");
-        panel2.size = vec2(100, 100);
-        panel2.position = vec2(100, 100);
-        panel2.background = Panel.Background.dark;
-        panel.addWidget(panel2);
+        // panel2.addWidget(button);
 
-        button = new Button("Button");
-        button.size = vec2(100, 21);
-        button.position = vec2(0, 285);
-        // button.caption = "test2";
+        // //
 
-        panel2.addWidget(button);
+        // panel = new Panel("Panel");
+        // panel.size = vec2(100, 100);
+        // panel.regionAlign = RegionAlign.right;
+        // uiManager.addWidget(panel);
 
-        //
-
-        panel = new Panel("Panel");
-        panel.size = vec2(100, 100);
-        panel.regionAlign = RegionAlign.right;
-        uiManager.addWidget(panel);
-
-        panel = new Panel("Panel");
-        panel.size = vec2(100, 100);
-        panel.regionAlign = RegionAlign.bottom;
-        uiManager.addWidget(panel);
+        // panel = new Panel("Panel");
+        // panel.size = vec2(100, 100);
+        // panel.regionAlign = RegionAlign.bottom;
+        // uiManager.addWidget(panel);
     }
 
     override void onKeyPressed(in KeyCode key) {

@@ -243,7 +243,6 @@ package:
     }
 }
 
-
 unittest {
     Manager manager = new Manager();
 

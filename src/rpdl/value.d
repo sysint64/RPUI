@@ -1,6 +1,6 @@
-module e2ml.value;
+module rpdl.value;
 
-import e2ml.node;
+import rpdl.node;
 import std.conv;
 
 

@@ -1,12 +1,12 @@
-module e2ml.writer;
+module rpdl.writer;
 
 import std.file;
 import std.stdio;
 import std.conv;
 
-import e2ml.node;
-import e2ml.value;
-import e2ml.exception;
+import rpdl.node;
+import rpdl.value;
+import rpdl.exception;
 
 
 abstract class Writer {

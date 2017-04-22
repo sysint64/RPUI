@@ -1,4 +1,4 @@
-module e2ml.parser;
+module rpdl.parser;
 
 import std.stdio;
 import std.format : formattedWrite;
@@ -6,12 +6,12 @@ import std.array : appender;
 import std.container;
 import std.conv;
 
-import e2ml.lexer;
-import e2ml.token;
-import e2ml.stream;
-import e2ml.node;
-import e2ml.value;
-import e2ml.data;
+import rpdl.lexer;
+import rpdl.token;
+import rpdl.stream;
+import rpdl.node;
+import rpdl.value;
+import rpdl.tree;
 
 
 class ParseError : Exception {
@@ -24,7 +24,7 @@ class ParseError : Exception {
 
 
 class Parser {
-    this(Lexer lexer, Data data) {
+    this(Lexer lexer, RPDLTree data) {
         this.lexer = lexer;
         this.data = data;
     }
@@ -47,7 +47,7 @@ class Parser {
     @property int pos()    { return lexer.currentToken.pos;    }
 
 private:
-    Data data;
+    RPDLTree data;
     Lexer lexer;
 
     void parseObject(Node parent) {

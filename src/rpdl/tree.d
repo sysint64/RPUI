@@ -1,4 +1,4 @@
-module e2ml.data;
+module rpdl.tree;
 
 import std.file;
 import std.stdio;
@@ -8,18 +8,18 @@ import std.path;
 
 import math.linalg;
 
-import e2ml.lexer;
-import e2ml.parser;
-import e2ml.stream;
-import e2ml.node;
-import e2ml.value;
-import e2ml.exception;
-import e2ml.writer;
+import rpdl.lexer;
+import rpdl.parser;
+import rpdl.stream;
+import rpdl.node;
+import rpdl.value;
+import rpdl.exception;
+import rpdl.writer;
 
 import gapi.texture;
 
 
-class Data {
+class RPDLTree {
     enum IOType {text, bin};
 
     this() {
