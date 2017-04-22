@@ -45,7 +45,7 @@ abstract class Application {
         scope(exit) sfWindow_destroy(window);
 
         p_settings = Settings.getInstance();
-        settings.load(binDirectory, "settings.e2t");
+        settings.load(binDirectory, "settings.rdl");
 
         writeln(settings.theme);
         onCreate();

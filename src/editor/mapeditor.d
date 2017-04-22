@@ -115,7 +115,7 @@ class MapEditor: Application {
         // spriteGeometry.bind();
 
         uiManager = new Manager(settings.theme);
-        View.createFromFile!(MyView)(uiManager, "test.e2t");
+        View.createFromFile!(MyView)(uiManager, "test.rdl");
 
         // StackLayout stackLayout = new StackLayout();
         // stackLayout.position = vec2(100, 100);
