@@ -189,6 +189,9 @@ class RPDLTree {
     alias optVec3ui = optVecValue!(uint, 3, NotVec3Exception);
     alias optVec4ui = optVecValue!(uint, 4, NotVec4Exception);
 
+
+// TODO: encapsulate this non standart accessors to other module -----------------------------------
+
     Texture.Coord optTexCoord(in string path, Texture.Coord defaultVal = Texture.Coord.init) {
         Texture.Coord texCoord;
 
@@ -317,6 +320,42 @@ class RPDLTree {
     {
         try {
             return getVerticalAlign(path);
+        } catch (NotFoundException) {
+            return defaultVal;
+        }
+    }
+
+    Rect getRect(in string path) {
+        return Rect(getVec4f(path));
+    }
+
+    Rect optRect(in string path, in Rect defaultVal = Rect.init) {
+        try {
+            return getRect(path);
+        } catch (NotFoundException) {
+            return defaultVal;
+        }
+    }
+
+    FrameRect getFrameRect(in string path) {
+        return FrameRect(getVec4f(path));
+    }
+
+    FrameRect optFrameRect(in string path, in FrameRect defaultVal = FrameRect.init) {
+        try {
+            return getFrameRect(path);
+        } catch (NotFoundException) {
+            return defaultVal;
+        }
+    }
+
+    IntRect getIntRect(in string path) {
+        return IntRect(getVec4i(path));
+    }
+
+    IntRect optIntRect(in string path, in IntRect defaultVal = IntRect.init) {
+        try {
+            return getIntRect(path);
         } catch (NotFoundException) {
             return defaultVal;
         }
