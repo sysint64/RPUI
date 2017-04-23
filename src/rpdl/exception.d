@@ -1,104 +1,135 @@
 module rpdl.exception;
 
 
-class E2TMLException : Exception {
+class RPDLException : Exception {
     this() { super(""); }
     this(in string details) { super(details); }
 }
 
 
-class NotFoundException : E2TMLException {
+class NotFoundException : RPDLException {
     this() { super("not found"); }
     this(in string details) { super(details); }
 }
 
 
-class NotObjectException : E2TMLException {
+class NotObjectException : RPDLException {
     this() { super("it is not an object"); }
     this(in string details) { super(details); }
     static @property string typeName() { return "e2tml.node.ObjectNode"; }
 }
 
 
-class NotParameterException : E2TMLException {
+class NotParameterException : RPDLException {
     this() { super("it is not a parameter"); }
     this(in string details) { super(details); }
     static @property string typeName() { return "e2tml.node.Parameter"; }
 }
 
 
-class NotValueException : E2TMLException {
+class NotValueException : RPDLException {
     this() { super("it is not a value"); }
     this(in string details) { super(details); }
     static @property string typeName() { return "e2tml.value.Value"; }
 }
 
 
-class NotParameterOrValueException : E2TMLException {
+class NotParameterOrValueException : RPDLException {
     this() { super("it is not a parameter or value"); }
     this(in string details) { super(details); }
 }
 
 
-class NotNumberValueException : E2TMLException {
+class NotNumberValueException : RPDLException {
     this() { super("it is not a number value"); }
     this(in string details) { super(details); }
     static @property string typeName() { return "e2tml.value.NumberValue"; }
 }
 
 
-class NotBooleanValueException : E2TMLException {
+class NotBooleanValueException : RPDLException {
     this() { super("it is not a number value"); }
     this(in string details) { super(details); }
     static @property string typeName() { return "e2tml.value.BooleanValue"; }
 }
 
 
-class NotStringValueException : E2TMLException {
+class NotStringValueException : RPDLException {
     this() { super("it is not a string value"); }
     this(in string details) { super(details); }
     static @property string typeName() { return "e2tml.value.StringValue"; }
 }
 
 
-class NotArrayValueException : E2TMLException {
+class NotIdentifierValueException : RPDLException {
+    this() { super("it is not a identifier value"); }
+    this(in string details) { super(details); }
+    static @property string typeName() { return "e2tml.value.StringValue"; }
+}
+
+
+class NotArrayValueException : RPDLException {
     this() { super("it is not an array value"); }
     this(in string details) { super(details); }
     static @property string typeName() { return "e2tml.value.ArrayValue"; }
 }
 
 
-class NotVec2Exception : E2TMLException {
+class NotVec2Exception : RPDLException {
     this() { super("it is not a vec2 value"); }
     this(in string details) { super(details); }
 }
 
 
-class NotVec3Exception : E2TMLException {
+class NotVec3Exception : RPDLException {
     this() { super("it is not a vec3 value"); }
     this(in string details) { super(details); }
 }
 
 
-class NotVec4Exception : E2TMLException {
+class NotVec4Exception : RPDLException {
     this() { super("it is not a vec4 value"); }
     this(in string details) { super(details); }
 }
 
 
-class NotVec3OrVec4Exception : E2TMLException {
+class NotVec3OrVec4Exception : RPDLException {
     this() { super("it is not a vec3 or vec4 value"); }
     this(in string details) { super(details); }
 }
 
 
-class NotTextureCoordException : E2TMLException {
+class NotTextureCoordException : RPDLException {
     this() { super("it is not a texture coordinate value"); }
     this(in string details) { super(details); }
 }
 
 
-class WrongNodeType : E2TMLException {
+class NotAlignException : RPDLException {
+    this() { super("it is not a align value"); }
+    this(in string details) { super(details); }
+}
+
+
+class NotOrientationException : RPDLException {
+    this() { super("it is not a orientation value"); }
+    this(in string details) { super(details); }
+}
+
+
+class NotRegionAlignException : RPDLException {
+    this() { super("it is not a region align value"); }
+    this(in string details) { super(details); }
+}
+
+
+class NotVerticalAlignException : RPDLException {
+    this() { super("it is not a vertical align value"); }
+    this(in string details) { super(details); }
+}
+
+
+class WrongNodeType : RPDLException {
     this() { super("wrong type of value"); }
     this(in string details) { super(details); }
 }

@@ -19,16 +19,16 @@ public:
         this.p_pos = stream.pos;
     }
 
-    @property const string identifier() { return p_identifier; }
-    @property const float number() { return p_number; }
-    @property const bool boolean() { return p_boolean; }
-    @property const string str() { return p_string; }
-    @property const string urfStr() { return p_string; }
-    @property const Code code() { return p_code; }
-    @property const int indent() { return p_indent; }
-    @property const char symbol() { return p_symbol; }
-    @property const int line() { return p_line; }
-    @property const int pos() { return p_pos; }
+    @property string identifier() { return p_identifier; }
+    @property float number() { return p_number; }
+    @property bool boolean() { return p_boolean; }
+    @property string str() { return p_string; }
+    @property dstring utfStr() { return p_utfstring; }
+    @property Code code() { return p_code; }
+    @property int indent() { return p_indent; }
+    @property char symbol() { return p_symbol; }
+    @property int line() { return p_line; }
+    @property int pos() { return p_pos; }
 
 protected:
     SymbolStream stream;
@@ -39,6 +39,7 @@ protected:
     float p_number;
     bool p_boolean;
     string p_string;
+    dstring p_utfstring;
     Code p_code;
     int p_indent;
     int p_line;
@@ -93,6 +94,7 @@ private:
         else stream.read();
 
         p_code = Code.string;
+        p_utfstring = to!dstring(p_string);
     }
 }
 

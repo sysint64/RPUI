@@ -3,6 +3,7 @@ Panel
     # resizable: true
     # hideable: true
     regionAlign: top
+    locationAlign: center
     # visible: true
 
     Button

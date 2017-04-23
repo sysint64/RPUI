@@ -7,6 +7,7 @@ import std.conv;
 import std.path;
 
 import math.linalg;
+import basic_types;
 
 import rpdl.lexer;
 import rpdl.parser;
@@ -81,6 +82,7 @@ class RPDLTree {
     alias getValue = getTypedNode!(Value, NotValueException);
     alias getNumberValue = getTypedNode!(NumberValue, NotNumberValueException);
     alias getStringValue = getTypedNode!(StringValue, NotStringValueException);
+    alias getIdentifierValue = getTypedNode!(IdentifierValue, NotIdentifierValueException);
     alias getBooleanValue = getTypedNode!(BooleanValue, NotBooleanValueException);
     alias getArrayValue = getTypedNode!(ArrayValue, NotArrayValueException);
 
@@ -136,6 +138,7 @@ class RPDLTree {
     alias optValue = optTypedNode!(Value, NotValueException);
     alias optNumberValue = optTypedNode!(NumberValue, NotNumberValueException);
     alias optStringValue = optTypedNode!(StringValue, NotStringValueException);
+    alias optIdentifierValue = optTypedNode!(IdentifierValue, NotIdentifierValueException);
     alias optBooleanValue = optTypedNode!(BooleanValue, NotBooleanValueException);
     alias optArrayValue = optTypedNode!(ArrayValue, NotArrayValueException);
 
@@ -144,6 +147,7 @@ class RPDLTree {
     alias getNumber = getTypedValue!(float, NumberValue, NotNumberValueException);
     alias getBoolean = getTypedValue!(bool, BooleanValue, NotBooleanValueException);
     alias getString = getTypedValue!(string, StringValue, NotStringValueException);
+    alias getIdentifier = getTypedValue!(string, IdentifierValue, NotIdentifierValueException);
 
     dstring getUTFString(in string path) {
         return getTypedNode!(StringValue, NotStringValueException)(path).utfValue;
@@ -158,6 +162,7 @@ class RPDLTree {
     alias optNumber = optTypedValue!(float, NumberValue, NotNumberValueException);
     alias optBoolean = optTypedValue!(bool, BooleanValue, NotBooleanValueException);
     alias optString = optTypedValue!(string, StringValue, NotStringValueException);
+    alias optIdentifier = optTypedValue!(string, IdentifierValue, NotIdentifierValueException);
 
     dstring optUTFString(in string path, dstring defaultVal = dstring.init) {
         StringValue node = optTypedNode!(StringValue, NotStringValueException)(path, null);
@@ -199,6 +204,124 @@ class RPDLTree {
         }
     }
 
+    Align getAlign(in string path) {
+        const string val = getIdentifier(path);
+
+        switch (val) {
+            case "none":
+                return Align.none;
+
+            case "left":
+                return Align.left;
+
+            case "center":
+                return Align.center;
+
+            case "right":
+                return Align.right;
+
+            default:
+                throw new NotAlignException();
+        }
+    }
+
+    Align optAlign(in string path, in Align defaultVal = Align.init) {
+        try {
+            return getAlign(path);
+        } catch (NotFoundException) {
+            return defaultVal;
+        }
+    }
+
+    Orientation getOrientation(in string path) {
+        const string val = getIdentifier(path);
+
+        switch (val) {
+            case "horizontal":
+                return Orientation.horizontal;
+
+            case "vertical":
+                return Orientation.vertical;
+
+            default:
+                throw new NotOrientationException();
+        }
+    }
+
+    Orientation optOrientation(in string path, in Orientation defaultVal = Orientation.init) {
+        try {
+            return getOrientation(path);
+        } catch (NotFoundException) {
+            return defaultVal;
+        }
+    }
+
+    RegionAlign getRegionAlign(in string path) {
+        const string val = getIdentifier(path);
+
+        switch (val) {
+            case "none":
+                return RegionAlign.none;
+
+            case "left":
+                return RegionAlign.left;
+
+            case "right":
+                return RegionAlign.right;
+
+            case "top":
+                return RegionAlign.top;
+
+            case "bottom":
+                return RegionAlign.bottom;
+
+            case "client":
+                return RegionAlign.client;
+
+            default:
+                throw new NotRegionAlignException();
+        }
+    }
+
+    RegionAlign optRegionAlign(in string path, in RegionAlign defaultVal = RegionAlign.init) {
+        try {
+            return getRegionAlign(path);
+        } catch (NotFoundException) {
+            return defaultVal;
+        }
+    }
+
+    VerticalAlign getVerticalAlign(in string path) {
+        const string val = getIdentifier(path);
+
+        switch (val) {
+            case "none":
+                return VerticalAlign.none;
+
+            case "top":
+                return VerticalAlign.top;
+
+            case "middle":
+                return VerticalAlign.middle;
+
+            case "bottom":
+                return VerticalAlign.bottom;
+
+            default:
+                throw new NotVerticalAlignException();
+        }
+    }
+
+    VerticalAlign optVerticalAlign(in string path,
+                                   in VerticalAlign defaultVal = VerticalAlign.init)
+    {
+        try {
+            return getVerticalAlign(path);
+        } catch (NotFoundException) {
+            return defaultVal;
+        }
+    }
+
 private:
     Lexer  lexer;
     Parser parser;
@@ -224,7 +347,7 @@ private:
     }
 
     // Helper methods for access to nodes and values by path
-    T getTypedNode(T : Node, E : E2TMLException)(in string path) {
+    T getTypedNode(T : Node, E : RPDLException)(in string path) {
         Node node = findNodeByPath(path);
 
         if (node is null)
@@ -238,11 +361,11 @@ private:
         return cast(T)(node);
     }
 
-    T getTypedValue(T, N : Node, E : E2TMLException)(in string path) {
+    T getTypedValue(T, N : Node, E : RPDLException)(in string path) {
         return getTypedNode!(N, E)(path).value;
     }
 
-    T optTypedNode(T : Node, E : E2TMLException)(in string path, T defaultVal) {
+    T optTypedNode(T : Node, E : RPDLException)(in string path, T defaultVal) {
         Node node = findNodeByPath(path);
 
         if (node is null)
@@ -256,7 +379,7 @@ private:
         return cast(T)(node);
     }
 
-    T optTypedValue(T, N : Node, E : E2TMLException)(in string path, T defaultVal = T.init) {
+    T optTypedValue(T, N : Node, E : RPDLException)(in string path, T defaultVal = T.init) {
         N node = optTypedNode!(N, E)(path, null);
 
         if (node is null)
@@ -265,7 +388,7 @@ private:
         return node.value;
     }
 
-    vec!(T, n) getVecValue(T, int n, E : E2TMLException)(in string path) {
+    vec!(T, n) getVecValue(T, int n, E : RPDLException)(in string path) {
         Node node = getNode(path);
 
         if (node is null)
@@ -274,7 +397,7 @@ private:
         return getVecValueFromNode!(T, n, E)(path, node);
     }
 
-    vec!(T, n) getVecValueFromNode(T, int n, E : E2TMLException)(in string path, Node node) {
+    vec!(T, n) getVecValueFromNode(T, int n, E : RPDLException)(in string path, Node node) {
         if (node.length != n)
             throw new E();
 
@@ -293,7 +416,7 @@ private:
         return vec!(T, n)(values);
     }
 
-    vec!(T, n) optVecValue(T, int n, E : E2TMLException)(in string path,
+    vec!(T, n) optVecValue(T, int n, E : RPDLException)(in string path,
         vec!(T, n) defaultVal = vec!(T, n).init)
     {
         Node node = findNodeByPath(path);

@@ -143,11 +143,11 @@ private:
                 break;
 
             case Token.Code.string:
-                value = new StringValue(name, lexer.currentToken.str);
+                value = new StringValue(name, lexer.currentToken.str, lexer.currentToken.utfStr);
                 break;
 
             case Token.Code.id:
-                value = new StringValue(name, lexer.currentToken.str);
+                value = new IdentifierValue(name, lexer.currentToken.identifier);
                 break;
 
             case Token.Code.boolean:

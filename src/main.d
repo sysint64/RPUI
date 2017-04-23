@@ -62,7 +62,7 @@ void main() {
     app.run();
 
     // Test
-    // Data data = new Data("/home/andrey/projects/e2dit-dlang/res/ui/themes/light");
-    // data.load("theme.e2t");
+    // RPDLTree data = new RPDLTree("/home/andrey/projects/simulator/simulator/res/ui/layouts/");
+    // data.load("test.rdl");
     // traverse(data.root);
 }

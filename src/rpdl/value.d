@@ -80,6 +80,17 @@ private:
 }
 
 
+class IdentifierValue : StringValue {
+    this(in string name, in string value) {
+        super(name, value);
+    }
+
+    this(in string name, in string value, in dstring utfValue) {
+        super(name, value, utfValue);
+    }
+}
+
+
 class ArrayValue: Value {
     this(in string name) {
         super(name);

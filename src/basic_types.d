@@ -23,7 +23,7 @@ enum Align {
     left,
     center,
     right,
-};
+}
 
 enum VerticalAlign {
     none,
