@@ -60,6 +60,10 @@ class Panel : Widget, Scrollable {
     //     header.textRenderObject.text = text;
     // }
 
+    this() {
+        super("Panel");
+    }
+
     this(in string style) {
         super(style);
     }
@@ -120,6 +124,7 @@ class Panel : Widget, Scrollable {
     // Create elements for widget rendering (quads, texts etc.)
     // and read data from theme for these elements (background color, split thickness etc.)
     override void onCreate() {
+        super.onCreate();
         renderFactory.createQuad(backgroundRenderObject);
 
         with (manager.theme) {

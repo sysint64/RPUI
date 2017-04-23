@@ -17,6 +17,11 @@ class Button : Widget {
     @Field VerticalAlign textVerticalAlign = VerticalAlign.middle;
     @Field utfstring caption = "Button";
 
+    this() {
+        super("Button");
+        this.drawChildren = false;
+    }
+
     this(in string style) {
         super(style);
         this.drawChildren = false;

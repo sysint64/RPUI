@@ -1,8 +1,9 @@
 Panel
     caption: "Hello World"
-    resizable: true
-    hideable: true
+    # resizable: true
+    # hideable: true
     regionAlign: top
+    # visible: true
 
     Button
         id: "okButton"

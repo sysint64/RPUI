@@ -44,9 +44,6 @@ class MyView : View {
     void onCancelButtonClick() {
         writeln("Close!");
     }
-
-private:
-    int a;
 }
 
 
