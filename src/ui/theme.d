@@ -57,7 +57,7 @@ private:
     bool load(in string theme, in bool critical = false) {
         string dir = buildPath(app.resourcesDirectory, "ui", "themes", theme);
         data = new RPDLTree(dir);
-        string msg = collectExceptionMsg(data.load("theme.e2t"));
+        string msg = collectExceptionMsg(data.load("theme.rdl"));
         bool isSuccess = msg is null;
 
         if (isSuccess) {

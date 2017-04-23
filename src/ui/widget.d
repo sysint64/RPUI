@@ -19,15 +19,54 @@ import ui.cursor;
 import ui.renderer;
 import ui.scroll;
 
-import accessors;
-
-alias Read ReadOnly;
-
 
 class Widget {
+    struct Field {
+        string name = "";
+    }
+
     alias TreeMap!(uint, Widget) Children;
 
-    // Events aliases
+// Properties --------------------------------------------------------------------------------------
+
+    @Field bool resizable = true;  // ???
+    @Field bool withoutSkin = false;
+    @Field bool visible = true;
+    @Field bool enabled = true;
+    @Field bool autoWidth;
+    @Field bool autoHeight;
+    @Field Cursor.Icon cursor;
+    @Field string name = "";
+    @Field int tag = 0;
+    @Field utfstring hint = "";
+    @Field Align locationAlign = Align.none;
+    @Field VerticalAlign locationVerticalAlign = VerticalAlign.none;
+    @Field RegionAlign regionAlign = RegionAlign.none;
+    @Field FrameRect margin = FrameRect(0, 0, 0, 0);
+    @Field FrameRect padding = FrameRect(0, 0, 0, 0);
+    @Field vec2 position = vec2(0, 0);
+    @Field vec2 size = vec2(0, 0);
+
+    @property uint id() { return p_id; }
+    @property string style() { return p_style; }
+    @property Widget parent() { return p_parent; }
+    @property bool focused() { return p_focused; }
+
+    @property ref Children children() { return p_children; }
+    @property final RenderFactory renderFactory() { return manager.renderFactory; }
+
+    @property final inout(string) state() inout {
+        if (isClick) {
+            return "Click";
+        } else if (isEnter) {
+            return "Enter";
+        } else {
+            return "Leave";
+        }
+    }
+
+// Event Listeners ---------------------------------------------------------------------------------
+
     alias void function(Widget) OnClickListener;
     alias void function(Widget) OnDblClickistener;
     alias void function(Widget) OnFocusListener;
@@ -41,13 +80,28 @@ class Widget {
     alias void function(Widget, in uint x, in uint y, in MouseButton button) OnMouseDownListener;
     alias void function(Widget, in uint x, in uint y, in MouseButton button) OnMouseUpListener;
 
+    OnClickListener onClickListener = null;
+    OnDblClickistener onDblClickistener = null;
+    OnFocusListener onFocusListener = null;
+    OnBlurListener onBlurListener = null;
+    OnKeyPressedListener onKeyPressedListener = null;
+    OnKeyReleasedListener onKeyReleasedListener = null;
+    OnTextEnteredListener onTextEnteredListener = null;
+    OnMouseMoveListener onMouseMoveListener = null;
+    OnMouseEnterListener onMouseEnterListener = null;
+    OnMouseLeaveListener onMouseLeaveListener = null;
+    OnMouseDownListener onMouseDownListener = null;
+    OnMouseUpListener onMouseUpListener = null;
+
+// Implementation ----------------------------------------------------------------------------------
+
     this() {
         app = Application.getInstance();
     }
 
     this(in string style) {
         app = Application.getInstance();
-        this.style = style;
+        this.p_style = style;
     }
 
     void focus() {
@@ -96,7 +150,7 @@ class Widget {
     void addWidget(Widget widget) {
         uint index = manager.getNextIndex();
         widget.manager = manager;
-        widget.parent = this;
+        widget.p_parent = this;
         children[index] = widget;
         manager.widgetOrdering.insert(widget);
         widget.onCreate();
@@ -148,89 +202,14 @@ class Widget {
     void onCursor() {
     }
 
-// Event Listeners ---------------------------------------------------------------------------------
-
-    OnClickListener onClickListener = null;
-    OnDblClickistener onDblClickistener = null;
-    OnFocusListener onFocusListener = null;
-    OnBlurListener onBlurListener = null;
-    OnKeyPressedListener onKeyPressedListener = null;
-    OnKeyReleasedListener onKeyReleasedListener = null;
-    OnTextEnteredListener onTextEnteredListener = null;
-    OnMouseMoveListener onMouseMoveListener = null;
-    OnMouseEnterListener onMouseEnterListener = null;
-    OnMouseLeaveListener onMouseLeaveListener = null;
-    OnMouseDownListener onMouseDownListener = null;
-    OnMouseUpListener onMouseUpListener = null;
-
-// Properties --------------------------------------------------------------------------------------
-
-    @property final inout(string) state() inout {
-        if (isClick) {
-            return "Click";
-        } else if (isEnter) {
-            return "Enter";
-        } else {
-            return "Leave";
-        }
-    }
-
-    @property final RenderFactory renderFactory() { return manager.renderFactory; }
-
 private:
-    @RefRead Children children_;
-    @Read @Write {
-        bool resizable_ = true;
-        bool withoutSkin_ = false;
-        bool visible_ = true;
-        bool enabled_ = true;
-        bool autoWidth_;
-        bool autoHeight_;
-        Cursor.Icon cursor_;
-        string name_ = "";
-        int tag_ = 0;
-        utfstring hint_ = "";
-        Align locationAlign_ = Align.none;
-        VerticalAlign locationVerticalAlign_ = VerticalAlign.none;
-        RegionAlign regionAlign_ = RegionAlign.none;
-    }
+    Children p_children;
 
-    @RefRead @Write {
-        FrameRect margin_ = FrameRect(0, 0, 0, 0);
-        FrameRect padding_ = FrameRect(0, 0, 0, 0);
-        vec2 position_ = vec2(0, 0);
-        vec2 size_ = vec2(0, 0);
-    }
+    uint p_id;
+    string p_style;
+    Widget p_parent;
+    bool p_focused;
 
-    @Read @Write("package") {
-        bool isEnter_;
-        bool isClick_;
-        bool isOver_;  // When in rect of element but if another element over this
-                       // isOver will still be true
-    }
-
-    @Read @Write("private") {
-        uint id_;
-        string style_;
-        Widget parent_;
-        bool focused_;
-        bool overlay_;
-    }
-
-    @RefRead("package") @Write("private") {
-        vec2 absolutePosition_ = vec2(0, 0);
-        vec2 innerBoundarySizeClamped_ = vec2(0, 0);
-        vec2 innerBoundarySize_ = vec2(0, 0);
-    }
-
-    @Read @Write("protected") {
-        PartDraws partDraws_;
-        vec2 overSize_;
-    }
-
-    mixin(GenerateFieldAccessors);
-
-private:
     Camera camera = null;
 
     // Navigation (for focus)
@@ -244,6 +223,7 @@ protected:
 
     Application app;
     Manager manager;
+    PartDraws partDraws;
 
     void updateAlign() {
     }
@@ -334,6 +314,16 @@ protected:
 package:
     bool drawChildren = true;
     FrameRect regionOffset = FrameRect(0, 0, 0, 0);
+    bool overlay;
+    vec2 overSize;
+    bool isEnter;
+    bool isClick;
+    bool isOver;  // When in rect of element but if another element over this
+                  // isOver will still be true
+
+    vec2 absolutePosition = vec2(0, 0);
+    vec2 innerBoundarySizeClamped = vec2(0, 0);
+    vec2 innerBoundarySize = vec2(0, 0);
 
     this(Manager manager) {
         this.manager = manager;

@@ -5,7 +5,6 @@ import gapi;
 import math.linalg;
 import std.stdio;
 import basic_types;
-import accessors;
 
 import ui.widget;
 import ui.manager;
@@ -13,10 +12,10 @@ import ui.render_objects;
 
 
 class Button : Widget {
-    bool allowCheck = false;
-    Align textAlign = Align.center;
-    VerticalAlign textVerticalAlign = VerticalAlign.middle;
-    utfstring caption = "Button";
+    @Field bool allowCheck = false;
+    @Field Align textAlign = Align.center;
+    @Field VerticalAlign textVerticalAlign = VerticalAlign.middle;
+    @Field utfstring caption = "Button";
 
     this(in string style) {
         super(style);

@@ -26,6 +26,7 @@ class RPDLTree {
         p_root = new Node("");
     }
 
+    // TODO: get as parameter fileName instead of rootDirectory
     this(in string rootDirectory) {
         this.p_rootDirectory = rootDirectory;
         p_root = new Node("");

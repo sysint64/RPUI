@@ -10,7 +10,6 @@ import gapi;
 import rpdl;
 import log;
 import input;
-import accessors;
 
 import ui.widget;
 import ui.scroll;
@@ -26,25 +25,26 @@ import ui.widgets.panel.scroll_button;
 class Panel : Widget, Scrollable {
     enum Background {transparent, light, dark, action};
 
+    @Field float minSize = 40;
+    @Field float maxSize = 999;
+    @Field Background background = Background.light;
+    @Field bool allowResize = false;
+    @Field bool allowHide = false;
+    @Field bool allowDrag = false;
+    @Field bool isOpen = true;
+    @Field bool blackSplit = false;
+    @Field bool showSplit = true;
+    @Field utfstring caption = "";
+
+    @Field bool showVerticalScrollButton = true;
+    @Field bool showHorizontalScrollButton = true;
+
+    @Field
     @property
     void showScrollButtons(in bool val) {
         showVerticalScrollButton = val;
         showHorizontalScrollButton = val;
     }
-
-    float minSize = 40;
-    float maxSize = 999;
-    Background background = Background.light;
-    bool allowResize = false;
-    bool allowHide = false;
-    bool allowDrag = false;
-    bool isOpen = true;
-    bool blackSplit = false;
-    bool showSplit = true;
-    utfstring caption = "";
-
-    bool showVerticalScrollButton = true;
-    bool showHorizontalScrollButton = true;
 
     // @property utfstring caption() {
     //     if (header.textRenderObject is null)

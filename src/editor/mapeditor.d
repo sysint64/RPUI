@@ -30,8 +30,8 @@ import derelict.opengl3.gl;
 
 
 class MyView : View {
-    this(Manager manager) {
-        super(manager);
+    this(Manager manager, in string fileName) {
+        super(manager, fileName);
     }
 
     @OnClickListener("okButton")
@@ -44,6 +44,9 @@ class MyView : View {
     void onCancelButtonClick() {
         writeln("Close!");
     }
+
+private:
+    int a;
 }
 
 
@@ -84,6 +87,8 @@ class MapEditor: Application {
 
         uiManager.render(camera);
         onPostRender(camera);
+
+        // writeln(__traits(compiles, __traits(getMember, View, "layoutData")));
     }
 
     Camera camera;
