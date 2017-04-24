@@ -3,9 +3,22 @@ Panel
     allowResize: true
     allowHide: true
     regionAlign: top
+    align: center
+    locationAlign: center
     size: 200, 300
     position: 100, 300
     padding: 5, 5, 5, 5
+
+    StackLayout
+        Button
+            size: 100, 21
+            position: 0, 0
+            margin: 5, 5, 5, 5
+
+        Button
+            size: 100, 21
+            position: 0, 0
+            margin: 5, 5, 5, 5
 
     Button
         size: 200, 21

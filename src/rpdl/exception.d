@@ -16,21 +16,21 @@ class NotFoundException : RPDLException {
 class NotObjectException : RPDLException {
     this() { super("it is not an object"); }
     this(in string details) { super(details); }
-    static @property string typeName() { return "e2tml.node.ObjectNode"; }
+    static @property string typeName() { return "ObjectNode"; }
 }
 
 
 class NotParameterException : RPDLException {
     this() { super("it is not a parameter"); }
     this(in string details) { super(details); }
-    static @property string typeName() { return "e2tml.node.Parameter"; }
+    static @property string typeName() { return "Parameter"; }
 }
 
 
 class NotValueException : RPDLException {
     this() { super("it is not a value"); }
     this(in string details) { super(details); }
-    static @property string typeName() { return "e2tml.value.Value"; }
+    static @property string typeName() { return "Value"; }
 }
 
 
@@ -43,35 +43,35 @@ class NotParameterOrValueException : RPDLException {
 class NotNumberValueException : RPDLException {
     this() { super("it is not a number value"); }
     this(in string details) { super(details); }
-    static @property string typeName() { return "e2tml.value.NumberValue"; }
+    static @property string typeName() { return "NumberValue"; }
 }
 
 
 class NotBooleanValueException : RPDLException {
     this() { super("it is not a number value"); }
     this(in string details) { super(details); }
-    static @property string typeName() { return "e2tml.value.BooleanValue"; }
+    static @property string typeName() { return "BooleanValue"; }
 }
 
 
 class NotStringValueException : RPDLException {
     this() { super("it is not a string value"); }
     this(in string details) { super(details); }
-    static @property string typeName() { return "e2tml.value.StringValue"; }
+    static @property string typeName() { return "StringValue"; }
 }
 
 
 class NotIdentifierValueException : RPDLException {
     this() { super("it is not a identifier value"); }
     this(in string details) { super(details); }
-    static @property string typeName() { return "e2tml.value.StringValue"; }
+    static @property string typeName() { return "IdentifierValue"; }
 }
 
 
 class NotArrayValueException : RPDLException {
     this() { super("it is not an array value"); }
     this(in string details) { super(details); }
-    static @property string typeName() { return "e2tml.value.ArrayValue"; }
+    static @property string typeName() { return "ArrayValue"; }
 }
 
 
@@ -125,6 +125,12 @@ class NotRegionAlignException : RPDLException {
 
 class NotVerticalAlignException : RPDLException {
     this() { super("it is not a vertical align value"); }
+    this(in string details) { super(details); }
+}
+
+
+class NotPanelBackgroundException : RPDLException {
+    this() { super("it is not a Panel.Background value"); }
     this(in string details) { super(details); }
 }
 

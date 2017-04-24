@@ -2,12 +2,13 @@ module ui.widgets.stack_layout;
 
 import ui.widget;
 import gapi;
-import accessors;
 import basic_types;
 import math.linalg;
 
 
 class StackLayout : Widget {
+    @Field Orientation orientation = Orientation.vertical;
+
     this() {
         super();
     }
@@ -80,13 +81,6 @@ class StackLayout : Widget {
             size.y -= regionOffset.bottom;
         }
 
-        size = vec2(1000, 1000);
+        // size = vec2(1000, 1000);
     }
-
-// Properties --------------------------------------------------------------------------------------
-
-private:
-    @Read @Write
-    Orientation orientation_ = Orientation.vertical;
-    mixin(GenerateFieldAccessors);
 }

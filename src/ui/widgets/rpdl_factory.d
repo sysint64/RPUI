@@ -20,6 +20,7 @@ import gapi.texture;
 
 import ui.widgets.panel.widget;
 import ui.widgets.button;
+import ui.widgets.stack_layout;
 
 import ui.views.view : getSymbolsNamesByUDA, getSymbolsByUDA; // TODO: rm, workaround
 
@@ -37,6 +38,9 @@ class RPDLWidgetFactory {
 
     Widget createWidgetFromNode(ObjectNode widgetNode, Widget parentWidget = null) {
         switch (widgetNode.name) {
+            case "StackLayout":
+                return createWidget!StackLayout(widgetNode, parentWidget);
+
             case "Panel":
                 return createWidget!Panel(widgetNode, parentWidget);
 
@@ -126,12 +130,12 @@ class RPDLWidgetFactory {
                 ["FrameRect", "optFrameRect", ""],
                 ["IntRect", "optIntRect", ""],
 
-                // ["Panel.Background", "optPanelBackground", ""],
+                ["Panel.Background", "optPanelBackground", ".0"],
             );
 
             foreach (type; typesMap) {
                 mixin("alias rawType = " ~ type[name] ~ ";");
-                // alias rawType = mixin("bool");
+
                 static if (is(symbolType == rawType)) {
                     auto fullSymbolPath = symbolPath ~ type[selector];
                     enum call = "layoutData." ~ type[accessor] ~ "(fullSymbolPath, symbol)";

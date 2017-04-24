@@ -19,6 +19,7 @@ import rpdl.exception;
 import rpdl.writer;
 
 import gapi.texture;
+import ui.widgets.panel.widget;
 
 
 class RPDLTree {
@@ -220,7 +221,7 @@ class RPDLTree {
         throw new E();
     }
 
-    T optEnum(T, E : RPDLException)(in string path, in T defaultVal) {
+    T optEnum(T, E : RPDLException)(in string path, in T defaultVal = T.init) {
         try {
             return getEnum!(T, E)(path);
         } catch (NotFoundException) {
@@ -231,14 +232,17 @@ class RPDLTree {
     alias getAlign = getEnum!(Align, NotAlignException);
     alias optAlign = optEnum!(Align, NotAlignException);
 
-    alias getOrientation = getEnum!(Align, NotOrientationException);
-    alias optOrientation = optEnum!(Align, NotOrientationException);
+    alias getOrientation = getEnum!(Orientation, NotOrientationException);
+    alias optOrientation = optEnum!(Orientation, NotOrientationException);
 
     alias getRegionAlign = getEnum!(RegionAlign, NotRegionAlignException);
     alias optRegionAlign = optEnum!(RegionAlign, NotRegionAlignException);
 
     alias getVerticalAlign = getEnum!(VerticalAlign, NotVerticalAlignException);
     alias optVerticalAlign = optEnum!(VerticalAlign, NotVerticalAlignException);
+
+    alias getPanelBackground = getEnum!(Panel.Background, NotPanelBackgroundException);
+    alias optPanelBackground = optEnum!(Panel.Background, NotPanelBackgroundException);
 
     Rect getRect(in string path) {
         return Rect(getVec4f(path));
