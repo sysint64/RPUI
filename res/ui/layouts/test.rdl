@@ -14,6 +14,7 @@ Panel
             size: 100, 21
             position: 0, 0
             margin: 5, 5, 5, 5
+            cursor: drag
 
         Button
             size: 100, 21

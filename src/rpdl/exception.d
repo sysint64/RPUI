@@ -135,6 +135,12 @@ class NotPanelBackgroundException : RPDLException {
 }
 
 
+class NotCursorIconException : RPDLException {
+    this() { super("it is not a Cursor.Icon value"); }
+    this(in string details) { super(details); }
+}
+
+
 class WrongNodeType : RPDLException {
     this() { super("wrong type of value"); }
     this(in string details) { super(details); }

@@ -18,6 +18,7 @@ import ui.manager;
 
 import gapi.texture;
 
+import ui.cursor;
 import ui.widgets.panel.widget;
 import ui.widgets.button;
 import ui.widgets.stack_layout;
@@ -130,6 +131,7 @@ class RPDLWidgetFactory {
                 ["FrameRect", "optFrameRect", ""],
                 ["IntRect", "optIntRect", ""],
 
+                ["Cursor.Icon", "optCursorIcon", ".0"],
                 ["Panel.Background", "optPanelBackground", ".0"],
             );
 

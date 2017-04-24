@@ -20,6 +20,7 @@ import rpdl.writer;
 
 import gapi.texture;
 import ui.widgets.panel.widget;
+import ui.cursor;
 
 
 class RPDLTree {
@@ -243,6 +244,9 @@ class RPDLTree {
 
     alias getPanelBackground = getEnum!(Panel.Background, NotPanelBackgroundException);
     alias optPanelBackground = optEnum!(Panel.Background, NotPanelBackgroundException);
+
+    alias getCursorIcon = getEnum!(Cursor.Icon, NotCursorIconException);
+    alias optCursorIcon = optEnum!(Cursor.Icon, NotCursorIconException);
 
     Rect getRect(in string path) {
         return Rect(getVec4f(path));
