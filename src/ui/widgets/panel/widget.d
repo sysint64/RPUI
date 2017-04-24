@@ -39,7 +39,6 @@ class Panel : Widget, Scrollable {
     @Field bool showVerticalScrollButton = true;
     @Field bool showHorizontalScrollButton = true;
 
-    @Field
     @property
     void showScrollButtons(in bool val) {
         showVerticalScrollButton = val;

@@ -5,6 +5,7 @@ import std.path;
 import rpdl;
 import rpdl.node;
 
+import std.stdio;
 import std.typecons: tuple;
 import std.meta;
 import std.traits : hasUDA, getUDAs, isFunction, ParameterDefaults;
@@ -31,64 +32,67 @@ class RPDLWidgetFactory {
         createWidgets();
     }
 
-    void createWidgets(Node widgetNode = null, Widget widget = null) {
-        if (widgetNode is null)
-            widgetNode = layoutData.root;
-
-        foreach (Node childNode; widgetNode.children) {
-
-            if (auto objectNode = cast(ObjectNode) childNode) {
-                Widget newWidget = createWidgetByNode(objectNode);
-                assert(newWidget !is null);
-            } else {
-                // TODO: throw an exception
-            }
-        }
-    }
-
-    Widget createWidgetByNode(ObjectNode widgetNode) {
+    Widget createWidgetFromNode(ObjectNode widgetNode, Widget parentWidget = null) {
         switch (widgetNode.name) {
             case "Panel":
-                return createWidget!Panel(widgetNode);
+                return createWidget!Panel(widgetNode, parentWidget);
 
             case "Button":
-                return createWidget!Button(widgetNode);
+                return createWidget!Button(widgetNode, parentWidget);
 
             default:
                 return null;
         }
     }
 
-    import std.stdio;
-
-    Widget createWidget(T : Widget)(ObjectNode widgetNode) {
-        T widget = new T();
-
-        writeln(widgetNode.name);
+    void createWidgets(Node widgetNode = null) {
+        if (widgetNode is null)
+            widgetNode = layoutData.root;
 
         foreach (Node childNode; widgetNode.children) {
             if (auto objectNode = cast(ObjectNode) childNode) {
-                // if (newWidget.classinfo.name)
-                // Widget newWidget = createWidget!Panel(objectNode);
-
-                // if (uiManager !is null)
-                    // uiManager.addWidget(newWidget);
+                createWidgetFromNode(objectNode);
             } else {
-                readFields!T(widget, widgetNode);
+                // TODO: throw an exception
+            }
+        }
+    }
+
+    Widget createWidget(T : Widget)(ObjectNode widgetNode, Widget parentWidget = null) {
+        T widget = new T();
+        readFields!T(widget, widgetNode);
+
+        if (parentWidget !is null) {
+            parentWidget.addWidget(widget);
+        } else {
+            uiManager.addWidget(widget);
+        }
+
+        // Create children widgets
+        foreach (Node childNode; widgetNode.children) {
+            if (auto objectNode = cast(ObjectNode) childNode) {
+                createWidgetFromNode(objectNode, widget);
             }
         }
 
         return widget;
     }
 
+    // Find all fields in widget with @Field attribute and fill widget members
+    // with values from rpdl file
     void readFields(T : Widget)(T widget, ObjectNode widgetNode) {
-        foreach (symbolName; getSymbolsNamesByUDA!(Widget, Widget.Field)) {
+        foreach (symbolName; getSymbolsNamesByUDA!(T, Widget.Field)) {
             auto symbol = mixin("widget." ~ symbolName);
             alias symbolType = typeof(symbol);
 
             const string symbolTypeName = symbolType.stringof;
             const string symbolPath = widgetNode.path ~ "." ~ symbolName;
 
+            // Tell the system how to interprete types of fields in widgets
+            // and how to extract them
+            // first argumen is name of type
+            // second is accessor in RPDLTree
+            // third is selector - additional path to find value
             enum name = 0;
             enum accessor = 1;
             enum selector = 2;
@@ -125,10 +129,15 @@ class RPDLWidgetFactory {
                     auto fullSymbolPath = symbolPath ~ type[selector];
                     enum call = "layoutData." ~ type[accessor] ~ "(fullSymbolPath, symbol)";
                     auto value = mixin(call);
+
+                    // assign value to widget field
+                    mixin("widget." ~ symbolName ~ " = value;");
                     writeln(type[name], " value ", value, " for symbol ", symbolName);
                 }
             }
         }
+
+        writeln("------");
     }
 
 private:

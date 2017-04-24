@@ -1,21 +1,13 @@
 Panel
     caption: "Hello World"
-    name: "Lolipop"
-    # resizable: true
-    # hideable: true
+    allowResize: true
+    allowHide: true
     regionAlign: top
-    locationAlign: center
-    visible: true
-    position: 20, 100
+    size: 200, 300
+    position: 100, 300
+    padding: 5, 5, 5, 5
 
     Button
-        id: "okButton"
-        caption: "OK"
-
-    Button
-        id: "closeButton"
-        caption: "Close"
-
-    Button
-        id: "cancelButton"
-        caption: "Cancel"
+        size: 200, 21
+        position: 100, 100
+        caption: "LALAL"
