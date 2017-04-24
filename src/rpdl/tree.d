@@ -5,6 +5,7 @@ import std.stdio;
 import std.math;
 import std.conv;
 import std.path;
+import std.traits;
 
 import math.linalg;
 import basic_types;
@@ -207,123 +208,37 @@ class RPDLTree {
         }
     }
 
-    Align getAlign(in string path) {
+    T getEnum(T, E : RPDLException)(in string path) {
         const string val = getIdentifier(path);
 
-        switch (val) {
-            case "none":
-                return Align.none;
-
-            case "left":
-                return Align.left;
-
-            case "center":
-                return Align.center;
-
-            case "right":
-                return Align.right;
-
-            default:
-                throw new NotAlignException();
+        foreach (immutable enumItem; [EnumMembers!T]) {
+            if (to!string(enumItem) == val) {
+                return enumItem;
+            }
         }
+
+        throw new E();
     }
 
-    Align optAlign(in string path, in Align defaultVal = Align.init) {
+    T optEnum(T, E : RPDLException)(in string path, in T defaultVal) {
         try {
-            return getAlign(path);
+            return getEnum!(T, E)(path);
         } catch (NotFoundException) {
             return defaultVal;
         }
     }
 
-    Orientation getOrientation(in string path) {
-        const string val = getIdentifier(path);
+    alias getAlign = getEnum!(Align, NotAlignException);
+    alias optAlign = optEnum!(Align, NotAlignException);
 
-        switch (val) {
-            case "horizontal":
-                return Orientation.horizontal;
+    alias getOrientation = getEnum!(Align, NotOrientationException);
+    alias optOrientation = optEnum!(Align, NotOrientationException);
 
-            case "vertical":
-                return Orientation.vertical;
+    alias getRegionAlign = getEnum!(RegionAlign, NotRegionAlignException);
+    alias optRegionAlign = optEnum!(RegionAlign, NotRegionAlignException);
 
-            default:
-                throw new NotOrientationException();
-        }
-    }
-
-    Orientation optOrientation(in string path, in Orientation defaultVal = Orientation.init) {
-        try {
-            return getOrientation(path);
-        } catch (NotFoundException) {
-            return defaultVal;
-        }
-    }
-
-    RegionAlign getRegionAlign(in string path) {
-        const string val = getIdentifier(path);
-
-        switch (val) {
-            case "none":
-                return RegionAlign.none;
-
-            case "left":
-                return RegionAlign.left;
-
-            case "right":
-                return RegionAlign.right;
-
-            case "top":
-                return RegionAlign.top;
-
-            case "bottom":
-                return RegionAlign.bottom;
-
-            case "client":
-                return RegionAlign.client;
-
-            default:
-                throw new NotRegionAlignException();
-        }
-    }
-
-    RegionAlign optRegionAlign(in string path, in RegionAlign defaultVal = RegionAlign.init) {
-        try {
-            return getRegionAlign(path);
-        } catch (NotFoundException) {
-            return defaultVal;
-        }
-    }
-
-    VerticalAlign getVerticalAlign(in string path) {
-        const string val = getIdentifier(path);
-
-        switch (val) {
-            case "none":
-                return VerticalAlign.none;
-
-            case "top":
-                return VerticalAlign.top;
-
-            case "middle":
-                return VerticalAlign.middle;
-
-            case "bottom":
-                return VerticalAlign.bottom;
-
-            default:
-                throw new NotVerticalAlignException();
-        }
-    }
-
-    VerticalAlign optVerticalAlign(in string path,
-                                   in VerticalAlign defaultVal = VerticalAlign.init)
-    {
-        try {
-            return getVerticalAlign(path);
-        } catch (NotFoundException) {
-            return defaultVal;
-        }
-    }
+    alias getVerticalAlign = getEnum!(VerticalAlign, NotVerticalAlignException);
+    alias optVerticalAlign = optEnum!(VerticalAlign, NotVerticalAlignException);
 
     Rect getRect(in string path) {
         return Rect(getVec4f(path));

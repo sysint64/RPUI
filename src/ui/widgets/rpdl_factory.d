@@ -10,10 +10,13 @@ import std.typecons: tuple;
 import std.meta;
 import std.traits : hasUDA, getUDAs, isFunction, ParameterDefaults;
 
+import math.linalg;
 import basic_types;
 import ui.widget;
 import ui.views.attributes;
 import ui.manager;
+
+import gapi.texture;
 
 import ui.widgets.panel.widget;
 import ui.widgets.button;
@@ -85,7 +88,7 @@ class RPDLWidgetFactory {
             auto symbol = mixin("widget." ~ symbolName);
             alias symbolType = typeof(symbol);
 
-            const string symbolTypeName = symbolType.stringof;
+            // const string symbolTypeName = symbolType.stringof;
             const string symbolPath = widgetNode.path ~ "." ~ symbolName;
 
             // Tell the system how to interprete types of fields in widgets
@@ -104,17 +107,17 @@ class RPDLWidgetFactory {
                 ["string", "optString", ".0"],
                 ["dstring", "optUTFString", ".0"],
 
-                ["Vector!(float, 2)", "optVec2f", ""],
-                ["Vector!(float, 3)", "optVec3f", ""],
-                ["Vector!(float, 4)", "optVec4f", ""],
-                ["Vector!(int, 2)", "optVec2i", ""],
-                ["Vector!(int, 3)", "optVec3i", ""],
-                ["Vector!(int, 4)", "optVec4i", ""],
-                ["Vector!(uint, 2)", "optVec2ui", ""],
-                ["Vector!(uint, 3)", "optVec3ui", ""],
-                ["Vector!(uint, 4)", "optVec4ui", ""],
+                ["vec2", "optVec2f", ""],
+                ["vec3", "optVec3f", ""],
+                ["vec4", "optVec4f", ""],
+                ["vec2i", "optVec2i", ""],
+                ["vec3i", "optVec3i", ""],
+                ["vec4i", "optVec4i", ""],
+                ["vec2ui", "optVec2ui", ""],
+                ["vec3ui", "optVec3ui", ""],
+                ["vec4ui", "optVec4ui", ""],
 
-                ["Coord", "optTexCoord", ""],
+                ["Texture.Coord", "optTexCoord", ""],
                 ["Align", "optAlign", ".0"],
                 ["VerticalAlign", "optVerticalAlign", ".0"],
                 ["Orientation", "optOrientation", ".0"],
@@ -122,10 +125,14 @@ class RPDLWidgetFactory {
                 ["Rect", "optRect", ""],
                 ["FrameRect", "optFrameRect", ""],
                 ["IntRect", "optIntRect", ""],
+
+                // ["Panel.Background", "optPanelBackground", ""],
             );
 
             foreach (type; typesMap) {
-                static if (symbolTypeName == type[name]) {
+                mixin("alias rawType = " ~ type[name] ~ ";");
+                // alias rawType = mixin("bool");
+                static if (is(symbolType == rawType)) {
                     auto fullSymbolPath = symbolPath ~ type[selector];
                     enum call = "layoutData." ~ type[accessor] ~ "(fullSymbolPath, symbol)";
                     auto value = mixin(call);
