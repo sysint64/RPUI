@@ -15,13 +15,32 @@ Panel
             position: 0, 0
             margin: 5, 5, 5, 5
             cursor: drag
+            caption: "OK"
+            name: "okButton"
 
         Button
             size: 100, 21
             position: 0, 0
             margin: 5, 5, 5, 5
+            name: "cancelButton"
+            caption: "Cancel"
+
+        Button
+            size: 100, 21
+            position: 0, 0
+            margin: 5, 5, 5, 5
+            caption: "Close"
+            name: "closeButton"
 
     Button
         size: 200, 21
         position: 100, 100
         caption: "LALAL"
+
+    Button
+        size: 200, 21
+        position: 100, 200
+        caption: "LOLOLO"
+
+Panel
+    size: 200, 21

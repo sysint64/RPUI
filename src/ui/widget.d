@@ -161,6 +161,20 @@ class Widget {
         return pointInRect(point, rect);
     }
 
+    Widget findWidgetByName(in string name) {
+        if (this.name == name)
+            return this;
+
+        foreach (uint index, Widget widget; children) {
+            Widget foundWidget = widget.findWidgetByName(name);
+
+            if (foundWidget !is null)
+                return foundWidget;
+        }
+
+        return null;
+    }
+
 // Events ------------------------------------------------------------------------------------------
 
     void onCreate() {

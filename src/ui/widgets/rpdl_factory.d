@@ -1,10 +1,11 @@
 module ui.widgets.rpdl_factory;
 
-import std.path;
+import traits;
 
 import rpdl;
 import rpdl.node;
 
+import std.path;
 import std.stdio;
 import std.typecons: tuple;
 import std.meta;
@@ -23,18 +24,15 @@ import ui.widgets.panel.widget;
 import ui.widgets.button;
 import ui.widgets.stack_layout;
 
-import ui.views.view : getSymbolsNamesByUDA, getSymbolsByUDA; // TODO: rm, workaround
-
 
 class RPDLWidgetFactory {
-    this(in string fileName) {
+    @property Widget rootWidget() { return p_rootWidget; }
+    @disable @property void rootWidget(Widget val) {};
+
+    this(Manager uiManager, in string fileName) {
         layoutData = new RPDLTree(dirName(fileName));
         layoutData.load(baseName(fileName));
-    }
-
-    void createWidgets(Manager uiManager) {
         this.uiManager = uiManager;
-        createWidgets();
     }
 
     Widget createWidgetFromNode(ObjectNode widgetNode, Widget parentWidget = null) {
@@ -73,6 +71,7 @@ class RPDLWidgetFactory {
         if (parentWidget !is null) {
             parentWidget.addWidget(widget);
         } else {
+            p_rootWidget = widget;
             uiManager.addWidget(widget);
         }
 
@@ -92,9 +91,6 @@ class RPDLWidgetFactory {
         foreach (symbolName; getSymbolsNamesByUDA!(T, Widget.Field)) {
             auto symbol = mixin("widget." ~ symbolName);
             alias symbolType = typeof(symbol);
-
-            // const string symbolTypeName = symbolType.stringof;
-            const string symbolPath = widgetNode.path ~ "." ~ symbolName;
 
             // Tell the system how to interprete types of fields in widgets
             // and how to extract them
@@ -139,21 +135,19 @@ class RPDLWidgetFactory {
                 mixin("alias rawType = " ~ type[name] ~ ";");
 
                 static if (is(symbolType == rawType)) {
-                    auto fullSymbolPath = symbolPath ~ type[selector];
-                    enum call = "layoutData." ~ type[accessor] ~ "(fullSymbolPath, symbol)";
+                    auto fullSymbolPath = symbolName ~ type[selector];
+                    enum call = "widgetNode." ~ type[accessor] ~ "(fullSymbolPath, symbol)";
                     auto value = mixin(call);
 
                     // assign value to widget field
                     mixin("widget." ~ symbolName ~ " = value;");
-                    writeln(type[name], " value ", value, " for symbol ", symbolName);
                 }
             }
         }
-
-        writeln("------");
     }
 
 private:
     RPDLTree layoutData;
     Manager uiManager;
+    Widget p_rootWidget;
 }

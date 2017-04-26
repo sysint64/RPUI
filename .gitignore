@@ -6,6 +6,7 @@ __dummy.html
 *.dll
 .idea
 sim
+sim-test-library
 __test__library__
 \#*
 \.#*

@@ -4,10 +4,9 @@ import std.traits;
 
 
 struct OnClickListener {
-    string id;
+    string name;
 }
 
-
-struct Layout {
-    string fileName;
+struct ViewWidget {
+    string name;
 }

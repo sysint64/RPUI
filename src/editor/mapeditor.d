@@ -30,6 +30,8 @@ import derelict.opengl3.gl;
 
 
 class MyView : View {
+    @ViewWidget Button okButton;
+
     this(Manager manager, in string fileName) {
         super(manager, fileName);
     }
@@ -48,7 +50,7 @@ class MyView : View {
 
 
 class MapEditor: Application {
-    mixin Singleton!(MapEditor);
+    mixin Singleton!MapEditor;
     private this() {}
 
     override void onProgress() {
