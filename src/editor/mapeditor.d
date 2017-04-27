@@ -16,6 +16,7 @@ import gapi.font;
 import gapi.text;
 
 import ui;
+import ui.widget;
 import ui.widgets.button;
 import ui.widgets.stack_layout;
 import ui.widgets.panel.widget;
@@ -31,19 +32,21 @@ import derelict.opengl3.gl;
 
 class MyView : View {
     @ViewWidget Button okButton;
+    int a = 0;
 
     this(Manager manager, in string fileName) {
         super(manager, fileName);
     }
 
     @OnClickListener("okButton")
-    void onOkButtonClick() {
-        writeln("Hello world!");
+    void onOkButtonClick(Widget widget) {
+        writeln("Hello world! a = ", a);
+        a += 1;
     }
 
     @OnClickListener("closeButton")
     @OnClickListener("cancelButton")
-    void onCancelButtonClick() {
+    void onCancelButtonClick(Widget widget) {
         writeln("Close!");
     }
 }

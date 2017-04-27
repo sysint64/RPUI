@@ -71,7 +71,7 @@ class RPDLWidgetFactory {
         if (parentWidget !is null) {
             parentWidget.addWidget(widget);
         } else {
-            p_rootWidget = widget;
+            p_rootWidget = uiManager.rootWidget;
             uiManager.addWidget(widget);
         }
 

@@ -44,3 +44,4 @@ Panel
 
 Panel
     size: 200, 21
+    regionAlign: left

@@ -13,6 +13,8 @@ import ui.views.attributes;
 import ui.manager;
 import ui.widgets.panel.widget;
 
+import editor.mapeditor : MyView;
+
 
 class View {
     Application app;
@@ -41,21 +43,23 @@ class View {
         return rootWidget.findWidgetByName(name);
     }
 
+
 private:
     RPDLWidgetFactory widgetFactory;
     Widget rootWidget;
 
     void readAttributes(T : View)() {
-        Widget widget = findWidgetByName("closeButton");
-        writeln(widget);
-        // foreach (symbol; getSymbolsByUDA!(T, OnClickListener)) {
-        //     assert(isFunction!symbol);
+        T view = cast(MyView) this;
 
-        //     foreach (uda; getUDAs!(symbol, OnClickListener)) {
-        //         writeln(uda.name);
-        //         Widget widget = findWidgetByName(uda.name);
-        //         assert(widget !is null);
-        //     }
-        // }
+        foreach (symbolName; getSymbolsNamesByUDA!(T, OnClickListener)) {
+            mixin("alias symbol = T." ~ symbolName ~ ";");
+            assert(isFunction!symbol);
+
+            foreach (uda; getUDAs!(symbol, OnClickListener)) {
+                Widget widget = findWidgetByName(uda.name);
+                assert(widget !is null);
+                widget.onClickListener = &mixin("view." ~ symbolName);
+            }
+        }
     }
 }

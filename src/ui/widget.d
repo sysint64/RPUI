@@ -67,18 +67,18 @@ class Widget {
 
 // Event Listeners ---------------------------------------------------------------------------------
 
-    alias void function(Widget) OnClickListener;
-    alias void function(Widget) OnDblClickistener;
-    alias void function(Widget) OnFocusListener;
-    alias void function(Widget) OnBlurListener;
-    alias void function(Widget, in KeyCode key) OnKeyPressedListener;
-    alias void function(Widget, in KeyCode key) OnKeyReleasedListener;
-    alias void function(Widget, in utfchar key) OnTextEnteredListener;
-    alias void function(Widget, in uint x, in uint y) OnMouseMoveListener;
-    alias void function(Widget, in uint x, in uint y) OnMouseEnterListener;
-    alias void function(Widget, in uint x, in uint y) OnMouseLeaveListener;
-    alias void function(Widget, in uint x, in uint y, in MouseButton button) OnMouseDownListener;
-    alias void function(Widget, in uint x, in uint y, in MouseButton button) OnMouseUpListener;
+    alias void delegate(Widget) OnClickListener;
+    alias void delegate(Widget) OnDblClickistener;
+    alias void delegate(Widget) OnFocusListener;
+    alias void delegate(Widget) OnBlurListener;
+    alias void delegate(Widget, in KeyCode key) OnKeyPressedListener;
+    alias void delegate(Widget, in KeyCode key) OnKeyReleasedListener;
+    alias void delegate(Widget, in utfchar key) OnTextEnteredListener;
+    alias void delegate(Widget, in uint x, in uint y) OnMouseMoveListener;
+    alias void delegate(Widget, in uint x, in uint y) OnMouseEnterListener;
+    alias void delegate(Widget, in uint x, in uint y) OnMouseLeaveListener;
+    alias void delegate(Widget, in uint x, in uint y, in MouseButton button) OnMouseDownListener;
+    alias void delegate(Widget, in uint x, in uint y, in MouseButton button) OnMouseUpListener;
 
     OnClickListener onClickListener = null;
     OnDblClickistener onDblClickistener = null;
@@ -198,6 +198,10 @@ class Widget {
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
         foreach (uint index, Widget widget; children) {
             widget.onMouseUp(x, y, button);
+
+            if (widget.isEnter && widget.onClickListener !is null) {
+                widget.onClickListener(widget);
+            }
         }
     }
 

@@ -135,4 +135,6 @@ unittest {
 
     assert(data.optVec4f("Rombik.texCoord2", vec4(0, 1, 2, 3)) == vec4(5, 3, 16, 24));
     assert(data.optVec4f("Rombik.texCoord3", vec4(0, 1, 2, 3)) == vec4(0, 1, 2, 3));
+
+    // TODO: Tests for relative pathes
 }
