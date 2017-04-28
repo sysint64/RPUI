@@ -49,7 +49,7 @@ private:
     RPDLWidgetFactory widgetFactory;
     Widget rootWidget;
 
-    void readEvent(T : View, string eventName)(T view) {
+    void readEventAttribute(T : View, string eventName)(T view) {
         mixin("alias event = " ~ eventName ~ ";");
 
         foreach (symbolName; getSymbolsNamesByUDA!(T, event)) {
@@ -67,7 +67,7 @@ private:
         }
     }
 
-    void readEvents(T : View)(T view) {
+    void readEventsAttributes(T : View)(T view) {
         enum events = AliasSeq!(
             "OnClickListener",
             "OnDblClickistener",
@@ -85,12 +85,12 @@ private:
 
         foreach (eventName; events) {
             mixin("alias event = " ~ eventName ~ ";");
-            readEvent!(T, eventName)(view);
+            readEventAttribute!(T, eventName)(view);
         }
     }
 
     void readAttributes(T : View)() {
         T view = cast(MyView) this;
-        readEvents(view);
+        readEventsAttributes(view);
     }
 }
