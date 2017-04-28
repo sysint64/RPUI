@@ -38,7 +38,7 @@ class MyView : View {
         super(manager, fileName);
     }
 
-    @OnClickListener("okButton")
+    @OnDblClickistener("okButton")
     void onOkButtonClick(Widget widget) {
         writeln("Hello world! a = ", a);
         a += 1;

@@ -3,6 +3,7 @@ module ui.views.view;
 import std.traits : hasUDA, getUDAs, isFunction, isType, isAggregateType;
 import std.stdio;
 import std.path;
+import std.meta;
 
 import traits;
 import application;
@@ -48,18 +49,48 @@ private:
     RPDLWidgetFactory widgetFactory;
     Widget rootWidget;
 
-    void readAttributes(T : View)() {
-        T view = cast(MyView) this;
+    void readEvent(T : View, string eventName)(T view) {
+        mixin("alias event = " ~ eventName ~ ";");
 
-        foreach (symbolName; getSymbolsNamesByUDA!(T, OnClickListener)) {
+        foreach (symbolName; getSymbolsNamesByUDA!(T, event)) {
             mixin("alias symbol = T." ~ symbolName ~ ";");
             assert(isFunction!symbol);
 
-            foreach (uda; getUDAs!(symbol, OnClickListener)) {
-                Widget widget = findWidgetByName(uda.name);
+            foreach (uda; getUDAs!(symbol, event)) {
+                Widget widget = findWidgetByName(uda.widgetName);
                 assert(widget !is null);
-                widget.onClickListener = &mixin("view." ~ symbolName);
+
+                enum widgetEventName = "on" ~ eventName[2..$];
+                mixin("widget." ~ widgetEventName ~ " = &view." ~ symbolName ~ ";");
+                writeln("widget." ~ widgetEventName ~ " = &view." ~ symbolName ~ ";");
             }
         }
+    }
+
+    void readEvents(T : View)(T view) {
+        enum events = AliasSeq!(
+            "OnClickListener",
+            "OnDblClickistener",
+            "OnFocusListener",
+            "OnBlurListener",
+            "OnKeyPressedListener",
+            "OnKeyReleasedListener",
+            "OnTextEnteredListener",
+            "OnMouseMoveListener",
+            "OnMouseEnterListener",
+            "OnMouseLeaveListener",
+            "OnMouseDownListener",
+            "OnMouseUpListener"
+        );
+
+        foreach (eventName; events) {
+            mixin("alias event = " ~ eventName ~ ";");
+            readEvent!(T, eventName)(view);
+        }
+    }
+
+    void readAttributes(T : View)() {
+        T view = cast(MyView) this;
+        readEvents(view);
     }
 }
