@@ -23,6 +23,7 @@ class StackLayout : Widget {
         Widget cell = new Widget();
         super.addWidget(cell);
         cell.addWidget(widget);
+        cell.associatedWidget = widget;
     }
 
     override void render(Camera camera) {
@@ -34,10 +35,7 @@ class StackLayout : Widget {
 
         foreach (uint index, Widget cell; children) {
             Widget widget = null;
-
-            // TODO: get first item from children :/
-            foreach (uint index, Widget childWidget; cell.children)
-                widget = childWidget;
+            widget = cell.firstWidget;
 
             if (orientation == Orientation.vertical) {
                 cell.size.x = parent.size.x - parent.padding.right - parent.padding.left;

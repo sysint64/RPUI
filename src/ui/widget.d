@@ -52,6 +52,13 @@ class Widget {
     @property Widget parent() { return p_parent; }
     @property bool focused() { return p_focused; }
 
+    @property Widget nextWidget() { return p_nextWidget; }
+    @property Widget prevWidget() { return p_prevWidget; }
+    @property Widget lastWidget() { return p_lastWidget; }
+    @property Widget firstWidget() { return p_firstWidget; }
+
+    @property Widget associatedWidget() { return p_associatedWidget; }
+
     @property ref Children children() { return p_children; }
     @property final RenderFactory renderFactory() { return manager.renderFactory; }
 
@@ -154,6 +161,12 @@ class Widget {
         children[index] = widget;
         manager.widgetOrdering.insert(widget);
         widget.onCreate();
+
+        if (firstWidget is null) {
+            p_firstWidget = widget;
+        }
+
+        p_lastWidget = widget;
     }
 
     bool pointIsEnter(in vec2i point) {
@@ -231,10 +244,12 @@ private:
     Camera camera = null;
 
     // Navigation (for focus)
-    Widget nextWidget = null;
-    Widget prevWidget = null;
-    Widget lastWidget = null;
-    Widget firstWidget = null;
+    Widget p_nextWidget = null;
+    Widget p_prevWidget = null;
+    Widget p_lastWidget = null;
+    Widget p_firstWidget = null;
+
+    Widget p_associatedWidget = null;
 
 protected:
     enum PartDraws {all, left, center, right};
@@ -342,6 +357,8 @@ package:
     vec2 absolutePosition = vec2(0, 0);
     vec2 innerBoundarySizeClamped = vec2(0, 0);
     vec2 innerBoundarySize = vec2(0, 0);
+
+    @property void associatedWidget(Widget val) { p_associatedWidget = val; }
 
     this(Manager manager) {
         this.manager = manager;

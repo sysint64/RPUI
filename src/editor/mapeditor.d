@@ -25,6 +25,7 @@ import ui.views.attributes;
 
 import math.linalg;
 import std.stdio;
+import std.container;
 
 import derelict.sfml2.graphics;
 import derelict.opengl3.gl;
@@ -33,7 +34,7 @@ import derelict.opengl3.gl;
 class MyView : View {
     @ViewWidget Button okButton;
     @ViewWidget("cancelButton") Button myButton;
-    @GroupViewWidgets Button[] buttons;
+    @GroupViewWidgets Button[3] buttons;
 
     int a = 0;
 
@@ -47,6 +48,7 @@ class MyView : View {
         a += 1;
         okButton.caption = "YAY!";
         myButton.caption = "WORK!";
+        buttons[2].caption = "YES!";
     }
 
     @OnClickListener("closeButton")

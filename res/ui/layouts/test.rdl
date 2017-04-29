@@ -10,6 +10,7 @@ Panel
     padding: 5, 5, 5, 5
 
     StackLayout
+        name: "buttons"
         Button
             size: 100, 21
             position: 0, 0

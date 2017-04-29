@@ -19,4 +19,4 @@ struct OnMouseUpListener { string widgetName; }
 
 // Accessors
 struct ViewWidget { string widgetName = ""; }
-struct GroupViewWidgets { string parentWidgetName = ""; }
+struct GroupViewWidgets { string widgetName = ""; }

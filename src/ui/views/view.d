@@ -1,6 +1,6 @@
 module ui.views.view;
 
-import std.traits : hasUDA, getUDAs, isFunction, isType, isAggregateType;
+import std.traits : hasUDA, getUDAs, isFunction, isType, ForeachType, StaticArrayTypeOf;
 import std.stdio;
 import std.path;
 import std.meta;
@@ -49,6 +49,8 @@ private:
     RPDLWidgetFactory widgetFactory;
     Widget rootWidget;
 
+    // Read event listener attributes and assign this listener to
+    // widget with name uda.widgetName, where uda is attribute
     void readEventAttribute(T : View, string eventName)(T view) {
         mixin("alias event = " ~ eventName ~ ";");
 
@@ -88,29 +90,75 @@ private:
         }
     }
 
-    void readAccessorsAttributes(T : View)(T view) {
+    // Get widget name from attribute or set as symbolName
+    // if empty or if it is struct
+    static string getNameFromAttribute(alias uda)(in string symbolName) {
+        static if (isType!uda) {
+            return symbolName;
+        } else {
+            static if (uda.widgetName == "") {
+                return symbolName;
+            } else {
+                return uda.widgetName;
+            }
+        }
+    }
+
+    // Reading ViewWidget attributes to extract widget by name to variable
+    void readViewWidgetAttributes(T : View)(T view) {
         foreach (symbolName; getSymbolsNamesByUDA!(T, ViewWidget)) {
             mixin("alias symbol = T." ~ symbolName ~ ";");
 
             foreach (uda; getUDAs!(symbol, ViewWidget)) {
-                // Get widget name from attribute or set as symbolName
-                // if empty or if it is struct
-                static if (isType!uda) {
-                    enum widgetName = symbolName;
-                } else {
-                    static if (uda.widgetName == "") {
-                        enum widgetName = symbolName;
-                    } else {
-                        enum widgetName = uda.widgetName;
-                    }
-                }
+                enum widgetName = getNameFromAttribute!uda(symbolName);
 
                 Widget widget = findWidgetByName(widgetName);
                 assert(widget !is null);
 
                 mixin("alias WidgetType = typeof(view." ~ symbolName ~ ");");
                 mixin("view." ~ symbolName ~ " = cast(WidgetType) widget;");
-                writeln("view." ~ symbolName ~ " = cast(WidgetType) widget;");
+            }
+        }
+    }
+
+    // Reading GroupViewWidgets attributes to extract widget children by parent
+    // widget name to variable
+    void readGroupViewWidgets(T : View)(T view) {
+        foreach (symbolName; getSymbolsNamesByUDA!(T, GroupViewWidgets)) {
+            mixin("alias symbol = T." ~ symbolName ~ ";");
+
+            foreach (uda; getUDAs!(symbol, GroupViewWidgets)) {
+                enum parentWidgetName = getNameFromAttribute!uda(symbolName);
+
+                Widget parentWidget = findWidgetByName(parentWidgetName);
+                assert(parentWidget !is null);
+
+                mixin("alias WidgetType = ForeachType!(typeof(view." ~ symbolName ~ "));");
+                mixin("alias symbolType = typeof(view." ~ symbolName ~ ");");
+
+                uint staticArrayIndex = 0;
+
+                foreach (uint index, Widget childWidget; parentWidget.children) {
+                    // Select correct widget - if associatedWidget is null then get
+                    // child widget. For example row in StackLayout has one single widget
+                    // this widget will be associated because of this widget is our
+                    // content and row is just wrapper
+                    Widget targetWidget = childWidget.associatedWidget;
+
+                    if (targetWidget is null)
+                        targetWidget = childWidget;
+
+                    auto typedTargetWidget = cast(WidgetType) targetWidget;
+                    immutable string t = "view." ~ symbolName ~ " ~= typedTargetWidget;";
+
+                    static if (is(StaticArrayTypeOf!symbolType)) {
+                        mixin("view." ~ symbolName ~ "[staticArrayIndex] = typedTargetWidget;");
+                    } else {
+                        mixin("view." ~ symbolName ~ " ~= typedTargetWidget;");
+                    }
+
+                    ++staticArrayIndex;
+                }
             }
         }
     }
@@ -118,6 +166,7 @@ private:
     void readAttributes(T : View)() {
         T view = cast(MyView) this;
         readEventsAttributes(view);
-        readAccessorsAttributes(view);
+        readViewWidgetAttributes(view);
+        readGroupViewWidgets(view);
     }
 }
