@@ -32,16 +32,21 @@ import derelict.opengl3.gl;
 
 class MyView : View {
     @ViewWidget Button okButton;
+    @ViewWidget("cancelButton") Button myButton;
+    @GroupViewWidgets Button[] buttons;
+
     int a = 0;
 
     this(Manager manager, in string fileName) {
         super(manager, fileName);
     }
 
-    @OnDblClickistener("okButton")
+    @OnClickListener("okButton")
     void onOkButtonClick(Widget widget) {
         writeln("Hello world! a = ", a);
         a += 1;
+        okButton.caption = "YAY!";
+        myButton.caption = "WORK!";
     }
 
     @OnClickListener("closeButton")

@@ -62,7 +62,6 @@ private:
 
                 enum widgetEventName = "on" ~ eventName[2..$];
                 mixin("widget." ~ widgetEventName ~ " = &view." ~ symbolName ~ ";");
-                writeln("widget." ~ widgetEventName ~ " = &view." ~ symbolName ~ ";");
             }
         }
     }
@@ -89,8 +88,36 @@ private:
         }
     }
 
+    void readAccessorsAttributes(T : View)(T view) {
+        foreach (symbolName; getSymbolsNamesByUDA!(T, ViewWidget)) {
+            mixin("alias symbol = T." ~ symbolName ~ ";");
+
+            foreach (uda; getUDAs!(symbol, ViewWidget)) {
+                // Get widget name from attribute or set as symbolName
+                // if empty or if it is struct
+                static if (isType!uda) {
+                    enum widgetName = symbolName;
+                } else {
+                    static if (uda.widgetName == "") {
+                        enum widgetName = symbolName;
+                    } else {
+                        enum widgetName = uda.widgetName;
+                    }
+                }
+
+                Widget widget = findWidgetByName(widgetName);
+                assert(widget !is null);
+
+                mixin("alias WidgetType = typeof(view." ~ symbolName ~ ");");
+                mixin("view." ~ symbolName ~ " = cast(WidgetType) widget;");
+                writeln("view." ~ symbolName ~ " = cast(WidgetType) widget;");
+            }
+        }
+    }
+
     void readAttributes(T : View)() {
         T view = cast(MyView) this;
         readEventsAttributes(view);
+        readAccessorsAttributes(view);
     }
 }

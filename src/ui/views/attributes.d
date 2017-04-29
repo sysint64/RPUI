@@ -18,4 +18,5 @@ struct OnMouseDownListener { string widgetName; }
 struct OnMouseUpListener { string widgetName; }
 
 // Accessors
-struct ViewWidget { string widgetName; }
+struct ViewWidget { string widgetName = ""; }
+struct GroupViewWidgets { string parentWidgetName = ""; }
