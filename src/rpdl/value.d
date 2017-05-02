@@ -5,7 +5,7 @@ import std.conv;
 
 
 class Value: Node {
-    enum Type {Number, String, Boolean, Array};
+    enum Type {Number, String, Identifier, Boolean, Array};
 
     this(in string name) { super(name); }
     this(in string name, Node) { super(name, parent); }
@@ -71,7 +71,7 @@ class StringValue : Value {
     }
 
     override string toString() {
-        return to!string(p_value);
+        return "\"" ~ to!string(p_value) ~ "\"";
     }
 
 private:
@@ -83,10 +83,16 @@ private:
 class IdentifierValue : StringValue {
     this(in string name, in string value) {
         super(name, value);
+        this.p_type = Type.Identifier;
     }
 
     this(in string name, in string value, in dstring utfValue) {
         super(name, value, utfValue);
+        this.p_type = Type.Identifier;
+    }
+
+    override string toString() {
+        return to!string(p_value);
     }
 }
 

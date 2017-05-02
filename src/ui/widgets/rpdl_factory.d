@@ -31,8 +31,19 @@ class RPDLWidgetFactory {
 
     this(Manager uiManager, in string fileName) {
         layoutData = new RPDLTree(dirName(fileName));
-        layoutData.load(baseName(fileName));
+        layoutData.load(baseName(fileName), RPDLTree.IOType.text);
+        layoutData.save(baseName(fileName ~ ".bin"), RPDLTree.IOType.bin);
         this.uiManager = uiManager;
+    }
+
+    this(Manager uiManager) {
+        this.uiManager = uiManager;
+    }
+
+    static RPDLWidgetFactory createStatic(string fileName)(Manager uiManager) {
+        RPDLWidgetFactory factory = RPDLWidgetFactory(uiManager);
+        layoutData = new RPDLTree(dirName(fileName));
+        layoutData.staticLoad!(baseName(fileName))();
     }
 
     Widget createWidgetFromNode(ObjectNode widgetNode, Widget parentWidget = null) {

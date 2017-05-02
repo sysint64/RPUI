@@ -44,7 +44,6 @@ class View {
         return rootWidget.findWidgetByName(name);
     }
 
-
 private:
     RPDLWidgetFactory widgetFactory;
     Widget rootWidget;

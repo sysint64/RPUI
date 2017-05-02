@@ -18,7 +18,7 @@ abstract class Writer {
         this.file = File(fileName, "w");
 
         foreach (Node node; root.children) {
-            writeObject(cast(ObjectNode)(node));
+            writeObject(cast(ObjectNode) node);
         }
     }
 
@@ -42,16 +42,16 @@ protected:
         file.rawWrite([value]);
     }
 
-    void rawWrite(string str) {
+    void rawWrite(in string str) {
         file.rawWrite(str);
     }
 
     void writeObject(ObjectNode object) {
         foreach (Node child; object.children) {
-            if (cast(Parameter)(child)) {
-                writeParameter(cast(Parameter)(child));
-            } else if (cast(ObjectNode)(child)) {
-                writeObject(cast(ObjectNode)(child));
+            if (cast(Parameter) child) {
+                writeParameter(cast(Parameter) child);
+            } else if (cast(ObjectNode) child) {
+                writeObject(cast(ObjectNode) child);
             } else {
                 throw new NotParameterOrValueException();
             }
@@ -60,8 +60,8 @@ protected:
 
     void writeParameter(Parameter parameter) {
         foreach (Node child; parameter.children) {
-            if (cast(Value)(child)) {
-                writeValue(cast(Value)(child));
+            if (cast(Value) child) {
+                writeValue(cast(Value) child);
             } else {
                 throw new NotValueException();
             }
@@ -71,19 +71,23 @@ protected:
     void writeValue(Value value) {
         switch (value.type) {
             case Value.Type.Number:
-                writeNumberValue(cast(NumberValue)(value));
+                writeNumberValue(cast(NumberValue) value);
                 break;
 
             case Value.Type.Boolean:
-                writeBooleanValue(cast(BooleanValue)(value));
+                writeBooleanValue(cast(BooleanValue) value);
+                break;
+
+            case Value.Type.Identifier:
+                writeIdentifierValue(cast(IdentifierValue) value);
                 break;
 
             case Value.Type.String:
-                writeStringValue(cast(StringValue)(value));
+                writeStringValue(cast(StringValue) value);
                 break;
 
             case Value.Type.Array:
-                writeArrayValue(cast(ArrayValue)(value));
+                writeArrayValue(cast(ArrayValue) value);
                 break;
 
             default:
@@ -100,9 +104,12 @@ protected:
     void writeStringValue(StringValue value) {
     }
 
+    void writeIdentifierValue(IdentifierValue value) {
+    }
+
     void writeArrayValue(ArrayValue array) {
         foreach (Node node; array.children)
-            writeValue(cast(Value)(node));
+            writeValue(cast(Value) node);
     }
 }
 
@@ -138,9 +145,9 @@ protected:
         int i = 0;
 
         foreach (Node child; parameter.children) {
-            if (cast(Value)(child)) {
+            if (cast(Value) child) {
                 ++i;
-                writeValue(cast(Value)(child));
+                writeValue(cast(Value) child);
 
                 if (i < parameter.children.length)
                     rawWrite(", ");
@@ -164,13 +171,17 @@ protected:
         rawWrite('"');
     }
 
+    override void writeIdentifierValue(IdentifierValue node) {
+        rawWrite(node.value);
+    }
+
     override void writeArrayValue(ArrayValue array) {
         rawWrite("[");
         int i = 0;
 
         foreach (Node node; array.children) {
             ++i;
-            writeValue(cast(Value)(node));
+            writeValue(cast(Value) node);
 
             if (i < array.children.length)
                 rawWrite(", ");
@@ -184,6 +195,11 @@ protected:
 class BinWriter : Writer {
     this(Node root) { super(root); }
 
+    override void save(in string fileName) {
+        super.save(fileName);
+        writeOpCode(OpCode.end);
+    }
+
 protected:
     enum OpCode {
         none = 0x00,
@@ -194,21 +210,22 @@ protected:
         numberValue = 0x05,
         booleanValue = 0x06,
         stringValue = 0x07,
-        arrayValue = 0x08
+        identifierValue = 0x08,
+        arrayValue = 0x09
     }
 
     void writeName(Node node) {
-        rawWrite(cast(ubyte)(node.name.length));
+        rawWrite(cast(ubyte) node.name.length);
         rawWrite(node.name);
     }
 
     void writeString(string str) {
-        rawWrite(cast(ubyte)(str.length));
+        rawWrite(cast(ubyte) str.length);
         rawWrite(str);
     }
 
     void writeOpCode(OpCode code) {
-        rawWrite(cast(ubyte)(code));
+        rawWrite(cast(ubyte) code);
     }
 
     override void writeObject(ObjectNode object) {
@@ -227,21 +244,31 @@ protected:
 
     override void writeNumberValue(NumberValue node) {
         writeOpCode(OpCode.numberValue);
+        writeName(node);
         rawWrite(node.value);
     }
 
     override void writeBooleanValue(BooleanValue node) {
         writeOpCode(OpCode.booleanValue);
+        writeName(node);
         rawWrite(node.value);
     }
 
     override void writeStringValue(StringValue node) {
         writeOpCode(OpCode.stringValue);
+        writeName(node);
+        writeString(node.value);
+    }
+
+    override void writeIdentifierValue(IdentifierValue node) {
+        writeOpCode(OpCode.identifierValue);
+        writeName(node);
         writeString(node.value);
     }
 
     override void writeArrayValue(ArrayValue array) {
         writeOpCode(OpCode.arrayValue);
+        writeName(array);
         super.writeArrayValue(array);
         writeOpCode(OpCode.end);
     }

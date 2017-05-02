@@ -46,3 +46,4 @@ Panel
 Panel
     size: 200, 21
     regionAlign: left
+    array: [1, 2, 3, "Hi", "Hoi", enum, true]

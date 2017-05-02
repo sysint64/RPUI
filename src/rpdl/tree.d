@@ -17,6 +17,7 @@ import rpdl.node;
 import rpdl.value;
 import rpdl.exception;
 import rpdl.writer;
+import rpdl.reader;
 import rpdl.accessors;
 
 import gapi.texture;
@@ -37,8 +38,21 @@ class RPDLTree {
     }
 
     void load(in string fileName, in IOType rt = IOType.text) {
+        const string fullPath = rootDirectory ~ dirSeparator ~ fileName;
+
         switch (rt) {
             case IOType.text: loadText(fileName); break;
+            case IOType.bin: new BinReader(p_root).read(fullPath); break;
+            default:
+                break;
+        }
+    }
+
+    void staticLoad(string fileName, IOType rt = IOType.text)() {
+        p_staticLoad = true;
+
+        switch (rt) {
+            case IOType.text: staticLoadText!(fileName)(); break;
             case IOType.bin: break;
             default:
                 break;
@@ -55,19 +69,26 @@ class RPDLTree {
                 return;
         }
 
-        writer.save(fileName);
+        const fullPath = rootDirectory ~ dirSeparator ~ fileName;
+        writer.save(fullPath);
     }
 
-    @property Node root() {
-        return p_root;
-    }
-
-    @property string rootDirectory() {
-        return p_rootDirectory;
-    }
+    @property bool isStaticLoaded() { return p_staticLoad; }
+    @property Node root() { return p_root; }
+    @property string rootDirectory() { return p_rootDirectory; }
 
     void loadText(in string fileName) {
         SymbolStream stream = new SymbolStream(rootDirectory ~ dirSeparator ~ fileName);
+
+        this.lexer  = new Lexer(stream);
+        this.parser = new Parser(lexer, this);
+
+        this.parser.parse();
+    }
+
+    void staticLoadText(string fileName)() {
+        const fullPath = rootDirectory ~ dirSeparator ~ fileName;
+        SymbolStream stream = CTSymbolStream.createFromFile!(fullPath)();
 
         this.lexer  = new Lexer(stream);
         this.parser = new Parser(lexer, this);
@@ -88,6 +109,7 @@ private:
 
     string p_rootDirectory;
     Node p_root;
+    bool p_staticLoad = false;
 
     Node getRootNode() {
         return p_root;

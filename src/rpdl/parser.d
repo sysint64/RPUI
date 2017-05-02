@@ -12,6 +12,7 @@ import rpdl.stream;
 import rpdl.node;
 import rpdl.value;
 import rpdl.tree;
+import rpdl.exception;
 
 
 class ParseError : Exception {
@@ -188,7 +189,12 @@ private:
         if (lexer.currentToken.code != Token.Code.string)
             throw new ParseError(line, pos, "expected '\"'");
 
-        data.loadText(lexer.currentToken.str);
+        if (!data.isStaticLoaded) {
+            data.loadText(lexer.currentToken.str);
+        } else {
+            throw new IncludeNotAllowedAtCTException();
+        }
+
         lexer.nextToken();
     }
 }

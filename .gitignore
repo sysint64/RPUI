@@ -10,3 +10,4 @@ sim-test-library
 __test__library__
 \#*
 \.#*
+*.rdl.bin

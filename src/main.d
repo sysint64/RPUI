@@ -36,7 +36,7 @@ void traverse(Node node, in int level = 0) {
     foreach (Node a; node.children) {
         writeindent(level);
 
-        if (cast(Value)a)
+        if (cast(Value) a)
             writeln(a.name ~ "(" ~ a.path ~ "): ", a.toString());
         else
             writeln(a.name ~ "(" ~ a.path ~ ")");
@@ -51,18 +51,19 @@ import ui.manager;
 
 
 void main() {
-    DerelictSFML2System.load();
-    DerelictSFML2Window.load();
-    DerelictSFML2Graphics.load();
+    // DerelictSFML2System.load();
+    // DerelictSFML2Window.load();
+    // DerelictSFML2Graphics.load();
 
-    DerelictFT.load();
-    DerelictGL.load();
+    // DerelictFT.load();
+    // DerelictGL.load();
 
-    auto app = MapEditor.getInstance();
-    app.run();
+    // auto app = MapEditor.getInstance();
+    // app.run();
 
     // Test
-    // RPDLTree data = new RPDLTree("/home/andrey/projects/simulator/simulator/res/ui/layouts/");
-    // data.load("test.rdl");
-    // traverse(data.root);
+    RPDLTree data = new RPDLTree("/home/andrey/projects/simulator/simulator/res/ui/layouts/");
+    data.load("test.rdl.bin", RPDLTree.IOType.bin);
+    data.save("test.rdl.txt", RPDLTree.IOType.text);
+    traverse(data.root);
 }

@@ -45,16 +45,9 @@ public:
     @property bool eof() { return file.eof; }
     @property char lastChar() { return p_lastChar; }
 
-private:
-    File file;
-
-    int  p_line, p_pos;
-    char p_lastChar;
-    int  p_indent = 0;
-    int  p_tabSize = 0;
-
-    bool needCalcTabSize = true;
-    bool needCalcIndent  = true;
+protected:
+    this() {
+    }
 
     char readChar() {
         auto buf = file.rawRead(new char[1]);
@@ -65,6 +58,17 @@ private:
 
         return p_lastChar;
     }
+
+private:
+    File file;
+
+    int  p_line, p_pos;
+    char p_lastChar;
+    int  p_indent = 0;
+    int  p_tabSize = 0;
+
+    bool needCalcTabSize = true;
+    bool needCalcIndent  = true;
 
     char calcIndent() {
         uint spaces = 0;
@@ -91,6 +95,34 @@ private:
         ++p_indent;
         needCalcTabSize = false;
 
+        return p_lastChar;
+    }
+}
+
+
+class CTSymbolStream : SymbolStream {
+    override @property bool eof() { return cursor == content.length; }
+
+    private string content;
+    private size_t cursor = 0;
+    // private
+    this() {
+    }
+
+    ~this() {
+    }
+
+    CTSymbolStream createFromFile(string fileName)() {
+        content = import(fileName);
+    }
+
+    override char readChar() {
+        ++p_pos;
+
+        if (eof) p_lastChar = char.init;
+        else p_lastChar = content[cursor];
+
+        ++cursor;
         return p_lastChar;
     }
 }

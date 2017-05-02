@@ -13,6 +13,12 @@ class NotFoundException : RPDLException {
 }
 
 
+class IncludeNotAllowedAtCTException : RPDLException {
+    this() { super("include not allowed at compile time"); }
+    this(in string details) { super(details); }
+}
+
+
 class NotObjectException : RPDLException {
     this() { super("it is not an object"); }
     this(in string details) { super(details); }
