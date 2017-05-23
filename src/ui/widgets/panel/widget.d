@@ -113,9 +113,9 @@ class Panel : Widget, Scrollable {
         scissor.size = vec2(size.x - regionOffset.left - regionOffset.right,
                             size.y - regionOffset.top - regionOffset.bottom);
 
-        // manager.pushScissor(scissor);
+        manager.pushScissor(scissor);
         super.render(camera);
-        // manager.popScissor();
+        manager.popScissor();
 
         split.render();
     }

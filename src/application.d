@@ -35,7 +35,7 @@ abstract class Application {
         writeln(p_resourcesDirectory);
     }
 
-    final void run() {
+    final void run(in bool runLoop = true) {
         p_cursor = new Cursor();
 
         initPath();
@@ -49,7 +49,9 @@ abstract class Application {
 
         writeln(settings.theme);
         onCreate();
-        loop();
+
+        if (runLoop)
+            loop();
     }
 
     void render() {}
@@ -223,12 +225,13 @@ private:
     }
 
     void loop() {
+        sfWindow_setActive(window, true);
         bool running = true;
 
         while (running) {
             auto mousePos = sfMouse_getPosition(window);
             p_mousePos = vec2i(mousePos.x, mousePos.y);
-
+            calculateTime();
             sfEvent event;
 
             while (sfWindow_pollEvent(window, &event)) {
@@ -240,14 +243,12 @@ private:
                 }
             }
 
-            calculateTime();
-            sfWindow_setActive(window, true);
-
-            onProgress();
-
             glViewport(0, 0, viewportWidth, viewportHeight);
             glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+            onProgress();
             render();
+
             glFlush();
             sfWindow_display(window);
         }

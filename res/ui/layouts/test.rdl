@@ -9,29 +9,35 @@ Panel
     position: 100, 300
     padding: 5, 5, 5, 5
 
-    StackLayout
-        name: "buttons"
-        Button
-            size: 100, 21
-            position: 0, 0
-            margin: 5, 5, 5, 5
-            cursor: drag
-            caption: "OK"
-            name: "okButton"
+    Panel
+        background: dark
+        position: 200, 300
+        size: 300, 300
 
-        Button
-            size: 100, 21
-            position: 0, 0
-            margin: 5, 5, 5, 5
-            name: "cancelButton"
-            caption: "Cancel"
+        StackLayout
+            name: "buttons"
+            position: 100, 300
+            Button
+                size: 100, 21
+                position: 0, 0
+                margin: 5, 5, 5, 5
+                cursor: drag
+                caption: "OK"
+                name: "okButton"
 
-        Button
-            size: 100, 21
-            position: 0, 0
-            margin: 5, 5, 5, 5
-            caption: "Close"
-            name: "closeButton"
+            Button
+                size: 100, 21
+                position: 0, 0
+                margin: 5, 5, 5, 5
+                name: "cancelButton"
+                caption: "Cancel"
+
+            Button
+                size: 100, 21
+                position: 0, 0
+                margin: 5, 5, 5, 5
+                caption: "Close"
+                name: "closeButton"
 
     Button
         size: 200, 21

@@ -32,7 +32,7 @@ class RPDLWidgetFactory {
     this(Manager uiManager, in string fileName) {
         layoutData = new RPDLTree(dirName(fileName));
         layoutData.load(baseName(fileName), RPDLTree.IOType.text);
-        layoutData.save(baseName(fileName ~ ".bin"), RPDLTree.IOType.bin);
+        debug layoutData.save(baseName(fileName ~ ".bin"), RPDLTree.IOType.bin);
         this.uiManager = uiManager;
     }
 

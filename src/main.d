@@ -51,19 +51,19 @@ import ui.manager;
 
 
 void main() {
-    // DerelictSFML2System.load();
-    // DerelictSFML2Window.load();
-    // DerelictSFML2Graphics.load();
+    DerelictSFML2System.load();
+    DerelictSFML2Window.load();
+    DerelictSFML2Graphics.load();
 
-    // DerelictFT.load();
-    // DerelictGL.load();
+    DerelictFT.load();
+    DerelictGL.load();
 
-    // auto app = MapEditor.getInstance();
-    // app.run();
+    auto app = MapEditor.getInstance();
+    app.run();
 
     // Test
-    RPDLTree data = new RPDLTree("/home/andrey/projects/simulator/simulator/res/ui/layouts/");
-    data.load("test.rdl.bin", RPDLTree.IOType.bin);
-    data.save("test.rdl.txt", RPDLTree.IOType.text);
-    traverse(data.root);
+    // RPDLTree data = new RPDLTree("/home/andrey/projects/simulator/simulator/res/ui/layouts/");
+    // data.load("test.rdl.bin", RPDLTree.IOType.bin);
+    // data.save("test.rdl.txt", RPDLTree.IOType.text);
+    // traverse(data.root);
 }

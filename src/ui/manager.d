@@ -22,6 +22,7 @@ import ui.renderer;
 
 class Manager {
     private this() {
+        app = Application.getInstance();
     }
 
     this(in string theme) {
@@ -63,8 +64,11 @@ class Manager {
                 continue;
 
             widget.onCursor();
-            vec2 size = vec2(widget.overSize.x > 0 ? widget.overSize.x : widget.size.x,
-                             widget.overSize.y > 0 ? widget.overSize.y : widget.size.y);
+            vec2 size = vec2(
+                widget.overSize.x > 0 ? widget.overSize.x : widget.size.x,
+                widget.overSize.y > 0 ? widget.overSize.y : widget.size.y
+            );
+
             Rect rect = Rect(widget.absolutePosition.x, widget.absolutePosition.y, size.x, size.y);
             widget.isOver = widget.parent.isOver && pointInRect(app.mousePos, rect);
         }
@@ -129,31 +133,37 @@ class Manager {
     }
 
     Rect applyScissor() {
-        Rect currentScissor = scissorStack.back;
+        enum {left = 0, top = 1, right = 2, bottom = 3}
+        vec4 currentScissor = scissorStack.back.absolute;
 
         if (scissorStack.length >= 2) {
             foreach (Rect scissor; scissorStack) {
-                if (currentScissor.left < scissor.left)
-                    currentScissor.left = scissor.left;
+                if (currentScissor.vector[left] < scissor.absolute.vector[left])
+                    currentScissor.vector[left] = scissor.absolute.vector[left];
 
-                if (currentScissor.top < scissor.top)
-                    currentScissor.top = scissor.top;
+                if (currentScissor.vector[top] < scissor.absolute.vector[top])
+                    currentScissor.vector[top] = scissor.absolute.vector[top];
 
-                if (currentScissor.width > scissor.width)
-                    currentScissor.width = scissor.width;
+                if (currentScissor.vector[right] > scissor.absolute.vector[right])
+                    currentScissor.vector[right] = scissor.absolute.vector[right];
 
-                if (currentScissor.height > scissor.height)
-                    currentScissor.height = scissor.height;
+                if (currentScissor.vector[bottom] > scissor.absolute.vector[bottom])
+                    currentScissor.vector[bottom] = scissor.absolute.vector[bottom];
             }
         }
 
-        IntRect intScissor = IntRect(currentScissor);
-        glScissor(intScissor.left,
-                  app.windowHeight - intScissor.top - intScissor.height,
-                  intScissor.width,
-                  intScissor.height);
+        auto resultScissorRect = Rect(
+            currentScissor.vector[left],
+            currentScissor.vector[top],
+            currentScissor.vector[right] - currentScissor.vector[left],
+            currentScissor.vector[bottom] - currentScissor.vector[top]
+        );
 
-        return currentScissor;
+        auto screenScissor = IntRect(resultScissorRect);
+        screenScissor.top = app.windowHeight - screenScissor.top - screenScissor.height;
+        glScissor(screenScissor.left, screenScissor.top, screenScissor.width, screenScissor.height);
+
+        return resultScissorRect;
     }
 
 // Events ------------------------------------------------------------------------------------------
@@ -244,6 +254,29 @@ package:
 }
 
 unittest {
+    import test.core;
+
+    initApp();
     Manager manager = new Manager();
 
+    auto scissor1 = Rect(vec2(10, 10), vec2(100, 200));
+    auto scissor2 = Rect(vec2(12, 12), vec2(94, 100));
+    auto scissor3 = Rect(vec2(50, 150), vec2(94, 100));
+
+    with (manager) {
+        pushScissor(scissor1);
+        pushScissor(scissor2);
+        pushScissor(scissor3);
+
+        auto resScissor = applyScissor();
+
+        assert(resScissor.left == scissor3.left);
+        assert(resScissor.top == scissor3.top);
+        assert(resScissor.width == scissor2.left + scissor3.width - resScissor.left);
+        assert(-resScissor.height == scissor1.height - resScissor.top - scissor2.top);
+
+        popScissor();
+        popScissor();
+        popScissor();
+    }
 }

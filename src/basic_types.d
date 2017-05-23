@@ -69,6 +69,11 @@ struct Rect {
         height = val.y;
     }
 
+    // piar of points: (left, top), (right, bottom)
+    @property vec4 absolute() {
+        return vec4(left, top, left + width, top + height);
+    }
+
     this(in float left, in float top, in float width, in float height) {
         this.left = left;
         this.top = top;

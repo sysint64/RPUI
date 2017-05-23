@@ -134,7 +134,7 @@ private:
 
 
 unittest {
-    Data data = new Data("/home/andrey/projects/e2dit-dlang/tests");
+    auto data = new RPDLTree("/home/andrey/projects/e2dit-dlang/tests");
     data.load("simple.e2t");
 
     assert(data.getNumber("Test.Test2.p2.0") == 2);
