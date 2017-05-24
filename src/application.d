@@ -239,7 +239,7 @@ private:
                     running = false;
                 } else {
                     handleEvents(event);
-                    onProgress();
+                    // onProgress();
                 }
             }
 

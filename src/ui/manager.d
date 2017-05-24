@@ -133,37 +133,29 @@ class Manager {
     }
 
     Rect applyScissor() {
-        enum {left = 0, top = 1, right = 2, bottom = 3}
-        vec4 currentScissor = scissorStack.back.absolute;
+        FrameRect currentScissor = scissorStack.back.absolute;
 
         if (scissorStack.length >= 2) {
             foreach (Rect scissor; scissorStack) {
-                if (currentScissor.vector[left] < scissor.absolute.vector[left])
-                    currentScissor.vector[left] = scissor.absolute.vector[left];
+                if (currentScissor.left < scissor.absolute.left)
+                    currentScissor.left = scissor.absolute.left;
 
-                if (currentScissor.vector[top] < scissor.absolute.vector[top])
-                    currentScissor.vector[top] = scissor.absolute.vector[top];
+                if (currentScissor.top < scissor.absolute.top)
+                    currentScissor.top = scissor.absolute.top;
 
-                if (currentScissor.vector[right] > scissor.absolute.vector[right])
-                    currentScissor.vector[right] = scissor.absolute.vector[right];
+                if (currentScissor.right > scissor.absolute.right)
+                    currentScissor.right = scissor.absolute.right;
 
-                if (currentScissor.vector[bottom] > scissor.absolute.vector[bottom])
-                    currentScissor.vector[bottom] = scissor.absolute.vector[bottom];
+                if (currentScissor.bottom > scissor.absolute.bottom)
+                    currentScissor.bottom = scissor.absolute.bottom;
             }
         }
 
-        auto resultScissorRect = Rect(
-            currentScissor.vector[left],
-            currentScissor.vector[top],
-            currentScissor.vector[right] - currentScissor.vector[left],
-            currentScissor.vector[bottom] - currentScissor.vector[top]
-        );
-
-        auto screenScissor = IntRect(resultScissorRect);
+        auto screenScissor = IntRect(currentScissor);
         screenScissor.top = app.windowHeight - screenScissor.top - screenScissor.height;
         glScissor(screenScissor.left, screenScissor.top, screenScissor.width, screenScissor.height);
 
-        return resultScissorRect;
+        return Rect(currentScissor);
     }
 
 // Events ------------------------------------------------------------------------------------------
@@ -273,7 +265,7 @@ unittest {
         assert(resScissor.left == scissor3.left);
         assert(resScissor.top == scissor3.top);
         assert(resScissor.width == scissor2.left + scissor3.width - resScissor.left);
-        assert(-resScissor.height == scissor1.height - resScissor.top - scissor2.top);
+        assert(resScissor.height == scissor1.height - resScissor.top - scissor2.top);
 
         popScissor();
         popScissor();

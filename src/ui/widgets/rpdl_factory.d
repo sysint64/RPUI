@@ -142,18 +142,24 @@ class RPDLWidgetFactory {
                 ["Panel.Background", "optPanelBackground", ".0"],
             );
 
+            bool foundType = false;
+
             foreach (type; typesMap) {
                 mixin("alias rawType = " ~ type[name] ~ ";");
 
                 static if (is(symbolType == rawType)) {
+                    foundType = true;
                     auto fullSymbolPath = symbolName ~ type[selector];
                     enum call = "widgetNode." ~ type[accessor] ~ "(fullSymbolPath, symbol)";
                     auto value = mixin(call);
 
                     // assign value to widget field
                     mixin("widget." ~ symbolName ~ " = value;");
+                    break;
                 }
             }
+
+            assert(foundType, "type " ~ symbolType.stringof ~ " doesn't allow");
         }
     }
 

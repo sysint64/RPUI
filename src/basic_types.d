@@ -2,6 +2,7 @@ module basic_types;
 
 import math.linalg;
 import std.conv : to;
+import std.math;
 
 
 alias utfchar = dchar;
@@ -70,8 +71,8 @@ struct Rect {
     }
 
     // piar of points: (left, top), (right, bottom)
-    @property vec4 absolute() {
-        return vec4(left, top, left + width, top + height);
+    @property FrameRect absolute() const {
+        return FrameRect(left, top, left + width, top + height);
     }
 
     this(in float left, in float top, in float width, in float height) {
@@ -88,6 +89,13 @@ struct Rect {
         this.height = rect.w;
     }
 
+    this(in FrameRect rect) {
+        this.left = rect.left;
+        this.top = rect.top;
+        this.width = abs(rect.right - rect.left);
+        this.height = abs(rect.bottom - rect.top);
+    }
+
     this(in vec2 point, in vec2 size) {
         this.left = point.x;
         this.top = point.y;
@@ -95,7 +103,6 @@ struct Rect {
         this.height = size.y;
     }
 }
-
 
 struct IntRect {
     int left;
@@ -160,5 +167,12 @@ struct IntRect {
         this.top = to!(int)(point.y);
         this.width = to!(int)(size.x);
         this.height = to!(int)(size.y);
+    }
+
+    this(in FrameRect rect) {
+        this.left = to!int(rect.left);
+        this.top = to!int(rect.top);
+        this.width = abs(to!int(rect.right - rect.left));
+        this.height = abs(to!int(rect.bottom - rect.top));
     }
 }

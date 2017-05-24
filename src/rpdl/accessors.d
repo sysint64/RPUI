@@ -114,8 +114,7 @@ mixin template Accessors() {
     alias optVec3ui = optVecValue!(uint, 3, NotVec3Exception);
     alias optVec4ui = optVecValue!(uint, 4, NotVec4Exception);
 
-
-// TODO: encapsulate this non standart accessors to other module -----------------------------------
+// TODO: encapsulate these non standart accessors to other module ----------------------------------
 
     Texture.Coord optTexCoord(in string path, Texture.Coord defaultVal = Texture.Coord.init) {
         Texture.Coord texCoord;
