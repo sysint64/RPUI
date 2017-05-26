@@ -72,8 +72,26 @@ class Widget {
         }
     }
 
+private:
+    Camera camera = null;
+    Children p_children;
+
+    uint p_id;
+    string p_style;
+    Widget p_parent;
+    bool p_focused;
+
+    // Navigation (for focus)
+    Widget p_nextWidget = null;
+    Widget p_prevWidget = null;
+    Widget p_lastWidget = null;
+    Widget p_firstWidget = null;
+
+    Widget p_associatedWidget = null;
+
 // Event Listeners ---------------------------------------------------------------------------------
 
+public:
     alias void delegate(Widget) OnClickListener;
     alias void delegate(Widget) OnDblClickistener;
     alias void delegate(Widget) OnFocusListener;
@@ -232,24 +250,6 @@ class Widget {
 
     void onCursor() {
     }
-
-private:
-    Children p_children;
-
-    uint p_id;
-    string p_style;
-    Widget p_parent;
-    bool p_focused;
-
-    Camera camera = null;
-
-    // Navigation (for focus)
-    Widget p_nextWidget = null;
-    Widget p_prevWidget = null;
-    Widget p_lastWidget = null;
-    Widget p_firstWidget = null;
-
-    Widget p_associatedWidget = null;
 
 protected:
     enum PartDraws {all, left, center, right};

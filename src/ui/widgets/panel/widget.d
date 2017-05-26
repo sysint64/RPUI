@@ -45,20 +45,6 @@ class Panel : Widget, Scrollable {
         showHorizontalScrollButton = val;
     }
 
-    // @property utfstring caption() {
-    //     if (header.textRenderObject is null)
-    //         return "";
-
-    //     return header.textRenderObject.text;
-    // }
-
-    // @property void caption(in utfstring text) {
-    //     if (header.textRenderObject is null)
-    //         return;
-
-    //     header.textRenderObject.text = text;
-    // }
-
     this() {
         super("Panel");
     }

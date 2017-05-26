@@ -1,5 +1,7 @@
 module ui.widgets.button;
 
+import std.algorithm.comparison;
+
 import input;
 import gapi;
 import math.linalg;

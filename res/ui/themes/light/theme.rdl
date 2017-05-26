@@ -72,6 +72,8 @@ Panel
             position        : 6, 4
 
     Scroll
+        buttonMinSize       : 20
+
         Horizontal
             left            : 0, 0, 0, 10
             center          : 0, 0, 0, 10

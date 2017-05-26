@@ -34,6 +34,7 @@ package struct ScrollButton {
     RPDLTree styleData;
     vec2 buttonOffset;
     float buttonSize;
+    float buttonMinSize = 20;
 
     this(in Orientation orientation) {
         this.orientation = orientation;
@@ -92,6 +93,8 @@ package struct ScrollButton {
         } else if (orientation == Orientation.vertical) {
             onCreateVertical();
         }
+
+        buttonMinSize = styleData.optNumber(panel.style ~ ".Scroll.buttonMinSize.0", buttonMinSize);
     }
 
     void onCreateHorizontal() {
@@ -157,6 +160,9 @@ package struct ScrollButton {
             rect = Rect(panel.absolutePosition + buttonOffset,
                         vec2(panel.regionOffset.right, buttonSize));
         }
+
+        if (buttonSize < buttonMinSize)
+            buttonSize = buttonMinSize;
 
         isEnter = pointInRect(app.mousePos, rect);
         updateController();
