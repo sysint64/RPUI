@@ -48,6 +48,11 @@ class BaseObject {
         needUpdateMatrices = false;
     }
 
+    void updateMatrices() {
+        if (lastCamera !is null)
+            updateMatrices(lastCamera);
+    }
+
     void move(float x, float y) {
         position = position + vec2(x, y);
     }

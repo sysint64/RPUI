@@ -52,6 +52,13 @@ struct FrameRect {
         this.right = rect.z;
         this.bottom = rect.w;
     }
+
+    this(in Rect rect) {
+        this.left = rect.left;
+        this.top = rect.top;
+        this.right = rect.left + rect.width;
+        this.bottom = rect.top + rect.height;
+    }
 }
 
 struct Rect {

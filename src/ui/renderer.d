@@ -37,6 +37,7 @@ class Renderer {
 
         renderObject.position = toScreenPosition(position, size);
         renderObject.scaling = size;
+        renderObject.updateMatrices();
 
         with (renderObject.texCoordinates[state]) {
             texAtlasShader.setUniformMatrix("MVP", renderObject.lastMVPMatrix);
@@ -50,7 +51,7 @@ class Renderer {
     }
 
     void renderChain(T)(BaseRenderObject[string] renderObjects, in Orientation orientation,
-                     in string state, in vec2 position, in T size)
+                        in string state, in vec2 position, in T size)
     {
         switch (orientation) {
             case Orientation.horizontal:
@@ -115,9 +116,9 @@ class Renderer {
     void renderText(TextRenderObject text, in string state, in vec2 position, in vec2 size) {
         const vec2 textPos = position + text.offsets[state];
         text.color = text.colors[state];
-        text.render(camera);
         text.scaling = vec2(size);
         text.position = toScreenPosition(textPos, vec2(size));
+        text.render(camera);
     }
 
     void renderColorQuad(BaseRenderObject renderObject, in vec4 color,
@@ -127,6 +128,7 @@ class Renderer {
 
         renderObject.position = toScreenPosition(position, size);
         renderObject.scaling = size;
+        renderObject.updateMatrices();
 
         colorShader.setUniformMatrix("MVP", renderObject.lastMVPMatrix);
         colorShader.setUniformVec4f("color", color);

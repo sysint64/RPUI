@@ -57,7 +57,7 @@ class Panel : Widget, Scrollable {
         super.onProgress();
         split.isEnter = false;
 
-        // horizontalScrollButton.onProgress();
+        horizontalScrollButton.onProgress();
         verticalScrollButton.onProgress();
 
         contentOffset = vec2(horizontalScrollButton.scrollController.contentOffset,
