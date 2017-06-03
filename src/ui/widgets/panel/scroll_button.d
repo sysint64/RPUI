@@ -41,24 +41,28 @@ package struct ScrollButton {
     }
 
     // Update scrollController properties
-    // TODO: make the method easier
     void updateController() {
-        float comp(vec2 v, in string c) {
-            return c == "x" ? v.x : v.y;
+        const float[Orientation] widgetRegionOffsets = [
+            Orientation.horizontal: panel.regionOffset.right,
+            Orientation.vertical: panel.regionOffset.bottom
+        ];
+
+        float getVectorComponent(in vec2 vector) {
+            return orientation == Orientation.horizontal ? vector.x : vector.y;
         }
 
-        const string vecComponent = orientation == Orientation.vertical ? "y" : "x";
-        const float widgetSize = comp(panel.size, vecComponent);
-        const float widgetRegionOffset = orientation == Orientation.vertical ?
-            panel.regionOffset.bottom : panel.regionOffset.right;
+        const widgetSize = getVectorComponent(panel.size);
+        const widgetRegionOffset = widgetRegionOffsets[orientation];
+        const innerBoundarySize = getVectorComponent(panel.innerBoundarySize);
+        const innerBoundarySizeClamped = getVectorComponent(panel.innerBoundarySizeClamped);
 
         with (scrollController) {
             buttonMaxOffset = widgetSize - widgetRegionOffset;
             buttonMaxSize = widgetSize - widgetRegionOffset;
-            contentSize = comp(panel.innerBoundarySize, vecComponent);
             buttonClick = isClick;
-            contentMaxOffset = comp(panel.innerBoundarySizeClamped, vecComponent) -
-                widgetSize + widgetRegionOffset;
+
+            contentSize = innerBoundarySize + widgetRegionOffset;
+            contentMaxOffset = innerBoundarySizeClamped - widgetSize;
         }
     }
 
@@ -144,16 +148,17 @@ package struct ScrollButton {
     }
 
     void onProgress() {
-        visible = panel.innerBoundarySize.y > panel.size.y;
         Rect rect;
 
         if (orientation == Orientation.horizontal) {
+            visible = panel.innerBoundarySize.x > panel.size.x;
             buttonOffset = vec2(scrollController.buttonOffset,
                                 panel.size.y - panel.regionOffset.bottom);
             buttonSize = scrollController.buttonSize - panel.regionOffset.left;
             rect = Rect(panel.absolutePosition + buttonOffset,
                         vec2(buttonSize, panel.regionOffset.bottom));
         } else if (orientation == Orientation.vertical) {
+            visible = panel.innerBoundarySize.y > panel.size.y;
             buttonOffset = vec2(panel.size.x - panel.regionOffset.right,
                                 scrollController.buttonOffset + panel.regionOffset.top);
             buttonSize = scrollController.buttonSize - panel.regionOffset.top;

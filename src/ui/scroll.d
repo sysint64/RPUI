@@ -30,27 +30,29 @@ class ScrollController {
     void pollButton() {
         const float buttonRatio = buttonMaxSize / contentSize;
         p_buttonSize = buttonMaxSize * buttonRatio;
+        float delta = 0;
 
         if (!buttonClick)
             return;
 
         if (orientation == Orientation.horizontal)
-            p_buttonOffset = buttonClickOffset + app.mousePos.x - app.mouseClickPos.x;
+            delta = app.mousePos.x - app.mouseClickPos.x;
 
         if (orientation == Orientation.vertical)
-            p_buttonOffset = buttonClickOffset + app.mousePos.y - app.mouseClickPos.y;
+            delta = app.mousePos.y - app.mouseClickPos.y;
 
+        p_buttonOffset = buttonClickOffset + delta;
         clampValues();
-        const float contentRatio = p_buttonOffset / buttonMaxOffset;
-        p_contentOffset = contentSize * contentRatio;
+        const float contentRatio = p_buttonOffset / (buttonMaxOffset - p_buttonSize);
+        p_contentOffset = contentMaxOffset * contentRatio;
     }
 
     void onResize() {
         if (p_contentOffset == 0)
             return;
 
-        const float ratio = p_contentOffset / contentSize;
-        p_buttonOffset = buttonMaxSize * ratio;
+        const float ratio = p_contentOffset / contentMaxOffset;
+        p_buttonOffset = (buttonMaxSize - p_buttonSize) * ratio;
         clampValues();
     }
 
@@ -66,6 +68,17 @@ class ScrollController {
         return lastScrollOffset != p_contentOffset;
     }
 
+    // percent in range 0..1
+    void setOffsetInPercent(in float percent)
+    in {
+        assert(percent <= 1.0f, "percent should be in range 0..1");
+    }
+    body {
+        p_contentOffset = contentMaxOffset * percent;
+        onResize();
+        clampValues();
+    }
+
 // Properties --------------------------------------------------------------------------------------
 
     float buttonMinOffset = 0;
@@ -75,6 +88,7 @@ class ScrollController {
     bool  buttonClick = false;
     float contentMaxOffset = 0;
     float contentSize = 0;
+    float extraContentOffset = 10;
 
     @property float buttonSize() { return ceil(p_buttonSize); }
     @property float buttonOffset() { return ceil(p_buttonOffset); }

@@ -57,15 +57,6 @@ class Panel : Widget, Scrollable {
         super.onProgress();
         split.isEnter = false;
 
-        horizontalScrollButton.onProgress();
-        verticalScrollButton.onProgress();
-
-        contentOffset = vec2(horizontalScrollButton.scrollController.contentOffset,
-                             verticalScrollButton.scrollController.contentOffset);
-
-        contentOffset.x -= regionOffset.left;
-        contentOffset.y -= regionOffset.top;
-
         handleResize();
         header.onProgress();
 
@@ -74,7 +65,16 @@ class Panel : Widget, Scrollable {
         updateAbsolutePosition();
         updateRegionOffset();
 
+        horizontalScrollButton.onProgress();
+        verticalScrollButton.onProgress();
+
         split.calculate();
+
+        contentOffset = vec2(horizontalScrollButton.scrollController.contentOffset,
+                             verticalScrollButton.scrollController.contentOffset);
+
+        contentOffset.x -= regionOffset.left;
+        contentOffset.y -= regionOffset.top;
     }
 
     override void render(Camera camera) {

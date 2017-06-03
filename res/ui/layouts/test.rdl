@@ -14,6 +14,12 @@ Panel
         position: 200, 300
         size: 300, 300
 
+        Button
+            size: 100, 21
+            position: 600, 100
+            caption: "Close"
+            name: "closeButton"
+
         StackLayout
             name: "buttons"
             position: 100, 300
