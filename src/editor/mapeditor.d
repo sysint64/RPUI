@@ -1,4 +1,3 @@
-
 module editor.mapeditor;
 
 import input;
@@ -38,8 +37,8 @@ class MyView : View {
 
     int a = 0;
 
-    this(Manager manager, in string fileName) {
-        super(manager, fileName);
+    this(Manager manager, in string laytoutFileName, in string shortcutsFileName) {
+        super(manager, laytoutFileName, shortcutsFileName);
     }
 
     @OnClickListener("okButton")
@@ -49,6 +48,11 @@ class MyView : View {
         okButton.caption = "YAY!";
         myButton.caption = "WORK!";
         buttons[2].caption = "YES!";
+    }
+
+    @Shortcut("TestGroup.cancel")
+    void someShortcutAction() {
+        writeln("Wow! shortcut was executed!");
     }
 
     @OnClickListener("closeButton")
@@ -105,8 +109,9 @@ class MapEditor: Application {
     BaseObject sprite;
     Shader shader;
     Texture texture;
-    ui.Manager uiManager;
+    Manager uiManager;
     Button testButton;
+    MyView view;
 
     override void onCreate() {
         camera = new Camera(viewportWidth, viewportHeight);
@@ -129,7 +134,7 @@ class MapEditor: Application {
         // spriteGeometry.bind();
 
         uiManager = new Manager(settings.theme);
-        View.createFromFile!(MyView)(uiManager, "test.rdl");
+        view = View.createFromFile!(MyView)(uiManager, "test.rdl");
     }
 
     override void onKeyPressed(in KeyCode key) {
@@ -138,8 +143,9 @@ class MapEditor: Application {
     }
 
     override void onKeyReleased(in KeyCode key) {
+        view.shortcuts.onKeyReleased(key);
+        uiManager.onKeyReleased(key);
         super.onKeyReleased(key);
-        uiManager.onKeyPressed(key);
     }
 
     override void onTextEntered(in utfchar key) {

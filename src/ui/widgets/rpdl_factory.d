@@ -100,8 +100,8 @@ class RPDLWidgetFactory {
     // with values from rpdl file
     void readFields(T : Widget)(T widget, ObjectNode widgetNode) {
         foreach (symbolName; getSymbolsNamesByUDA!(T, Widget.Field)) {
-            auto symbol = mixin("widget." ~ symbolName);
-            alias symbolType = typeof(symbol);
+            auto defaultValue = mixin("widget." ~ symbolName);
+            alias symbolType = typeof(defaultValue);
 
             // Tell the system how to interprete types of fields in widgets
             // and how to extract them
@@ -150,7 +150,7 @@ class RPDLWidgetFactory {
                 static if (is(symbolType == rawType)) {
                     foundType = true;
                     auto fullSymbolPath = symbolName ~ type[selector];
-                    enum call = "widgetNode." ~ type[accessor] ~ "(fullSymbolPath, symbol)";
+                    enum call = "widgetNode." ~ type[accessor] ~ "(fullSymbolPath, defaultValue)";
                     auto value = mixin(call);
 
                     // assign value to widget field

@@ -29,21 +29,3 @@ template getSymbolsNamesByUDA(alias symbol, alias attribute) {
     else
         alias getSymbolsNamesByUDA = membersWithUDA;
 }
-
-
-template getSymbolsByUDA(alias symbol, alias attribute) {
-    import std.format : format;
-    import std.meta : AliasSeq, Filter;
-
-    // translate a list of strings into symbols. mixing in the entire alias
-    // avoids trying to access the symbol, which could cause a privacy violation
-    template toSymbols(names...) {
-        static if (names.length == 0)
-            alias toSymbols = AliasSeq!();
-        else
-            mixin("alias toSymbols = AliasSeq!(symbol.%s, toSymbols!(names[1..$]));"
-                  .format(names[0]));
-    }
-
-    alias getSymbolsByUDA = toSymbols!(getSymbolsNamesByUDA!(symbol, attribute));
-}

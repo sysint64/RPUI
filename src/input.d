@@ -2,6 +2,8 @@ module input;
 
 import derelict.sfml2.window;
 
+import std.string;
+
 
 // break the dependence on SFML Mouse
 enum MouseButton {
@@ -116,7 +118,9 @@ enum KeyCode {
     F15 = sfKeyF15,
     Pause = sfKeyPause,
     Count = sfKeyCount,
-    Shift
+    Shift,
+    Ctrl,
+    Alt,
 };
 
 private static bool[KeyCode] keyPressed;
@@ -124,8 +128,11 @@ private static bool[KeyCode] keyPressed;
 void setKeyPressed(in KeyCode key, in bool pressed) {
     keyPressed[key] = pressed;
 
-    with (KeyCode)
+    with (KeyCode) {
         keyPressed[Shift] = isKeyPressed(LShift) || isKeyPressed(RShift);
+        keyPressed[Ctrl] = isKeyPressed(LControl) || isKeyPressed(RControl);
+        keyPressed[Alt] = isKeyPressed(LAlt) || isKeyPressed(RAlt);
+    }
 }
 
 bool isKeyPressed(in KeyCode key) {
@@ -133,4 +140,11 @@ bool isKeyPressed(in KeyCode key) {
         return false;
 
     return keyPressed[key];
+}
+
+bool testKeyState(in KeyCode key, in bool state) {
+    if (key !in keyPressed)
+        return false;
+
+    return keyPressed[key] == state;
 }

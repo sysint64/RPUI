@@ -20,3 +20,6 @@ struct OnMouseUpListener { string widgetName; }
 // Accessors
 struct ViewWidget { string widgetName = ""; }
 struct GroupViewWidgets { string widgetName = ""; }
+
+// Shortcuts
+struct Shortcut { string shortcutPath; }

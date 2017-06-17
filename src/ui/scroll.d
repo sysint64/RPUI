@@ -88,7 +88,6 @@ class ScrollController {
     bool  buttonClick = false;
     float contentMaxOffset = 0;
     float contentSize = 0;
-    float extraContentOffset = 10;
 
     @property float buttonSize() { return ceil(p_buttonSize); }
     @property float buttonOffset() { return ceil(p_buttonOffset); }

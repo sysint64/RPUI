@@ -18,7 +18,6 @@ Panel
             size: 100, 21
             position: 600, 100
             caption: "Close"
-            name: "closeButton"
 
         StackLayout
             name: "buttons"
@@ -47,7 +46,7 @@ Panel
 
     Button
         size: 200, 21
-        position: 100, 100
+        position: 1000, 100
         caption: "LALAL"
 
     Button

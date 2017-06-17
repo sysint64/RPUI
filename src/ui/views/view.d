@@ -1,6 +1,6 @@
 module ui.views.view;
 
-import std.traits : hasUDA, getUDAs, isFunction, isType, ForeachType, StaticArrayTypeOf;
+import std.traits;
 import std.stdio;
 import std.path;
 import std.meta;
@@ -13,6 +13,7 @@ import ui.widgets.rpdl_factory;
 import ui.views.attributes;
 import ui.manager;
 import ui.widgets.panel.widget;
+import ui.shortcuts;
 
 import editor.mapeditor : MyView;
 
@@ -20,24 +21,38 @@ import editor.mapeditor : MyView;
 class View {
     Application app;
     Manager uiManager;
+    Shortcuts shortcuts;
 
-    this(this T)(Manager manager, in string fileName) {
+    this(this T)(Manager manager, in string layoutFileName, in string shortcutsFileName) {
         assert(manager !is null);
         app = Application.getInstance();
         this.uiManager = manager;
 
-        widgetFactory = new RPDLWidgetFactory(uiManager, fileName);
+        widgetFactory = new RPDLWidgetFactory(uiManager, layoutFileName);
         widgetFactory.createWidgets();
         rootWidget = widgetFactory.rootWidget;
         assert(rootWidget !is null);
 
+        shortcuts = Shortcuts.createFromFile(shortcutsFileName);
         readAttributes!T();
     }
 
     static createFromFile(T : View)(Manager manager, in string fileName) {
         auto app = Application.getInstance();
-        const string path = buildPath(app.resourcesDirectory, "ui", "layouts", fileName);
-        return new T(manager, path);
+        const string layoutPath = buildPath(app.resourcesDirectory, "ui", "layouts", fileName);
+        const string shortcutsPath = buildPath(app.resourcesDirectory, "ui", "shortcuts", fileName);
+        return new T(manager, layoutPath, shortcutsPath);
+    }
+
+    static createFromFile(T : View)(Manager manager, in string layoutFileName,
+                                    in string shortcutsFilename)
+    {
+        auto app = Application.getInstance();
+        const string layoutPath = buildPath(app.resourcesDirectory, "ui", "layouts",
+                                            layoutFileName);
+        const string shortcutsPath = buildPath(app.resourcesDirectory, "ui", "shortcuts",
+                                               shortcutsFilename);
+        return new T(manager, layoutPath, shortcutsPath);
     }
 
     Widget findWidgetByName(in string name) {
@@ -162,10 +177,22 @@ private:
         }
     }
 
+    void readShortcutsAttributes(T : View)(T view) {
+        foreach (symbolName; getSymbolsNamesByUDA!(T, Shortcut)) {
+            mixin("alias symbol = T." ~ symbolName ~ ";");
+
+            foreach (uda; getUDAs!(symbol, Shortcut)) {
+                enum shortcutPath = uda.shortcutPath;
+                shortcuts.attach(shortcutPath, &mixin("view." ~ symbolName));
+            }
+        }
+    }
+
     void readAttributes(T : View)() {
-        T view = cast(MyView) this;
+        T view = cast(T) this;
         readEventsAttributes(view);
         readViewWidgetAttributes(view);
         readGroupViewWidgets(view);
+        readShortcutsAttributes(view);
     }
 }
