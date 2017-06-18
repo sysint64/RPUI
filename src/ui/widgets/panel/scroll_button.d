@@ -34,7 +34,6 @@ package struct ScrollButton {
     RPDLTree styleData;
     vec2 buttonOffset;
     float buttonSize;
-    float buttonMinSize = 20;
 
     this(in Orientation orientation) {
         this.orientation = orientation;
@@ -97,8 +96,6 @@ package struct ScrollButton {
         } else if (orientation == Orientation.vertical) {
             onCreateVertical();
         }
-
-        buttonMinSize = styleData.optNumber(panel.style ~ ".Scroll.buttonMinSize.0", buttonMinSize);
     }
 
     void onCreateHorizontal() {
@@ -111,10 +108,9 @@ package struct ScrollButton {
         const string scrollButtonStyle = style ~ ".Scroll.Horizontal.Button";
 
         // for button and bg size component is `y`
-        const string buttonSizeSelector = scrollButtonStyle ~ ".Leave.left.3";
         const string bgSizeSelector = scrollBgStyle ~ ".left.3";
 
-        createScrollController(buttonSizeSelector, bgSizeSelector);
+        createScrollController(bgSizeSelector);
         createChain(scrollButtonStyle, states, parts);
     }
 
@@ -128,16 +124,16 @@ package struct ScrollButton {
         const string scrollButtonStyle = style ~ ".Scroll.Vertical.Button";
 
         // for button and bg size component is `x`
-        const string buttonSizeSelector = scrollButtonStyle ~ ".Leave.top.2";
         const string bgSizeSelector = scrollBgStyle ~ ".middle.2";
 
-        createScrollController(buttonSizeSelector, bgSizeSelector);
+        createScrollController(bgSizeSelector);
         createChain(scrollButtonStyle, states, parts);
     }
 
-    void createScrollController(in string buttonSizeSelector, in string bgSizeSelector) {
+    void createScrollController(in string bgSizeSelector) {
+        const string buttonMinSizeSelector = panel.style ~ ".Scroll.buttonMinSize.0";
         scrollController = new ScrollController(orientation);
-        scrollController.buttonMinSize = styleData.getNumber(buttonSizeSelector) * 2;
+        scrollController.buttonMinSize = styleData.getNumber(buttonMinSizeSelector);
         width = styleData.getNumber(bgSizeSelector);
     }
 
@@ -165,9 +161,6 @@ package struct ScrollButton {
             rect = Rect(panel.absolutePosition + buttonOffset,
                         vec2(panel.regionOffset.right, buttonSize));
         }
-
-        if (buttonSize < buttonMinSize)
-            buttonSize = buttonMinSize;
 
         isEnter = pointInRect(app.mousePos, rect);
         updateController();

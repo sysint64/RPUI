@@ -115,7 +115,6 @@ class MapEditor: Application {
 
     override void onCreate() {
         camera = new Camera(viewportWidth, viewportHeight);
-        // spriteGeometry = new SpriteGeometry(false, true, true);
 
         spriteGeometry = GeometryFactory.createSprite(false, true);
         sprite = new BaseObject(spriteGeometry);

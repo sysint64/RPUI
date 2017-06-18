@@ -30,10 +30,14 @@ class ScrollController {
     void pollButton() {
         const float buttonRatio = buttonMaxSize / contentSize;
         p_buttonSize = buttonMaxSize * buttonRatio;
-        float delta = 0;
+
+        if (p_buttonSize < buttonMinSize)
+            p_buttonSize = buttonMinSize;
 
         if (!buttonClick)
             return;
+
+        float delta = 0;
 
         if (orientation == Orientation.horizontal)
             delta = app.mousePos.x - app.mouseClickPos.x;
@@ -83,7 +87,7 @@ class ScrollController {
 
     float buttonMinOffset = 0;
     float buttonMaxOffset = 0;
-    float buttonMinSize;
+    float buttonMinSize = 40;
     float buttonMaxSize;
     bool  buttonClick = false;
     float contentMaxOffset = 0;
