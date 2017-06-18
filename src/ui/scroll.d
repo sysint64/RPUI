@@ -52,9 +52,6 @@ class ScrollController {
     }
 
     void onResize() {
-        if (p_contentOffset == 0)
-            return;
-
         const float ratio = p_contentOffset / contentMaxOffset;
         p_buttonOffset = (buttonMaxSize - p_buttonSize) * ratio;
         clampValues();
@@ -68,7 +65,6 @@ class ScrollController {
         const float lastScrollOffset = p_contentOffset;
         p_contentOffset += delta;
         onResize();
-        clampValues();
         return lastScrollOffset != p_contentOffset;
     }
 
