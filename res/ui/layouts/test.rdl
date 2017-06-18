@@ -7,11 +7,11 @@ Panel
     locationAlign: center
     size: 200, 300
     position: 100, 300
-    padding: 5, 5, 5, 5
+    padding: 5, 10, 50
 
     Panel
         background: dark
-        position: 200, 300
+        position: 0, 0
         size: 300, 300
 
         Button

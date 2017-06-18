@@ -66,7 +66,7 @@ protected:
         renderer.renderHorizontalChain(skinRenderObjects, state, absolutePosition, size);
         renderer.renderText(textRenderObject, state, absolutePosition, size);
 
-        if (focused) {
+        if (isFocused) {
             const vec2 focusPos = absolutePosition + focusOffsets;
             const vec2 focusSize = size + vec2(focusResize, focusResize);
 

@@ -50,7 +50,7 @@ class Widget {
     @property uint id() { return p_id; }
     @property string style() { return p_style; }
     @property Widget parent() { return p_parent; }
-    @property bool focused() { return p_focused; }
+    @property bool isFocused() { return p_isFocused; }
 
     @property Widget nextWidget() { return p_nextWidget; }
     @property Widget prevWidget() { return p_prevWidget; }
@@ -79,7 +79,6 @@ private:
     uint p_id;
     string p_style;
     Widget p_parent;
-    bool p_focused;
 
     // Navigation (for focus)
     Widget p_nextWidget = null;
@@ -127,12 +126,6 @@ public:
     this(in string style) {
         app = Application.getInstance();
         this.p_style = style;
-    }
-
-    void focus() {
-    }
-
-    void blur() {
     }
 
     void onProgress() {
@@ -204,6 +197,21 @@ public:
         }
 
         return null;
+    }
+
+    void focus() {
+        if (manager.focusedWidget != this && manager.focusedWidget !is null)
+            manager.focusedWidget.blur();
+
+        manager.focusedWidget = this;
+        p_isFocused = true;
+
+        if (onFocusListener !is null)
+            onFocusListener(this);
+    }
+
+    void blur() {
+        manager.unfocusedWidgets.insert(this);
     }
 
 // Events ------------------------------------------------------------------------------------------
@@ -345,6 +353,7 @@ protected:
     @property Renderer renderer() { return manager.renderer; }
 
 package:
+    bool p_isFocused;
     bool drawChildren = true;
     FrameRect regionOffset = FrameRect(0, 0, 0, 0);
     bool overlay;

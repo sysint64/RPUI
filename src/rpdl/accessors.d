@@ -182,6 +182,29 @@ mixin template Accessors() {
     }
 
     FrameRect getFrameRect(in string path) {
+        Node node = getNode(path);
+
+        if (node is null)
+            throw new NotFoundException("Node with path \"" ~ path ~ "\" not found");
+
+        if (node.length == 1) {
+            const float val = getNumber(path ~ ".0");
+            return FrameRect(val, val, val, val);
+        }
+
+        if (node.length == 2) {
+            const float vertical = getNumber(path ~ ".0");
+            const float horizontal = getNumber(path ~ ".1");
+            return FrameRect(horizontal, vertical, horizontal, vertical);
+        }
+
+        if (node.length == 3) {
+            const float top = getNumber(path ~ ".0");
+            const float horizontal = getNumber(path ~ ".1");
+            const float bottom = getNumber(path ~ ".2");
+            return FrameRect(horizontal, top, horizontal, bottom);
+        }
+
         return FrameRect(getVec4f(path));
     }
 

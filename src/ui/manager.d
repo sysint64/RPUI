@@ -1,6 +1,7 @@
 module ui.manager;
 
 import std.container;
+import std.container.array;
 import containers.treemap;
 
 import input;
@@ -23,6 +24,7 @@ import ui.renderer;
 class Manager {
     private this() {
         app = Application.getInstance();
+        unfocusedWidgets.reserve(20);
     }
 
     this(in string theme) {
@@ -36,6 +38,8 @@ class Manager {
         theme_ = new Theme(theme);
         renderFactory_ = new RenderFactory(this);
         renderer_ = new Renderer(this);
+
+        unfocusedWidgets.reserve(20);
     }
 
     void onProgress() {
@@ -95,7 +99,7 @@ class Manager {
                 found = widget;
             }
 
-            widget.isClick = (widget.isClick || widget.focused) && widget.isEnter &&
+            widget.isClick = (widget.isClick || widget.isFocused) && widget.isEnter &&
                 app.mouseButton == MouseButton.mouseLeft;
         }
     }
@@ -187,7 +191,18 @@ class Manager {
     }
 
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
+        foreach_reverse (Widget widget; widgetOrdering) {
+            if (widget is null)
+                continue;
+
+            if (widget.isEnter) {
+                widget.focus();
+                break;
+            }
+        }
+
         rootWidget.onMouseUp(x, y, button);
+        blur();
     }
 
     void onDblClick(in uint x, in uint y, in MouseButton button) {
@@ -232,12 +247,25 @@ private:
 private:
     Application app;
     Array!Rect scissorStack;
-    Widget focusedWidget = null;
+
+    // blur widgets which are in unfocusedWidgets
+    void blur() {
+        foreach (Widget widget; unfocusedWidgets) {
+            widget.p_isFocused = false;
+
+            if (widget.onBlurListener !is null)
+                widget.onBlurListener(widget);
+        }
+
+        unfocusedWidgets.clear();
+    }
 
 package:
     uint lastIndex = 0;
     Widget rootWidget;
+    Widget focusedWidget = null;
     Array!Widget widgetOrdering;
+    Array!Widget unfocusedWidgets;
 
     uint getNextIndex() {
         ++lastIndex  ;
