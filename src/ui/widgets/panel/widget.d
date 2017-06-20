@@ -70,8 +70,11 @@ class Panel : Widget, Scrollable {
 
         split.calculate();
 
-        contentOffset = vec2(horizontalScrollButton.scrollController.contentOffset,
-                             verticalScrollButton.scrollController.contentOffset);
+        with (horizontalScrollButton)
+            contentOffset.x = visible ? scrollController.contentOffset : 0;
+
+        with (verticalScrollButton)
+            contentOffset.y = visible ? scrollController.contentOffset : 0;
 
         contentOffset.x -= regionOffset.left;
         contentOffset.y -= regionOffset.top;
