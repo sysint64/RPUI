@@ -152,7 +152,7 @@ private:
 
                 uint staticArrayIndex = 0;
 
-                foreach (uint index, Widget childWidget; parentWidget.children) {
+                foreach (Widget childWidget; parentWidget.children) {
                     // Select correct widget - if associatedWidget is null then get
                     // child widget. For example row in StackLayout has one single widget
                     // this widget will be associated because of this widget is our

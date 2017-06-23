@@ -1,3 +1,4 @@
+
 module ui.widget;
 
 import std.container;
@@ -9,8 +10,6 @@ import gapi;
 import application;
 import math.linalg;
 import basic_types;
-
-import containers.treemap;
 
 import ui.manager;
 import ui.render_factory;
@@ -25,7 +24,7 @@ class Widget {
         string name = "";
     }
 
-    alias TreeMap!(uint, Widget) Children;
+    alias Array!Widget Children;
 
 // Properties --------------------------------------------------------------------------------------
 
@@ -88,6 +87,31 @@ private:
 
     Widget p_associatedWidget = null;
 
+protected:
+    enum PartDraws {all, left, center, right};
+
+    Application app;
+    Manager manager;
+    PartDraws partDraws;
+
+package:
+    bool p_isFocused;
+    bool drawChildren = true;
+    FrameRect regionOffset = FrameRect(0, 0, 0, 0);
+    bool overlay;
+    vec2 overSize;
+    bool isEnter;
+    bool isClick;
+    bool isOver;  // When in rect of element but if another element over this
+                  // isOver will still be true
+
+    vec2 absolutePosition = vec2(0, 0);
+    vec2 innerBoundarySizeClamped = vec2(0, 0);
+    vec2 innerBoundarySize = vec2(0, 0);
+    vec2 contentOffset = vec2(0, 0);
+
+    @property void associatedWidget(Widget val) { p_associatedWidget = val; }
+
 // Event Listeners ---------------------------------------------------------------------------------
 
 public:
@@ -134,7 +158,7 @@ public:
 
         innerBoundarySize = vec2(0, 0);
 
-        foreach (uint index, Widget widget; children) {
+        foreach (Widget widget; children) {
             if (!widget.visible)
                 continue;
 
@@ -157,7 +181,7 @@ public:
         if (!drawChildren)
             return;
 
-        foreach (uint index, Widget widget; children) {
+        foreach (Widget widget; children) {
             if (!widget.visible)
                 continue;
 
@@ -169,7 +193,8 @@ public:
         uint index = manager.getNextIndex();
         widget.manager = manager;
         widget.p_parent = this;
-        children[index] = widget;
+        // children[index] = widget;
+        children.insert(widget);
         manager.widgetOrdering.insert(widget);
         widget.onCreate();
 
@@ -189,7 +214,7 @@ public:
         if (this.name == name)
             return this;
 
-        foreach (uint index, Widget widget; children) {
+        foreach (Widget widget; children) {
             Widget foundWidget = widget.findWidgetByName(name);
 
             if (foundWidget !is null)
@@ -229,13 +254,13 @@ public:
     }
 
     void onMouseDown(in uint x, in uint y, in MouseButton button) {
-        foreach (uint index, Widget widget; children) {
+        foreach (Widget widget; children) {
             widget.onMouseDown(x, y, button);
         }
     }
 
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
-        foreach (uint index, Widget widget; children) {
+        foreach (Widget widget; children) {
             widget.onMouseUp(x, y, button);
 
             if (widget.isEnter && widget.onClickListener !is null) {
@@ -251,7 +276,7 @@ public:
     }
 
     void onMouseWheel(in int dx, in int dy) {
-        foreach (uint index, Widget widget; children) {
+        foreach (Widget widget; children) {
             widget.onMouseWheel(dx, dy);
         }
     }
@@ -260,12 +285,6 @@ public:
     }
 
 protected:
-    enum PartDraws {all, left, center, right};
-
-    Application app;
-    Manager manager;
-    PartDraws partDraws;
-
     void updateAlign() {
     }
 
@@ -318,7 +337,7 @@ protected:
     FrameRect findRegion() {
         FrameRect region;
 
-        foreach (uint index, Widget widget; parent.children) {
+        foreach (Widget widget; parent.children) {
             if (widget == this)
                 break;
 
@@ -353,22 +372,6 @@ protected:
     @property Renderer renderer() { return manager.renderer; }
 
 package:
-    bool p_isFocused;
-    bool drawChildren = true;
-    FrameRect regionOffset = FrameRect(0, 0, 0, 0);
-    bool overlay;
-    vec2 overSize;
-    bool isEnter;
-    bool isClick;
-    bool isOver;  // When in rect of element but if another element over this
-                  // isOver will still be true
-
-    vec2 absolutePosition = vec2(0, 0);
-    vec2 innerBoundarySizeClamped = vec2(0, 0);
-    vec2 innerBoundarySize = vec2(0, 0);
-
-    @property void associatedWidget(Widget val) { p_associatedWidget = val; }
-
     this(Manager manager) {
         this.manager = manager;
         app = Application.getInstance();
@@ -391,6 +394,4 @@ package:
         absolutePosition.x = position.x + res.x + margin.left;
         absolutePosition.y = position.y + res.y + margin.top;
     }
-
-    vec2 contentOffset = vec2(0, 0);
 }

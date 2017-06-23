@@ -33,7 +33,7 @@ class StackLayout : Widget {
 	float maxWidth = 0;
 	float maxHeight = 0;
 
-        foreach (uint index, Widget cell; children) {
+        foreach (Widget cell; children) {
             Widget widget = null;
             widget = cell.firstWidget;
 
