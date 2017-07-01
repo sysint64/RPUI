@@ -4,6 +4,15 @@ import ui.widget;
 import gapi;
 import basic_types;
 import math.linalg;
+import std.stdio;
+
+
+private class Cell : Widget {
+    this() {
+        super();
+        skipFocus = true;
+    }
+}
 
 
 class StackLayout : Widget {
@@ -11,22 +20,29 @@ class StackLayout : Widget {
 
     this() {
         super();
+        skipFocus = true;
     }
 
     this(Orientation orientation) {
         super();
         this.orientation = orientation;
+        skipFocus = true;
     }
 
     override void addWidget(Widget widget) {
         assert(parent !is null, "Can't add widget to widget without parent!");
-        Widget cell = new Widget();
+        Cell cell = new Cell();
         super.addWidget(cell);
         cell.addWidget(widget);
         cell.associatedWidget = widget;
     }
 
-    override void render(Camera camera) {
+    Widget getFocusableWidget() {
+        return children[0];
+    }
+
+    override void onProgress() {
+        super.onProgress();
         updateAbsolutePosition();
 
         float lastLoc = 0;
@@ -66,7 +82,6 @@ class StackLayout : Widget {
             }
 
             cell.updateAbsolutePosition();
-            cell.render(camera);
         }
 
         if (orientation == Orientation.vertical) {
@@ -78,7 +93,5 @@ class StackLayout : Widget {
             size.y = maxHeight > parent.size.y ? maxHeight : parent.size.y;
             size.y -= regionOffset.bottom;
         }
-
-        // size = vec2(1000, 1000);
     }
 }

@@ -32,6 +32,7 @@ class Manager {
 
         rootWidget = new Widget(this);
         rootWidget.isOver = true;
+        rootWidget.finalFocus = true;
         rootWidget.size.x = app.windowWidth;
         rootWidget.size.y = app.windowHeight;
 
@@ -44,6 +45,7 @@ class Manager {
 
     void onProgress() {
         rootWidget.onProgress();
+        blur();
     }
 
     void render(Camera camera) {
@@ -162,14 +164,33 @@ class Manager {
         return Rect(currentScissor);
     }
 
+    void focusNext() {
+        if (focusedWidget !is null)
+            focusedWidget.focusNext();
+    }
+
+    void focusPrev() {
+        if (focusedWidget !is null)
+            focusedWidget.focusPrev();
+    }
+
 // Events ------------------------------------------------------------------------------------------
 
     void onKeyPressed(in KeyCode key) {
         rootWidget.onKeyPressed(key);
+
+        if (focusedWidget !is null && isClickKey(key)) {
+            focusedWidget.isClick = true;
+        }
     }
 
     void onKeyReleased(in KeyCode key) {
         rootWidget.onKeyReleased(key);
+
+        if (focusedWidget !is null && isClickKey(key) && focusedWidget.isClick) {
+            focusedWidget.isClick = false;
+            focusedWidget.triggerClick();
+        }
     }
 
     void onTextEntered(in utfchar key) {
@@ -202,7 +223,7 @@ class Manager {
         }
 
         rootWidget.onMouseUp(x, y, button);
-        blur();
+        // blur();
     }
 
     void onDblClick(in uint x, in uint y, in MouseButton button) {

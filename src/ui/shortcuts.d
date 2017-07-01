@@ -6,6 +6,7 @@ import std.conv;
 import std.path;
 
 import rpdl;
+import rpdl.exception;
 import input;
 import application;
 import ui.widget;
@@ -91,9 +92,13 @@ class Shortcuts {
     }
 
     void attach(in string path, void delegate() action) {
-        const string shortcut = shortcutsData.getString(path ~ ".0");
-        auto shortcutAction = Shortcuts.ShortcutAction(shortcut, action);
-        shortcuts[path] = shortcutAction;
+        try {
+            const string shortcut = shortcutsData.getString(path ~ ".0");
+            auto shortcutAction = Shortcuts.ShortcutAction(shortcut, action);
+            shortcuts[path] = shortcutAction;
+        } catch (NotFoundException) {
+            debug assert(false, "Not found shortcut with path " ~ path);
+        }
     }
 
 private:

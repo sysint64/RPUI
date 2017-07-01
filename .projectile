@@ -1,6 +1,6 @@
 -/.dub
--/res/fonts
 -/sim
 -/__test__library__
 -/sim-test-library
 -/bocs/build
+#-/res

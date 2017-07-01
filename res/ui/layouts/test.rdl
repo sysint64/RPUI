@@ -1,60 +1,44 @@
 Panel
-    caption: "Hello World"
+    caption: "Panel 1"
     allowResize: true
     allowHide: true
-    regionAlign: top
+    regionAlign: right
     align: center
     locationAlign: center
-    size: 200, 300
+    size: 300, 300
     position: 100, 300
-    padding: 5, 10, 50
+    finalFocusRegion: true
+    blackSplit: true
+    finalFocus: true
 
     Panel
-        background: dark
+        regionAlign: top
+        background: light
         position: 0, 0
-        size: 300, 300
+        size: 0, 300
 
-        Button
-            size: 100, 21
-            position: 600, 100
-            caption: "Close"
+        Button position: 5, 5 size: 100, 21 caption: "OK" name: "okButton"
+
+        Panel
+            size: 150, 150
+            position: 5, 31
+            background: dark
+            Button position: 0, 0 size: 100, 21 caption: "Cancel" name: "cancelButton"
+
+        Button position: 5, 57 size: 100, 21 caption: "Close" name: "closeButton"
+
+    Panel
+        regionAlign: top
+        background: light
+        position: 0, 0
+        size: 0, 300
+        caption: "Panel 2"
+        allowResize: true
+        allowHide: true
 
         StackLayout
             name: "buttons"
-            position: 100, 300
-            Button
-                size: 100, 21
-                position: 0, 0
-                margin: 5, 5, 5, 5
-                cursor: drag
-                caption: "OK"
-                name: "okButton"
 
-            Button
-                size: 100, 21
-                position: 0, 0
-                margin: 5, 5, 5, 5
-                name: "cancelButton"
-                caption: "Cancel"
-
-            Button
-                size: 100, 21
-                position: 0, 0
-                margin: 5, 5, 5, 5
-                caption: "Close"
-                name: "closeButton"
-
-    Button
-        size: 200, 21
-        position: 1000, 100
-        caption: "LALAL"
-
-    Button
-        size: 200, 21
-        position: 100, 200
-        caption: "LOLOLO"
-
-Panel
-    size: 200, 21
-    regionAlign: left
-    array: [1, 2, 3, "Hi", "Hoi", enum, true]
+            Button size: 100, 21 margin: 5 caption: "Button 1"
+            Button size: 100, 21 margin: 5 caption: "Button 2"
+            Button size: 100, 21 margin: 5 caption: "Button 3"

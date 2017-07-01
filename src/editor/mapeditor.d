@@ -33,7 +33,7 @@ import derelict.opengl3.gl;
 class MyView : View {
     @ViewWidget Button okButton;
     @ViewWidget("cancelButton") Button myButton;
-    @GroupViewWidgets Button[3] buttons;
+    // @GroupViewWidgets Button[3] buttons;
 
     int a = 0;
 
@@ -47,7 +47,7 @@ class MyView : View {
         a += 1;
         okButton.caption = "YAY!";
         myButton.caption = "WORK!";
-        buttons[2].caption = "YES!";
+        // buttons[2].caption = "YES!";
     }
 
     @Shortcut("TestGroup.cancel")

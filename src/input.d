@@ -135,6 +135,10 @@ void setKeyPressed(in KeyCode key, in bool pressed) {
     }
 }
 
+bool isClickKey(in KeyCode key) {
+    return key == KeyCode.Return;
+}
+
 bool isKeyPressed(in KeyCode key) {
     if (key !in keyPressed)
         return false;

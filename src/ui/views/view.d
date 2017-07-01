@@ -23,6 +23,16 @@ class View {
     Manager uiManager;
     Shortcuts shortcuts;
 
+    @Shortcut("General.focusNext")
+    void focusNext() {
+        this.uiManager.focusNext();
+    }
+
+    @Shortcut("General.focusPrev")
+    void focusPrev() {
+        this.uiManager.focusPrev();
+    }
+
     this(this T)(Manager manager, in string layoutFileName, in string shortcutsFileName) {
         assert(manager !is null);
         app = Application.getInstance();

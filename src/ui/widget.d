@@ -1,4 +1,3 @@
-
 module ui.widget;
 
 import std.container;
@@ -32,6 +31,7 @@ class Widget {
     @Field bool withoutSkin = false;
     @Field bool visible = true;
     @Field bool enabled = true;
+    @Field bool finalFocus = false;
     @Field bool autoWidth;
     @Field bool autoHeight;
     @Field Cursor.Icon cursor;
@@ -93,6 +93,7 @@ protected:
     Application app;
     Manager manager;
     PartDraws partDraws;
+    bool skipFocus = false;
 
 package:
     bool p_isFocused;
@@ -140,6 +141,13 @@ public:
     OnMouseLeaveListener onMouseLeaveListener = null;
     OnMouseDownListener onMouseDownListener = null;
     OnMouseUpListener onMouseUpListener = null;
+
+// Events triggers ---------------------------------------------------------------------------------
+
+    void triggerClick() {
+        if (onClickListener !is null)
+            onClickListener(this);
+    }
 
 // Implementation ----------------------------------------------------------------------------------
 
@@ -192,17 +200,25 @@ public:
     void addWidget(Widget widget) {
         uint index = manager.getNextIndex();
         widget.manager = manager;
+
+        if (children.length == 0) {
+            p_firstWidget = widget;
+            p_lastWidget = widget;
+        }
+
+        // Links
         widget.p_parent = this;
-        // children[index] = widget;
+        widget.p_nextWidget = p_firstWidget;
+        widget.p_prevWidget = p_lastWidget;
+
+        p_lastWidget.p_nextWidget = widget;
+        p_firstWidget.p_prevWidget = widget;
+        p_lastWidget = widget;
+
+        // Insert
         children.insert(widget);
         manager.widgetOrdering.insert(widget);
         widget.onCreate();
-
-        if (firstWidget is null) {
-            p_firstWidget = widget;
-        }
-
-        p_lastWidget = widget;
     }
 
     bool pointIsEnter(in vec2i point) {
@@ -239,6 +255,58 @@ public:
         manager.unfocusedWidgets.insert(this);
     }
 
+    // TODO: navFocusFront and navFocusBack are symmetrical
+    // focusNext and focusPrev too therefore potential code reduction
+    private void navFocusFront() {
+        if (skipFocus && firstWidget !is null) {
+            firstWidget.navFocusFront();
+        } else {
+            this.focus();
+        }
+    }
+
+    void focusNext() {
+        if (skipFocus && isFocused) {
+            navFocusFront();
+            return;
+        }
+
+        if (p_parent.p_lastWidget != this) {
+            this.p_nextWidget.navFocusFront();
+        } else {
+            if (p_parent.finalFocus) {
+                p_parent.navFocusFront();
+            } else {
+                p_parent.focusNext();
+            }
+        }
+    }
+
+    private void navFocusBack() {
+        if (skipFocus && lastWidget !is null) {
+            lastWidget.navFocusBack();
+        } else {
+            this.focus();
+        }
+    }
+
+    void focusPrev() {
+        if (skipFocus && isFocused) {
+            navFocusBack();
+            return;
+        }
+
+        if (p_parent.p_firstWidget != this) {
+            this.p_prevWidget.navFocusBack();
+        } else {
+            if (p_parent.finalFocus) {
+                p_parent.navFocusBack();
+            } else {
+                p_parent.focusPrev();
+            }
+        }
+    }
+
 // Events ------------------------------------------------------------------------------------------
 
     void onCreate() {
@@ -263,9 +331,8 @@ public:
         foreach (Widget widget; children) {
             widget.onMouseUp(x, y, button);
 
-            if (widget.isEnter && widget.onClickListener !is null) {
-                widget.onClickListener(widget);
-            }
+            if (widget.isEnter)
+                widget.triggerClick();
         }
     }
 

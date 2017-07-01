@@ -1,3 +1,4 @@
+
 module ui.widgets.panel.widget;
 
 import std.container;
@@ -47,10 +48,12 @@ class Panel : Widget, Scrollable {
 
     this() {
         super("Panel");
+        skipFocus = true;
     }
 
     this(in string style) {
         super(style);
+        skipFocus = true;
     }
 
     override void onProgress() {
@@ -108,6 +111,8 @@ class Panel : Widget, Scrollable {
 
         split.render();
     }
+
+// Events ------------------------------------------------------------------------------------------
 
     // Create elements for widget rendering (quads, texts etc.)
     // and read data from theme for these elements (background color, split thickness etc.)
