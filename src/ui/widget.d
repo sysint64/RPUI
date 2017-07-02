@@ -18,6 +18,12 @@ import ui.renderer;
 import ui.scroll;
 
 
+interface Scrollable {
+    void onMouseWheelHandle(in int dx, in int dy);
+    void scrollToWidget(Widget widget);
+}
+
+
 class Widget {
     struct Field {
         string name = "";
@@ -93,10 +99,10 @@ protected:
     Application app;
     Manager manager;
     PartDraws partDraws;
-    bool skipFocus = false;
 
 package:
     bool p_isFocused;
+    bool skipFocus = false;
     bool drawChildren = true;
     FrameRect regionOffset = FrameRect(0, 0, 0, 0);
     bool overlay;
@@ -255,6 +261,22 @@ public:
         manager.unfocusedWidgets.insert(this);
     }
 
+    void scrollToWidget() {
+        Scrollable scrollable = null;
+        Widget parent = this.parent;
+
+        while (parent !is null) {
+            scrollable = cast(Scrollable) parent;
+            parent = parent.p_parent;
+
+            if (scrollable)
+                break;
+        }
+
+        if (scrollable !is null)
+            scrollable.scrollToWidget(this);
+    }
+
     // TODO: navFocusFront and navFocusBack are symmetrical
     // focusNext and focusPrev too therefore potential code reduction
     private void navFocusFront() {
@@ -262,6 +284,7 @@ public:
             firstWidget.navFocusFront();
         } else {
             this.focus();
+            this.scrollToWidget();
         }
     }
 
@@ -287,6 +310,7 @@ public:
             lastWidget.navFocusBack();
         } else {
             this.focus();
+            this.scrollToWidget();
         }
     }
 

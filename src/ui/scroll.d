@@ -16,11 +16,6 @@ private auto clamp(T1, T2, T3)(T1 val, T2 lower, T3 upper) {
 }
 
 
-interface Scrollable {
-    void onMouseWheelHandle(in int dx, in int dy);
-}
-
-
 class ScrollController {
     this(in Orientation orientation) {
         app = Application.getInstance();
@@ -64,6 +59,13 @@ class ScrollController {
     bool addOffsetInPx(in float delta) {
         const float lastScrollOffset = p_contentOffset;
         p_contentOffset += delta;
+        onResize();
+        return lastScrollOffset != p_contentOffset;
+    }
+
+    bool setOffsetInPx(in float pixels) {
+        const float lastScrollOffset = p_contentOffset;
+        p_contentOffset = pixels;
         onResize();
         return lastScrollOffset != p_contentOffset;
     }

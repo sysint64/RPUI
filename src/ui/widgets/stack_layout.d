@@ -4,15 +4,6 @@ import ui.widget;
 import gapi;
 import basic_types;
 import math.linalg;
-import std.stdio;
-
-
-private class Cell : Widget {
-    this() {
-        super();
-        skipFocus = true;
-    }
-}
 
 
 class StackLayout : Widget {
@@ -31,10 +22,11 @@ class StackLayout : Widget {
 
     override void addWidget(Widget widget) {
         assert(parent !is null, "Can't add widget to widget without parent!");
-        Cell cell = new Cell();
+        Widget cell = new Widget();
         super.addWidget(cell);
         cell.addWidget(widget);
         cell.associatedWidget = widget;
+        cell.skipFocus = true;
     }
 
     Widget getFocusableWidget() {

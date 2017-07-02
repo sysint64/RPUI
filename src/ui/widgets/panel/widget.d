@@ -112,6 +112,24 @@ class Panel : Widget, Scrollable {
         split.render();
     }
 
+    void scrollToWidget(Widget widget) {
+        const vec2 relativePosition = widget.absolutePosition - absolutePosition;
+        const vec2 endOffset = relativePosition - size + widget.size;
+        const vec2 startOffset = relativePosition - widget.size;
+
+        with (verticalScrollButton) {
+            const float contentOffset = scrollController.contentOffset;
+            const float offset = contentOffset < relativePosition.y ? endOffset.y : startOffset.y;
+            scrollController.setOffsetInPx(offset + contentOffset);
+        }
+
+        with (horizontalScrollButton) {
+            const float contentOffset = scrollController.contentOffset;
+            const float offset = contentOffset < relativePosition.x ? endOffset.x : startOffset.x;
+            scrollController.setOffsetInPx(offset + contentOffset);
+        }
+    }
+
 // Events ------------------------------------------------------------------------------------------
 
     // Create elements for widget rendering (quads, texts etc.)
@@ -310,8 +328,5 @@ private:
             size.x = clamp(size.x, minSize, maxSize);
 
         onResizeScroll();
-    }
-
-    void scrollToWidget() {
     }
 }
