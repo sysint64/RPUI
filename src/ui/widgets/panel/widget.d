@@ -197,14 +197,32 @@ class Panel : Widget, Scrollable {
         if (!header.isEnter || !allowHide)
             return;
 
-        if (isOpen) {
-            lastSize = size;
-            size.y = header.height;
-        } else {
-            size = lastSize;
-        }
+        toggle();
+    }
 
-        isOpen = !isOpen;
+    void open() {
+        if (isOpen)
+            return;
+
+        size = lastSize;
+        isOpen = true;
+    }
+
+    void close() {
+        if (!isOpen)
+            return;
+
+        lastSize = size;
+        size.y = header.height;
+        isOpen = false;
+    }
+
+    void toggle() {
+        if (isOpen) {
+            close();
+        } else {
+            open();
+        }
     }
 
     override void onMouseUp(in uint x, in uint y, in MouseButton button) {
@@ -262,6 +280,16 @@ protected:
                 scrollable.onMouseWheelHandle(horizontalDelta, 0);
             }
         }
+    }
+
+    override void navFocusFront() {
+        open();
+        super.navFocusFront();
+    }
+
+    override void navFocusBack() {
+        open();
+        super.navFocusBack();
     }
 
 private:

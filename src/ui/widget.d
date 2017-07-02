@@ -279,7 +279,7 @@ public:
 
     // TODO: navFocusFront and navFocusBack are symmetrical
     // focusNext and focusPrev too therefore potential code reduction
-    private void navFocusFront() {
+    protected void navFocusFront() {
         if (skipFocus && firstWidget !is null) {
             firstWidget.navFocusFront();
         } else {
@@ -305,7 +305,7 @@ public:
         }
     }
 
-    private void navFocusBack() {
+    protected void navFocusBack() {
         if (skipFocus && lastWidget !is null) {
             lastWidget.navFocusBack();
         } else {
