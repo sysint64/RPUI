@@ -77,28 +77,62 @@ class Widget {
         }
     }
 
-    // Inner size considering the innter offsets and padding
+    // Inner size considering the extra innter offsets and padding
     @property final vec2 innerSize() {
-        return size - summaryInnerOffset;
+        return size - innerOffsetSize;
     }
 
-    @property final vec2 summaryInnerOffset() {
+    @property final vec2 innerOffsetSize() {
         return vec2(
-            padding.left + padding.right + innerOffset.right + innerOffset.left,
-            padding.top + padding.bottom + innerOffset.top + innerOffset.bottom
+            padding.left + padding.right + extraInnerOffset.left + extraInnerOffset.right,
+            padding.top + padding.bottom + extraInnerOffset.top + extraInnerOffset.bottom
         );
     }
 
-    // Outer size considering the outer offsets and margin
+    @property final FrameRect innerOffset() {
+        return FrameRect(
+            padding.left + extraInnerOffset.left,
+            padding.top + extraInnerOffset.top,
+            padding.right + extraInnerOffset.right,
+            padding.bottom + extraInnerOffset.bottom,
+        );
+    }
+
+    @property final vec2 innerOffsetStart() {
+        return vec2(innerOffset.left, innerOffset.top);
+    }
+
+    @property final vec2 innerOffsetEnd() {
+        return vec2(innerOffset.right, innerOffset.bottom);
+    }
+
+    // Outer size considering the extra outer offsets and margin
     @property final vec2 outerSize() {
-        return size + summaryOuterOffset;
+        return size + outerOffsetSize;
     }
 
-    @property final vec2 summaryOuterOffset() {
+    @property final vec2 outerOffsetSize() {
         return vec2(
-            margin.left + margin.right + outerOffset.right + outerOffset.left,
-            margin.top + margin.bottom + outerOffset.top + outerOffset.bottom
+            margin.left + margin.right + extraOuterOffset.left + extraOuterOffset.right,
+            margin.top + margin.bottom + extraOuterOffset.top + extraOuterOffset.bottom
         );
+    }
+
+    @property final FrameRect outerOffset() {
+        return FrameRect(
+            margin.left + extraOuterOffset.left,
+            margin.top + extraOuterOffset.top,
+            margin.right + extraOuterOffset.right,
+            margin.bottom + extraOuterOffset.bottom,
+        );
+    }
+
+    @property final vec2 outerOffsetStart() {
+        return vec2(outerOffset.left, outerOffset.top);
+    }
+
+    @property final vec2 outerOffsetEnd() {
+        return vec2(outerOffset.right, outerOffset.bottom);
     }
 
 private:
@@ -128,8 +162,8 @@ package:
     bool p_isFocused;
     bool skipFocus = false;
     bool drawChildren = true;
-    FrameRect innerOffset = FrameRect(0, 0, 0, 0);  // additional inner offset besides padding
-    FrameRect outerOffset = FrameRect(0, 0, 0, 0);  // additional outer offset besides margin
+    FrameRect extraInnerOffset = FrameRect(0, 0, 0, 0);  // extra inner offset besides padding
+    FrameRect extraOuterOffset = FrameRect(0, 0, 0, 0);  // extra outer offset besides margin
     bool overlay;
     vec2 overSize;
     bool isEnter;
@@ -195,7 +229,8 @@ public:
         if (!drawChildren)
             return;
 
-        innerBoundarySize = vec2(0, 0);
+        // innerBoundarySize = vec2(0, 0);
+        innerBoundarySize = innerOffsetSize;
 
         foreach (Widget widget; children) {
             if (!widget.visible)
@@ -203,14 +238,19 @@ public:
 
             widget.onProgress();
 
-            innerBoundarySize.x = fmax(innerBoundarySize.x, widget.position.x + widget.size.x);
-            innerBoundarySize.y = fmax(innerBoundarySize.y, widget.position.y + widget.size.y);
+            const widgetFringePosition = vec2(
+                widget.position.x + widget.outerSize.x + innerOffset.left,
+                widget.position.y + widget.outerSize.y + innerOffset.top
+            );
+
+            innerBoundarySize.x = fmax(innerBoundarySize.x, widgetFringePosition.x);
+            innerBoundarySize.y = fmax(innerBoundarySize.y, widgetFringePosition.y);
         }
 
-        innerBoundarySize += summaryInnerOffset;
+        innerBoundarySize += innerOffsetEnd;
 
-        innerBoundarySizeClamped.x = fmax(innerBoundarySize.x, size.x);
-        innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, size.y);
+        innerBoundarySizeClamped.x = fmax(innerBoundarySize.x, innerSize.x);
+        innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, innerSize.y);
     }
 
     void render(Camera camera) {
@@ -301,7 +341,7 @@ public:
             scrollable.scrollToWidget(this);
     }
 
-    // TODO: navFocusFront and navFocusBack are symmetrical
+    // NOTE: navFocusFront and navFocusBack are symmetrical
     // focusNext and focusPrev too therefore potential code reduction
     protected void navFocusFront() {
         if (skipFocus && firstWidget !is null) {
@@ -417,10 +457,9 @@ protected:
             return;
 
         const FrameRect region = findRegion();
-        const vec2 scrollRegion = vec2(0, 0);  // TODO: make real region
         const vec2 regionSize = vec2(
-            parent.size.x - region.right  - region.left - scrollRegion.x,
-            parent.size.y - region.bottom - region.top  - scrollRegion.y
+            parent.innerSize.x - region.right  - region.left - outerOffsetSize.x,
+            parent.innerSize.y - region.bottom - region.top  - outerOffsetSize.y
         );
 
         switch (regionAlign) {
@@ -438,7 +477,7 @@ protected:
             case RegionAlign.bottom:
                 size.x = regionSize.x;
                 position.x = region.left;
-                position.y = parent.size.y - size.y - region.bottom - scrollRegion.y;
+                position.y = parent.innerSize.y - outerSize.y - region.bottom;
                 break;
 
             case RegionAlign.left:
@@ -448,7 +487,7 @@ protected:
 
             case RegionAlign.right:
                 size.y = regionSize.y;
-                position.x = parent.size.x - size.x - region.right - scrollRegion.x;
+                position.x = parent.innerSize.x - outerSize.x - region.right;
                 position.y = region.top;
                 break;
 
@@ -469,19 +508,19 @@ protected:
 
             switch (widget.regionAlign) {
                 case RegionAlign.top:
-                    region.top += widget.size.y;
+                    region.top += widget.size.y + widget.outerOffset.bottom;
                     break;
 
                 case RegionAlign.left:
-                    region.left += widget.size.x;
+                    region.left += widget.size.x + widget.outerOffset.right;
                     break;
 
                 case RegionAlign.bottom:
-                    region.bottom += widget.size.y;
+                    region.bottom += widget.size.y + widget.outerOffset.top;
                     break;
 
                 case RegionAlign.right:
-                    region.right += widget.size.x;
+                    region.right += widget.size.x + widget.outerOffset.left;
                     break;
 
                 default:
@@ -505,16 +544,11 @@ package:
 	Widget lastParent = parent;
 
         while (lastParent !is null) {
-            res.x += lastParent.position.x - lastParent.contentOffset.x + lastParent.padding.left +
-                lastParent.margin.left;
-
-            res.y += lastParent.position.y - lastParent.contentOffset.y + lastParent.padding.top +
-                lastParent.margin.top;
-
+            res += lastParent.position - lastParent.contentOffset;
+            res += lastParent.innerOffsetStart + lastParent.outerOffsetStart;
             lastParent = lastParent.parent;
         }
 
-        absolutePosition.x = position.x + res.x + margin.left;
-        absolutePosition.y = position.y + res.y + margin.top;
+        absolutePosition = position + res + outerOffsetStart;
     }
 }

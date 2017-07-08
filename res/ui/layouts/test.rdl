@@ -1,7 +1,5 @@
 Panel
-    caption: "Panel 1"
     allowResize: true
-    allowHide: true
     regionAlign: right
     align: center
     locationAlign: center
@@ -12,6 +10,8 @@ Panel
     finalFocus: true
 
     Panel
+        caption: "Panel 1"
+        allowHide: true
         regionAlign: top
         background: light
         position: 0, 0
@@ -23,6 +23,7 @@ Panel
             size: 150, 150
             position: 5, 31
             background: dark
+            margin: 10
             Button position: 0, 0 size: 100, 21 caption: "Cancel" name: "cancelButton"
 
         Button position: 5, 57 size: 100, 21 caption: "Close" name: "closeButton"
@@ -35,20 +36,36 @@ Panel
         caption: "Panel 2"
         allowResize: true
         allowHide: true
+        padding: 0, 100, 0, 0
+
+        StackLayout
+            # padding: 0, 100, 0, 0
+            name: "buttons"
+
+            Button size: 100, 21 margin: 5 caption: "Button 1"
+            Button size: 100, 21 margin: 5 caption: "Button 2"
+            Button size: 100, 21 margin: 5 caption: "Button 3"
+
+Panel
+    background: dark
+    regionAlign: client
+
+    Panel
+        regionAlign: right
+        size: 300, 300
+        blackSplit: true
+        margin: 5
 
         StackLayout
             name: "buttons"
+            orientation: horizontal
 
-            Button size: 100, 21 caption: "Button 1"
-            Button size: 100, 21 caption: "Button 2"
-            Button size: 100, 21 caption: "Button 3"
+            Button size: 100, 21 margin: 5 caption: "Button 1"
+            Button size: 100, 21 margin: 5 caption: "Button 2"
+            Button size: 100, 21 margin: 5 caption: "Button 3"
 
-Panel
-    regionAlign: top
-    size: 300, 300
-    blackSplit: true
-
-    StackLayout
-        Button size: 100, 21 caption: "Button 1"
-        Button size: 100, 21 caption: "Button 2"
-        Button size: 100, 21 caption: "Button 3"
+    Panel
+        regionAlign: right
+        size: 300, 300
+        blackSplit: true
+        margin: 5

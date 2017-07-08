@@ -66,7 +66,7 @@ class Panel : Widget, Scrollable {
         // Update render elements position and sizes
         updateRegionAlign();
         updateAbsolutePosition();
-        updateRegionOffset();
+        updateInnerOffset();
 
         horizontalScrollButton.onProgress();
         verticalScrollButton.onProgress();
@@ -79,8 +79,8 @@ class Panel : Widget, Scrollable {
         with (verticalScrollButton)
             contentOffset.y = visible ? scrollController.contentOffset : 0;
 
-        contentOffset.x -= innerOffset.left;
-        contentOffset.y -= innerOffset.top;
+        // contentOffset.x -= extraInnerOffset.left;
+        // contentOffset.y -= extraInnerOffset.top;
     }
 
     override void render(Camera camera) {
@@ -105,12 +105,12 @@ class Panel : Widget, Scrollable {
         // Render children widgets
         Rect scissor;
         scissor.point = vec2(
-            absolutePosition.x + innerOffset.left,
-            absolutePosition.y + innerOffset.top
+            absolutePosition.x + extraInnerOffset.left,
+            absolutePosition.y + extraInnerOffset.top
         );
         scissor.size = vec2(
-            size.x - innerOffset.left - innerOffset.right,
-            size.y - innerOffset.top - innerOffset.bottom
+            size.x - extraInnerOffset.left - extraInnerOffset.right,
+            size.y - extraInnerOffset.top - extraInnerOffset.bottom
         );
 
         manager.pushScissor(scissor);
@@ -253,27 +253,27 @@ class Panel : Widget, Scrollable {
     }
 
 protected:
-    void updateRegionOffset() {
+    void updateInnerOffset() {
         if (verticalScrollButton.visible) {
-            innerOffset.right = verticalScrollButton.width;
+            extraInnerOffset.right = verticalScrollButton.width;
         } else {
-            innerOffset.right = 0;
+            extraInnerOffset.right = 0;
         }
 
         if (horizontalScrollButton.visible) {
-            innerOffset.bottom = horizontalScrollButton.width;
+            extraInnerOffset.bottom = horizontalScrollButton.width;
         } else {
-            innerOffset.bottom = 0;
+            extraInnerOffset.bottom = 0;
         }
 
         if (allowHide) {
-            innerOffset.top = header.height;
+            extraInnerOffset.top = header.height;
         } else {
-            innerOffset.top = 0;
+            extraInnerOffset.top = 0;
         }
 
         if (allowResize || showSplit) {
-            innerOffset.bottom += split.thickness;
+            extraInnerOffset.bottom += split.thickness;
         }
     }
 

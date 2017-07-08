@@ -91,7 +91,7 @@ package struct Split {
     }
 
     void render() {
-        if (!panel.resizable && !panel.showSplit)
+        if (!panel.showSplit)
             return;
 
         with (renderer) {
