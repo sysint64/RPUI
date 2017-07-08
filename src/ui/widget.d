@@ -375,6 +375,12 @@ public:
     void onCursor() {
     }
 
+    void onResize() {
+        foreach (Widget widget; children) {
+            widget.onResize();
+        }
+    }
+
 protected:
     void updateAlign() {
     }
@@ -388,8 +394,10 @@ protected:
 
         const FrameRect region = findRegion();
         const vec2 scrollRegion = vec2(0, 0);  // TODO: make real region
-        const vec2 regionSize = vec2(parent.size.x - region.right  - region.left - scrollRegion.x,
-                                     parent.size.y - region.bottom - region.top  - scrollRegion.y);
+        const vec2 regionSize = vec2(
+            parent.size.x - region.right  - region.left - scrollRegion.x,
+            parent.size.y - region.bottom - region.top  - scrollRegion.y
+        );
 
         switch (regionAlign) {
             case RegionAlign.client:

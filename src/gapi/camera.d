@@ -16,14 +16,17 @@ class Camera {
         const vec3 up = vec3(0.0f, 1.0f, 0.0f);
 
         p_viewMatrix = mat4.look_at(eye, target, up);
-        p_projectionMatrix = mat4.orthographic(0.0f, viewportWidth,
-                                               0.0f, viewportHeight,
-                                               0.0f, 10.0f);
+        p_projectionMatrix = mat4.orthographic(
+            0.0f, viewportWidth,
+            0.0f, viewportHeight,
+            0.0f, 10.0f
+        );
 
-        if (p_zoom > 1.0f)
+        if (p_zoom > 1.0f) {
             p_modelMatrix = mat4.scaling(p_zoom, p_zoom, 1.0f);
-        else
+        } else {
             p_modelMatrix = mat4.identity;
+        }
 
         p_MVPMatrix = p_projectionMatrix * p_modelMatrix * p_viewMatrix;
         p_needUpdateMatrices = false;

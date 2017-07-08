@@ -1,0 +1,4 @@
+General
+    focusNext: "Tab"
+    focusPrev: "Shift+Tab"
+    submit: "Ctrl+Return"

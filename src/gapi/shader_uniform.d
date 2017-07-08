@@ -27,7 +27,7 @@ mixin template ShaderUniform() {
         ++nextTextureID;
     }
 
-    // Float Vector
+// Float Vector ------------------------------------------------------------------------------------
 
     void setUniformVec2f(in string location, in vec2 vector) {
         chechOrCreateLocation(location);
@@ -59,7 +59,7 @@ mixin template ShaderUniform() {
         glUniform4f(locations[location], x, y, z, w);
     }
 
-    // Integer Vector
+// Integer Vector ----------------------------------------------------------------------------------
 
     void setUniformVec2i(in string location, in vec2i vector) {
         chechOrCreateLocation(location);
@@ -91,7 +91,7 @@ mixin template ShaderUniform() {
         glUniform4i(locations[location], x, y, z, w);
     }
 
-    // Unsigned int
+// Unsigned int ------------------------------------------------------------------------------------
 
     void setUniformVec2ui(in string location, in vec2ui vector) {
         chechOrCreateLocation(location);
@@ -123,7 +123,7 @@ mixin template ShaderUniform() {
         glUniform4ui(locations[location], x, y, z, w);
     }
 
-    // Matrix
+// Matrix ------------------------------------------------------------------------------------------
 
     void setUniformMatrix(in string location, in mat4 matrix) {
         chechOrCreateLocation(location);

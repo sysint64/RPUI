@@ -84,9 +84,13 @@ class Panel : Widget, Scrollable {
     }
 
     override void render(Camera camera) {
-        if (background != Background.transparent)
-            renderer.renderColorQuad(backgroundRenderObject, backgroundColors[background],
-                                     absolutePosition, size);
+        if (background != Background.transparent) {
+            renderer.renderColorQuad(
+                backgroundRenderObject,
+                backgroundColors[background],
+                absolutePosition, size
+            );
+        }
 
         header.render();
 
@@ -100,10 +104,14 @@ class Panel : Widget, Scrollable {
 
         // Render children widgets
         Rect scissor;
-        scissor.point = vec2(absolutePosition.x + regionOffset.left,
-                             absolutePosition.y + regionOffset.top);
-        scissor.size = vec2(size.x - regionOffset.left - regionOffset.right,
-                            size.y - regionOffset.top - regionOffset.bottom);
+        scissor.point = vec2(
+            absolutePosition.x + regionOffset.left,
+            absolutePosition.y + regionOffset.top
+        );
+        scissor.size = vec2(
+            size.x - regionOffset.left - regionOffset.right,
+            size.y - regionOffset.top - regionOffset.bottom
+        );
 
         manager.pushScissor(scissor);
         super.render(camera);
@@ -157,18 +165,22 @@ class Panel : Widget, Scrollable {
             return;
 
         if (regionAlign == RegionAlign.top || regionAlign == RegionAlign.bottom) {
-            const Rect rect = Rect(split.borderPosition.x,
-                                   split.borderPosition.y - split.cursorRangeSize / 2.0f,
-                                   split.size.x, split.cursorRangeSize);
+            const Rect rect = Rect(
+                split.borderPosition.x,
+                split.borderPosition.y - split.cursorRangeSize / 2.0f,
+                split.size.x, split.cursorRangeSize
+            );
 
             if (pointInRect(app.mousePos, rect) || split.isClick) {
                 manager.cursor = Cursor.Icon.vDoubleArrow;
                 split.isEnter = true;
             }
         } else if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right) {
-            const Rect rect = Rect(split.borderPosition.x - split.cursorRangeSize / 2.0f,
-                                   split.borderPosition.y,
-                                   split.cursorRangeSize, split.size.y);
+            const Rect rect = Rect(
+                split.borderPosition.x - split.cursorRangeSize / 2.0f,
+                split.borderPosition.y,
+                split.cursorRangeSize, split.size.y
+            );
 
             if (pointInRect(app.mousePos, rect) || split.isClick) {
                 manager.cursor = Cursor.Icon.hDoubleArrow;
@@ -200,7 +212,7 @@ class Panel : Widget, Scrollable {
         toggle();
     }
 
-    void open() {
+    final void open() {
         if (isOpen)
             return;
 
@@ -208,7 +220,7 @@ class Panel : Widget, Scrollable {
         isOpen = true;
     }
 
-    void close() {
+    final void close() {
         if (!isOpen)
             return;
 
@@ -217,7 +229,7 @@ class Panel : Widget, Scrollable {
         isOpen = false;
     }
 
-    void toggle() {
+    final void toggle() {
         if (isOpen) {
             close();
         } else {
@@ -231,6 +243,13 @@ class Panel : Widget, Scrollable {
         split.isClick = false;
 
         super.onMouseUp(x, y, button);
+    }
+
+    override void onResize() {
+        super.onResize();
+
+        horizontalScrollButton.scrollController.onResize();
+        verticalScrollButton.scrollController.onResize();
     }
 
 protected:
@@ -317,12 +336,6 @@ private:
         return verticalScrollButton.isClick || horizontalScrollButton.isClick;
     }
 
-    // TODO: Move to onResize Event
-    void onResizeScroll() {
-        horizontalScrollButton.scrollController.onResize();
-        verticalScrollButton.scrollController.onResize();
-    }
-
     // Resize panel when split is clicked
     void handleResize() {
         if (!split.isClick)
@@ -355,6 +368,6 @@ private:
         if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right)
             size.x = clamp(size.x, minSize, maxSize);
 
-        onResizeScroll();
+        onResize();
     }
 }

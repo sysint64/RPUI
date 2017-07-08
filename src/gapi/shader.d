@@ -22,8 +22,10 @@ class Shader {
         Application app = Application.getInstance();
 
         const string gl = "GL" ~ to!string(app.settings.OGLMajor);
-        const string absoluteFileName = buildPath(app.resourcesDirectory, "shaders",
-                                                  gl, relativeFileName);
+        const string absoluteFileName = buildPath(
+            app.resourcesDirectory, "shaders",
+            gl, relativeFileName
+        );
 
         return new Shader(absoluteFileName);
     }

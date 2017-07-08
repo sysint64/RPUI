@@ -28,8 +28,10 @@ class Font {
 
     static Font createFromFile(in string relativeFileName) {
         Application app = Application.getInstance();
-        const string absoluteFileName = buildPath(app.resourcesDirectory, "fonts",
-                                                  relativeFileName);
+        const string absoluteFileName = buildPath(
+            app.resourcesDirectory, "fonts",
+            relativeFileName
+        );
         return new Font(absoluteFileName);
     }
 

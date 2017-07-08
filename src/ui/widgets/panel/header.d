@@ -80,10 +80,18 @@ package struct Header {
             return;
 
         immutable vec2 headerSize = vec2(panel.size.x, height);
-        renderer.renderQuad(backgroundRenderObject, state,
-                            panel.absolutePosition, headerSize);
-        renderer.renderQuad(arrowRenderObject, arrowState,
-                            panel.absolutePosition + arrowPosition, arrowSize);
+        renderer.renderQuad(
+            backgroundRenderObject,
+            state,
+            panel.absolutePosition,
+            headerSize
+        );
+        renderer.renderQuad(
+            arrowRenderObject,
+            arrowState,
+            panel.absolutePosition + arrowPosition,
+            arrowSize
+        );
 
         immutable vec2 textPosition = panel.absolutePosition +
             vec2(arrowPosition.x + arrowSize.x, 0);

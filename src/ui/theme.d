@@ -17,8 +17,10 @@ class ThemeFont : gapi.Font {
 
     static ThemeFont createFromFile(in string relativeFileName, in uint fontSize) {
         Application app = Application.getInstance();
-        const string absoluteFileName = buildPath(app.resourcesDirectory, "fonts",
-                                                  relativeFileName);
+        const string absoluteFileName = buildPath(
+            app.resourcesDirectory, "fonts",
+            relativeFileName
+        );
         ThemeFont font = new ThemeFont(absoluteFileName, fontSize);
         return font;
     }
