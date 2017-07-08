@@ -79,8 +79,8 @@ class Panel : Widget, Scrollable {
         with (verticalScrollButton)
             contentOffset.y = visible ? scrollController.contentOffset : 0;
 
-        contentOffset.x -= regionOffset.left;
-        contentOffset.y -= regionOffset.top;
+        contentOffset.x -= innerOffset.left;
+        contentOffset.y -= innerOffset.top;
     }
 
     override void render(Camera camera) {
@@ -105,12 +105,12 @@ class Panel : Widget, Scrollable {
         // Render children widgets
         Rect scissor;
         scissor.point = vec2(
-            absolutePosition.x + regionOffset.left,
-            absolutePosition.y + regionOffset.top
+            absolutePosition.x + innerOffset.left,
+            absolutePosition.y + innerOffset.top
         );
         scissor.size = vec2(
-            size.x - regionOffset.left - regionOffset.right,
-            size.y - regionOffset.top - regionOffset.bottom
+            size.x - innerOffset.left - innerOffset.right,
+            size.y - innerOffset.top - innerOffset.bottom
         );
 
         manager.pushScissor(scissor);
@@ -255,25 +255,25 @@ class Panel : Widget, Scrollable {
 protected:
     void updateRegionOffset() {
         if (verticalScrollButton.visible) {
-            regionOffset.right = verticalScrollButton.width;
+            innerOffset.right = verticalScrollButton.width;
         } else {
-            regionOffset.right = 0;
+            innerOffset.right = 0;
         }
 
         if (horizontalScrollButton.visible) {
-            regionOffset.bottom = horizontalScrollButton.width;
+            innerOffset.bottom = horizontalScrollButton.width;
         } else {
-            regionOffset.bottom = 0;
+            innerOffset.bottom = 0;
         }
 
         if (allowHide) {
-            regionOffset.top = header.height;
+            innerOffset.top = header.height;
         } else {
-            regionOffset.top = 0;
+            innerOffset.top = 0;
         }
 
         if (allowResize || showSplit) {
-            regionOffset.bottom += split.thickness;
+            innerOffset.bottom += split.thickness;
         }
     }
 

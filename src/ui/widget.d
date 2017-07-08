@@ -77,6 +77,30 @@ class Widget {
         }
     }
 
+    // Inner size considering the innter offsets and padding
+    @property final vec2 innerSize() {
+        return size - summaryInnerOffset;
+    }
+
+    @property final vec2 summaryInnerOffset() {
+        return vec2(
+            padding.left + padding.right + innerOffset.right + innerOffset.left,
+            padding.top + padding.bottom + innerOffset.top + innerOffset.bottom
+        );
+    }
+
+    // Outer size considering the outer offsets and margin
+    @property final vec2 outerSize() {
+        return size + summaryOuterOffset;
+    }
+
+    @property final vec2 summaryOuterOffset() {
+        return vec2(
+            margin.left + margin.right + outerOffset.right + outerOffset.left,
+            margin.top + margin.bottom + outerOffset.top + outerOffset.bottom
+        );
+    }
+
 private:
     Camera camera = null;
     Children p_children;
@@ -104,7 +128,8 @@ package:
     bool p_isFocused;
     bool skipFocus = false;
     bool drawChildren = true;
-    FrameRect regionOffset = FrameRect(0, 0, 0, 0);
+    FrameRect innerOffset = FrameRect(0, 0, 0, 0);  // additional inner offset besides padding
+    FrameRect outerOffset = FrameRect(0, 0, 0, 0);  // additional outer offset besides margin
     bool overlay;
     vec2 overSize;
     bool isEnter;
@@ -182,8 +207,7 @@ public:
             innerBoundarySize.y = fmax(innerBoundarySize.y, widget.position.y + widget.size.y);
         }
 
-        innerBoundarySize.x += padding.left + padding.right + regionOffset.left + regionOffset.right;
-        innerBoundarySize.y += padding.top + padding.bottom + regionOffset.top + regionOffset.bottom;
+        innerBoundarySize += summaryInnerOffset;
 
         innerBoundarySizeClamped.x = fmax(innerBoundarySize.x, size.x);
         innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, size.y);

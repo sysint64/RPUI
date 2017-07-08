@@ -42,8 +42,8 @@ package struct ScrollButton {
     // Update scrollController properties
     void updateController() {
         const float[Orientation] widgetRegionOffsets = [
-            Orientation.horizontal: panel.regionOffset.right,
-            Orientation.vertical: panel.regionOffset.bottom
+            Orientation.horizontal: panel.innerOffset.right,
+            Orientation.vertical: panel.innerOffset.bottom
         ];
 
         float getVectorComponent(in vec2 vector) {
@@ -152,25 +152,25 @@ package struct ScrollButton {
 
         if (orientation == Orientation.horizontal) {
             visible = panel.innerBoundarySize.x > panel.size.x;
-            buttonSize = scrollController.buttonSize - panel.regionOffset.left;
+            buttonSize = scrollController.buttonSize - panel.innerOffset.left;
             buttonOffset = vec2(
                scrollController.buttonOffset,
-               panel.size.y - panel.regionOffset.bottom
+               panel.size.y - panel.innerOffset.bottom
             );
             rect = Rect(
                 panel.absolutePosition + buttonOffset,
-                vec2(buttonSize, panel.regionOffset.bottom)
+                vec2(buttonSize, panel.innerOffset.bottom)
             );
         } else if (orientation == Orientation.vertical) {
             visible = panel.innerBoundarySize.y > panel.size.y;
-            buttonSize = scrollController.buttonSize - panel.regionOffset.top;
+            buttonSize = scrollController.buttonSize - panel.innerOffset.top;
             buttonOffset = vec2(
-                panel.size.x - panel.regionOffset.right,
-                scrollController.buttonOffset + panel.regionOffset.top
+                panel.size.x - panel.innerOffset.right,
+                scrollController.buttonOffset + panel.innerOffset.top
             );
             rect = Rect(
                 panel.absolutePosition + buttonOffset,
-                vec2(panel.regionOffset.right, buttonSize)
+                vec2(panel.innerOffset.right, buttonSize)
             );
         }
 
