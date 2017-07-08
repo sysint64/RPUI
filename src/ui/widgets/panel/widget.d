@@ -368,6 +368,6 @@ private:
         if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right)
             size.x = clamp(size.x, minSize, maxSize);
 
-        onResize();
+        manager.rootWidget.onResize();
     }
 }

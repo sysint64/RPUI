@@ -51,7 +51,7 @@ Panel
     regionAlign: client
 
     Panel
-        regionAlign: right
+        regionAlign: left
         size: 300, 300
         blackSplit: true
         margin: 5
@@ -65,7 +65,7 @@ Panel
             Button size: 100, 21 margin: 5 caption: "Button 3"
 
     Panel
-        regionAlign: right
+        regionAlign: left
         size: 300, 300
         blackSplit: true
         margin: 5

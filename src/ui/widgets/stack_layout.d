@@ -35,7 +35,7 @@ class StackLayout : Widget {
         updateAbsolutePosition();
 
         float lastPosition = 0;
-	vec2 maxSize = vec2(0, 0);
+        vec2 maxSize = vec2(0, 0);
 
         Widget widget = null;
 
