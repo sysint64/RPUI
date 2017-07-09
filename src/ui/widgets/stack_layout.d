@@ -10,6 +10,8 @@ import std.math;
 class StackLayout : Widget {
     @Field Orientation orientation = Orientation.vertical;
 
+    private vec2 maxSize = vec2(0, 0);
+
     this() {
         super();
         skipFocus = true;
@@ -35,7 +37,7 @@ class StackLayout : Widget {
         updateAbsolutePosition();
 
         vec2 lastPosition = vec2(0, 0);
-        vec2 maxSize = vec2(0, 0);
+        // vec2 maxSize = vec2(0, 0);
 
         Widget widget = null;
 
@@ -61,12 +63,20 @@ class StackLayout : Widget {
             cell.updateAbsolutePosition();
         }
 
+        updateResize();
+
         if (orientation == Orientation.vertical) {
-            size.x = maxSize.x > parent.innerSize.x ? maxSize.x : parent.innerSize.x;
+            // size.x = maxSize.x > parent.innerSize.x ? maxSize.x : parent.innerSize.x;
             size.y = lastPosition.y + widget.outerOffset.bottom;
         } else {
             size.x = lastPosition.x + widget.outerOffset.right;
             size.y = maxSize.y > parent.innerSize.y ? maxSize.y : parent.innerSize.y;
+        }
+    }
+
+    override void updateResize() {
+        if (orientation == Orientation.vertical) {
+            size.x = maxSize.x > parent.innerSize.x ? maxSize.x : parent.innerSize.x;
         }
     }
 }

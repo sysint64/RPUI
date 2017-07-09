@@ -225,32 +225,51 @@ public:
         this.p_style = style;
     }
 
-    void onProgress() {
+    void updateBoundary() {
         if (!drawChildren)
             return;
 
-        // innerBoundarySize = vec2(0, 0);
         innerBoundarySize = innerOffsetSize;
 
         foreach (Widget widget; children) {
-            if (!widget.visible)
-                continue;
-
-            widget.onProgress();
-
             const widgetFringePosition = vec2(
                 widget.position.x + widget.outerSize.x + innerOffset.left,
                 widget.position.y + widget.outerSize.y + innerOffset.top
             );
 
-            innerBoundarySize.x = fmax(innerBoundarySize.x, widgetFringePosition.x);
-            innerBoundarySize.y = fmax(innerBoundarySize.y, widgetFringePosition.y);
+            if (widget.regionAlign != RegionAlign.right &&
+                widget.regionAlign != RegionAlign.top &&
+                widget.regionAlign != RegionAlign.bottom)
+            {
+                innerBoundarySize.x = fmax(innerBoundarySize.x, widgetFringePosition.x);
+            }
+
+            if (widget.regionAlign != RegionAlign.bottom &&
+                widget.regionAlign != RegionAlign.right &&
+                widget.regionAlign != RegionAlign.left)
+            {
+                innerBoundarySize.y = fmax(innerBoundarySize.y, widgetFringePosition.y);
+            }
         }
 
         innerBoundarySize += innerOffsetEnd;
 
         innerBoundarySizeClamped.x = fmax(innerBoundarySize.x, innerSize.x);
         innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, innerSize.y);
+    }
+
+    void onProgress() {
+        if (!drawChildren)
+            return;
+
+        foreach (Widget widget; children) {
+            if (!widget.visible)
+                continue;
+
+            widget.onProgress();
+        }
+
+        updateBoundary();
     }
 
     void render(Camera camera) {
@@ -452,13 +471,19 @@ protected:
     void updateVerticalAlign() {
     }
 
+    void updateResize() {
+    }
+
     package void updateAll() {
         updateAbsolutePosition();
         updateRegionAlign();
+        updateResize();
 
         foreach (Widget widget; children) {
             widget.updateAll();
         }
+
+        updateBoundary();
     }
 
     void updateRegionAlign() {

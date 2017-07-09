@@ -3,8 +3,8 @@ Panel
     regionAlign: right
     align: center
     locationAlign: center
-    size: 300, 300
-    position: 100, 300
+    size: 100, 300
+    position: 100, 0
     finalFocusRegion: true
     blackSplit: true
     finalFocus: true
@@ -15,7 +15,7 @@ Panel
         regionAlign: top
         background: light
         position: 0, 0
-        size: 0, 300
+        size: 0, 100
 
         Button position: 5, 5 size: 100, 21 caption: "OK" name: "okButton"
 

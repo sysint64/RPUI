@@ -147,7 +147,7 @@ package struct ScrollButton {
         }
     }
 
-    void onProgress() {
+    void updateResize() {
         Rect rect;
 
         if (orientation == Orientation.horizontal) {
@@ -155,7 +155,7 @@ package struct ScrollButton {
             buttonSize = scrollController.buttonSize - panel.extraInnerOffset.left;
             buttonOffset = vec2(
                scrollController.buttonOffset,
-               panel.size.y - panel.extraInnerOffset.bottom
+               panel.size.y - width
             );
             rect = Rect(
                 panel.absolutePosition + buttonOffset,
@@ -165,7 +165,7 @@ package struct ScrollButton {
             visible = panel.innerBoundarySize.y > panel.size.y;
             buttonSize = scrollController.buttonSize - panel.extraInnerOffset.top;
             buttonOffset = vec2(
-                panel.size.x - panel.extraInnerOffset.right,
+                panel.size.x - width,
                 scrollController.buttonOffset + panel.extraInnerOffset.top
             );
             rect = Rect(

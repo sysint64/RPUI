@@ -67,9 +67,12 @@ class Panel : Widget, Scrollable {
         updateRegionAlign();
         updateAbsolutePosition();
         updateInnerOffset();
+        updateResize();
+    }
 
-        horizontalScrollButton.onProgress();
-        verticalScrollButton.onProgress();
+    override void updateResize() {
+        horizontalScrollButton.updateResize();
+        verticalScrollButton.updateResize();
 
         split.calculate();
 
@@ -78,9 +81,6 @@ class Panel : Widget, Scrollable {
 
         with (verticalScrollButton)
             contentOffset.y = visible ? scrollController.contentOffset : 0;
-
-        // contentOffset.x -= extraInnerOffset.left;
-        // contentOffset.y -= extraInnerOffset.top;
     }
 
     override void render(Camera camera) {
@@ -99,7 +99,10 @@ class Panel : Widget, Scrollable {
             return;
         }
 
+        horizontalScrollButton.visible = innerBoundarySize.x > size.x;
         horizontalScrollButton.render();
+
+        verticalScrollButton.visible = innerBoundarySize.y > size.y;
         verticalScrollButton.render();
 
         // Render children widgets
@@ -368,7 +371,7 @@ private:
         if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right)
             size.x = clamp(size.x, minSize, maxSize);
 
-        manager.rootWidget.onResize();
-        manager.rootWidget.updateAll();
+        parent.updateAll();
+        parent.onResize();
     }
 }
