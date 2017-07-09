@@ -29,8 +29,10 @@ class ScrollController {
         if (p_buttonSize < buttonMinSize)
             p_buttonSize = buttonMinSize;
 
-        if (!buttonClick)
+        if (!buttonClick) {
+            clampValues();
             return;
+        }
 
         float delta = 0;
 

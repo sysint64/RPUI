@@ -51,7 +51,7 @@ Panel
     regionAlign: client
 
     Panel
-        regionAlign: left
+        regionAlign: right
         size: 300, 300
         blackSplit: true
         margin: 5

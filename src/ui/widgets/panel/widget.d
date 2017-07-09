@@ -246,10 +246,10 @@ class Panel : Widget, Scrollable {
     }
 
     override void onResize() {
-        super.onResize();
-
         horizontalScrollButton.scrollController.onResize();
         verticalScrollButton.scrollController.onResize();
+
+        super.onResize();
     }
 
 protected:
@@ -369,5 +369,6 @@ private:
             size.x = clamp(size.x, minSize, maxSize);
 
         manager.rootWidget.onResize();
+        manager.rootWidget.updateAll();
     }
 }

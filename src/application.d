@@ -201,7 +201,7 @@ private:
         const(char)* title = "Simulator";
         window = sfWindow_create(videoMode, title, sfDefaultStyle, &settings);
         p_windowHandle = sfWindow_getSystemHandle(window);
-        sfWindow_setVerticalSyncEnabled(window, false);
+        sfWindow_setVerticalSyncEnabled(window, true);
         sfWindow_setFramerateLimit(window, 60);
 
         DerelictGL.reload();
@@ -282,13 +282,17 @@ private:
                 p_mouseClickPos = p_mousePos;
 
                 with (event.mouseButton)
-                    onMouseDown(x, y, to!MouseButton(button));
+                    try {
+                        onMouseDown(x, y, to!MouseButton(button));
+                    } catch(ConvException) {}
 
                 break;
 
             case sfEvtMouseButtonReleased:
                 with (event.mouseButton)
-                    onMouseUp(x, y, to!MouseButton(button));
+                    try {
+                        onMouseUp(x, y, to!MouseButton(button));
+                    } catch(ConvException) {}
 
                 break;
 

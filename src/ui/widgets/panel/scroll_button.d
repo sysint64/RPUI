@@ -56,8 +56,8 @@ package struct ScrollButton {
         const innerBoundarySizeClamped = getVectorComponent(panel.innerBoundarySizeClamped);
 
         with (scrollController) {
-            buttonMaxOffset = widgetSize;
-            buttonMaxSize = widgetSize;
+            buttonMaxOffset = widgetSize - widgetRegionOffset;
+            buttonMaxSize = widgetSize - widgetRegionOffset;
             buttonClick = isClick;
 
             contentSize = innerBoundarySize;
@@ -172,6 +172,11 @@ package struct ScrollButton {
                 panel.absolutePosition + buttonOffset,
                 vec2(panel.extraInnerOffset.right, buttonSize)
             );
+        }
+
+        if (!visible) {
+            scrollController.setOffsetInPercent(0);
+            return;
         }
 
         isEnter = pointInRect(app.mousePos, rect);

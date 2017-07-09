@@ -452,6 +452,15 @@ protected:
     void updateVerticalAlign() {
     }
 
+    package void updateAll() {
+        updateAbsolutePosition();
+        updateRegionAlign();
+
+        foreach (Widget widget; children) {
+            widget.updateAll();
+        }
+    }
+
     void updateRegionAlign() {
         if (regionAlign == RegionAlign.none)
             return;
