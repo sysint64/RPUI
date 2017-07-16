@@ -24,6 +24,8 @@ import derelict.sfml2.system;
 import derelict.sfml2.window;
 import derelict.sfml2.graphics;
 
+import module_s;
+
 
 void writeindent(in int level = 0) {
     for (int i = 0; i < level*4; ++i) {

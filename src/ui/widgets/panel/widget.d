@@ -193,9 +193,13 @@ class Panel : Widget, Scrollable {
     }
 
     override void onMouseDown(in uint x, in uint y, in MouseButton button) {
+        if (isFrozeSource())
+            return;
+
         if (split.isEnter && isOpen) {
             lastSize = size;
             split.isClick = true;
+            freezeUI();
         }
 
         verticalScrollButton.isClick = verticalScrollButton.isEnter;
@@ -230,6 +234,9 @@ class Panel : Widget, Scrollable {
         lastSize = size;
         size.y = header.height;
         isOpen = false;
+
+        horizontalScrollButton.scrollController.setOffsetInPercent(0);
+        verticalScrollButton.scrollController.setOffsetInPercent(0);
     }
 
     final void toggle() {
@@ -243,7 +250,11 @@ class Panel : Widget, Scrollable {
     override void onMouseUp(in uint x, in uint y, in MouseButton button) {
         verticalScrollButton.isClick = false;
         horizontalScrollButton.isClick = false;
-        split.isClick = false;
+
+        if (split.isClick) {
+            split.isClick = false;
+            unfreezeUI();
+        }
 
         super.onMouseUp(x, y, button);
     }
@@ -281,6 +292,9 @@ protected:
     }
 
     void onMouseWheelHandle(in int dx, in int dy) {
+        if (isFrozeSource())
+            return;
+
         Scrollable scrollable = cast(Scrollable) parent;
 
         int horizontalDelta = dx;

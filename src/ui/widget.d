@@ -209,7 +209,7 @@ public:
 
 // Events triggers ---------------------------------------------------------------------------------
 
-    void triggerClick() {
+    final void triggerClick() {
         if (onClickListener !is null)
             onClickListener(this);
     }
@@ -223,6 +223,37 @@ public:
     this(in string style) {
         app = Application.getInstance();
         this.p_style = style;
+    }
+
+    final Widget closest(bool delegate(Widget) predicate) {
+        Widget widget = this.parent;
+
+        while (widget !is null) {
+            if (predicate(widget))
+                return widget;
+
+            widget = widget.parent;
+        }
+
+        return null;
+    }
+
+    final Widget find(bool delegate(Widget) predicate) {
+        foreach (Widget widget; children) {
+            if (predicate(widget))
+                return widget;
+
+            Widget foundWidget = widget.find(predicate);
+
+            if (foundWidget !is null)
+                return foundWidget;
+        }
+
+        return null;
+    }
+
+    final Widget findWidgetByName(in string name) {
+        return find((Widget widget) => widget.name == name);
     }
 
     void updateBoundary() {
@@ -313,20 +344,6 @@ public:
     bool pointIsEnter(in vec2i point) {
         const Rect rect = Rect(absolutePosition.x, absolutePosition.y, size.x, size.y);
         return pointInRect(point, rect);
-    }
-
-    Widget findWidgetByName(in string name) {
-        if (this.name == name)
-            return this;
-
-        foreach (Widget widget; children) {
-            Widget foundWidget = widget.findWidgetByName(name);
-
-            if (foundWidget !is null)
-                return foundWidget;
-        }
-
-        return null;
     }
 
     void focus() {
@@ -430,12 +447,18 @@ public:
 
     void onMouseDown(in uint x, in uint y, in MouseButton button) {
         foreach (Widget widget; children) {
+            if (widget.isFroze())
+                continue;
+
             widget.onMouseDown(x, y, button);
         }
     }
 
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
         foreach (Widget widget; children) {
+            if (widget.isFroze())
+                continue;
+
             widget.onMouseUp(x, y, button);
 
             if (widget.isEnter)
@@ -451,6 +474,9 @@ public:
 
     void onMouseWheel(in int dx, in int dy) {
         foreach (Widget widget; children) {
+            if (widget.isFroze())
+                continue;
+
             widget.onMouseWheel(dx, dy);
         }
     }
@@ -460,6 +486,9 @@ public:
 
     void onResize() {
         foreach (Widget widget; children) {
+            if (widget.isFroze())
+                continue;
+
             widget.onResize();
         }
     }
@@ -472,6 +501,22 @@ protected:
     }
 
     void updateResize() {
+    }
+
+    public final void freezeUI(bool isNestedFreeze = true) {
+        this.manager.freezeUI(this, isNestedFreeze);
+    }
+
+    final void unfreezeUI() {
+        this.manager.unfreezeUI(this);
+    }
+
+    final bool isFroze() {
+        return this.manager.isWidgetFroze(this);
+    }
+
+    final bool isFrozeSource() {
+        return this.manager.isWidgetFrozeSource(this);
     }
 
     package void updateAll() {

@@ -3,13 +3,14 @@ Panel
     regionAlign: right
     align: center
     locationAlign: center
-    size: 100, 300
+    size: 300, 0
     position: 100, 0
     finalFocusRegion: true
     blackSplit: true
     finalFocus: true
 
     Panel
+        name: "testPanel"
         caption: "Panel 1"
         allowHide: true
         regionAlign: top

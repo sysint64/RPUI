@@ -84,7 +84,7 @@ private:
 
             foreach (uda; getUDAs!(symbol, event)) {
                 Widget widget = findWidgetByName(uda.widgetName);
-                assert(widget !is null);
+                assert(widget !is null, widget.name);
 
                 enum widgetEventName = "on" ~ eventName[2..$];
                 mixin("widget." ~ widgetEventName ~ " = &view." ~ symbolName ~ ";");

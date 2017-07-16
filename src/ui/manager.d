@@ -90,6 +90,9 @@ class Manager {
             if (widget is null || !widget.isOver || !widget.visible)
                 continue;
 
+            if (isWidgetFroze(widget))
+                continue;
+
             if (found !is null) {
                 found.isEnter = false;
                 found.isClick = false;
@@ -176,8 +179,13 @@ class Manager {
 
 // Events ------------------------------------------------------------------------------------------
 
+    @property
+    private Widget eventRootWidget() {
+        return freezeSource is null ? rootWidget : freezeSource;
+    }
+
     void onKeyPressed(in KeyCode key) {
-        rootWidget.onKeyPressed(key);
+        eventRootWidget.onKeyPressed(key);
 
         if (focusedWidget !is null && isClickKey(key)) {
             focusedWidget.isClick = true;
@@ -185,7 +193,7 @@ class Manager {
     }
 
     void onKeyReleased(in KeyCode key) {
-        rootWidget.onKeyReleased(key);
+        eventRootWidget.onKeyReleased(key);
 
         if (focusedWidget !is null && isClickKey(key) && focusedWidget.isClick) {
             focusedWidget.isClick = false;
@@ -194,12 +202,14 @@ class Manager {
     }
 
     void onTextEntered(in utfchar key) {
-        rootWidget.onTextEntered(key);
+        eventRootWidget.onTextEntered(key);
     }
 
     void onMouseDown(in uint x, in uint y, in MouseButton button) {
+        eventRootWidget.onMouseDown(x, y, button);
+
         foreach_reverse (Widget widget; widgetOrdering) {
-            if (widget is null)
+            if (widget is null || isWidgetFroze(widget))
                 continue;
 
             if (widget.isEnter) {
@@ -207,13 +217,11 @@ class Manager {
                 break;
             }
         }
-
-        rootWidget.onMouseDown(x, y, button);
     }
 
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
         foreach_reverse (Widget widget; widgetOrdering) {
-            if (widget is null)
+            if (widget is null || isWidgetFroze(widget))
                 continue;
 
             if (widget.isEnter) {
@@ -222,26 +230,28 @@ class Manager {
             }
         }
 
-        rootWidget.onMouseUp(x, y, button);
-        // blur();
+        eventRootWidget.onMouseUp(x, y, button);
     }
 
     void onDblClick(in uint x, in uint y, in MouseButton button) {
-        rootWidget.onDblClick(x, y, button);
+        eventRootWidget.onDblClick(x, y, button);
     }
 
     void onMouseMove(in uint x, in uint y) {
-        rootWidget.onMouseMove(x, y);
+        eventRootWidget.onMouseMove(x, y);
     }
 
     void onMouseWheel(in int dx, in int dy) {
-        rootWidget.onMouseWheel(dx, dy);
+        eventRootWidget.onMouseWheel(dx, dy);
 
         Scrollable scrollable = null;
         Widget widget = widgetUnderMouse;
 
         // Find first scrollable widget
         while (scrollable is null && widget !is null) {
+            if (isWidgetFroze(widget))
+                continue;
+
             scrollable = cast(Scrollable) widget;
             widget = widget.parent;
         }
@@ -288,9 +298,40 @@ package:
     Array!Widget widgetOrdering;
     Array!Widget unfocusedWidgets;
 
+    Widget freezeSource = null;
+    private bool isNestedFreeze = false;
+
     uint getNextIndex() {
         ++lastIndex  ;
         return lastIndex;
+    }
+
+    // TODO: write description
+    void freezeUI(Widget widget, bool nestedFreeze = true) {
+        this.freezeSource = widget;
+        this.isNestedFreeze = nestedFreeze;
+    }
+
+    void unfreezeUI(Widget widget) {
+        if (this.freezeSource == widget)
+            this.freezeSource = null;
+    }
+
+    // TODO: write description
+    bool isWidgetFroze(Widget widget) const {
+        if (freezeSource is null || freezeSource == widget)
+            return false;
+
+        if (!isNestedFreeze) {
+            auto freezeSourceParent = widget.closest((Widget parent) => freezeSource == parent);
+            return freezeSourceParent is null;
+        } else {
+            return true;
+        }
+    }
+
+    bool isWidgetFrozeSource(Widget widget) const {
+        return freezeSource == widget;
     }
 }
 

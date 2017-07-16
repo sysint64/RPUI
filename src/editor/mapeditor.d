@@ -32,6 +32,7 @@ import derelict.opengl3.gl;
 
 class MyView : View {
     @ViewWidget Button okButton;
+    @ViewWidget Panel testPanel;
     @ViewWidget("cancelButton") Button myButton;
     @GroupViewWidgets Button[3] buttons;
 
@@ -39,6 +40,7 @@ class MyView : View {
 
     this(Manager manager, in string laytoutFileName, in string shortcutsFileName) {
         super(manager, laytoutFileName, shortcutsFileName);
+        testPanel.freezeUI(false);
     }
 
     @OnClickListener("okButton")
