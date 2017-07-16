@@ -44,19 +44,19 @@ class Manager {
     }
 
     void onProgress() {
+        cursor = Cursor.Icon.normal;
         rootWidget.onProgress();
+        poll();
         blur();
+        app.cursor = cursor;
     }
 
     void render(Camera camera) {
-        cursor = Cursor.Icon.normal;
         rootWidget.size.x = app.windowWidth;
         rootWidget.size.y = app.windowHeight;
 
         renderer.camera = camera;
         rootWidget.render(camera);
-        poll();
-        app.cursor = cursor;
     }
 
     void poll() {

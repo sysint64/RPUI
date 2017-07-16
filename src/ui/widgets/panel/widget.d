@@ -68,6 +68,14 @@ class Panel : Widget, Scrollable {
         updateAbsolutePosition();
         updateInnerOffset();
         updateResize();
+
+        if (!isFrozeSource() && !isFroze()) {
+            horizontalScrollButton.onProgress();
+            verticalScrollButton.onProgress();
+        } else {
+            horizontalScrollButton.isEnter = false;
+            verticalScrollButton.isEnter = false;
+        }
     }
 
     override void updateResize() {
@@ -177,6 +185,7 @@ class Panel : Widget, Scrollable {
             if (pointInRect(app.mousePos, rect) || split.isClick) {
                 manager.cursor = Cursor.Icon.vDoubleArrow;
                 split.isEnter = true;
+                horizontalScrollButton.isEnter = false;
             }
         } else if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right) {
             const Rect rect = Rect(
@@ -188,6 +197,7 @@ class Panel : Widget, Scrollable {
             if (pointInRect(app.mousePos, rect) || split.isClick) {
                 manager.cursor = Cursor.Icon.hDoubleArrow;
                 split.isEnter = true;
+                verticalScrollButton.isEnter = false;
             }
         }
     }
@@ -202,11 +212,13 @@ class Panel : Widget, Scrollable {
             freezeUI();
         }
 
-        verticalScrollButton.isClick = verticalScrollButton.isEnter;
-        horizontalScrollButton.isClick = horizontalScrollButton.isEnter;
+        if (!isFrozeSource()) {
+            verticalScrollButton.isClick = verticalScrollButton.isEnter;
+            horizontalScrollButton.isClick = horizontalScrollButton.isEnter;
 
-        verticalScrollButton.scrollController.onMouseDown(x, y, button);
-        horizontalScrollButton.scrollController.onMouseDown(x, y, button);
+            verticalScrollButton.scrollController.onMouseDown(x, y, button);
+            horizontalScrollButton.scrollController.onMouseDown(x, y, button);
+        }
 
         onHeaderMouseDown();
         super.onMouseDown(x, y, button);

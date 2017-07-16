@@ -41,14 +41,9 @@ package struct ScrollButton {
 
     // Update scrollController properties
     void updateController() {
-        const float[Orientation] widgetStartRegionOffsets = [
-            Orientation.horizontal: panel.extraInnerOffset.left,
-            Orientation.vertical: panel.extraInnerOffset.top
-        ];
-
-        const float[Orientation] widgetEndRegionOffsets = [
-            Orientation.horizontal: panel.extraInnerOffset.right,
-            Orientation.vertical: panel.extraInnerOffset.bottom
+        const float[Orientation] widgetRegionSizes = [
+            Orientation.horizontal: panel.extraInnerOffset.left + panel.extraInnerOffset.right,
+            Orientation.vertical: panel.extraInnerOffset.top + panel.extraInnerOffset.bottom
         ];
 
         float getVectorComponent(in vec2 vector) {
@@ -56,15 +51,15 @@ package struct ScrollButton {
         }
 
         const widgetSize = getVectorComponent(panel.size);
-        const widgetStartRegionOffset = widgetStartRegionOffsets[orientation];
-        const widgetEndRegionOffset = widgetEndRegionOffsets[orientation];
+        const widgetRegionSize = widgetRegionSizes[orientation];
         const innerBoundarySize = getVectorComponent(panel.innerBoundarySize);
         const innerBoundarySizeClamped = getVectorComponent(panel.innerBoundarySizeClamped);
 
         with (scrollController) {
-            buttonMaxOffset = widgetSize - widgetEndRegionOffset - widgetStartRegionOffset;
-            buttonMaxSize = widgetSize - widgetEndRegionOffset;
+            buttonMaxOffset = widgetSize - widgetRegionSize;
+            buttonMaxSize = widgetSize - widgetRegionSize;
             buttonClick = isClick;
+            visibleSize = widgetSize;
 
             contentSize = innerBoundarySize;
             contentMaxOffset = innerBoundarySizeClamped - widgetSize;
@@ -154,29 +149,17 @@ package struct ScrollButton {
     }
 
     void updateResize() {
-        Rect rect;
-
         if (orientation == Orientation.horizontal) {
-            visible = panel.innerBoundarySize.x > panel.size.x;
-            buttonSize = scrollController.buttonSize;// - panel.extraInnerOffset.left;
+            buttonSize = scrollController.buttonSize;
             buttonOffset = vec2(
                scrollController.buttonOffset,
                panel.size.y - width
             );
-            rect = Rect(
-                panel.absolutePosition + buttonOffset,
-                vec2(buttonSize, panel.extraInnerOffset.bottom)
-            );
         } else if (orientation == Orientation.vertical) {
-            visible = panel.innerBoundarySize.y > panel.size.y;
-            buttonSize = scrollController.buttonSize;// - panel.extraInnerOffset.top;
+            buttonSize = scrollController.buttonSize;
             buttonOffset = vec2(
                 panel.size.x - width,
                 scrollController.buttonOffset + panel.extraInnerOffset.top
-            );
-            rect = Rect(
-                panel.absolutePosition + buttonOffset,
-                vec2(panel.extraInnerOffset.right, buttonSize)
             );
         }
 
@@ -185,8 +168,25 @@ package struct ScrollButton {
             return;
         }
 
-        isEnter = pointInRect(app.mousePos, rect);
         updateController();
         scrollController.pollButton();
+    }
+
+    void onProgress() {
+        Rect rect;
+
+        if (orientation == Orientation.horizontal) {
+            rect = Rect(
+                panel.absolutePosition + buttonOffset,
+                vec2(buttonSize, panel.extraInnerOffset.bottom)
+            );
+        } else if (orientation == Orientation.vertical) {
+            rect = Rect(
+                panel.absolutePosition + buttonOffset,
+                vec2(panel.extraInnerOffset.right, buttonSize)
+            );
+        }
+
+        isEnter = pointInRect(app.mousePos, rect);
     }
 }

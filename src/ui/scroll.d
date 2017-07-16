@@ -23,7 +23,7 @@ class ScrollController {
     }
 
     void pollButton() {
-        const float buttonRatio = buttonMaxSize / contentSize;
+        const float buttonRatio = visibleSize / contentSize;
         p_buttonSize = buttonMaxSize * buttonRatio;
 
         if (p_buttonSize < buttonMinSize)
@@ -44,13 +44,18 @@ class ScrollController {
 
         p_buttonOffset = buttonClickOffset + delta;
         clampValues();
-        const float contentRatio = p_buttonOffset / (buttonMaxOffset - p_buttonSize);
+        const float contentRatio = p_buttonOffset / (buttonMaxSize - p_buttonSize);
         p_contentOffset = contentMaxOffset * contentRatio;
     }
 
     void onResize() {
-        const float ratio = p_contentOffset / contentMaxOffset;
-        p_buttonOffset = (buttonMaxSize - p_buttonSize) * ratio;
+        if (contentMaxOffset == 0) {
+            p_buttonOffset = 0;
+        } else {
+            const float ratio = p_contentOffset / contentMaxOffset;
+            p_buttonOffset = (buttonMaxSize - p_buttonSize) * ratio;
+        }
+
         clampValues();
     }
 
@@ -80,7 +85,6 @@ class ScrollController {
     body {
         p_contentOffset = contentMaxOffset * percent;
         onResize();
-        clampValues();
     }
 
 // Properties --------------------------------------------------------------------------------------
@@ -92,6 +96,7 @@ class ScrollController {
     bool  buttonClick = false;
     float contentMaxOffset = 0;
     float contentSize = 0;
+    float visibleSize = 0;
 
     @property float buttonSize() { return ceil(p_buttonSize); }
     @property float buttonOffset() { return ceil(p_buttonOffset); }

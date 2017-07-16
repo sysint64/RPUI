@@ -40,7 +40,7 @@ class MyView : View {
 
     this(Manager manager, in string laytoutFileName, in string shortcutsFileName) {
         super(manager, laytoutFileName, shortcutsFileName);
-        testPanel.freezeUI(false);
+        // testPanel.freezeUI(false);
     }
 
     @OnClickListener("okButton")
