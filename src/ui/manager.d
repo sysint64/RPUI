@@ -69,7 +69,9 @@ class Manager {
             if (!widget.visible)
                 continue;
 
-            widget.onCursor();
+            if (!isWidgetFroze(widget))
+                widget.onCursor();
+
             vec2 size = vec2(
                 widget.overSize.x > 0 ? widget.overSize.x : widget.size.x,
                 widget.overSize.y > 0 ? widget.overSize.y : widget.size.y
@@ -181,7 +183,7 @@ class Manager {
 
     @property
     private Widget eventRootWidget() {
-        return freezeSource is null ? rootWidget : freezeSource;
+        return freezeSources.empty ? rootWidget : freezeSources.front;
     }
 
     void onKeyPressed(in KeyCode key) {
@@ -298,8 +300,12 @@ package:
     Array!Widget widgetOrdering;
     Array!Widget unfocusedWidgets;
 
-    Widget freezeSource = null;
-    private bool isNestedFreeze = false;
+    SList!Widget freezeSources;
+    SList!bool isNestedFreezeStack;
+
+    @property bool isNestedFreeze() {
+        return !isNestedFreezeStack.empty && isNestedFreezeStack.front;
+    }
 
     uint getNextIndex() {
         ++lastIndex  ;
@@ -308,30 +314,34 @@ package:
 
     // TODO: write description
     void freezeUI(Widget widget, bool nestedFreeze = true) {
-        this.freezeSource = widget;
-        this.isNestedFreeze = nestedFreeze;
+        this.freezeSources.insert(widget);
+        this.isNestedFreezeStack.insert(nestedFreeze);
     }
 
     void unfreezeUI(Widget widget) {
-        if (this.freezeSource == widget)
-            this.freezeSource = null;
+        if (this.freezeSources.front == widget) {
+            this.freezeSources.removeFront();
+            this.isNestedFreezeStack.removeFront();
+        }
     }
 
     // TODO: write description
-    bool isWidgetFroze(Widget widget) const {
-        if (freezeSource is null || freezeSource == widget)
+    bool isWidgetFroze(Widget widget) {
+        if (freezeSources.empty || freezeSources.front == widget)
             return false;
 
         if (!isNestedFreeze) {
-            auto freezeSourceParent = widget.closest((Widget parent) => freezeSource == parent);
+            auto freezeSourceParent = widget.closest(
+                (Widget parent) => freezeSources.front == parent
+            );
             return freezeSourceParent is null;
         } else {
             return true;
         }
     }
 
-    bool isWidgetFrozeSource(Widget widget) const {
-        return freezeSource == widget;
+    bool isWidgetFrozeSource(Widget widget) {
+        return !freezeSources.empty && freezeSources.front == widget;
     }
 }
 

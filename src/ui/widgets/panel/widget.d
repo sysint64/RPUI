@@ -193,7 +193,7 @@ class Panel : Widget, Scrollable {
     }
 
     override void onMouseDown(in uint x, in uint y, in MouseButton button) {
-        if (isFrozeSource())
+        if (isFrozeSource() && manager.isNestedFreeze)
             return;
 
         if (split.isEnter && isOpen) {
@@ -292,7 +292,7 @@ protected:
     }
 
     void onMouseWheelHandle(in int dx, in int dy) {
-        if (isFrozeSource())
+        if (isFrozeSource() && manager.isNestedFreeze)
             return;
 
         Scrollable scrollable = cast(Scrollable) parent;
