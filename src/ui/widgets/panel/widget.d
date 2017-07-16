@@ -306,13 +306,13 @@ protected:
         }
 
         if (!verticalScrollButton.scrollController.addOffsetInPx(-verticalDelta*20)) {
-            if (scrollable && parent.isOver) {
+            if (scrollable && parent.isOver && !parent.isFroze()) {
                 scrollable.onMouseWheelHandle(0, verticalDelta);
             }
         }
 
         if (!horizontalScrollButton.scrollController.addOffsetInPx(-horizontalDelta*20)) {
-            if (scrollable && parent.isOver) {
+            if (scrollable && parent.isOver && !parent.isFroze()) {
                 scrollable.onMouseWheelHandle(horizontalDelta, 0);
             }
         }

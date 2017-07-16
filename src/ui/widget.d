@@ -503,22 +503,6 @@ protected:
     void updateResize() {
     }
 
-    public final void freezeUI(bool isNestedFreeze = true) {
-        this.manager.freezeUI(this, isNestedFreeze);
-    }
-
-    final void unfreezeUI() {
-        this.manager.unfreezeUI(this);
-    }
-
-    final bool isFroze() {
-        return this.manager.isWidgetFroze(this);
-    }
-
-    final bool isFrozeSource() {
-        return this.manager.isWidgetFrozeSource(this);
-    }
-
     package void updateAll() {
         updateAbsolutePosition();
         updateRegionAlign();
@@ -629,5 +613,21 @@ package:
         }
 
         absolutePosition = position + res + outerOffsetStart;
+    }
+
+    public void freezeUI(bool isNestedFreeze = true) {
+        this.manager.freezeUI(this, isNestedFreeze);
+    }
+
+    void unfreezeUI() {
+        this.manager.unfreezeUI(this);
+    }
+
+    bool isFroze() {
+        return this.manager.isWidgetFroze(this);
+    }
+
+    bool isFrozeSource() {
+        return this.manager.isWidgetFrozeSource(this);
     }
 }
