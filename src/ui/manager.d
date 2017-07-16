@@ -2,7 +2,6 @@ module ui.manager;
 
 import std.container;
 import std.container.array;
-import containers.treemap;
 
 import input;
 import application;
@@ -73,11 +72,16 @@ class Manager {
                 widget.onCursor();
 
             vec2 size = vec2(
-                widget.overSize.x > 0 ? widget.overSize.x : widget.size.x,
-                widget.overSize.y > 0 ? widget.overSize.y : widget.size.y
+                widget.overSize.x > 0 ? widget.overSize.x : widget.innerSize.x,
+                widget.overSize.y > 0 ? widget.overSize.y : widget.innerSize.y
             );
 
-            Rect rect = Rect(widget.absolutePosition.x, widget.absolutePosition.y, size.x, size.y);
+            vec2 position = vec2(
+                widget.absolutePosition.x + widget.innerOffsetStart.x,
+                widget.absolutePosition.y + widget.innerOffsetStart.y
+            );
+
+            Rect rect = Rect(position, size);
             widget.isOver = widget.parent.isOver && pointInRect(app.mousePos, rect);
         }
 
