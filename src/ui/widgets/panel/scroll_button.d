@@ -59,8 +59,8 @@ package struct ScrollButton {
             buttonMaxOffset = widgetSize - widgetRegionSize;
             buttonMaxSize = widgetSize - widgetRegionSize;
             buttonClick = isClick;
-            visibleSize = widgetSize;
 
+            visibleSize = widgetSize;
             contentSize = innerBoundarySize;
             contentMaxOffset = innerBoundarySizeClamped - widgetSize;
         }
@@ -69,7 +69,7 @@ package struct ScrollButton {
     @property string state() {
         if (isClick) {
             return "Click";
-        } else if (isEnter){
+        } else if (isEnter) {
             return "Enter";
         } else {
             return "Leave";
@@ -155,8 +155,8 @@ package struct ScrollButton {
         if (orientation == Orientation.horizontal) {
             buttonSize = scrollController.buttonSize;
             buttonOffset = vec2(
-               scrollController.buttonOffset,
-               panel.size.y - width
+                scrollController.buttonOffset,
+                panel.size.y - width
             );
         } else if (orientation == Orientation.vertical) {
             buttonSize = scrollController.buttonSize;

@@ -89,9 +89,8 @@ class ScrollController {
 
 // Properties --------------------------------------------------------------------------------------
 
-    float buttonMinOffset = 0;
     float buttonMaxOffset = 0;
-    float buttonMinSize = 40;
+    float buttonMinSize = 20;
     float buttonMaxSize;
     bool  buttonClick = false;
     float contentMaxOffset = 0;

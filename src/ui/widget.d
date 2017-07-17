@@ -486,9 +486,6 @@ public:
 
     void onResize() {
         foreach (Widget widget; children) {
-            if (widget.isFroze())
-                continue;
-
             widget.onResize();
         }
     }
