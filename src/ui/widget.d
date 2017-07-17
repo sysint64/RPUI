@@ -513,6 +513,7 @@ protected:
         }
 
         updateBoundary();
+        updateResize();
     }
 
     void updateRegionAlign() {

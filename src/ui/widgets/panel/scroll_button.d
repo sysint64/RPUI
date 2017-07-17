@@ -149,6 +149,9 @@ package struct ScrollButton {
     }
 
     void updateResize() {
+        updateController();
+        visible = scrollController.contentSize > scrollController.visibleSize;
+
         if (orientation == Orientation.horizontal) {
             buttonSize = scrollController.buttonSize;
             buttonOffset = vec2(
@@ -168,7 +171,6 @@ package struct ScrollButton {
             return;
         }
 
-        updateController();
         scrollController.pollButton();
     }
 

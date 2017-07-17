@@ -107,10 +107,7 @@ class Panel : Widget, Scrollable {
             return;
         }
 
-        horizontalScrollButton.visible = innerBoundarySize.x > size.x;
         horizontalScrollButton.render();
-
-        verticalScrollButton.visible = innerBoundarySize.y > size.y;
         verticalScrollButton.render();
 
         // Render children widgets
