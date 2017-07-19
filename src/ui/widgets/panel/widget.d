@@ -1,4 +1,3 @@
-
 module ui.widgets.panel.widget;
 
 import std.container;
@@ -308,11 +307,6 @@ protected:
 
         int horizontalDelta = dx;
         int verticalDelta = dy;
-
-        if (isKeyPressed(KeyCode.Shift)) { // Inverse
-            horizontalDelta = dy;
-            verticalDelta = dx;
-        }
 
         if (!verticalScrollButton.scrollController.addOffsetInPx(-verticalDelta*20)) {
             if (scrollable && parent.isOver && !parent.isFroze()) {

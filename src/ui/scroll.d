@@ -64,6 +64,9 @@ class ScrollController {
     }
 
     bool addOffsetInPx(in float delta) {
+        if (visibleSize >= contentSize)
+            return false;
+
         const float lastScrollOffset = p_contentOffset;
         p_contentOffset += delta;
         onResize();

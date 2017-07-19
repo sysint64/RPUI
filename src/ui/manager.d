@@ -71,17 +71,12 @@ class Manager {
             if (!isWidgetFroze(widget))
                 widget.onCursor();
 
-            vec2 size = vec2(
-                widget.overSize.x > 0 ? widget.overSize.x : widget.innerSize.x,
-                widget.overSize.y > 0 ? widget.overSize.y : widget.innerSize.y
+            const size = vec2(
+                widget.overSize.x > 0 ? widget.overSize.x : widget.size.x,
+                widget.overSize.y > 0 ? widget.overSize.y : widget.size.y
             );
 
-            vec2 position = vec2(
-                widget.absolutePosition.x + widget.innerOffsetStart.x,
-                widget.absolutePosition.y + widget.innerOffsetStart.y
-            );
-
-            Rect rect = Rect(position, size);
+            Rect rect = Rect(widget.absolutePosition, size);
             widget.isOver = widget.parent.isOver && pointInRect(app.mousePos, rect);
         }
 
@@ -248,7 +243,15 @@ class Manager {
     }
 
     void onMouseWheel(in int dx, in int dy) {
-        eventRootWidget.onMouseWheel(dx, dy);
+        int horizontalDelta = dx;
+        int verticalDelta = dy;
+
+        if (isKeyPressed(KeyCode.Shift)) { // Inverse
+            horizontalDelta = dy;
+            verticalDelta = dx;
+        }
+
+        eventRootWidget.onMouseWheel(horizontalDelta, verticalDelta);
 
         Scrollable scrollable = null;
         Widget widget = widgetUnderMouse;
@@ -263,7 +266,7 @@ class Manager {
         }
 
         if (scrollable !is null)
-            scrollable.onMouseWheelHandle(dx, dy);
+            scrollable.onMouseWheelHandle(horizontalDelta, verticalDelta);
     }
 
 // Properties --------------------------------------------------------------------------------------
