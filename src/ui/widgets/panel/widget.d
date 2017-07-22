@@ -22,7 +22,7 @@ import ui.widgets.panel.header;
 import ui.widgets.panel.scroll_button;
 
 
-class Panel : Widget, Scrollable {
+class Panel : Widget, Scrollable, FocusScrollNavigation {
     enum Background {transparent, light, dark, action};
 
     @Field float minSize = 40;
@@ -128,21 +128,58 @@ class Panel : Widget, Scrollable {
     }
 
     void scrollToWidget(Widget widget) {
-        const vec2 relativePosition = widget.absolutePosition - absolutePosition;
-        const vec2 endOffset = relativePosition - size + widget.size;
-        const vec2 startOffset = relativePosition - widget.size;
+        const vec2 relativePosition = widget.absolutePosition -
+            (absolutePosition + extraInnerOffsetStart);
 
-        with (verticalScrollButton) {
-            const float contentOffset = scrollController.contentOffset;
-            const float offset = contentOffset < relativePosition.y ? endOffset.y : startOffset.y;
-            scrollController.setOffsetInPx(offset + contentOffset);
+        with (verticalScrollButton.scrollController)
+            setOffsetInPx(relativePosition.y + contentOffset);
+
+        with (horizontalScrollButton.scrollController)
+            setOffsetInPx(relativePosition.x + contentOffset);
+    }
+
+    // Scroll to widget if it out of visible region.
+    // Scroll on top border if widget above and bottom if below visible region.
+    void borderScrollToWidget(Widget widget) {
+        const vec2 relativePosition = widget.absolutePosition -
+            (absolutePosition + extraInnerOffsetStart);
+
+        with (verticalScrollButton.scrollController) {
+            const float innerVisibleSize = visibleSize - extraInnerOffsetSize.y;
+            const float widgetScrollOffset = relativePosition.y + contentOffset;
+
+            if (relativePosition.y < 0) {
+                setOffsetInPx(widgetScrollOffset);
+            } else if (relativePosition.y + widget.size.y > innerVisibleSize) {
+                setOffsetInPx(widgetScrollOffset - innerVisibleSize + widget.size.y);
+            }
         }
 
-        with (horizontalScrollButton) {
-            const float contentOffset = scrollController.contentOffset;
-            const float offset = contentOffset < relativePosition.x ? endOffset.x : startOffset.x;
-            scrollController.setOffsetInPx(offset + contentOffset);
+        with (horizontalScrollButton.scrollController) {
+            const float innerVisibleSize = visibleSize - extraInnerOffsetSize.x;
+            const float widgetScrollOffset = relativePosition.x + contentOffset;
+
+            if (relativePosition.x < 0) {
+                setOffsetInPx(widgetScrollOffset);
+            } else if (relativePosition.x + widget.size.x > innerVisibleSize) {
+                setOffsetInPx(widgetScrollOffset - innerVisibleSize + widget.size.x);
+            }
         }
+    }
+
+    void scrollToPx(in float x, in float y) {
+        verticalScrollButton.scrollController.setOffsetInPx(x);
+        horizontalScrollButton.scrollController.setOffsetInPx(y);
+    }
+
+    void scrollByPx(in float dx, in float dy) {
+        verticalScrollButton.scrollController.addOffsetInPx(dx);
+        horizontalScrollButton.scrollController.addOffsetInPx(dy);
+    }
+
+    void scrollToPercent(in float x, in float y) {
+        verticalScrollButton.scrollController.setOffsetInPercent(x);
+        horizontalScrollButton.scrollController.setOffsetInPercent(y);
     }
 
 // Events ------------------------------------------------------------------------------------------

@@ -24,6 +24,11 @@ interface Scrollable {
 }
 
 
+interface FocusScrollNavigation {
+    void borderScrollToWidget(Widget widget);
+}
+
+
 class Widget {
     struct Field {
         string name = "";
@@ -96,6 +101,21 @@ class Widget {
             padding.right + extraInnerOffset.right,
             padding.bottom + extraInnerOffset.bottom,
         );
+    }
+
+    @property final vec2 extraInnerOffsetSize() {
+        return vec2(
+            extraInnerOffset.left + extraInnerOffset.right,
+            extraInnerOffset.top + extraInnerOffset.bottom
+        );
+    }
+
+    @property final vec2 extraInnerOffsetStart() {
+        return vec2(extraInnerOffset.left, extraInnerOffset.top);
+    }
+
+    @property final vec2 extraInnerOffsetEnd() {
+        return vec2(extraInnerOffset.right, extraInnerOffset.bottom);
     }
 
     @property final vec2 innerOffsetStart() {
@@ -353,6 +373,9 @@ public:
         manager.focusedWidget = this;
         p_isFocused = true;
 
+        if (!this.skipFocus)
+            borderScrollToWidget();
+
         if (onFocusListener !is null)
             onFocusListener(this);
     }
@@ -361,20 +384,25 @@ public:
         manager.unfocusedWidgets.insert(this);
     }
 
-    void scrollToWidget() {
-        Scrollable scrollable = null;
+// Handle focus navigation -------------------------------------------------------------------------
+
+    private void borderScrollToWidget() {
         Widget parent = this.parent;
 
         while (parent !is null) {
-            scrollable = cast(Scrollable) parent;
+            auto scrollable = cast(Scrollable) parent;
+            auto focusScrollNavigation = cast(FocusScrollNavigation) parent;
             parent = parent.p_parent;
 
-            if (scrollable)
-                break;
-        }
+            if (scrollable is null)
+                continue;
 
-        if (scrollable !is null)
-            scrollable.scrollToWidget(this);
+            if (focusScrollNavigation is null) {
+                scrollable.scrollToWidget(this);
+            } else {
+                focusScrollNavigation.borderScrollToWidget(this);
+            }
+        }
     }
 
     // NOTE: navFocusFront and navFocusBack are symmetrical
@@ -384,7 +412,6 @@ public:
             firstWidget.navFocusFront();
         } else {
             this.focus();
-            this.scrollToWidget();
         }
     }
 
@@ -410,7 +437,6 @@ public:
             lastWidget.navFocusBack();
         } else {
             this.focus();
-            this.scrollToWidget();
         }
     }
 
