@@ -11,23 +11,26 @@ Panel
 
     Panel
         name: "testPanel"
-        caption: "Panel 1"
+        caption: "@TestView.mainPanelCaption"
         allowHide: true
         regionAlign: top
         background: light
         position: 0, 0
-        size: 0, 100
+        size: 0, 100.5
 
-        Button position: 5, 5 size: 100, 21 caption: "OK" name: "okButton"
+        Button
+            position: 5, 5
+            size: 200, 21
+            caption: "String: @TestView.helloWorld"
+            name: "okButton"
 
         Panel
-            size: 150, 150
+            size: 150, 50
             position: 5, 31
             background: dark
             margin: 10
             Button position: 0, 0 size: 100, 21 caption: "Cancel" name: "cancelButton"
-
-        Button position: 5, 57 size: 100, 21 caption: "Close" name: "closeButton"
+            Button position: 5, 57 size: 100, 21 caption: "Close" name: "closeButton"
 
     Panel
         regionAlign: top

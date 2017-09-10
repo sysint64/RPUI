@@ -80,15 +80,15 @@ protected:
     override void onCreate() {
         super.onCreate();
 
-        immutable string[3] states = ["Leave", "Enter", "Click"];
-        immutable string[3] keys = ["left", "center", "right"];
+        const states = ["Leave", "Enter", "Click"];
+        const keys = ["left", "center", "right"];
 
         foreach (string key; keys) {
             renderFactory.createQuad(skinRenderObjects, style, states, key);
             renderFactory.createQuad(skinFocusRenderObjects, style, "Focus", key);
         }
 
-        const string focusKey = style ~ ".Focus";
+        const focusKey = style ~ ".Focus";
         with (manager.theme) {
             focusOffsets = data.getVec2f(focusKey ~ ".offsets.0");
             focusResize = data.getNumber(focusKey ~ ".offsets.1");

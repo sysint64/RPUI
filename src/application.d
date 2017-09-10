@@ -31,6 +31,7 @@ abstract class Application {
     final void initPath() {
         p_binDirectory = dirName(thisExePath());
         p_resourcesDirectory = buildPath(p_binDirectory, "res");
+        p_testsDirectory = buildPath(p_binDirectory, "tests");
 
         writeln(p_resourcesDirectory);
     }
@@ -121,6 +122,7 @@ abstract class Application {
 
     @property string binDirectory() { return p_binDirectory; }
     @property string resourcesDirectory() { return p_resourcesDirectory; }
+    @property string testsDirectory() { return p_testsDirectory; }
     @property Settings settings() { return p_settings; }
 
     @property uint screenWidth() { return p_screenWidth; }
@@ -148,6 +150,7 @@ abstract class Application {
 private:
     string p_binDirectory;
     string p_resourcesDirectory;
+    string p_testsDirectory;
     sfWindow* window;
     sfWindowHandle p_windowHandle;
     Log log;

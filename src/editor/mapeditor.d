@@ -48,7 +48,7 @@ class MyView : View {
         writeln("Hello world! a = ", a);
         a += 1;
         okButton.caption = "YAY!";
-        myButton.caption = "WORK!";
+        myButton.caption = "WORKS!";
         buttons[2].caption = "YES!";
     }
 

@@ -137,7 +137,7 @@ private:
                 enum widgetName = getNameFromAttribute!uda(symbolName);
 
                 Widget widget = findWidgetByName(widgetName);
-                assert(widget !is null);
+                assert(widget !is null, widgetName ~ " not found");
 
                 mixin("alias WidgetType = typeof(view." ~ symbolName ~ ");");
                 mixin("view." ~ symbolName ~ " = cast(WidgetType) widget;");
