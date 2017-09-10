@@ -17,7 +17,20 @@ class Button : Widget {
     @Field bool allowCheck = false;
     @Field Align textAlign = Align.center;
     @Field VerticalAlign textVerticalAlign = VerticalAlign.middle;
-    @Field utfstring caption = "Button";
+
+    private utfstring p_caption = "Button";
+
+    @Field
+    @property void caption(utfstring value) {
+        if (manager is null) {
+            p_caption = value;
+        } else {
+            p_caption = value;
+            textRenderObject.text = value;
+        }
+    }
+
+    @property utfstring caption() { return p_caption; }
 
     this() {
         super("Button");
@@ -59,7 +72,7 @@ protected:
     void renderSkin(Camera camera) {
         size_t[3] coordIndices;
 
-        textRenderObject.text = caption;
+        // textRenderObject.text = caption;
         textRenderObject.textAlign = textAlign;
         textRenderObject.textVerticalAlign = textVerticalAlign;
 
@@ -95,5 +108,6 @@ protected:
         }
 
         textRenderObject = renderFactory.createText(style, states);
+        textRenderObject.text = caption;
     }
 }

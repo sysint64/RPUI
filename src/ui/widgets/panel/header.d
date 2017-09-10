@@ -34,9 +34,10 @@ package struct Header {
 
         this.panel = panel;
         this.renderer = renderer;
-        immutable string style = panel.style;
-        immutable states = ["Leave", "Enter"];
-        immutable headerStyle = style ~ ".Header";
+
+        const style = panel.style;
+        const states = ["Leave", "Enter"];
+        const headerStyle = style ~ ".Header";
 
         height = styleData.getNumber(headerStyle ~ ".height.0");
         panel.renderFactory.createQuad(backgroundRenderObject, headerStyle, states, "background");
@@ -44,8 +45,8 @@ package struct Header {
         // Header arrow (open/close)
         panel.renderFactory.createQuad(arrowRenderObject);
 
-        const Texture.Coord arrowOpenTexCoord  = styleData.getTexCoord(headerStyle ~ ".Arrow.open");
-        const Texture.Coord arrpwCloseTexCoord = styleData.getTexCoord(headerStyle ~ ".Arrow.close");
+        const arrowOpenTexCoord  = styleData.getTexCoord(headerStyle ~ ".Arrow.open");
+        const arrpwCloseTexCoord = styleData.getTexCoord(headerStyle ~ ".Arrow.close");
 
         arrowSize = styleData.getVec2f(headerStyle ~ ".Arrow.size");
         arrowPosition = styleData.getVec2f(headerStyle ~ ".Arrow.position");
@@ -79,7 +80,7 @@ package struct Header {
         if (!panel.allowHide)
             return;
 
-        immutable vec2 headerSize = vec2(panel.size.x, height);
+        const headerSize = vec2(panel.size.x, height);
         renderer.renderQuad(
             backgroundRenderObject,
             state,
@@ -93,9 +94,7 @@ package struct Header {
             arrowSize
         );
 
-        immutable vec2 textPosition = panel.absolutePosition +
-            vec2(arrowPosition.x + arrowSize.x, 0);
-
+        const textPosition = panel.absolutePosition + vec2(arrowPosition.x + arrowSize.x, 0);
         renderer.renderText(textRenderObject, state, textPosition, headerSize);
     }
 }

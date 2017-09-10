@@ -1,0 +1,3 @@
+TestView
+    mainPanelCaption: "This is main panel"
+    helloWorld: "Hello World!"

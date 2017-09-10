@@ -4,6 +4,7 @@ import input;
 import patterns.singleton;
 import application;
 import basic_types;
+import strings_res;
 
 import gapi.camera;
 import gapi.geometry;
@@ -135,6 +136,9 @@ class MapEditor: Application {
         // spriteGeometry.bind();
 
         uiManager = new Manager(settings.theme);
+        uiManager.stringsRes = StringsRes.createForLanguage(settings.language);
+        uiManager.stringsRes.addStrings("test_view.rdl");
+
         view = View.createFromFile!(MyView)(uiManager, "test.rdl");
     }
 

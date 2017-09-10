@@ -34,10 +34,23 @@ class Panel : Widget, Scrollable, FocusScrollNavigation {
     @Field bool isOpen = true;
     @Field bool blackSplit = false;
     @Field bool showSplit = true;
-    @Field utfstring caption = "";
 
     @Field bool showVerticalScrollButton = true;
     @Field bool showHorizontalScrollButton = true;
+
+    private utfstring p_caption = "";
+
+    @Field
+    @property void caption(utfstring value) {
+        if (manager is null) {
+            p_caption = value;
+        } else {
+            p_caption = value;
+            header.textRenderObject.text = value;
+        }
+    }
+
+    @property utfstring caption() { return p_caption; }
 
     @property
     void showScrollButtons(in bool val) {

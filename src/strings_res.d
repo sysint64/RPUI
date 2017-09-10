@@ -24,7 +24,7 @@ class StringsRes {
         auto app = Application.getInstance();
         const string path = buildPath(app.resourcesDirectory, "strings", locale);
 
-        stringsRes.strings = new RPDLTree(dirName(path));
+        stringsRes.strings = new RPDLTree(path);
         return stringsRes;
     }
 
@@ -87,7 +87,7 @@ private:
             endPosition = i;
         }
 
-        const value = strings.getUTFString(to!string(reference) ~ ".0");
+        const value = strings.optUTFString(to!string(reference) ~ ".0", reference);
         return tuple!("value", "endPosition")(value, endPosition);
     }
 }
@@ -108,6 +108,7 @@ unittest {
         assert(t.value == "This is main panel");
         assert(t.endPosition == "TestView.mainPanelCaption".length);
         assert(parseString("Hello, @TestView.mainPanelCaption") == "Hello, This is main panel");
+        assert(parseString("Without reference") == "Without reference");
     }
 }
 

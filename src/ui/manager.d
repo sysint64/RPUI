@@ -8,6 +8,7 @@ import application;
 import math.linalg;
 import basic_types;
 import accessors;
+import strings_res;
 
 import derelict.opengl3.gl;
 import gapi.camera;
@@ -21,6 +22,8 @@ import ui.renderer;
 
 
 class Manager {
+    StringsRes stringsRes = null;
+
     private this() {
         app = Application.getInstance();
         unfocusedWidgets.reserve(20);

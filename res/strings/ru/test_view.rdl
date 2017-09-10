@@ -1,0 +1,3 @@
+TestView
+    mainPanelCaption: "Это главная панель"
+    helloWorld: "Привет мир!"

@@ -637,6 +637,8 @@ package:
         }
 
         absolutePosition = position + res + outerOffsetStart;
+        absolutePosition.x = round(absolutePosition.x);
+        absolutePosition.y = round(absolutePosition.y);
     }
 
     public void freezeUI(bool isNestedFreeze = true) {

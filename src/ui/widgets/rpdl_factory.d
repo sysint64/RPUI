@@ -154,7 +154,12 @@ class RPDLWidgetFactory {
                     auto value = mixin(call);
 
                     // assign value to widget field
-                    mixin("widget." ~ symbolName ~ " = value;");
+                    static if (type[name] == "dstring") {
+                        mixin("widget." ~ symbolName ~ " = uiManager.stringsRes.parseString(value);");
+                    } else {
+                        mixin("widget." ~ symbolName ~ " = value;");
+                    }
+
                     break;
                 }
             }
