@@ -326,6 +326,8 @@ class Panel : Widget, Scrollable, FocusScrollNavigation {
 
 protected:
     void updateInnerOffset() {
+        extraInnerOffset.left = 0;
+
         if (verticalScrollButton.visible) {
             extraInnerOffset.right = verticalScrollButton.width;
         } else {
@@ -344,8 +346,30 @@ protected:
             extraInnerOffset.top = 0;
         }
 
+        // Split extra inner offset
         if (allowResize || showSplit) {
-            extraInnerOffset.bottom += split.thickness;
+            const thickness = 1;
+
+            switch (regionAlign) {
+                case RegionAlign.top:
+                    extraInnerOffset.bottom += thickness;
+                    break;
+
+                case RegionAlign.bottom:
+                    extraInnerOffset.top += thickness;
+                    break;
+
+                case RegionAlign.right:
+                    extraInnerOffset.left += thickness;
+                    break;
+
+                case RegionAlign.left:
+                    extraInnerOffset.right += thickness;
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 

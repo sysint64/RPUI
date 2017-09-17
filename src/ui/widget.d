@@ -70,9 +70,9 @@ class Widget {
     @property Widget associatedWidget() { return p_associatedWidget; }
 
     @property ref Children children() { return p_children; }
-    @property final RenderFactory renderFactory() { return manager.renderFactory; }
+    @property RenderFactory renderFactory() { return manager.renderFactory; }
 
-    @property final inout(string) state() inout {
+    @property inout(string) state() inout {
         if (isClick) {
             return "Click";
         } else if (isEnter) {
@@ -83,18 +83,18 @@ class Widget {
     }
 
     // Inner size considering the extra innter offsets and padding
-    @property final vec2 innerSize() {
+    @property vec2 innerSize() {
         return size - innerOffsetSize;
     }
 
-    @property final vec2 innerOffsetSize() {
+    @property vec2 innerOffsetSize() {
         return vec2(
             padding.left + padding.right + extraInnerOffset.left + extraInnerOffset.right,
             padding.top + padding.bottom + extraInnerOffset.top + extraInnerOffset.bottom
         );
     }
 
-    @property final FrameRect innerOffset() {
+    @property FrameRect innerOffset() {
         return FrameRect(
             padding.left + extraInnerOffset.left,
             padding.top + extraInnerOffset.top,
@@ -103,42 +103,42 @@ class Widget {
         );
     }
 
-    @property final vec2 extraInnerOffsetSize() {
+    @property vec2 extraInnerOffsetSize() {
         return vec2(
             extraInnerOffset.left + extraInnerOffset.right,
             extraInnerOffset.top + extraInnerOffset.bottom
         );
     }
 
-    @property final vec2 extraInnerOffsetStart() {
+    @property vec2 extraInnerOffsetStart() {
         return vec2(extraInnerOffset.left, extraInnerOffset.top);
     }
 
-    @property final vec2 extraInnerOffsetEnd() {
+    @property vec2 extraInnerOffsetEnd() {
         return vec2(extraInnerOffset.right, extraInnerOffset.bottom);
     }
 
-    @property final vec2 innerOffsetStart() {
+    @property vec2 innerOffsetStart() {
         return vec2(innerOffset.left, innerOffset.top);
     }
 
-    @property final vec2 innerOffsetEnd() {
+    @property vec2 innerOffsetEnd() {
         return vec2(innerOffset.right, innerOffset.bottom);
     }
 
     // Outer size considering the extra outer offsets and margin
-    @property final vec2 outerSize() {
+    @property vec2 outerSize() {
         return size + outerOffsetSize;
     }
 
-    @property final vec2 outerOffsetSize() {
+    @property vec2 outerOffsetSize() {
         return vec2(
             margin.left + margin.right + extraOuterOffset.left + extraOuterOffset.right,
             margin.top + margin.bottom + extraOuterOffset.top + extraOuterOffset.bottom
         );
     }
 
-    @property final FrameRect outerOffset() {
+    @property FrameRect outerOffset() {
         return FrameRect(
             margin.left + extraOuterOffset.left,
             margin.top + extraOuterOffset.top,
@@ -147,11 +147,11 @@ class Widget {
         );
     }
 
-    @property final vec2 outerOffsetStart() {
+    @property vec2 outerOffsetStart() {
         return vec2(outerOffset.left, outerOffset.top);
     }
 
-    @property final vec2 outerOffsetEnd() {
+    @property vec2 outerOffsetEnd() {
         return vec2(outerOffset.right, outerOffset.bottom);
     }
 
@@ -283,10 +283,18 @@ public:
         innerBoundarySize = innerOffsetSize;
 
         foreach (Widget widget; children) {
-            const widgetFringePosition = vec2(
+            auto widgetFringePosition = vec2(
                 widget.position.x + widget.outerSize.x + innerOffset.left,
                 widget.position.y + widget.outerSize.y + innerOffset.top
             );
+
+            if (widget.locationAlign != Align.none) {
+                widgetFringePosition.x = 0;
+            }
+
+            if (widget.locationVerticalAlign != VerticalAlign.none) {
+                widgetFringePosition.y = 0;
+            }
 
             if (widget.regionAlign != RegionAlign.right &&
                 widget.regionAlign != RegionAlign.top &&
@@ -517,10 +525,30 @@ public:
     }
 
 protected:
-    void updateAlign() {
+    void updateLocationAlign() {
+        switch (this.locationAlign) {
+            case Align.left:
+                absolutePosition.x = parent.absolutePosition.x + parent.innerOffset.left +
+                    outerOffset.left;
+                break;
+
+            case Align.right:
+                absolutePosition.x = parent.absolutePosition.x + parent.size.x -
+                    parent.innerOffset.right - outerOffset.right - size.x;
+
+                break;
+
+            case Align.center:
+                const halfSize = (parent.size.x - size.x) / 2;
+                absolutePosition.x = parent.absolutePosition.x + floor(halfSize);
+                break;
+
+            default:
+                break;
+        }
     }
 
-    void updateVerticalAlign() {
+    void updateLocationVerticalAlign() {
     }
 
     void updateResize() {
@@ -528,6 +556,7 @@ protected:
 
     package void updateAll() {
         updateAbsolutePosition();
+        updateLocationAlign();
         updateRegionAlign();
         updateResize();
 

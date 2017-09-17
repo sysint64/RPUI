@@ -17,12 +17,15 @@ Panel
         background: light
         position: 0, 0
         size: 0, 100.5
+        padding: 5
 
         Button
-            position: 5, 5
+            position: 100, 5
             size: 200, 21
             caption: "String: @TestView.helloWorld"
             name: "okButton"
+            locationAlign: center
+            margin: 5
 
         Panel
             size: 150, 50
