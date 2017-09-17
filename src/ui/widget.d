@@ -50,7 +50,7 @@ class Widget {
     @Field int tag = 0;
     @Field utfstring hint = "";
     @Field Align locationAlign = Align.none;
-    @Field VerticalAlign locationVerticalAlign = VerticalAlign.none;
+    @Field VerticalAlign verticalLocationAlign = VerticalAlign.none;
     @Field RegionAlign regionAlign = RegionAlign.none;
     @Field FrameRect margin = FrameRect(0, 0, 0, 0);
     @Field FrameRect padding = FrameRect(0, 0, 0, 0);
@@ -292,7 +292,7 @@ public:
                 widgetFringePosition.x = 0;
             }
 
-            if (widget.locationVerticalAlign != VerticalAlign.none) {
+            if (widget.verticalLocationAlign != VerticalAlign.none) {
                 widgetFringePosition.y = 0;
             }
 
@@ -526,7 +526,7 @@ public:
 
 protected:
     void updateLocationAlign() {
-        switch (this.locationAlign) {
+        switch (locationAlign) {
             case Align.left:
                 absolutePosition.x = parent.absolutePosition.x + parent.innerOffset.left +
                     outerOffset.left;
@@ -535,12 +535,12 @@ protected:
             case Align.right:
                 absolutePosition.x = parent.absolutePosition.x + parent.size.x -
                     parent.innerOffset.right - outerOffset.right - size.x;
-
                 break;
 
             case Align.center:
-                const halfSize = (parent.size.x - size.x) / 2;
-                absolutePosition.x = parent.absolutePosition.x + floor(halfSize);
+                const halfSize = (parent.innerSize.x - size.x) / 2;
+                absolutePosition.x = parent.absolutePosition.x + parent.innerOffset.left
+                    + floor(halfSize);
                 break;
 
             default:
@@ -548,7 +548,27 @@ protected:
         }
     }
 
-    void updateLocationVerticalAlign() {
+    void updateVerticalLocationAlign() {
+        switch (verticalLocationAlign) {
+            case VerticalAlign.top:
+                absolutePosition.y = parent.absolutePosition.y + parent.innerOffset.top +
+                    outerOffset.top;
+                break;
+
+            case VerticalAlign.bottom:
+                absolutePosition.y = parent.absolutePosition.y + parent.size.y -
+                    parent.innerOffset.bottom - outerOffset.bottom - size.y;
+                break;
+
+            case VerticalAlign.middle:
+                const halfSize = (parent.innerSize.y - size.y) / 2;
+                absolutePosition.y = parent.absolutePosition.y + parent.innerOffset.top +
+                    floor(halfSize);
+                break;
+
+            default:
+                break;
+        }
     }
 
     void updateResize() {
@@ -557,6 +577,7 @@ protected:
     package void updateAll() {
         updateAbsolutePosition();
         updateLocationAlign();
+        updateVerticalLocationAlign();
         updateRegionAlign();
         updateResize();
 

@@ -51,6 +51,7 @@ class Button : Widget {
     override void onProgress() {
         updateAbsolutePosition();
         updateLocationAlign();
+        updateVerticalLocationAlign();
     }
 
     override void render(Camera camera) {

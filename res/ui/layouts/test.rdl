@@ -25,6 +25,7 @@ Panel
             caption: "String: @TestView.helloWorld"
             name: "okButton"
             locationAlign: center
+            verticalLocationAlign: middle
             margin: 5
 
         Panel

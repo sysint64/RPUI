@@ -20,7 +20,7 @@ class Renderer {
     }
 
     vec2 toScreenPosition(in vec2 position, in vec2 size) {
-        return vec2(position.x, app.windowHeight - size.y - position.y);
+        return vec2(floor(position.x), floor(app.windowHeight - size.y - position.y));
     }
 
     void renderQuad(BaseRenderObject renderObject, in string state,
