@@ -55,7 +55,7 @@ class RenderFactory {
             if (part != "")
                 path ~= "." ~ part;
 
-            Texture.Coord texCoord = manager.theme.data.getTexCoord(path);
+            Texture.Coord texCoord = manager.theme.tree.data.getTexCoord(path);
             texCoord.normalize(manager.theme.skin);
             object.addTexCoord(state, texCoord);
         }
@@ -75,8 +75,8 @@ class RenderFactory {
             const string offsetPath = path ~ "Offset";
             const string colorPath = path ~ "Color";
 
-            const vec2 offset = manager.theme.data.getVec2f(offsetPath);
-            const vec4 color = manager.theme.data.getNormColor(colorPath);
+            const vec2 offset = manager.theme.tree.data.getVec2f(offsetPath);
+            const vec4 color = manager.theme.tree.data.getNormColor(colorPath);
 
             text.addOffset(state, offset);
             text.addColor(state, color);

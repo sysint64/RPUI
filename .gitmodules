@@ -1,0 +1,3 @@
+[submodule "rpdl"]
+	path = rpdl
+	url = git@github.com:sysint64/RPDL.git

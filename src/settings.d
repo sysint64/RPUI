@@ -9,8 +9,8 @@ class Settings {
     private this() {}
 
     void load(in string rootDirectory, in string fileName) {
-        data = new RPDLTree(rootDirectory);
-        data.load(fileName);
+        settings = new RPDLTree(rootDirectory);
+        settings.load(fileName);
     }
 
     @property bool VAOEXT() {
@@ -18,15 +18,15 @@ class Settings {
     }
 
     @property uint OGLMajor() {
-        return data.optInteger("General.opengl_version.0", 2);
+        return settings.data.optInteger("General.opengl_version.0", 2);
     }
 
     @property uint OGLMinor() {
-        return data.optInteger("General.opengl_version.1", 1);
+        return settings.data.optInteger("General.opengl_version.1", 1);
     }
 
     @property string theme() {
-        return data.optString("Appearance.theme.0", "dark");
+        return settings.data.optString("Appearance.theme.0", "dark");
     }
 
     @property string defaultTheme() {
@@ -34,17 +34,17 @@ class Settings {
     }
 
     @property string font() {
-        return data.optString("Appearance.font.0", "DejaVuSans");
+        return settings.data.optString("Appearance.font.0", "DejaVuSans");
     }
 
     @property uint textSize() {
-        return data.optInteger("Appearance.font.1", 12);
+        return settings.data.optInteger("Appearance.font.1", 12);
     }
 
     @property string language() {
-        return data.optString("General.language.0", "en");
+        return settings.data.optString("General.language.0", "en");
     }
 
 private:
-    RPDLTree data;
+    RPDLTree settings;
 }

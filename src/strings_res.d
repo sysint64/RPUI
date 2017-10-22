@@ -87,7 +87,7 @@ private:
             endPosition = i;
         }
 
-        const value = strings.optUTFString(to!string(reference) ~ ".0", reference);
+        const value = strings.data.optUTFString(to!string(reference) ~ ".0", reference);
         return tuple!("value", "endPosition")(value, endPosition);
     }
 }

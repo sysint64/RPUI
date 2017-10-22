@@ -93,7 +93,7 @@ class Shortcuts {
 
     void attach(in string path, void delegate() action) {
         try {
-            const string shortcut = shortcutsData.getString(path ~ ".0");
+            const string shortcut = shortcutsData.data.getString(path ~ ".0");
             auto shortcutAction = Shortcuts.ShortcutAction(shortcut, action);
             shortcuts[path] = shortcutAction;
         } catch (NotFoundException) {

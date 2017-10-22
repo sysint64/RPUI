@@ -31,7 +31,7 @@ package struct ScrollButton {
     Renderer renderer;
     Orientation orientation;
     Panel panel;
-    RPDLTree styleData;
+    RPDLNode styleData;
     vec2 buttonOffset;
     float buttonSize;
 
@@ -91,7 +91,7 @@ package struct ScrollButton {
 
     void onCreate(Panel panel, Theme theme, Renderer renderer) {
         app = Application.getInstance();
-        RPDLTree styleData = theme.data;
+        auto styleData = theme.tree.data;
         this.panel = panel;
         this.renderer = renderer;
         this.styleData = styleData;

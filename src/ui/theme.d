@@ -46,7 +46,7 @@ class Theme {
 
 private:
     @Read @Write("private") {
-        RPDLTree data_;
+        RPDLTree tree_;
         Texture skin_;
         ThemeFont regularFont_;
     }
@@ -58,8 +58,8 @@ private:
 
     bool load(in string theme, in bool critical = false) {
         string dir = buildPath(app.resourcesDirectory, "ui", "themes", theme);
-        data = new RPDLTree(dir);
-        string msg = collectExceptionMsg(data.load("theme.rdl"));
+        tree = new RPDLTree(dir);
+        string msg = collectExceptionMsg(tree.load("theme.rdl"));
         bool isSuccess = msg is null;
 
         if (isSuccess) {
@@ -72,8 +72,11 @@ private:
     }
 
     void loadGeneral() {
-        string regularFontFileName = data.optString("General.regularFont.0", "ttf-dejavu/DejaVuSans.ttf");
-        uint regularFontSize = data.optInteger("General.regularFont.1", 12);
+        string regularFontFileName = tree.data.optString(
+            "General.regularFont.0",
+            "ttf-dejavu/DejaVuSans.ttf"
+        );
+        uint regularFontSize = tree.data.optInteger("General.regularFont.1", 12);
         regularFont = ThemeFont.createFromFile(regularFontFileName, regularFontSize);
     }
 

@@ -4,6 +4,7 @@ import traits;
 
 import rpdl;
 import rpdl.node;
+import basic_rpdl_extensions;
 
 import std.path;
 import std.stdio;
@@ -16,6 +17,7 @@ import basic_types;
 import ui.widget;
 import ui.views.attributes;
 import ui.manager;
+import ui.rpdl_extensions;
 
 import gapi.texture;
 

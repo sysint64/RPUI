@@ -38,7 +38,7 @@ package struct Split {
         this.panel = panel;
         this.renderer = renderer;
         const string style = panel.style;
-        RPDLTree styleData = theme.data;
+        auto styleData = theme.tree.data;
 
         panel.renderFactory.createQuad(borderRenderObject);
         panel.renderFactory.createQuad(borderInnerRenderObject);

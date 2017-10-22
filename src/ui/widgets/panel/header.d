@@ -30,7 +30,7 @@ package struct Header {
 
     void onCreate(Panel panel, Theme theme, Renderer renderer) {
         app = Application.getInstance();
-        RPDLTree styleData = theme.data;
+        auto styleData = theme.tree.data;
 
         this.panel = panel;
         this.renderer = renderer;

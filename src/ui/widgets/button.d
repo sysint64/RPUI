@@ -104,7 +104,7 @@ protected:
         }
 
         const focusKey = style ~ ".Focus";
-        with (manager.theme) {
+        with (manager.theme.tree) {
             focusOffsets = data.getVec2f(focusKey ~ ".offsets.0");
             focusResize = data.getNumber(focusKey ~ ".offsets.1");
         }

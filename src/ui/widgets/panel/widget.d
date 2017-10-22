@@ -203,7 +203,7 @@ class Panel : Widget, Scrollable, FocusScrollNavigation {
         super.onCreate();
         renderFactory.createQuad(backgroundRenderObject);
 
-        with (manager.theme) {
+        with (manager.theme.tree) {
             // Panel background colors
             backgroundColors[Background.light]  = data.getNormColor(style ~ ".backgroundLight");
             backgroundColors[Background.dark]   = data.getNormColor(style ~ ".backgroundDark");
