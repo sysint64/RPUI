@@ -52,8 +52,9 @@ Rect optRect(Node node, in string path, in Rect defaultVal = Rect.init) {
 FrameRect getFrameRect(Node accessorNode, in string path) {
     Node node = accessorNode.getNode(path);
 
-    if (node is null)
+    if (node is null) {
         throw new NotFoundException("Node with path \"" ~ path ~ "\" not found");
+    }
 
     if (node.length == 1) {
         const float val = accessorNode.getNumber(path ~ ".0");

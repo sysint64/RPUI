@@ -32,10 +32,10 @@ import derelict.opengl3.gl;
 
 
 class MyView : View {
-    // @ViewWidget Button okButton;
-    // @ViewWidget Panel testPanel;
-    // @ViewWidget("cancelButton") Button myButton;
-    // @GroupViewWidgets Button[3] buttons;
+    @ViewWidget Button okButton;
+    @ViewWidget Panel testPanel;
+    @ViewWidget("cancelButton") Button myButton;
+    @GroupViewWidgets Button[3] buttons;
 
     int a = 0;
 
@@ -44,25 +44,25 @@ class MyView : View {
         // testPanel.freezeUI(false);
     }
 
-    // @OnClickListener("okButton")
-    // void onOkButtonClick(Widget widget) {
-    //     writeln("Hello world! a = ", a);
-    //     a += 1;
-    //     okButton.caption = "YAY!";
-    //     myButton.caption = "WORKS!";
-    //     buttons[2].caption = "YES!";
-    // }
+    @OnClickListener("okButton")
+    void onOkButtonClick(Widget widget) {
+        writeln("Hello world! a = ", a);
+        a += 1;
+        okButton.caption = "YAY!";
+        myButton.caption = "WORKS!";
+        buttons[2].caption = "YES!";
+    }
 
-    // @Shortcut("TestGroup.cancel")
-    // void someShortcutAction() {
-    //     writeln("Wow! shortcut was executed!");
-    // }
+    @Shortcut("TestGroup.cancel")
+    void someShortcutAction() {
+        writeln("Wow! shortcut was executed!");
+    }
 
-    // @OnClickListener("closeButton")
-    // @OnClickListener("cancelButton")
-    // void onCancelButtonClick(Widget widget) {
-    //     writeln("Close!");
-    // }
+    @OnClickListener("closeButton")
+    @OnClickListener("cancelButton")
+    void onCancelButtonClick(Widget widget) {
+        writeln("Close!");
+    }
 }
 
 
