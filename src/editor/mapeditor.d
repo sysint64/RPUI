@@ -59,6 +59,11 @@ class MyView : View {
         writeln("Double!");
     }
 
+    @OnMouseWheelListener("testPanel")
+    void onTestPanelMouseWheel(Widget widget, in uint dx, in uint dy) {
+        writeln("dx: ", dx, " dy: ", dy);
+    }
+
     @Shortcut("TestGroup.cancel")
     void someShortcutAction() {
         writeln("Wow! shortcut was executed!");

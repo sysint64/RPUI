@@ -102,6 +102,7 @@ private:
             "OnKeyReleasedListener",
             "OnTextEnteredListener",
             "OnMouseMoveListener",
+            "OnMouseWheelListener",
             "OnMouseEnterListener",
             "OnMouseLeaveListener",
             "OnMouseDownListener",

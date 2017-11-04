@@ -12,6 +12,7 @@ struct OnKeyPressedListener { string widgetName; }
 struct OnKeyReleasedListener { string widgetName; }
 struct OnTextEnteredListener { string widgetName; }
 struct OnMouseMoveListener { string widgetName; }
+struct OnMouseWheelListener { string widgetName; }
 struct OnMouseEnterListener { string widgetName; }
 struct OnMouseLeaveListener { string widgetName; }
 struct OnMouseDownListener { string widgetName; }

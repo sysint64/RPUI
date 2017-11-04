@@ -209,6 +209,7 @@ public:
     alias void delegate(Widget, in KeyCode key) OnKeyReleasedListener;
     alias void delegate(Widget, in utfchar key) OnTextEnteredListener;
     alias void delegate(Widget, in uint x, in uint y) OnMouseMoveListener;
+    alias void delegate(Widget, in uint dx, in uint dy) OnMouseWheelListener;
     alias void delegate(Widget, in uint x, in uint y) OnMouseEnterListener;
     alias void delegate(Widget, in uint x, in uint y) OnMouseLeaveListener;
     alias void delegate(Widget, in uint x, in uint y, in MouseButton button) OnMouseDownListener;
@@ -222,6 +223,7 @@ public:
     OnKeyReleasedListener onKeyReleasedListener = null;
     OnTextEnteredListener onTextEnteredListener = null;
     OnMouseMoveListener onMouseMoveListener = null;
+    OnMouseWheelListener onMouseWheelListener = null;
     OnMouseEnterListener onMouseEnterListener = null;
     OnMouseLeaveListener onMouseLeaveListener = null;
     OnMouseDownListener onMouseDownListener = null;
@@ -477,12 +479,33 @@ public:
     }
 
     void onKeyPressed(in KeyCode key) {
+        foreach (Widget widget; children) {
+            if (widget.isFroze())
+                continue;
+
+            widget.onKeyPressed(key);
+            widget.triggerEvent!("KeyPressed")(key);
+        }
     }
 
     void onKeyReleased(in KeyCode key) {
+        foreach (Widget widget; children) {
+            if (widget.isFroze())
+                continue;
+
+            widget.onKeyReleased(key);
+            widget.triggerEvent!("KeyReleased")(key);
+        }
     }
 
     void onTextEntered(in utfchar key) {
+        foreach (Widget widget; children) {
+            if (widget.isFroze())
+                continue;
+
+            widget.onTextEntered(key);
+            widget.triggerEvent!("TextEntered")(key);
+        }
     }
 
     void onMouseDown(in uint x, in uint y, in MouseButton button) {
@@ -491,6 +514,9 @@ public:
                 continue;
 
             widget.onMouseDown(x, y, button);
+
+            if (widget.isEnter)
+                widget.triggerEvent!("MouseDown")(x, y, button);
         }
     }
 
@@ -501,8 +527,10 @@ public:
 
             widget.onMouseUp(x, y, button);
 
-            if (widget.isEnter)
+            if (widget.isEnter) {
+                widget.triggerEvent!("MouseUp")(x, y, button);
                 widget.triggerClick();
+            }
         }
     }
 
@@ -519,6 +547,15 @@ public:
     }
 
     void onMouseMove(in uint x, in uint y) {
+        foreach (Widget widget; children) {
+            if (widget.isFroze())
+                continue;
+
+            widget.onMouseMove(x, y);
+
+            if (widget.isEnter)
+                widget.triggerEvent!("MouseMove")(x, y);
+        }
     }
 
     void onMouseWheel(in int dx, in int dy) {
@@ -527,6 +564,9 @@ public:
                 continue;
 
             widget.onMouseWheel(dx, dy);
+
+            if (widget.isEnter)
+                widget.triggerEvent!("MouseWheel")(dx, dy);
         }
     }
 
