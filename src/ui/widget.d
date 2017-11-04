@@ -234,6 +234,11 @@ public:
             onClickListener(this);
     }
 
+    final void triggerDblClick() {
+        if (onDblClickistener !is null)
+            onDblClickistener(this);
+    }
+
 // Implementation ----------------------------------------------------------------------------------
 
     this() {
@@ -273,7 +278,7 @@ public:
     }
 
     final Widget findWidgetByName(in string name) {
-        return find((Widget widget) => widget.name == name);
+        return find(widget => widget.name == name);
     }
 
     void updateBoundary() {
@@ -501,6 +506,15 @@ public:
     }
 
     void onDblClick(in uint x, in uint y, in MouseButton button) {
+        foreach (Widget widget; children) {
+            if (widget.isFroze())
+                continue;
+
+            widget.onDblClick(x, y, button);
+
+            if (widget.isEnter)
+                widget.triggerDblClick();
+        }
     }
 
     void onMouseMove(in uint x, in uint y) {

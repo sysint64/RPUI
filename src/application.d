@@ -178,6 +178,11 @@ private:
     float lastTime = 0;
     sfClock *clock;
 
+    // DblClick
+    const dblClickThreshold = 0.3f * 1000.0f;
+    float dblClickTimer = 0;
+    bool clicked = false;
+
     void initSFML() {
         sfVideoMode desktomVideoMode = sfVideoMode_getDesktopMode();
         // TODO: uncomment, in my linux this return garbage
@@ -248,6 +253,13 @@ private:
             glViewport(0, 0, viewportWidth, viewportHeight);
             glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+            if (dblClickTimer > dblClickThreshold) {
+                clicked = false;
+                dblClickTimer = 0;
+            } else if (clicked) {
+                dblClickTimer += deltaTime;
+            }
+
             onProgress();
             render();
 
@@ -294,6 +306,14 @@ private:
                 with (event.mouseButton)
                     try {
                         onMouseUp(x, y, to!MouseButton(button));
+
+                        if (clicked) {
+                            clicked = false;
+                            dblClickTimer = 0;
+                            onDblClick(x, y, to!MouseButton(button));
+                        } else {
+                            clicked = true;
+                        }
                     } catch(ConvException) {}
 
                 break;

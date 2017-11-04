@@ -53,6 +53,11 @@ class MyView : View {
         buttons[2].caption = "YES!";
     }
 
+    @OnDblClickistener("okButton")
+    void onOkDblClick(Widget widget) {
+        writeln("Double!");
+    }
+
     @Shortcut("TestGroup.cancel")
     void someShortcutAction() {
         writeln("Wow! shortcut was executed!");

@@ -134,7 +134,6 @@ class Panel : Widget, Scrollable, FocusScrollNavigation {
         );
 
         manager.pushScissor(scissor);
-        this.camera = camera;
 
         foreach (Widget widget; children) {
             if (!widget.visible)
@@ -149,7 +148,6 @@ class Panel : Widget, Scrollable, FocusScrollNavigation {
         }
 
         manager.popScissor();
-
         split.render();
     }
 
