@@ -35,8 +35,8 @@ enum VerticalAlign {
 
 struct FrameRect {
     float left = 0;
-    float right = 0;
     float top = 0;
+    float right = 0;
     float bottom = 0;
 
     this(in float left, in float top, in float right, in float bottom) {

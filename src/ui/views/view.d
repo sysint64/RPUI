@@ -95,7 +95,7 @@ private:
     void readEventsAttributes(T : View)(T view) {
         enum events = AliasSeq!(
             "OnClickListener",
-            "OnDblClickistener",
+            "OnDblClickListener",
             "OnFocusListener",
             "OnBlurListener",
             "OnKeyPressedListener",

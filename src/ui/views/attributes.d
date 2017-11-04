@@ -5,7 +5,7 @@ import std.traits;
 
 // Events
 struct OnClickListener { string widgetName; }
-struct OnDblClickistener { string widgetName; }
+struct OnDblClickListener { string widgetName; }
 struct OnFocusListener { string widgetName; }
 struct OnBlurListener { string widgetName; }
 struct OnKeyPressedListener { string widgetName; }

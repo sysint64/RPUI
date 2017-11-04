@@ -51,9 +51,10 @@ class MyView : View {
         okButton.caption = "YAY!";
         myButton.caption = "WORKS!";
         buttons[2].caption = "YES!";
+        okButton.triggerEvent!("DblClick");
     }
 
-    @OnDblClickistener("okButton")
+    @OnDblClickListener("okButton")
     void onOkDblClick(Widget widget) {
         writeln("Double!");
     }

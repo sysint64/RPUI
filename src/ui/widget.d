@@ -202,7 +202,7 @@ package:
 
 public:
     alias void delegate(Widget) OnClickListener;
-    alias void delegate(Widget) OnDblClickistener;
+    alias void delegate(Widget) OnDblClickListener;
     alias void delegate(Widget) OnFocusListener;
     alias void delegate(Widget) OnBlurListener;
     alias void delegate(Widget, in KeyCode key) OnKeyPressedListener;
@@ -215,7 +215,7 @@ public:
     alias void delegate(Widget, in uint x, in uint y, in MouseButton button) OnMouseUpListener;
 
     OnClickListener onClickListener = null;
-    OnDblClickistener onDblClickistener = null;
+    OnDblClickListener onDblClickListener = null;
     OnFocusListener onFocusListener = null;
     OnBlurListener onBlurListener = null;
     OnKeyPressedListener onKeyPressedListener = null;
@@ -229,15 +229,16 @@ public:
 
 // Events triggers ---------------------------------------------------------------------------------
 
-    final void triggerClick() {
-        if (onClickListener !is null)
-            onClickListener(this);
+    final void triggerEvent(string event, T...)(T args) {
+        auto listener = mixin("this.on" ~ event ~ "Listener");
+
+        if (listener !is null) {
+            listener(this, args);
+        }
     }
 
-    final void triggerDblClick() {
-        if (onDblClickistener !is null)
-            onDblClickistener(this);
-    }
+    alias triggerClick = triggerEvent!("Click");
+    alias triggerDblClick = triggerEvent!("DblClick");
 
 // Implementation ----------------------------------------------------------------------------------
 
