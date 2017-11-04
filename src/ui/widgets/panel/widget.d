@@ -134,7 +134,20 @@ class Panel : Widget, Scrollable, FocusScrollNavigation {
         );
 
         manager.pushScissor(scissor);
-        super.render(camera);
+        this.camera = camera;
+
+        foreach (Widget widget; children) {
+            if (!widget.visible)
+                continue;
+
+            if (!pointInRect(app.mousePos, scissor)) {
+                widget.isEnter = false;
+                widget.isClick = false;
+            }
+
+            widget.render(camera);
+        }
+
         manager.popScissor();
 
         split.render();
