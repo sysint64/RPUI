@@ -19,7 +19,17 @@
         "accessors": "~>1.1.1",
         ":rpdl": "*"
     },
+    "-ddoxFilterArgs": [
+        "--min-protection=Protected",
+        "--ex=ftgl",
+        "--ex=glu",
+        "--ex=x11_cursorfont",
+        "--ex=editor",
+        "--ex=ui.widgets.panel.split",
+        "--ex=ui.widgets.panel.header",
+        "--ex=ui.widgets.panel.scroll_button",
+    ],
     "subPackages": [
         "./rpdl/"
-    ],
+    ]
 }

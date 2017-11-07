@@ -1,3 +1,7 @@
+/**
+ * Base widget
+ */
+
 module ui.widget;
 
 import std.container;
@@ -17,47 +21,87 @@ import ui.cursor;
 import ui.renderer;
 import ui.scroll;
 
-
+/// Interface for scrollable widgets
 interface Scrollable {
+    /// Handle mouse wheel scrolling
     void onMouseWheelHandle(in int dx, in int dy);
+
+    /// Scroll to particular widget
     void scrollToWidget(Widget widget);
 }
 
-
-interface FocusScrollNavigation {
+/**
+ * For scrollable widgets and if this widget allow to focus elements
+ */
+interface FocusScrollNavigation : Scrollable {
+    /**
+     * Scroll to widget if it out of visible region.
+     * Scroll on top border if widget above and bottom if below visible region.
+     */
     void borderScrollToWidget(Widget widget);
 }
 
-
+/**
+ * Base class widget
+ */
 class Widget {
+    /**
+     * Field attribute need to tell RPDL which fields are fill
+     * when reading layout file
+     */
     struct Field {
-        string name = "";
+        string name = "";  /// Override name of variable
     }
 
     alias Array!Widget Children;
 
 // Properties --------------------------------------------------------------------------------------
 
-    @Field bool resizable = true;  // ???
+    @Field bool resizable = true;  /// User can change size of the widget
+
+    /// Don't draw skin of widget, e.g. if it's button then button will be transparent
     @Field bool withoutSkin = false;
+
     @Field bool visible = true;
     @Field bool enabled = true;
+
+    /// If true, then focus navigation by children will be limited inside this widget
     @Field bool finalFocus = false;
+
     @Field bool autoWidth;
     @Field bool autoHeight;
+
+    /// Specifies the type of cursor to be displayed when pointing on an element
     @Field Cursor.Icon cursor;
+
     @Field string name = "";
     @Field int tag = 0;
+
+    /// Some help information about widget, need to display tooltip
     @Field utfstring hint = "";
+
+    /// How to place a widget horizontally
     @Field Align locationAlign = Align.none;
+
+    /// How to place a widget vertically
     @Field VerticalAlign verticalLocationAlign = VerticalAlign.none;
+
+    /**
+     * If set this option then widget will be pinned to one of the side
+     * declared in the `basic_types.RegionAlign`
+     */
     @Field RegionAlign regionAlign = RegionAlign.none;
+
+    /// Used to create space around elements, outside of any defined borders
     @Field FrameRect margin = FrameRect(0, 0, 0, 0);
+
+    /// Used to generate space around an element's content, inside of any defined borders
     @Field FrameRect padding = FrameRect(0, 0, 0, 0);
+
     @Field vec2 position = vec2(0, 0);
     @Field vec2 size = vec2(0, 0);
 
-    @property uint id() { return p_id; }
+    @property size_t id() { return p_id; }
     @property string style() { return p_style; }
     @property Widget parent() { return p_parent; }
     @property bool isFocused() { return p_isFocused; }
@@ -70,8 +114,13 @@ class Widget {
     @property Widget associatedWidget() { return p_associatedWidget; }
 
     @property ref Children children() { return p_children; }
+
+package:
     @property RenderFactory renderFactory() { return manager.renderFactory; }
 
+    /**
+     * Returns string of state declared in theme
+     */
     @property inout(string) state() inout {
         if (isClick) {
             return "Click";
@@ -82,11 +131,12 @@ class Widget {
         }
     }
 
-    // Inner size considering the extra innter offsets and padding
+    /// Inner size considering the extra innter offsets and padding
     @property vec2 innerSize() {
         return size - innerOffsetSize;
     }
 
+    ///
     @property vec2 innerOffsetSize() {
         return vec2(
             padding.left + padding.right + extraInnerOffset.left + extraInnerOffset.right,
@@ -94,6 +144,7 @@ class Widget {
         );
     }
 
+    ///
     @property FrameRect innerOffset() {
         return FrameRect(
             padding.left + extraInnerOffset.left,
@@ -103,6 +154,7 @@ class Widget {
         );
     }
 
+    ///
     @property vec2 extraInnerOffsetSize() {
         return vec2(
             extraInnerOffset.left + extraInnerOffset.right,
@@ -110,27 +162,32 @@ class Widget {
         );
     }
 
+    ///
     @property vec2 extraInnerOffsetStart() {
         return vec2(extraInnerOffset.left, extraInnerOffset.top);
     }
 
+    ///
     @property vec2 extraInnerOffsetEnd() {
         return vec2(extraInnerOffset.right, extraInnerOffset.bottom);
     }
 
+    ///
     @property vec2 innerOffsetStart() {
         return vec2(innerOffset.left, innerOffset.top);
     }
 
+    ///
     @property vec2 innerOffsetEnd() {
         return vec2(innerOffset.right, innerOffset.bottom);
     }
 
-    // Outer size considering the extra outer offsets and margin
+    /// Outer size considering the extra outer offsets and margin
     @property vec2 outerSize() {
         return size + outerOffsetSize;
     }
 
+    ///
     @property vec2 outerOffsetSize() {
         return vec2(
             margin.left + margin.right + extraOuterOffset.left + extraOuterOffset.right,
@@ -138,6 +195,7 @@ class Widget {
         );
     }
 
+    ///
     @property FrameRect outerOffset() {
         return FrameRect(
             margin.left + extraOuterOffset.left,
@@ -147,10 +205,12 @@ class Widget {
         );
     }
 
+    ///
     @property vec2 outerOffsetStart() {
         return vec2(outerOffset.left, outerOffset.top);
     }
 
+    ///
     @property vec2 outerOffsetEnd() {
         return vec2(outerOffset.right, outerOffset.bottom);
     }
@@ -159,7 +219,7 @@ private:
     Camera camera = null;
     Children p_children;
 
-    uint p_id;
+    size_t p_id;
     string p_style;
     Widget p_parent;
 
@@ -172,7 +232,22 @@ private:
     Widget p_associatedWidget = null;
 
 protected:
-    enum PartDraws {all, left, center, right};
+    /**
+     * Which part of widget need to render, e.g. if it is a button
+     * then `PartDraws.left` tell that only left side and center will be
+     * rendered, this need for grouping rendering of widgets
+     *
+     * for example consider this layout of grouping: $(I [button1|button2|button3|button4])
+     *
+     * for $(I button1) `PartDraws` will be $(B left), for $(I button2) and $(I button3) $(B center)
+     * and for $(I button4) it will be $(B right)
+     */
+    enum PartDraws {
+        all,  /// Draw all parts - left, center and right
+        left,
+        center,
+        right
+    }
 
     Application app;
     Manager manager;
@@ -231,6 +306,7 @@ public:
 
 // Events triggers ---------------------------------------------------------------------------------
 
+    /// Invoke event listener with name $(D_PARAM event)
     final void triggerEvent(string event, T...)(T args) {
         auto listener = mixin("this.on" ~ event ~ "Listener");
 
@@ -239,7 +315,10 @@ public:
         }
     }
 
+    /// Invoke click event listener
     alias triggerClick = triggerEvent!("Click");
+
+    /// Invoke double click event listener
     alias triggerDblClick = triggerEvent!("DblClick");
 
 // Implementation ----------------------------------------------------------------------------------
@@ -253,6 +332,10 @@ public:
         this.p_style = style;
     }
 
+    /**
+     * Find the first element that satisfying the condition
+     * traversing up through its ancestors
+     */
     final Widget closest(bool delegate(Widget) predicate) {
         Widget widget = this.parent;
 
@@ -266,6 +349,10 @@ public:
         return null;
     }
 
+    /**
+     * Find the first element that satisfying the condition
+     * traversing down through its ancestors
+     */
     final Widget find(bool delegate(Widget) predicate) {
         foreach (Widget widget; children) {
             if (predicate(widget))
@@ -284,6 +371,7 @@ public:
         return find(widget => widget.name == name);
     }
 
+    /// Update widget inner bounary and clamped boundary
     void updateBoundary() {
         if (!drawChildren)
             return;
@@ -325,6 +413,7 @@ public:
         innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, innerSize.y);
     }
 
+    /// Invoke onProgress in each children widget
     void onProgress() {
         if (!drawChildren)
             return;
@@ -339,6 +428,7 @@ public:
         updateBoundary();
     }
 
+    /// Render panel in camera view
     void render(Camera camera) {
         this.camera = camera;
 
@@ -351,6 +441,13 @@ public:
 
             widget.render(camera);
         }
+    }
+
+    void deleteWidget(Widget targetWidget) {
+        deleteWidget(targetWidget.id);
+    }
+
+    void deleteWidget(size_t id) {
     }
 
     void addWidget(Widget widget) {
@@ -377,6 +474,7 @@ public:
         widget.onCreate();
     }
 
+    /// Determine if `point` is inside widget area
     bool pointIsEnter(in vec2i point) {
         const Rect rect = Rect(absolutePosition.x, absolutePosition.y, size.x, size.y);
         return pointInRect(point, rect);
@@ -431,6 +529,7 @@ public:
         }
     }
 
+    /// Focus to the next widget
     void focusNext() {
         if (skipFocus && isFocused) {
             navFocusFront();
@@ -456,6 +555,7 @@ public:
         }
     }
 
+    /// Focus to the previous widget
     void focusPrev() {
         if (skipFocus && isFocused) {
             navFocusBack();
@@ -475,6 +575,7 @@ public:
 
 // Events ------------------------------------------------------------------------------------------
 
+    /// Invoke when widget will create
     void onCreate() {
     }
 
@@ -570,16 +671,18 @@ public:
         }
     }
 
+    /// Override this method if need change behaviour when system cursor have to be changed
     void onCursor() {
     }
 
+    /// Invoke when widget resize
     void onResize() {
         foreach (Widget widget; children) {
             widget.onResize();
         }
     }
 
-protected:
+package:
     void updateLocationAlign() {
         switch (locationAlign) {
             case Align.left:
@@ -626,10 +729,10 @@ protected:
         }
     }
 
-    void updateResize() {
+    protected void updateResize() {
     }
 
-    package void updateAll() {
+    void updateAll() {
         updateAbsolutePosition();
         updateLocationAlign();
         updateVerticalLocationAlign();
@@ -725,7 +828,6 @@ protected:
 
     @property Renderer renderer() { return manager.renderer; }
 
-package:
     this(Manager manager) {
         this.manager = manager;
         app = Application.getInstance();
@@ -746,7 +848,7 @@ package:
         absolutePosition.y = round(absolutePosition.y);
     }
 
-    public void freezeUI(bool isNestedFreeze = true) {
+    void freezeUI(bool isNestedFreeze = true) {
         this.manager.freezeUI(this, isNestedFreeze);
     }
 

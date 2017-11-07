@@ -13,8 +13,7 @@ import ui.scroll;
 import ui.render_objects;
 import ui.renderer;
 
-import ui.widgets.panel.widget;
-
+import ui.widgets.panel;
 
 package struct ScrollButton {
     Application app;

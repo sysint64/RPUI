@@ -19,7 +19,7 @@ import ui;
 import ui.widget;
 import ui.widgets.button;
 import ui.widgets.stack_layout;
-import ui.widgets.panel.widget;
+import ui.widgets.panel;
 import ui.views.view;
 import ui.views.attributes;
 
@@ -29,7 +29,6 @@ import std.container;
 
 import derelict.sfml2.graphics;
 import derelict.opengl3.gl;
-
 
 class MyView : View {
     @ViewWidget Button okButton;

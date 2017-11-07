@@ -12,11 +12,9 @@ import ui.widget;
 import ui.widgets.rpdl_factory;
 import ui.views.attributes;
 import ui.manager;
-import ui.widgets.panel.widget;
 import ui.shortcuts;
 
 import editor.mapeditor : MyView;
-
 
 class View {
     Application app;

@@ -1,3 +1,8 @@
+/**
+ * Macros:
+ * CURSOR_IMG = <img src="https://tronche.com/gui/x/xlib/appendix/b/$1" style="max-width: 16px; max-height: 16px; display: block; margin: auto">
+ */
+
 module ui.cursor;
 
 import x11.Xlib;
@@ -9,21 +14,21 @@ import application;
 class Cursor {
     enum Icon {
         none = -1,
-        hand = XC_hand1,
-        normal = XC_left_ptr,
-        iBeam = XC_xterm,
-        vDoubleArrow = XC_sb_v_double_arrow,
-        hDoubleArrow  = XC_sb_h_double_arrow,
-        crossHair = XC_crosshair,
-        drag = XC_fleur,
-        topSide = XC_top_side,
-        bottomSide = XC_bottom_side,
-        leftSide = XC_left_side,
-        rightSide = XC_right_side,
-        topLeftCorner = XC_top_left_corner,
-        topRightCorner = XC_top_right_corner,
-        bottomLeftCorner = XC_bottom_left_corner,
-        bottomRightCorner = XC_bottom_right_corner
+        hand = XC_hand1,  /// $(CURSOR_IMG 58.gif)
+        normal = XC_left_ptr,  /// $(CURSOR_IMG 68.gif)
+        iBeam = XC_xterm,  /// $(CURSOR_IMG 152.gif)
+        vDoubleArrow = XC_sb_v_double_arrow,  /// $(CURSOR_IMG 116.gif)
+        hDoubleArrow  = XC_sb_h_double_arrow,  /// $(CURSOR_IMG 108.gif)
+        crossHair = XC_crosshair,  /// $(CURSOR_IMG 34.gif)
+        drag = XC_fleur,  /// $(CURSOR_IMG 52.gif)
+        topSide = XC_top_side,  /// $(CURSOR_IMG 138.gif)
+        bottomSide = XC_bottom_side,  /// $(CURSOR_IMG 16.gif)
+        leftSide = XC_left_side,  /// $(CURSOR_IMG 70.gif)
+        rightSide = XC_right_side,  /// $(CURSOR_IMG 96.gif)
+        topLeftCorner = XC_top_left_corner,  /// $(CURSOR_IMG 134.gif)
+        topRightCorner = XC_top_right_corner,  /// $(CURSOR_IMG 136.gif)
+        bottomLeftCorner = XC_bottom_left_corner,  /// $(CURSOR_IMG 12.gif)
+        bottomRightCorner = XC_bottom_right_corner  /// $(CURSOR_IMG 14.gif)
     };
 
     this() {

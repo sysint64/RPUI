@@ -62,6 +62,7 @@ Panel
         regionAlign: right
         size: 300, 300
         blackSplit: true
+        finalFocus: true
         margin: 5
 
         StackLayout

@@ -12,7 +12,6 @@ import ui.widget;
 import ui.manager;
 import ui.render_objects;
 
-
 class Button : Widget {
     @Field bool allowCheck = false;
     @Field Align textAlign = Align.center;

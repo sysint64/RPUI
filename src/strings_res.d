@@ -1,3 +1,7 @@
+/**
+ * String resources
+ */
+
 module strings_res;
 
 import std.path;
@@ -11,12 +15,17 @@ import application;
 
 import rpdl.tree;
 
+/**
+ * This class use RPDL as strings repository, strings needed for
+ * internationalization.
+ */
 
 class StringsRes {
     string locale;
 
     private this() {}
 
+    ///
     static StringsRes createForLanguage(in string locale) {
         StringsRes stringsRes = new StringsRes();
         stringsRes.locale = locale;
@@ -28,6 +37,7 @@ class StringsRes {
         return stringsRes;
     }
 
+    ///
     static StringsRes createFromFile(in string fileName) {
         StringsRes stringsRes = new StringsRes();
 
@@ -37,6 +47,7 @@ class StringsRes {
         return createFromAbsolutePath(path);
     }
 
+    ///
     static StringsRes createFromAbsolutePath(in string path) {
         StringsRes stringsRes = new StringsRes();
 
@@ -47,10 +58,12 @@ class StringsRes {
     }
 
 final:
+    ///
     void addStrings(in string fileName) {
         strings.load(fileName);
     }
 
+    ///
     utfstring parseString(in utfstring source) {
         utfstring result = "";
 
@@ -92,7 +105,7 @@ private:
     }
 }
 
-
+///
 unittest {
     import test.core;
 

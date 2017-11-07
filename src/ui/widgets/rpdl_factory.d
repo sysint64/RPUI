@@ -22,10 +22,9 @@ import ui.rpdl_extensions;
 import gapi.texture;
 
 import ui.cursor;
-import ui.widgets.panel.widget;
+import ui.widgets.panel;
 import ui.widgets.button;
 import ui.widgets.stack_layout;
-
 
 class RPDLWidgetFactory {
     @property Widget rootWidget() { return p_rootWidget; }

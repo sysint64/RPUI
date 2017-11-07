@@ -10,8 +10,7 @@ import ui.render_objects;
 import ui.render_factory;
 import ui.renderer;
 
-import ui.widgets.panel.widget;
-
+import ui.widgets.panel;
 
 package struct Split {
     BaseRenderObject borderRenderObject;

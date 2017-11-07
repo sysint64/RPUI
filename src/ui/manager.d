@@ -1,3 +1,7 @@
+/**
+ * UI Manager
+ */
+
 module ui.manager;
 
 import std.container;
@@ -20,9 +24,12 @@ import ui.cursor;
 import ui.render_factory;
 import ui.renderer;
 
+/**
+ * Base UI Manager
+ */
 
 class Manager {
-    StringsRes stringsRes = null;
+    StringsRes stringsRes = null;  /// String resources
 
     private this() {
         app = Application.getInstance();
@@ -118,13 +125,11 @@ class Manager {
     }
 
     void deleteWidget(Widget widget) {
+        rootWidget.deleteWidget(widget);
     }
 
-    void deleteWidget(in int id) {
-    }
-
-    Widget findWidget(in string name) {
-        return null;
+    void deleteWidget(in size_t id) {
+        rootWidget.deleteWidget(id);
     }
 
     void pushScissor(in Rect scissor) {

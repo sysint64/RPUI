@@ -32,6 +32,7 @@ void writeindent(in int level = 0) {
 }
 
 
+/** Hello world */
 void traverse(Node node, in int level = 0) {
     foreach (Node a; node.children) {
         writeindent(level);
