@@ -1,4 +1,5 @@
-module ui.scroll;
+/// Scroll controller for widgets like `ui.widgets.panel.Panel`
+module rpui.scroll;
 
 // import std.algorithm.comparison;
 import std.math;
@@ -8,13 +9,11 @@ import application;
 import basic_types;
 import input;
 
-
 private auto clamp(T1, T2, T3)(T1 val, T2 lower, T3 upper) {
     if (val < lower) return lower;
     if (val > upper) return upper;
     return val;
 }
-
 
 class ScrollController {
     this(in Orientation orientation) {

@@ -1,12 +1,12 @@
-module ui.render_factory;
+module rpui.render_factory;
 
 import gapi;
 import application;
 import math.linalg;
 
-import ui.manager;
-import ui.render_objects;
-import ui.theme;
+import rpui.manager;
+import rpui.render_objects;
+import rpui.theme;
 
 
 class RenderFactory {

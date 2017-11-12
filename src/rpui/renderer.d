@@ -1,4 +1,4 @@
-module ui.renderer;
+module rpui.renderer;
 
 import std.conv;
 import std.math;
@@ -8,8 +8,8 @@ import accessors;
 import basic_types;
 
 import application;
-import ui.render_objects;
-import ui.manager;
+import rpui.render_objects;
+import rpui.manager;
 
 
 class Renderer {

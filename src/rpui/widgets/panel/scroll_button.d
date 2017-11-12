@@ -1,4 +1,4 @@
-module ui.widgets.panel.scroll_button;
+module rpui.widgets.panel.scroll_button;
 
 import std.typecons;
 
@@ -8,12 +8,12 @@ import application;
 import math.linalg;
 import basic_types;
 
-import ui.theme;
-import ui.scroll;
-import ui.render_objects;
-import ui.renderer;
+import rpui.theme;
+import rpui.scroll;
+import rpui.render_objects;
+import rpui.renderer;
 
-import ui.widgets.panel;
+import rpui.widgets.panel;
 
 package struct ScrollButton {
     Application app;

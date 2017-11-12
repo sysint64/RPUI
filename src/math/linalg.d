@@ -3,7 +3,6 @@ module math.linalg;
 import gl3n.linalg;
 import basic_types;
 
-
 public import gl3n.linalg : Vector;
 
 alias Vector vec;

@@ -5,7 +5,7 @@
  * Authors: Andrey Kabylin
  */
 
-module ui.widgets.panel;
+module rpui.widgets.panel;
 
 import std.container;
 import std.algorithm.comparison;
@@ -18,15 +18,15 @@ import rpdl;
 import log;
 import input;
 
-import ui.widget;
-import ui.scroll;
-import ui.manager;
-import ui.cursor;
-import ui.render_objects;
+import rpui.widget;
+import rpui.scroll;
+import rpui.manager;
+import rpui.cursor;
+import rpui.render_objects;
 
-import ui.widgets.panel.split;
-import ui.widgets.panel.header;
-import ui.widgets.panel.scroll_button;
+import rpui.widgets.panel.split;
+import rpui.widgets.panel.header;
+import rpui.widgets.panel.scroll_button;
 
 /**
  * Panel widget is the container for other widgets with scrolling,

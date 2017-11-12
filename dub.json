@@ -20,7 +20,7 @@
         ":rpdl": "*"
     },
     "-ddoxFilterArgs": [
-        "--min-protection=Protected",
+        "--min-protection=Public",
         "--ex=ftgl",
         "--ex=glu",
         "--ex=x11_cursorfont",
@@ -28,6 +28,11 @@
         "--ex=ui.widgets.panel.split",
         "--ex=ui.widgets.panel.header",
         "--ex=ui.widgets.panel.scroll_button",
+        "--ex=gapi",
+        "--ex=containers",
+        "--ex=math",
+        "--ex=patterns",
+        "--ex=test"
     ],
     "subPackages": [
         "./rpdl/"

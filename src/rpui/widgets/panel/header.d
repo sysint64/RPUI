@@ -1,4 +1,4 @@
-module ui.widgets.panel.header;
+module rpui.widgets.panel.header;
 
 import gapi;
 import rpdl;
@@ -6,12 +6,12 @@ import math.linalg;
 import basic_types;
 import application;
 
-import ui.theme;
-import ui.render_objects;
-import ui.render_factory;
-import ui.renderer;
+import rpui.theme;
+import rpui.render_objects;
+import rpui.render_factory;
+import rpui.renderer;
 
-import ui.widgets.panel;
+import rpui.widgets.panel;
 
 package struct Header {
     Application app;

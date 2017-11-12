@@ -12,8 +12,8 @@ import rpdl.value;
 import gapi.shader;
 import gapi.texture;
 
-import ui.widget;
-import ui.cursor;
+import rpui.widget;
+import rpui.cursor;
 
 import editor.mapeditor;
 
@@ -24,15 +24,12 @@ import derelict.sfml2.system;
 import derelict.sfml2.window;
 import derelict.sfml2.graphics;
 
-
 void writeindent(in int level = 0) {
     for (int i = 0; i < level*4; ++i) {
         write(" ");
     }
 }
 
-
-/** Hello world */
 void traverse(Node node, in int level = 0) {
     foreach (Node a; node.children) {
         writeindent(level);
@@ -46,10 +43,9 @@ void traverse(Node node, in int level = 0) {
     }
 }
 
-import ui.views.view;
-import ui.views.attributes;
-import ui.manager;
-
+import rpui.views.view;
+import rpui.views.attributes;
+import rpui.manager;
 
 void main() {
     DerelictSFML2System.load();

@@ -1,4 +1,4 @@
-module ui.widgets.button;
+module rpui.widgets.button;
 
 import std.algorithm.comparison;
 
@@ -8,9 +8,9 @@ import math.linalg;
 import std.stdio;
 import basic_types;
 
-import ui.widget;
-import ui.manager;
-import ui.render_objects;
+import rpui.widget;
+import rpui.manager;
+import rpui.render_objects;
 
 class Button : Widget {
     @Field bool allowCheck = false;

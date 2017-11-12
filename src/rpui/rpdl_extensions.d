@@ -1,7 +1,7 @@
-module ui.rpdl_extensions;
+module rpui.rpdl_extensions;
 
-import ui.cursor;
-import ui.widgets.panel;
+import rpui.cursor;
+import rpui.widgets.panel;
 
 import rpdl.accessors;
 import rpdl.exception;

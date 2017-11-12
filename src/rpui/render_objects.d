@@ -1,4 +1,4 @@
-module ui.render_objects;
+module rpui.render_objects;
 
 import gapi;
 import math.linalg;

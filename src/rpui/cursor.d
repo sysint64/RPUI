@@ -1,15 +1,18 @@
 /**
+ * Widget base interface
+ * Copyright: © 2017 RedGoosePaws
+ * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
+ * Authors: Andrey Kabylin
  * Macros:
- * CURSOR_IMG = <img src="https://tronche.com/gui/x/xlib/appendix/b/$1" style="max-width: 16px; max-height: 16px; display: block; margin: auto">
+ *     CURSOR_IMG = <img src="https://tronche.com/gui/x/xlib/appendix/b/$1" style="max-width: 16px; max-height: 16px; display: block; margin: auto">
  */
 
-module ui.cursor;
+module rpui.cursor;
 
 import x11.Xlib;
 import x11_cursorfont;
 
 import application;
-
 
 class Cursor {
     enum Icon {
@@ -39,15 +42,17 @@ class Cursor {
         }
     }
 
-    @property Icon icon() { return icon_; }
+    @property Icon icon() { return p_icon; }
+
+    /// Invoke OS specified methods to update system cursor icon
     @property void icon(in Icon newIcon) {
-        if (this.icon_ == newIcon)
+        if (this.p_icon == newIcon)
             return;
 
-        this.icon_ = newIcon;
+        this.p_icon = newIcon;
 
         version (linux) {
-            cursor = XCreateFontCursor(display, cast(uint) this.icon_);
+            cursor = XCreateFontCursor(display, cast(uint) this.p_icon);
             XDefineCursor(display, app.windowHandle, cursor);
             XFlush(display);
         }
@@ -55,7 +60,7 @@ class Cursor {
 
 private:
     Application app;
-    Icon icon_ = Icon.normal;
+    Icon p_icon = Icon.normal;
 
     version (linux) {
         Display *display;

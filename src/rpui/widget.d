@@ -1,8 +1,12 @@
 /**
- * Base widget
+ * Widget base interface
+ *
+ * Copyright: © 2017 RedGoosePaws
+ * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
+ * Authors: Andrey Kabylin
  */
 
-module ui.widget;
+module rpui.widget;
 
 import std.container;
 import std.conv;
@@ -14,12 +18,12 @@ import application;
 import math.linalg;
 import basic_types;
 
-import ui.manager;
-import ui.render_factory;
-import ui.render_objects;
-import ui.cursor;
-import ui.renderer;
-import ui.scroll;
+import rpui.manager;
+import rpui.render_factory;
+import rpui.render_objects;
+import rpui.cursor;
+import rpui.renderer;
+import rpui.scroll;
 
 /// Interface for scrollable widgets
 interface Scrollable {
@@ -111,11 +115,10 @@ class Widget {
     @property Widget lastWidget() { return p_lastWidget; }
     @property Widget firstWidget() { return p_firstWidget; }
 
-    @property Widget associatedWidget() { return p_associatedWidget; }
-
     @property ref Children children() { return p_children; }
 
 package:
+    @property Widget associatedWidget() { return p_associatedWidget; }
     @property RenderFactory renderFactory() { return manager.renderFactory; }
 
     /**
@@ -255,21 +258,29 @@ protected:
 
 package:
     bool p_isFocused;
-    bool skipFocus = false;
+    bool skipFocus = false;  /// Don't focus this element
     bool drawChildren = true;
-    FrameRect extraInnerOffset = FrameRect(0, 0, 0, 0);  // extra inner offset besides padding
-    FrameRect extraOuterOffset = FrameRect(0, 0, 0, 0);  // extra outer offset besides margin
+    FrameRect extraInnerOffset = FrameRect(0, 0, 0, 0);  /// Extra inner offset besides padding
+    FrameRect extraOuterOffset = FrameRect(0, 0, 0, 0);  /// Extra outer offset besides margin
     bool overlay;
     vec2 overSize;
-    bool isEnter;
+
+    bool isEnter;  /// True if pointed on widget
     bool isClick;
-    bool isOver;  // When in rect of element but if another element over this
-                  // isOver will still be true
+
+    /**
+     * When in rect of element but if another element over this
+     * isOver will still be true
+     */
+    bool isOver;
 
     vec2 absolutePosition = vec2(0, 0);
+
+    /// Size of boundary over childern clamped to size of widget as minimum boundary size
     vec2 innerBoundarySizeClamped = vec2(0, 0);
-    vec2 innerBoundarySize = vec2(0, 0);
-    vec2 contentOffset = vec2(0, 0);
+
+    vec2 innerBoundarySize = vec2(0, 0);  /// Size of boundary over childern
+    vec2 contentOffset = vec2(0, 0);  /// Children offset relative their absolute positions
 
     @property void associatedWidget(Widget val) { p_associatedWidget = val; }
 
@@ -306,7 +317,7 @@ public:
 
 // Events triggers ---------------------------------------------------------------------------------
 
-    /// Invoke event listener with name $(D_PARAM event)
+    /// Invoke event listener with name `event`
     final void triggerEvent(string event, T...)(T args) {
         auto listener = mixin("this.on" ~ event ~ "Listener");
 
@@ -333,7 +344,7 @@ public:
     }
 
     /**
-     * Find the first element that satisfying the condition
+     * Find the first element that satisfying the `predicate`
      * traversing up through its ancestors
      */
     final Widget closest(bool delegate(Widget) predicate) {
@@ -350,7 +361,7 @@ public:
     }
 
     /**
-     * Find the first element that satisfying the condition
+     * Find the first element that satisfying the `predicate`
      * traversing down through its ancestors
      */
     final Widget find(bool delegate(Widget) predicate) {

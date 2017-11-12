@@ -1,4 +1,4 @@
-module ui.views.attributes;
+module rpui.views.attributes;
 
 import std.traits;
 

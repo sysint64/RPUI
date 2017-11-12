@@ -1,6 +1,5 @@
 module x11_cursorfont;
 
-
 immutable uint XC_num_glyphs = 154;
 immutable uint XC_X_cursor = 0;
 immutable uint XC_arrow = 2;

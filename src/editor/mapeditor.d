@@ -15,13 +15,13 @@ import gapi.base_object;
 import gapi.font;
 import gapi.text;
 
-import ui;
-import ui.widget;
-import ui.widgets.button;
-import ui.widgets.stack_layout;
-import ui.widgets.panel;
-import ui.views.view;
-import ui.views.attributes;
+import rpui;
+import rpui.widget;
+import rpui.widgets.button;
+import rpui.widgets.stack_layout;
+import rpui.widgets.panel;
+import rpui.views.view;
+import rpui.views.attributes;
 
 import math.linalg;
 import std.stdio;

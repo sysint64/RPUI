@@ -1,4 +1,4 @@
-module ui.shortcuts;
+module rpui.shortcuts;
 
 import std.stdio;
 import std.string;
@@ -9,8 +9,7 @@ import rpdl;
 import rpdl.exception;
 import input;
 import application;
-import ui.widget;
-
+import rpui.widget;
 
 class Shortcuts {
     struct Shortcut {

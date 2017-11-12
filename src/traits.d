@@ -2,8 +2,6 @@ module traits;
 
 import std.traits : hasUDA, getUDAs, isFunction, isType, isAggregateType;
 
-
-// TODO: rm, workaround
 template getSymbolsNamesByUDA(alias symbol, alias attribute) {
     import std.format : format;
     import std.meta : AliasSeq, Filter;
@@ -29,7 +27,6 @@ template getSymbolsNamesByUDA(alias symbol, alias attribute) {
     else
         alias getSymbolsNamesByUDA = membersWithUDA;
 }
-
 
 template getSymbolsByUDA(alias symbol, alias attribute) {
     import std.format : format;

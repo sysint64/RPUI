@@ -20,8 +20,7 @@ import math.linalg;
 
 import gapi.shader;
 import gapi.camera;
-import ui.cursor;
-
+import rpui.cursor;
 
 abstract class Application {
     static Application getInstance() {

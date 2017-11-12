@@ -1,8 +1,7 @@
 /**
  * UI Manager
  */
-
-module ui.manager;
+module rpui.manager;
 
 import std.container;
 import std.container.array;
@@ -17,17 +16,16 @@ import strings_res;
 import derelict.opengl3.gl;
 import gapi.camera;
 
-import ui.theme;
-import ui.scroll;
-import ui.widget;
-import ui.cursor;
-import ui.render_factory;
-import ui.renderer;
+import rpui.theme;
+import rpui.scroll;
+import rpui.widget;
+import rpui.cursor;
+import rpui.render_factory;
+import rpui.renderer;
 
 /**
  * Base UI Manager
  */
-
 class Manager {
     StringsRes stringsRes = null;  /// String resources
 

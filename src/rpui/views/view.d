@@ -1,4 +1,4 @@
-module ui.views.view;
+module rpui.views.view;
 
 import std.traits;
 import std.stdio;
@@ -8,11 +8,11 @@ import std.meta;
 import traits;
 import application;
 
-import ui.widget;
-import ui.widgets.rpdl_factory;
-import ui.views.attributes;
-import ui.manager;
-import ui.shortcuts;
+import rpui.widget;
+import rpui.widgets.rpdl_factory;
+import rpui.views.attributes;
+import rpui.manager;
+import rpui.shortcuts;
 
 import editor.mapeditor : MyView;
 

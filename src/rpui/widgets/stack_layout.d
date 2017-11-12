@@ -1,6 +1,6 @@
-module ui.widgets.stack_layout;
+module rpui.widgets.stack_layout;
 
-import ui.widget;
+import rpui.widget;
 import gapi;
 import basic_types;
 import math.linalg;

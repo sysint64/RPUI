@@ -1,4 +1,4 @@
-module ui.widgets.rpdl_factory;
+module rpui.widgets.rpdl_factory;
 
 import traits;
 
@@ -14,17 +14,17 @@ import std.traits : hasUDA, getUDAs, isFunction, ParameterDefaults;
 
 import math.linalg;
 import basic_types;
-import ui.widget;
-import ui.views.attributes;
-import ui.manager;
-import ui.rpdl_extensions;
+import rpui.widget;
+import rpui.views.attributes;
+import rpui.manager;
+import rpui.rpdl_extensions;
 
 import gapi.texture;
 
-import ui.cursor;
-import ui.widgets.panel;
-import ui.widgets.button;
-import ui.widgets.stack_layout;
+import rpui.cursor;
+import rpui.widgets.panel;
+import rpui.widgets.button;
+import rpui.widgets.stack_layout;
 
 class RPDLWidgetFactory {
     @property Widget rootWidget() { return p_rootWidget; }

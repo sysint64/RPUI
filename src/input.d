@@ -4,8 +4,7 @@ import derelict.sfml2.window;
 
 import std.string;
 
-
-// break the dependence on SFML Mouse
+/// break the dependence on SFML Mouse
 enum MouseButton {
     mouseNone = -1,
     mouseLeft = sfMouseLeft,
@@ -13,8 +12,7 @@ enum MouseButton {
     mouseMiddle = sfMouseMiddle,
 };
 
-
-// break the dependence on SFML Keyboard
+/// break the dependence on SFML Keyboard
 enum KeyCode {
     A = sfKeyA,
     B = sfKeyB,
