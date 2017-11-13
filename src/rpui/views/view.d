@@ -12,7 +12,7 @@ import rpui.widget;
 import rpui.widgets.rpdl_factory;
 import rpui.views.attributes;
 import rpui.manager;
-import rpui.shortcuts;
+import rpui.shortcuts : Shortcuts;
 
 import editor.mapeditor : MyView;
 
