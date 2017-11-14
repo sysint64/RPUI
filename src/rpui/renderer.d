@@ -1,3 +1,11 @@
+/**
+ * Rendering helper
+ *
+ * Copyright: © 2017 RedGoosePaws
+ * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
+ * Authors: Andrey Kabylin
+ */
+
 module rpui.renderer;
 
 import std.conv;
@@ -11,7 +19,6 @@ import application;
 import rpui.render_objects;
 import rpui.manager;
 
-
 class Renderer {
     this(Manager manager) {
         createShaders();
@@ -19,10 +26,19 @@ class Renderer {
         app = Application.getInstance();
     }
 
+    /*
+     * Convert world position to screen position
+     * Params:
+     *     position = world position
+     *     size = size of element to be rendered
+     */
     vec2 toScreenPosition(in vec2 position, in vec2 size) {
         return vec2(floor(position.x), floor(app.windowHeight - size.y - position.y));
     }
 
+    /**
+     *
+     */
     void renderQuad(BaseRenderObject renderObject, in string state,
                     in vec2 position)
     {
@@ -30,6 +46,9 @@ class Renderer {
         renderQuad(renderObject, state, position, size);
     }
 
+    /**
+     *
+     */
     void renderQuad(BaseRenderObject renderObject, in string state,
                     in vec2 position, in vec2 size)
     {
@@ -50,6 +69,8 @@ class Renderer {
         renderObject.render(camera);
     }
 
+    /**
+     */
     void renderChain(T)(BaseRenderObject[string] renderObjects, in Orientation orientation,
                         in string state, in vec2 position, in T size)
     {
@@ -67,6 +88,8 @@ class Renderer {
         }
     }
 
+    /**
+     */
     void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
                                in vec2 position, in float size)
     {
@@ -74,6 +97,8 @@ class Renderer {
         renderHorizontalChain(renderObjects, state, position, vec2(size, height));
     }
 
+    /**
+     */
     void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
                                in vec2 position, in vec2 size)
     {
@@ -90,6 +115,8 @@ class Renderer {
         renderQuad(renderObjects["right"], state, rightPos, vec2(rightWidth, size.y));
     }
 
+    /**
+     */
     void renderVerticalChain(BaseRenderObject[string] renderObjects, in string state,
                              in vec2 position, in float size)
     {
@@ -114,8 +141,8 @@ class Renderer {
     }
 
     void renderText(TextRenderObject text, in string state, in vec2 position, in vec2 size) {
-        const vec2 textPos = position + text.offsets[state];
-        text.color = text.colors[state];
+        const vec2 textPos = position + text.getOffset(state);
+        text.color = text.getColor(state);
         text.scaling = vec2(size);
         text.position = toScreenPosition(textPos, vec2(size));
         text.render(camera);

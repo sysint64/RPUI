@@ -1,6 +1,11 @@
 /**
- * UI Manager
+ * Manager of all UI elements.
+ *
+ * Copyright: © 2017 RedGoosePaws
+ * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
+ * Authors: Andrey Kabylin
  */
+
 module rpui.manager;
 
 import std.container;
@@ -10,7 +15,6 @@ import input;
 import application;
 import math.linalg;
 import basic_types;
-import accessors;
 import strings_res;
 
 import derelict.opengl3.gl;
@@ -23,33 +27,36 @@ import rpui.cursor;
 import rpui.render_factory;
 import rpui.renderer;
 
-/**
- * Base UI Manager
- */
 class Manager {
-    StringsRes stringsRes = null;  /// String resources
+    StringsRes stringsRes = null;  /// String resources.
+
+    private Widget p_widgetUnderMouse = null;
+    @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
 
     private this() {
         app = Application.getInstance();
         unfocusedWidgets.reserve(20);
     }
 
-    this(in string theme) {
+    /// Creating manager with particular theme.
+    this(in string themeName) {
         app = Application.getInstance();
 
-        rootWidget = new Widget(this);
-        rootWidget.isOver = true;
-        rootWidget.finalFocus = true;
-        rootWidget.size.x = app.windowWidth;
-        rootWidget.size.y = app.windowHeight;
+        with (rootWidget = new Widget(this)) {
+            isOver = true;
+            finalFocus = true;
+            size.x = this.app.windowWidth;
+            size.y = this.app.windowHeight;
+        }
 
-        theme_ = new Theme(theme);
-        renderFactory_ = new RenderFactory(this);
-        renderer_ = new Renderer(this);
+        this.theme = new Theme(themeName);
+        this.renderFactory = new RenderFactory(this);
+        this.renderer = new Renderer(this);
 
         unfocusedWidgets.reserve(20);
     }
 
+    /// Invokes all `onProgress` of all widgets and `poll` widgets.
     void onProgress() {
         cursor = Cursor.Icon.normal;
         rootWidget.onProgress();
@@ -58,6 +65,7 @@ class Manager {
         app.cursor = cursor;
     }
 
+    /// Renders all widgets inside `camera` view.
     void render(Camera camera) {
         rootWidget.size.x = app.windowWidth;
         rootWidget.size.y = app.windowHeight;
@@ -66,7 +74,12 @@ class Manager {
         rootWidget.render(camera);
     }
 
-    void poll() {
+    /**
+     * Determines widgets states - check when widget `isEnter` (i.e. mouse inside widget area);
+     * `isClick` (when user clicked to widget) and when widget is over i.e. mouse inside widget area
+     * but widget can be overlapped by another widget.
+     */
+    private void poll() {
         foreach_reverse (Widget widget; widgetOrdering) {
             if (widget is null)
                 continue;
@@ -76,7 +89,7 @@ class Manager {
             if (!widget.visible)
                 continue;
 
-            if (!isWidgetFroze(widget))
+            if (!isWidgetFrozen(widget))
                 widget.onCursor();
 
             const size = vec2(
@@ -88,7 +101,7 @@ class Manager {
             widget.isOver = widget.parent.isOver && pointInRect(app.mousePos, rect);
         }
 
-        widgetUnderMouse = null;
+        p_widgetUnderMouse = null;
         Widget found = null;
         uint counter = 0;
 
@@ -99,7 +112,7 @@ class Manager {
             if (widget is null || !widget.isOver || !widget.visible)
                 continue;
 
-            if (isWidgetFroze(widget))
+            if (isWidgetFrozen(widget))
                 continue;
 
             if (found !is null) {
@@ -109,7 +122,7 @@ class Manager {
 
             if (widget.pointIsEnter(app.mousePos)) {
                 widget.isEnter = true;
-                widgetUnderMouse = widget;
+                p_widgetUnderMouse = widget;
                 found = widget;
             }
 
@@ -118,19 +131,23 @@ class Manager {
         }
     }
 
+    /// Add `widget` to root children.
     void addWidget(Widget widget) {
         rootWidget.addWidget(widget);
     }
 
+    /// Delete `widget` from root children.
     void deleteWidget(Widget widget) {
         rootWidget.deleteWidget(widget);
     }
 
+    /// Delete widget by `id` from root children.
     void deleteWidget(in size_t id) {
         rootWidget.deleteWidget(id);
     }
 
-    void pushScissor(in Rect scissor) {
+    /// Push scissor to stack.
+    package void pushScissor(in Rect scissor) {
         if (scissorStack.length == 0)
             glEnable(GL_SCISSOR_TEST);
 
@@ -138,7 +155,8 @@ class Manager {
         applyScissor();
     }
 
-    void popScissor() {
+    /// Pop scissor from stack.
+    package void popScissor() {
         scissorStack.removeBack(1);
 
         if (scissorStack.length == 0) {
@@ -148,6 +166,7 @@ class Manager {
         }
     }
 
+    /// Apply all scissors for clipping widgets in scissors areas.
     Rect applyScissor() {
         FrameRect currentScissor = scissorStack.back.absolute;
 
@@ -174,11 +193,13 @@ class Manager {
         return Rect(currentScissor);
     }
 
+    /// Focusing next widget after the current focused widget.
     void focusNext() {
         if (focusedWidget !is null)
             focusedWidget.focusNext();
     }
 
+    /// Focusing previous widget before the current focused widget.
     void focusPrev() {
         if (focusedWidget !is null)
             focusedWidget.focusPrev();
@@ -186,6 +207,11 @@ class Manager {
 
 // Events ------------------------------------------------------------------------------------------
 
+    /**
+     * Root widget to handle all events such as `onKeyPressed`, `onKeyReleased` etc.
+     * Default is `rootWidget` but if UI was freeze by some widget (e.g. dialog window)
+     * then source will be top of freeze sources stack.
+     */
     @property
     private Widget eventRootWidget() {
         return freezeSources.empty ? rootWidget : freezeSources.front;
@@ -216,7 +242,7 @@ class Manager {
         eventRootWidget.onMouseDown(x, y, button);
 
         foreach_reverse (Widget widget; widgetOrdering) {
-            if (widget is null || isWidgetFroze(widget))
+            if (widget is null || isWidgetFrozen(widget))
                 continue;
 
             if (widget.isEnter) {
@@ -228,7 +254,7 @@ class Manager {
 
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
         foreach_reverse (Widget widget; widgetOrdering) {
-            if (widget is null || isWidgetFroze(widget))
+            if (widget is null || isWidgetFrozen(widget))
                 continue;
 
             if (widget.isEnter) {
@@ -264,7 +290,7 @@ class Manager {
 
         // Find first scrollable widget
         while (scrollable is null && widget !is null) {
-            if (isWidgetFroze(widget))
+            if (isWidgetFrozen(widget))
                 continue;
 
             scrollable = cast(Scrollable) widget;
@@ -275,20 +301,12 @@ class Manager {
             scrollable.onMouseWheelHandle(horizontalDelta, verticalDelta);
     }
 
-// Properties --------------------------------------------------------------------------------------
+package:
+    Theme theme;
+    RenderFactory renderFactory;
+    Renderer renderer;
 
-private:
-    @Read @Write("private") {
-        Theme theme_;
-        RenderFactory renderFactory_;
-        Renderer renderer_;
-        Widget widgetUnderMouse_ = null;
-    }
-
-    @Read @Write
-    Cursor.Icon cursor_ = Cursor.Icon.normal;
-
-    mixin(GenerateFieldAccessors);
+    Cursor.Icon cursor = Cursor.Icon.normal;
 
 private:
     Application app;
@@ -325,12 +343,18 @@ package:
         return lastIndex;
     }
 
-    // TODO: write description
+    /**
+     * Freez UI except `widget`.
+     * If `nestedFreeze` is true then will be frozen all children of widget.
+     */
     void freezeUI(Widget widget, bool nestedFreeze = true) {
         this.freezeSources.insert(widget);
         this.isNestedFreezeStack.insert(nestedFreeze);
     }
 
+    /**
+     * Unfreeze UI where source of freezing is `widget`.
+     */
     void unfreezeUI(Widget widget) {
         if (this.freezeSources.front == widget) {
             this.freezeSources.removeFront();
@@ -338,8 +362,12 @@ package:
         }
     }
 
-    // TODO: write description
-    bool isWidgetFroze(Widget widget) {
+    /**
+     * Returns true if the `widget` is frozen.
+     * If not `isNestedFreeze` then check if `widget` inside freezing source
+     * And if `widget` has source parent then this widget is not frozen.
+     */
+    bool isWidgetFrozen(Widget widget) {
         if (freezeSources.empty || freezeSources.front == widget)
             return false;
 
@@ -353,7 +381,7 @@ package:
         }
     }
 
-    bool isWidgetFrozeSource(Widget widget) {
+    bool isWidgetFreezingSource(Widget widget) {
         return !freezeSources.empty && freezeSources.front == widget;
     }
 }

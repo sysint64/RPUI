@@ -592,7 +592,7 @@ public:
 
     void onKeyPressed(in KeyCode key) {
         foreach (Widget widget; children) {
-            if (widget.isFroze())
+            if (widget.isFrozen())
                 continue;
 
             widget.onKeyPressed(key);
@@ -602,7 +602,7 @@ public:
 
     void onKeyReleased(in KeyCode key) {
         foreach (Widget widget; children) {
-            if (widget.isFroze())
+            if (widget.isFrozen())
                 continue;
 
             widget.onKeyReleased(key);
@@ -612,7 +612,7 @@ public:
 
     void onTextEntered(in utfchar key) {
         foreach (Widget widget; children) {
-            if (widget.isFroze())
+            if (widget.isFrozen())
                 continue;
 
             widget.onTextEntered(key);
@@ -622,7 +622,7 @@ public:
 
     void onMouseDown(in uint x, in uint y, in MouseButton button) {
         foreach (Widget widget; children) {
-            if (widget.isFroze())
+            if (widget.isFrozen())
                 continue;
 
             widget.onMouseDown(x, y, button);
@@ -634,7 +634,7 @@ public:
 
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
         foreach (Widget widget; children) {
-            if (widget.isFroze())
+            if (widget.isFrozen())
                 continue;
 
             widget.onMouseUp(x, y, button);
@@ -648,7 +648,7 @@ public:
 
     void onDblClick(in uint x, in uint y, in MouseButton button) {
         foreach (Widget widget; children) {
-            if (widget.isFroze())
+            if (widget.isFrozen())
                 continue;
 
             widget.onDblClick(x, y, button);
@@ -660,7 +660,7 @@ public:
 
     void onMouseMove(in uint x, in uint y) {
         foreach (Widget widget; children) {
-            if (widget.isFroze())
+            if (widget.isFrozen())
                 continue;
 
             widget.onMouseMove(x, y);
@@ -672,7 +672,7 @@ public:
 
     void onMouseWheel(in int dx, in int dy) {
         foreach (Widget widget; children) {
-            if (widget.isFroze())
+            if (widget.isFrozen())
                 continue;
 
             widget.onMouseWheel(dx, dy);
@@ -867,11 +867,11 @@ package:
         this.manager.unfreezeUI(this);
     }
 
-    bool isFroze() {
-        return this.manager.isWidgetFroze(this);
+    bool isFrozen() {
+        return this.manager.isWidgetFrozen(this);
     }
 
-    bool isFrozeSource() {
-        return this.manager.isWidgetFrozeSource(this);
+    bool isFreezingSource() {
+        return this.manager.isWidgetFreezingSource(this);
     }
 }

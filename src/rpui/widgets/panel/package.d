@@ -97,7 +97,7 @@ class Panel : Widget, FocusScrollNavigation {
         updateInnerOffset();
         updateResize();
 
-        if (!isFrozeSource() && !isFroze()) {
+        if (!isFreezingSource() && !isFrozen()) {
             horizontalScrollButton.onProgress();
             verticalScrollButton.onProgress();
         } else {
@@ -281,7 +281,7 @@ class Panel : Widget, FocusScrollNavigation {
 
     /// Handle mouse down event - avoid it if UI is forzen
     override void onMouseDown(in uint x, in uint y, in MouseButton button) {
-        if (isFrozeSource() && manager.isNestedFreeze)
+        if (isFreezingSource() && manager.isNestedFreeze)
             return;
 
         if (split.isEnter && isOpen) {
@@ -290,7 +290,7 @@ class Panel : Widget, FocusScrollNavigation {
             freezeUI();
         }
 
-        if (!isFrozeSource()) {
+        if (!isFreezingSource()) {
             verticalScrollButton.isClick = verticalScrollButton.isEnter;
             horizontalScrollButton.isClick = horizontalScrollButton.isEnter;
 
@@ -409,7 +409,7 @@ protected:
     }
 
     void onMouseWheelHandle(in int dx, in int dy) {
-        if (isFrozeSource() && manager.isNestedFreeze)
+        if (isFreezingSource() && manager.isNestedFreeze)
             return;
 
         Scrollable scrollable = cast(Scrollable) parent;
@@ -418,13 +418,13 @@ protected:
         int verticalDelta = dy;
 
         if (!verticalScrollButton.scrollController.addOffsetInPx(-verticalDelta*20)) {
-            if (scrollable && parent.isOver && !parent.isFroze()) {
+            if (scrollable && parent.isOver && !parent.isFrozen()) {
                 scrollable.onMouseWheelHandle(0, verticalDelta);
             }
         }
 
         if (!horizontalScrollButton.scrollController.addOffsetInPx(-horizontalDelta*20)) {
-            if (scrollable && parent.isOver && !parent.isFroze()) {
+            if (scrollable && parent.isOver && !parent.isFrozen()) {
                 scrollable.onMouseWheelHandle(horizontalDelta, 0);
             }
         }
