@@ -88,7 +88,7 @@ class Renderer {
 
     /**
      * Renders all `renderObjects` as a horizontal chain for particular `state` and
-     * update `position` and `size` for chaing.
+     * update `position` and `size` for chain.
      *
      * Chain will be render in this order: left, center, right.
      *
@@ -131,6 +131,17 @@ class Renderer {
         renderQuad(renderObjects["right"], state, rightPos, vec2(rightWidth, size.y));
     }
 
+    /**
+     * Renders all `renderObjects` as a horizontal chain for particular `state` and
+     * update `position` and `size` for chain. height will be calculated automatically -
+     * it will be extracted from texture coordinates of center part.
+     *
+     * Params:
+     *     renderObjects = chain top, middle and bottom parts.
+     *     state = uses texture coordinates for state.
+     *     position = position of chain.
+     *     size = width of chain.
+     */
     void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
                                in vec2 position, in float size)
     {
@@ -140,7 +151,7 @@ class Renderer {
 
     /**
      * Renders all `renderObjects` as a vertical chain for particular `state` and
-     * update `position` and `size` for chaing.
+     * update `position` and `size` for chain.
      *
      * Chain will be render in this order: top, middle, bototm.
      *
@@ -181,6 +192,17 @@ class Renderer {
         renderQuad(renderObjects["bottom"], state, bottomPos, vec2(size.x, bottomHeight));
     }
 
+    /**
+     * Renders all `renderObjects` as a vertical chain for particular `state` and
+     * update `position` and `size` for chain. width will be calculated automatically -
+     * it will be extracted from texture coordinates of middle part.
+     *
+     * Params:
+     *     renderObjects = chain top, middle and bottom parts.
+     *     state = uses texture coordinates for state.
+     *     position = position of chain.
+     *     size = height of chain.
+     */
     void renderVerticalChain(BaseRenderObject[string] renderObjects, in string state,
                              in vec2 position, in float size)
     {
@@ -261,8 +283,6 @@ class Renderer {
 
         renderObject.render(camera);
     }
-
-// Properties --------------------------------------------------------------------------------------
 
 package:
     Shader texAtlasShader;
