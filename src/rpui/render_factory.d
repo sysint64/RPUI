@@ -16,6 +16,7 @@ import rpui.manager;
 import rpui.render_objects;
 import rpui.theme;
 
+/// Factory of different renderable objects for render UI.
 class RenderFactory {
     this(Manager manager) {
         this.manager = manager;
