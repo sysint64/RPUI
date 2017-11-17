@@ -1,5 +1,5 @@
 /**
- * Rendering helper
+ * Rendering helper.
  *
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
@@ -19,6 +19,7 @@ import application;
 import rpui.render_objects;
 import rpui.manager;
 
+/// Renderer is responsible for render different objects such as quads, texts, chains etc.
 class Renderer {
     this(Manager manager) {
         createShaders();
@@ -27,27 +28,32 @@ class Renderer {
     }
 
     /*
-     * Convert world position to screen position
+     * Converts world position to screen position.
+     *
      * Params:
-     *     position = world position
-     *     size = size of element to be rendered
+     *     position = world position.
+     *     size = size of element to be rendered.
      */
     vec2 toScreenPosition(in vec2 position, in vec2 size) {
         return vec2(floor(position.x), floor(app.windowHeight - size.y - position.y));
     }
 
     /**
+     * Renders `renderObject` for particular `state` and update `position` and `size`
+     * for `renderObject`.
      *
-     */
-    void renderQuad(BaseRenderObject renderObject, in string state,
-                    in vec2 position)
-    {
-        vec2 size = renderObject.texCoordinates[state].size;
-        renderQuad(renderObject, state, position, size);
-    }
-
-    /**
+     * Params:
+     *     renderObject = object to be rendered.
+     *     state = uses texture coordinates for state.
+     *     position = new position for `renderObject`.
+     *     size = new size for `renderObject`.
      *
+     * Example:
+     * ---
+     * renderer.renderQuad(background, "Leave", vec2(x, y), vec2(width, height));
+     * ---
+     *
+     * See_also: `renderColorQuad`
      */
     void renderQuad(BaseRenderObject renderObject, in string state,
                     in vec2 position, in vec2 size)
@@ -70,6 +76,121 @@ class Renderer {
     }
 
     /**
+     * Renders `renderObject` for particular `state` and update `position` and `size`
+     * for `renderObject`. Size will be extracted from texture coordinates.
+     */
+    void renderQuad(BaseRenderObject renderObject, in string state,
+                    in vec2 position)
+    {
+        vec2 size = renderObject.texCoordinates[state].size;
+        renderQuad(renderObject, state, position, size);
+    }
+
+    /**
+     * Renders all `renderObjects` as a horizontal chain for particular `state` and
+     * update `position` and `size` for chaing.
+     *
+     * Chain will be render in this order: left, center, right.
+     *
+     * Params:
+     *     renderObjects = chain left, center and right parts.
+     *     state = uses texture coordinates for state.
+     *     position = new chain position.
+     *     size = chain size.
+     *
+     * Example:
+     * ---
+     * // Creating render objects
+     * const states = ["Leave", "Enter", "Click"];
+     * const parts = ["left", "center", "right"];
+     *
+     * foreach (string part; parts) {
+     *     // See `rpui.render_factory.RenderFactory.createQuad`
+     *     renderFactory.createQuad(chainParts, style, states, key);
+     * }
+     *
+     * // Renders chain
+     * renderer.renderHorizontalChain(chainParts, "Leave", absolutePosition, size);
+     * ---
+     *
+     * See_also: `renderChain`, `renderVerticalChain`
+     */
+    void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
+                               in vec2 position, in vec2 size)
+    {
+        const float leftWidth = renderObjects["left"].texCoordinates[state].size.x;
+        const float rightWidth = renderObjects["right"].texCoordinates[state].size.x;
+        const float centerWidth = size.x - leftWidth - rightWidth;
+
+        const vec2 leftPos = position;
+        const vec2 centerPos = leftPos + vec2(leftWidth, 0);
+        const vec2 rightPos = centerPos + vec2(centerWidth, 0);
+
+        renderQuad(renderObjects["left"], state, leftPos, vec2(leftWidth, size.y));
+        renderQuad(renderObjects["center"], state, centerPos, vec2(centerWidth, size.y));
+        renderQuad(renderObjects["right"], state, rightPos, vec2(rightWidth, size.y));
+    }
+
+    void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
+                               in vec2 position, in float size)
+    {
+        const float height = renderObjects["center"].texCoordinates[state].size.y;
+        renderHorizontalChain(renderObjects, state, position, vec2(size, height));
+    }
+
+    /**
+     * Renders all `renderObjects` as a vertical chain for particular `state` and
+     * update `position` and `size` for chaing.
+     *
+     * Chain will be render in this order: top, middle, bototm.
+     *
+     * Params:
+     *     renderObjects = chain top, middle and bottom parts.
+     *     state = uses texture coordinates for state.
+     *     position = new chain position.
+     *     size = chain size.
+     *
+     * Example:
+     * ---
+     * // Creating render objects
+     * const states = ["Leave", "Enter", "Click"];
+     * const parts = ["top", "middle", "bottom"];
+     *
+     * foreach (string part; parts) {
+     *     // See `rpui.render_factory.RenderFactory.createQuad`
+     *     renderFactory.createQuad(chainParts, style, states, key);
+     * }
+     *
+     * // Renders chain
+     * renderer.renderVerticalChain(chainParts, "Leave", absolutePosition, size);
+     * ---
+     */
+    void renderVerticalChain(BaseRenderObject[string] renderObjects, in string state,
+                             in vec2 position, in vec2 size)
+    {
+        const float topHeight = renderObjects["top"].texCoordinates[state].size.y;
+        const float bottomHeight = renderObjects["bottom"].texCoordinates[state].size.y;
+        const float middleHeight = size.y - topHeight - bottomHeight;
+
+        const vec2 topPos = position;
+        const vec2 middlePos = topPos + vec2(0, topHeight);
+        const vec2 bottomPos = middlePos + vec2(0, middleHeight);
+
+        renderQuad(renderObjects["top"], state, topPos, vec2(size.x, topHeight));
+        renderQuad(renderObjects["middle"], state, middlePos, vec2(size.x, middleHeight));
+        renderQuad(renderObjects["bottom"], state, bottomPos, vec2(size.x, bottomHeight));
+    }
+
+    void renderVerticalChain(BaseRenderObject[string] renderObjects, in string state,
+                             in vec2 position, in float size)
+    {
+        const float width = renderObjects["middle"].texCoordinates[state].size.x;
+        renderVerticalChain(renderObjects, state, position, vec2(width, size));
+    }
+
+    /**
+     * Renders horizontal or vertical chain depending on the `orientation`.
+     * See_also: `renderHorizontalChain`, `renderVerticalChain`
      */
     void renderChain(T)(BaseRenderObject[string] renderObjects, in Orientation orientation,
                         in string state, in vec2 position, in T size)
@@ -89,57 +210,26 @@ class Renderer {
     }
 
     /**
+     * Renders `text` render object for particular `state` with text color
+     * and additional offset placed in rpdl theme data.
+     *
+     * Params:
+     *     text = text render object to be rendered.
+     *     state = uses offset and color for state.
+     *     position = position of text.
+     *     size = region size in which the `text` will be inscribed.
+     *
+     * Example:
+     * ---
+     * // See `rpui.render_factory.RenderFactory.createText`
+     * textRenderObject = renderFactory.createText("Button", ["Leave"]);
+     *
+     * textRenderObject.textAlign = Align.center;
+     * textRenderObject.textVerticalAlign = VerticalAlign.middle;
+     *
+     * renderer.renderText(textRenderObject, "Leave", absolutePosition, size);
+     * ---
      */
-    void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
-                               in vec2 position, in float size)
-    {
-        const float height = renderObjects["center"].texCoordinates[state].size.y;
-        renderHorizontalChain(renderObjects, state, position, vec2(size, height));
-    }
-
-    /**
-     */
-    void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
-                               in vec2 position, in vec2 size)
-    {
-        const float leftWidth = renderObjects["left"].texCoordinates[state].size.x;
-        const float rightWidth = renderObjects["right"].texCoordinates[state].size.x;
-        const float centerWidth = size.x - leftWidth - rightWidth;
-
-        const vec2 leftPos = position;
-        const vec2 centerPos = leftPos + vec2(leftWidth, 0);
-        const vec2 rightPos = centerPos + vec2(centerWidth, 0);
-
-        renderQuad(renderObjects["left"], state, leftPos, vec2(leftWidth, size.y));
-        renderQuad(renderObjects["center"], state, centerPos, vec2(centerWidth, size.y));
-        renderQuad(renderObjects["right"], state, rightPos, vec2(rightWidth, size.y));
-    }
-
-    /**
-     */
-    void renderVerticalChain(BaseRenderObject[string] renderObjects, in string state,
-                             in vec2 position, in float size)
-    {
-        const float width = renderObjects["middle"].texCoordinates[state].size.x;
-        renderVerticalChain(renderObjects, state, position, vec2(width, size));
-    }
-
-    void renderVerticalChain(BaseRenderObject[string] renderObjects, in string state,
-                             in vec2 position, in vec2 size)
-    {
-        const float topHeight = renderObjects["top"].texCoordinates[state].size.y;
-        const float bottomHeight = renderObjects["bottom"].texCoordinates[state].size.y;
-        const float middleHeight = size.y - topHeight - bottomHeight;
-
-        const vec2 topPos = position;
-        const vec2 middlePos = topPos + vec2(0, topHeight);
-        const vec2 bottomPos = middlePos + vec2(0, middleHeight);
-
-        renderQuad(renderObjects["top"], state, topPos, vec2(size.x, topHeight));
-        renderQuad(renderObjects["middle"], state, middlePos, vec2(size.x, middleHeight));
-        renderQuad(renderObjects["bottom"], state, bottomPos, vec2(size.x, bottomHeight));
-    }
-
     void renderText(TextRenderObject text, in string state, in vec2 position, in vec2 size) {
         const vec2 textPos = position + text.getOffset(state);
         text.color = text.getColor(state);
@@ -148,6 +238,15 @@ class Renderer {
         text.render(camera);
     }
 
+    /**
+     * Renders `renderObject` colored with `color`.
+     *
+     * Params:
+     *     renderObject = quad to be rendered.
+     *     color = quad fill color.
+     *     position = position of the quad to be render.
+     *     size = size of the quad to be render.
+     */
     void renderColorQuad(BaseRenderObject renderObject, in vec4 color,
                          in vec2 position, in vec2 size)
     {
@@ -165,17 +264,11 @@ class Renderer {
 
 // Properties --------------------------------------------------------------------------------------
 
-private:
-    @Read @Write("private") {
-        Shader texAtlasShader_;
-        Shader maskTexAtlasShader_;
-        Shader colorShader_;
-    }
-
-    @Read @Write("package")
-    Camera camera_;
-
-    mixin(GenerateFieldAccessors);
+package:
+    Shader texAtlasShader;
+    Shader maskTexAtlasShader;
+    Shader colorShader;
+    Camera camera;
 
 private:
     Manager manager;
