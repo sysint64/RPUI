@@ -1,9 +1,8 @@
 module rpui.dialogs.colordialog.view;
 
 import rpui.dialogs.colordialog.controller;
-import rpui.views.view;
-import rpui.views.attributes;
 import rpui.manager;
+import rpui.view;
 
 
 // class ColorDialog : View {

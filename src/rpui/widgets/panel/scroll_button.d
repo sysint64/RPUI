@@ -1,3 +1,9 @@
+/**
+ * Copyright: © 2017 RedGoosePaws
+ * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
+ * Authors: Andrey Kabylin
+ */
+
 module rpui.widgets.panel.scroll_button;
 
 import std.typecons;
@@ -15,6 +21,7 @@ import rpui.renderer;
 
 import rpui.widgets.panel;
 
+/// Panel scroll button part.
 package struct ScrollButton {
     Application app;
 
@@ -38,7 +45,7 @@ package struct ScrollButton {
         this.orientation = orientation;
     }
 
-    // Update scrollController properties
+    /// Update `scrollController` properties
     void updateController() {
         const float[Orientation] widgetRegionSizes = [
             Orientation.horizontal: panel.extraInnerOffset.left + panel.extraInnerOffset.right,
@@ -147,6 +154,7 @@ package struct ScrollButton {
         }
     }
 
+    /// This method invokes when panel size is updated.
     void updateResize() {
         updateController();
         visible = scrollController.contentSize > scrollController.visibleSize;

@@ -1,5 +1,6 @@
 /**
- * Panel widget
+ * Panel widget.
+ *
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
  * Authors: Andrey Kabylin
@@ -30,25 +31,27 @@ import rpui.widgets.panel.scroll_button;
 
 /**
  * Panel widget is the container for other widgets with scrolling,
- * resizing, allow change placement by deag and drop
+ * resizing, allow change placement by drag and drop.
  */
 class Panel : Widget, FocusScrollNavigation {
     enum Background {
-        transparent,
+        transparent,  /// Render without color.
         light,
         dark,
-        action  /// Color for actions like OK, Cancel etc
+        action  /// Color for actions like OK, Cancel etc.
     }
 
-    @Field float minSize = 40;  /// Minimum size of panel
-    @Field float maxSize = 999;  /// Maximum size of panel
-    @Field Background background = Background.light;  /// Background color of panel
-    @Field bool allowResize = false;  /// If true, user can change size of panel
-    @Field bool allowHide = false;  /// If true, user can hide and show panel
-    @Field bool allowDrag = false;  /// If true, user can change ordering of panels
-    @Field bool isOpen = true;  /// If true, then panel is open
-    @Field bool blackSplit = false;  /// If true, then panel split will be black
-    @Field bool showSplit = true;  /// If true, render panel split else no
+    @Field float minSize = 40;  /// Minimum size of panel.
+    @Field float maxSize = 999;  /// Maximum size of panel.
+    @Field Background background = Background.light;  /// Background color of panel.
+    @Field bool allowResize = false;  /// If true, user can change size of panel.
+    @Field bool allowHide = false;  /// If true, user can hide and show panel.
+    @Field bool allowDrag = false;  /// If true, user can change ordering of panels.
+
+    /// If true, then panel is open and will be rendered all content else only header.
+    @Field bool isOpen = true;
+    @Field bool blackSplit = false;  /// If true, then panel split will be black.
+    @Field bool showSplit = true;  /// If true, render panel split else no.
 
     @Field bool showVerticalScrollButton = true;
     @Field bool showHorizontalScrollButton = true;
@@ -67,23 +70,19 @@ class Panel : Widget, FocusScrollNavigation {
 
     @property utfstring caption() { return p_caption; }
 
-    /**
-     * Set `ui.widgets.panel.Panel.showVerticalScrollButton` and <br>
-     * `ui.widgets.panel.Panel.showHorizontalScrollButton` to `val`
-     */
+    /// Set `showVerticalScrollButton` and `showHorizontalScrollButton` to `val`.
     @property
     void showScrollButtons(in bool val) {
         showVerticalScrollButton = val;
         showHorizontalScrollButton = val;
     }
 
-    /// Create panel with custom `style`
+    /// Create panel with custom `style`.
     this(in string style = "Panel") {
         super(style);
         skipFocus = true;
     }
 
-    /// Update panel sizes and positions
     override void onProgress() {
         super.onProgress();
         split.isEnter = false;
@@ -106,7 +105,6 @@ class Panel : Widget, FocusScrollNavigation {
         }
     }
 
-    /// Update resize
     override void updateResize() {
         horizontalScrollButton.updateResize();
         verticalScrollButton.updateResize();
@@ -206,19 +204,19 @@ class Panel : Widget, FocusScrollNavigation {
         }
     }
 
-    /// Set scroll value in px
+    /// Set scroll value in px.
     void scrollToPx(in float x, in float y) {
         verticalScrollButton.scrollController.setOffsetInPx(x);
         horizontalScrollButton.scrollController.setOffsetInPx(y);
     }
 
-    /// Add value to scroll in px
+    /// Add value to scroll in px.
     void scrollByPx(in float dx, in float dy) {
         verticalScrollButton.scrollController.addOffsetInPx(dx);
         horizontalScrollButton.scrollController.addOffsetInPx(dy);
     }
 
-    /// Set scroll value in percent
+    /// Set scroll value in percent.
     void scrollToPercent(in float x, in float y) {
         verticalScrollButton.scrollController.setOffsetInPercent(x);
         horizontalScrollButton.scrollController.setOffsetInPercent(y);
@@ -228,7 +226,7 @@ class Panel : Widget, FocusScrollNavigation {
 
     /**
      * Create elements for widget rendering (quads, texts etc.)
-     * and read data from theme for these elements (background color, split thickness etc.)
+     * and read data from theme for these elements (background color, split thickness etc.).
      */
     override void onCreate() {
         super.onCreate();
@@ -247,7 +245,7 @@ class Panel : Widget, FocusScrollNavigation {
         header.onCreate(this, manager.theme, renderer);
     }
 
-    /// Change system cursor when mouse entering split
+    /// Change system cursor when mouse entering split.
     override void onCursor() {
         if (!resizable || !isOpen || scrollButtonIsClicked)
             return;
@@ -279,7 +277,7 @@ class Panel : Widget, FocusScrollNavigation {
         }
     }
 
-    /// Handle mouse down event - avoid it if UI is forzen
+    /// Handle mouse down event - avoid it if UI is forzen.
     override void onMouseDown(in uint x, in uint y, in MouseButton button) {
         if (isFreezingSource() && manager.isNestedFreeze)
             return;
@@ -309,7 +307,7 @@ class Panel : Widget, FocusScrollNavigation {
         toggle();
     }
 
-    /// Open panel
+    /// Open panel.
     final void open() {
         if (isOpen)
             return;
@@ -318,7 +316,7 @@ class Panel : Widget, FocusScrollNavigation {
         isOpen = true;
     }
 
-    /// Close panel
+    /// Close panel.
     final void close() {
         if (!isOpen)
             return;
@@ -331,7 +329,7 @@ class Panel : Widget, FocusScrollNavigation {
         verticalScrollButton.scrollController.setOffsetInPercent(0);
     }
 
-    /// Toggle visibility of panel if isOpen, then close else open
+    /// Toggle visibility of panel. If `isOpen` then method will close panel else open.
     final void toggle() {
         if (isOpen) {
             close();
@@ -360,6 +358,7 @@ class Panel : Widget, FocusScrollNavigation {
     }
 
 protected:
+    /// Add extra inner offset depends of which elements are visible.
     void updateInnerOffset() {
         extraInnerOffset.left = 0;
 
@@ -465,7 +464,7 @@ private:
         return verticalScrollButton.isClick || horizontalScrollButton.isClick;
     }
 
-    // Resize panel when split is clicked
+    // Resize panel when split is clicked.
     void handleResize() {
         if (!split.isClick)
             return;

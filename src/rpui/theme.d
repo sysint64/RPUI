@@ -1,5 +1,5 @@
 /**
- * Theme data
+ * Theme data.
  *
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
@@ -15,7 +15,9 @@ import application;
 import rpdl;
 import gapi;
 
+/// Font used for rendering texts in UI. Contains different sizes for this font.
 class ThemeFont : Font {
+    /// Create font instance from `fileName` and set default font size = `fontSize`.
     this(in string fileName, in uint fontSize) {
         super(fileName);
         this.p_defaultFontSize = fontSize;
@@ -39,6 +41,11 @@ private:
 }
 
 class Theme {
+    /**
+     * Load theme data from `res/ui/themes/`. Theme is a dirrectory which contains
+     * skin with different dpi sizes and theme.rdl file where declared boundaries
+     * for widget e.g. for different states of button like leave, enter, click and focus.
+     */
     this(in string theme) {
         app = Application.getInstance();
 
@@ -64,22 +71,21 @@ private:
     RPDLTree p_tree;
     Texture p_skin;
     ThemeFont p_regularFont;
-
-private:
     Application app;
 
     /**
      * Load theme by name from resources/ui/themes directory
+     *
      * Params:
      *     theme = name of theme
      *     critical = if true, then will be invoked `Application.criticalError` method
      *                if an error occurred while loading
      */
     bool load(in string theme, in bool critical = false) {
-        string dir = buildPath(app.resourcesDirectory, "ui", "themes", theme);
+        const dir = buildPath(app.resourcesDirectory, "ui", "themes", theme);
         p_tree = new RPDLTree(dir);
         string msg = collectExceptionMsg(tree.load("theme.rdl"));
-        bool isSuccess = msg is null;
+        const isSuccess = msg is null;
 
         if (isSuccess) {
             loadSkin(theme);
@@ -102,12 +108,14 @@ private:
 
     /**
      * Loading `theme` texture for UI elements
+     *
      * Params:
      *     theme = name of theme where texture is located
      *     critical = if true, then will be invoked `Application.criticalError` method
      *                if an error occurred while loading
      */
     bool loadSkin(in string theme, in bool critical = false) {
+        // TODO: handle errors
         const path = buildPath(app.resourcesDirectory, "ui", "themes", theme, "controls.png");
         p_skin = new gapi.Texture(path);
         return true;

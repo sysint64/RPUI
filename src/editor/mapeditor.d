@@ -20,8 +20,8 @@ import rpui.widget;
 import rpui.widgets.button;
 import rpui.widgets.stack_layout;
 import rpui.widgets.panel;
-import rpui.views.view;
-import rpui.views.attributes;
+import rpui.view;
+import rpui.view.attributes;
 
 import math.linalg;
 import std.stdio;

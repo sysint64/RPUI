@@ -21,13 +21,14 @@ import rpui.manager;
 
 /// Renderer is responsible for render different objects such as quads, texts, chains etc.
 class Renderer {
+    /// Create renderer for UI manager.
     this(Manager manager) {
         createShaders();
         this.manager = manager;
         app = Application.getInstance();
     }
 
-    /*
+    /**
      * Converts world position to screen position.
      *
      * Params:

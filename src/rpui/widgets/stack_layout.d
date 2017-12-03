@@ -1,3 +1,9 @@
+/**
+ * Copyright: © 2017 RedGoosePaws
+ * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
+ * Authors: Andrey Kabylin
+ */
+
 module rpui.widgets.stack_layout;
 
 import rpui.widget;
@@ -6,7 +12,9 @@ import basic_types;
 import math.linalg;
 import std.math;
 
-
+/**
+ * Widget automatically placing children as in stack.
+ */
 class StackLayout : Widget {
     @Field Orientation orientation = Orientation.vertical;
 

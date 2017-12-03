@@ -1,5 +1,5 @@
 /**
- * Widget base interface
+ * Widget base interface.
  *
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
@@ -25,17 +25,17 @@ import rpui.cursor;
 import rpui.renderer;
 import rpui.scroll;
 
-/// Interface for scrollable widgets
+/// Interface for scrollable widgets.
 interface Scrollable {
-    /// Handle mouse wheel scrolling
+    /// Handle mouse wheel scrolling.
     void onMouseWheelHandle(in int dx, in int dy);
 
-    /// Scroll to particular widget
+    /// Scroll to particular widget.
     void scrollToWidget(Widget widget);
 }
 
 /**
- * For scrollable widgets and if this widget allow to focus elements
+ * For scrollable widgets and if this widget allow to focus elements.
  */
 interface FocusScrollNavigation : Scrollable {
     /**
@@ -46,73 +46,85 @@ interface FocusScrollNavigation : Scrollable {
 }
 
 /**
- * Base class widget
+ * Base class widget.
  */
 class Widget {
     /**
      * Field attribute need to tell RPDL which fields are fill
-     * when reading layout file
+     * when reading layout file.
      */
     struct Field {
-        string name = "";  /// Override name of variable
+        string name = "";  /// Override name of variable.
     }
 
-    alias Array!Widget Children;
+    alias Children = Array!Widget;
 
 // Properties --------------------------------------------------------------------------------------
 
-    @Field bool resizable = true;  /// User can change size of the widget
+    @Field bool resizable = true;  /// User can change size of the widget.
 
-    /// Don't draw skin of widget, e.g. if it's button then button will be transparent
+    /// Don't draw skin of widget, e.g. if it's button then button will be transparent.
     @Field bool withoutSkin = false;
 
     @Field bool visible = true;
     @Field bool enabled = true;
 
-    /// If true, then focus navigation by children will be limited inside this widget
+    /// If true, then focus navigation by children will be limited inside this widget.
     @Field bool finalFocus = false;
 
-    @Field bool autoWidth;
-    @Field bool autoHeight;
+    // TODO:
+    // @Field bool autoWidth;
+    // @Field bool autoHeight;
 
-    /// Specifies the type of cursor to be displayed when pointing on an element
+    /// Specifies the type of cursor to be displayed when pointing on an element.
     @Field Cursor.Icon cursor;
 
     @Field string name = "";
-    @Field int tag = 0;
+    // TODO:
+    // @Field int tag = 0;
 
-    /// Some help information about widget, need to display tooltip
+    /// Some help information about widget, need to display tooltip.
     @Field utfstring hint = "";
 
-    /// How to place a widget horizontally
+    /// How to place a widget horizontally.
     @Field Align locationAlign = Align.none;
 
-    /// How to place a widget vertically
+    /// How to place a widget vertically.
     @Field VerticalAlign verticalLocationAlign = VerticalAlign.none;
 
     /**
      * If set this option then widget will be pinned to one of the side
-     * declared in the `basic_types.RegionAlign`
+     * declared in the `basic_types.RegionAlign`.
      */
     @Field RegionAlign regionAlign = RegionAlign.none;
 
-    /// Used to create space around elements, outside of any defined borders
+    /// Used to create space around elements, outside of any defined borders.
     @Field FrameRect margin = FrameRect(0, 0, 0, 0);
 
-    /// Used to generate space around an element's content, inside of any defined borders
+    /// Used to generate space around an element's content, inside of any defined borders.
     @Field FrameRect padding = FrameRect(0, 0, 0, 0);
 
     @Field vec2 position = vec2(0, 0);
     @Field vec2 size = vec2(0, 0);
 
+    /// Unique identifier.
     @property size_t id() { return p_id; }
+
+    /// Widget root rpdl node from where the data will be extracted.
     @property string style() { return p_style; }
     @property Widget parent() { return p_parent; }
     @property bool isFocused() { return p_isFocused; }
 
+    /// Next widget in `parent` children after this.
     @property Widget nextWidget() { return p_nextWidget; }
+
+    /// Previous widget in `parent` children before this.
     @property Widget prevWidget() { return p_prevWidget; }
+
+    /// Last widget in `parent` children.
     @property Widget lastWidget() { return p_lastWidget; }
+
+    /// First widget in `parent` children.
     @property Widget firstWidget() { return p_firstWidget; }
 
     @property ref Children children() { return p_children; }
@@ -122,7 +134,7 @@ package:
     @property RenderFactory renderFactory() { return manager.renderFactory; }
 
     /**
-     * Returns string of state declared in theme
+     * Returns string of state declared in theme.
      */
     @property inout(string) state() inout {
         if (isClick) {
@@ -134,12 +146,12 @@ package:
         }
     }
 
-    /// Inner size considering the extra innter offsets and padding
+    /// Inner size considering the extra innter offsets and paddings.
     @property vec2 innerSize() {
         return size - innerOffsetSize;
     }
 
-    ///
+    /// Total inner offset size (width and height) considering the extra inner offsets and paddings.
     @property vec2 innerOffsetSize() {
         return vec2(
             padding.left + padding.right + extraInnerOffset.left + extraInnerOffset.right,
@@ -147,7 +159,7 @@ package:
         );
     }
 
-    ///
+    /// Inner padding plus and extra inner offsets.
     @property FrameRect innerOffset() {
         return FrameRect(
             padding.left + extraInnerOffset.left,
@@ -157,7 +169,7 @@ package:
         );
     }
 
-    ///
+    /// Total size of extra inner offset (width and height).
     @property vec2 extraInnerOffsetSize() {
         return vec2(
             extraInnerOffset.left + extraInnerOffset.right,
@@ -165,32 +177,28 @@ package:
         );
     }
 
-    ///
     @property vec2 extraInnerOffsetStart() {
         return vec2(extraInnerOffset.left, extraInnerOffset.top);
     }
 
-    ///
     @property vec2 extraInnerOffsetEnd() {
         return vec2(extraInnerOffset.right, extraInnerOffset.bottom);
     }
 
-    ///
     @property vec2 innerOffsetStart() {
         return vec2(innerOffset.left, innerOffset.top);
     }
 
-    ///
     @property vec2 innerOffsetEnd() {
         return vec2(innerOffset.right, innerOffset.bottom);
     }
 
-    /// Outer size considering the extra outer offsets and margin
+    /// Outer size considering the extra outer offsets and margins.
     @property vec2 outerSize() {
         return size + outerOffsetSize;
     }
 
-    ///
+    /// Total outer offset size (width and height) considering the extra outer offsets and margins.
     @property vec2 outerOffsetSize() {
         return vec2(
             margin.left + margin.right + extraOuterOffset.left + extraOuterOffset.right,
@@ -198,7 +206,7 @@ package:
         );
     }
 
-    ///
+    /// Total outer offset - margins plus extra outer offsets.
     @property FrameRect outerOffset() {
         return FrameRect(
             margin.left + extraOuterOffset.left,
@@ -208,12 +216,10 @@ package:
         );
     }
 
-    ///
     @property vec2 outerOffsetStart() {
         return vec2(outerOffset.left, outerOffset.top);
     }
 
-    ///
     @property vec2 outerOffsetEnd() {
         return vec2(outerOffset.right, outerOffset.bottom);
     }
@@ -238,15 +244,15 @@ protected:
     /**
      * Which part of widget need to render, e.g. if it is a button
      * then `PartDraws.left` tell that only left side and center will be
-     * rendered, this need for grouping rendering of widgets
+     * rendered, this need for grouping rendering of widgets.
      *
-     * for example consider this layout of grouping: $(I [button1|button2|button3|button4])
+     * As example consider this layout of grouping: $(I [button1|button2|button3|button4])
      *
      * for $(I button1) `PartDraws` will be $(B left), for $(I button2) and $(I button3) $(B center)
-     * and for $(I button4) it will be $(B right)
+     * and for $(I button4) it will be $(B right).
      */
     enum PartDraws {
-        all,  /// Draw all parts - left, center and right
+        all,  /// Draw all parts - left, center and right.
         left,
         center,
         right
@@ -258,48 +264,48 @@ protected:
 
 package:
     bool p_isFocused;
-    bool skipFocus = false;  /// Don't focus this element
+    bool skipFocus = false;  /// Don't focus this element.
     bool drawChildren = true;
-    FrameRect extraInnerOffset = FrameRect(0, 0, 0, 0);  /// Extra inner offset besides padding
-    FrameRect extraOuterOffset = FrameRect(0, 0, 0, 0);  /// Extra outer offset besides margin
+    FrameRect extraInnerOffset = FrameRect(0, 0, 0, 0);  /// Extra inner offset besides padding.
+    FrameRect extraOuterOffset = FrameRect(0, 0, 0, 0);  /// Extra outer offset besides margin.
     bool overlay;
     vec2 overSize;
 
-    bool isEnter;  /// True if pointed on widget
+    bool isEnter;  /// True if pointed on widget.
     bool isClick;
 
     /**
      * When in rect of element but if another element over this
-     * isOver will still be true
+     * isOver will still be true.
      */
     bool isOver;
 
     vec2 absolutePosition = vec2(0, 0);
 
-    /// Size of boundary over childern clamped to size of widget as minimum boundary size
+    /// Size of boundary over childern clamped to size of widget as minimum boundary size.
     vec2 innerBoundarySizeClamped = vec2(0, 0);
 
-    vec2 innerBoundarySize = vec2(0, 0);  /// Size of boundary over childern
-    vec2 contentOffset = vec2(0, 0);  /// Children offset relative their absolute positions
+    vec2 innerBoundarySize = vec2(0, 0);  /// Size of boundary over childern.
+    vec2 contentOffset = vec2(0, 0);  /// Children offset relative their absolute positions.
 
     @property void associatedWidget(Widget val) { p_associatedWidget = val; }
 
 // Event Listeners ---------------------------------------------------------------------------------
 
 public:
-    alias void delegate(Widget) OnClickListener;
-    alias void delegate(Widget) OnDblClickListener;
-    alias void delegate(Widget) OnFocusListener;
-    alias void delegate(Widget) OnBlurListener;
-    alias void delegate(Widget, in KeyCode key) OnKeyPressedListener;
-    alias void delegate(Widget, in KeyCode key) OnKeyReleasedListener;
-    alias void delegate(Widget, in utfchar key) OnTextEnteredListener;
-    alias void delegate(Widget, in uint x, in uint y) OnMouseMoveListener;
-    alias void delegate(Widget, in uint dx, in uint dy) OnMouseWheelListener;
-    alias void delegate(Widget, in uint x, in uint y) OnMouseEnterListener;
-    alias void delegate(Widget, in uint x, in uint y) OnMouseLeaveListener;
-    alias void delegate(Widget, in uint x, in uint y, in MouseButton button) OnMouseDownListener;
-    alias void delegate(Widget, in uint x, in uint y, in MouseButton button) OnMouseUpListener;
+    alias OnClickListener = void delegate(Widget);
+    alias OnDblClickListener = void delegate(Widget);
+    alias OnFocusListener = void delegate(Widget);
+    alias OnBlurListener = void delegate(Widget);
+    alias OnKeyPressedListener = void delegate(Widget, in KeyCode key);
+    alias OnKeyReleasedListener = void delegate(Widget, in KeyCode key);
+    alias OnTextEnteredListener = void delegate(Widget, in utfchar key);
+    alias OnMouseMoveListener = void delegate(Widget, in uint x, in uint y);
+    alias OnMouseWheelListener = void delegate(Widget, in uint dx, in uint dy);
+    alias OnMouseEnterListener = void delegate(Widget, in uint x, in uint y);
+    alias OnMouseLeaveListener = void delegate(Widget, in uint x, in uint y);
+    alias OnMouseDownListener = void delegate(Widget, in uint x, in uint y, in MouseButton button);
+    alias OnMouseUpListener = void delegate(Widget, in uint x, in uint y, in MouseButton button);
 
     OnClickListener onClickListener = null;
     OnDblClickListener onDblClickListener = null;
@@ -317,7 +323,7 @@ public:
 
 // Events triggers ---------------------------------------------------------------------------------
 
-    /// Invoke event listener with name `event`
+    /// Invoke event listener with name `event`.
     final void triggerEvent(string event, T...)(T args) {
         auto listener = mixin("this.on" ~ event ~ "Listener");
 
@@ -326,18 +332,20 @@ public:
         }
     }
 
-    /// Invoke click event listener
+    /// Invoke click event listener.
     alias triggerClick = triggerEvent!("Click");
 
-    /// Invoke double click event listener
+    /// Invoke double click event listener.
     alias triggerDblClick = triggerEvent!("DblClick");
 
 // Implementation ----------------------------------------------------------------------------------
 
+    /// Default constructor with default `style`.
     this() {
         app = Application.getInstance();
     }
 
+    /// Construct with custom `style`.
     this(in string style) {
         app = Application.getInstance();
         this.p_style = style;
@@ -345,7 +353,7 @@ public:
 
     /**
      * Find the first element that satisfying the `predicate`
-     * traversing up through its ancestors
+     * traversing up through its ancestors.
      */
     final Widget closest(bool delegate(Widget) predicate) {
         Widget widget = this.parent;
@@ -362,7 +370,7 @@ public:
 
     /**
      * Find the first element that satisfying the `predicate`
-     * traversing down through its ancestors
+     * traversing down through its ancestors.
      */
     final Widget find(bool delegate(Widget) predicate) {
         foreach (Widget widget; children) {
@@ -378,12 +386,13 @@ public:
         return null;
     }
 
+    /// Invoke `find` method and filter by name.
     final Widget findWidgetByName(in string name) {
         return find(widget => widget.name == name);
     }
 
-    /// Update widget inner bounary and clamped boundary
-    void updateBoundary() {
+    /// Update widget inner bounary and clamped boundary.
+    protected void updateBoundary() {
         if (!drawChildren)
             return;
 
@@ -424,7 +433,7 @@ public:
         innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, innerSize.y);
     }
 
-    /// Invoke onProgress in each children widget
+    /// Invoke onProgress in each of children widget.
     void onProgress() {
         if (!drawChildren)
             return;
@@ -439,7 +448,7 @@ public:
         updateBoundary();
     }
 
-    /// Render panel in camera view
+    /// Render widget in camera view.
     void render(Camera camera) {
         this.camera = camera;
 
@@ -454,15 +463,18 @@ public:
         }
     }
 
+    /// Delete `widget` from view.
     void deleteWidget(Widget targetWidget) {
         deleteWidget(targetWidget.id);
     }
 
+    /// Delete widget by `id`.
     void deleteWidget(size_t id) {
     }
 
+    /// Insert `widget` in root view.
     void addWidget(Widget widget) {
-        uint index = manager.getNextIndex();
+        const index = manager.getNextIndex();
         widget.manager = manager;
 
         if (children.length == 0) {
@@ -491,6 +503,7 @@ public:
         return pointInRect(point, rect);
     }
 
+    /// Make focus for widget, and clear focus from focused widget.
     void focus() {
         if (manager.focusedWidget != this && manager.focusedWidget !is null)
             manager.focusedWidget.blur();
@@ -505,6 +518,7 @@ public:
             onFocusListener(this);
     }
 
+    /// Clear focus from widget
     void blur() {
         manager.unfocusedWidgets.insert(this);
     }
@@ -540,7 +554,7 @@ public:
         }
     }
 
-    /// Focus to the next widget
+    /// Focus to the next widget.
     void focusNext() {
         if (skipFocus && isFocused) {
             navFocusFront();
@@ -566,7 +580,7 @@ public:
         }
     }
 
-    /// Focus to the previous widget
+    /// Focus to the previous widget.
     void focusPrev() {
         if (skipFocus && isFocused) {
             navFocusBack();
@@ -586,7 +600,7 @@ public:
 
 // Events ------------------------------------------------------------------------------------------
 
-    /// Invoke when widget will create
+    /// Invoke when widget will create.
     void onCreate() {
     }
 
@@ -740,6 +754,7 @@ package:
         }
     }
 
+    /// This method invokes when widget size is updated.
     protected void updateResize() {
     }
 

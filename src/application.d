@@ -175,7 +175,7 @@ private:
     float p_deltaTime;
     float p_currentTime;
     float lastTime = 0;
-    sfClock *clock;
+    sfClock* clock;
 
     // DblClick
     const dblClickThreshold = 0.3f * 1000.0f;

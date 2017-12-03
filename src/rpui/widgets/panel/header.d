@@ -1,3 +1,9 @@
+/**
+ * Copyright: © 2017 RedGoosePaws
+ * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
+ * Authors: Andrey Kabylin
+ */
+
 module rpui.widgets.panel.header;
 
 import gapi;
@@ -13,6 +19,7 @@ import rpui.renderer;
 
 import rpui.widgets.panel;
 
+/// Panel header with title part.
 package struct Header {
     Application app;
 

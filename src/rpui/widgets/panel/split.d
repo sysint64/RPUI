@@ -1,3 +1,9 @@
+/**
+ * Copyright: © 2017 RedGoosePaws
+ * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
+ * Authors: Andrey Kabylin
+ */
+
 module rpui.widgets.panel.split;
 
 import gapi;
@@ -12,6 +18,7 @@ import rpui.renderer;
 
 import rpui.widgets.panel;
 
+/// Panel split line part.
 package struct Split {
     BaseRenderObject borderRenderObject;
     BaseRenderObject borderInnerRenderObject;
@@ -28,6 +35,7 @@ package struct Split {
     Panel panel;
     Renderer renderer;
 
+    /// Get rpdl relative selector depends of color.
     string state(in bool innerColor, in bool useBlackColor = false) const {
         const string color = innerColor ? "innerColor" : "borderColor";
         return panel.blackSplit || useBlackColor ? "Split.Dark." ~ color : "Split.Light." ~ color;
@@ -54,7 +62,7 @@ package struct Split {
         addColor(state(true , true));
     }
 
-    // Calculate split borderPosition, innerPosition and size
+    /// Calculate split borderPosition, innerPosition and size.
     void calculate() {
         if (!panel.resizable && !panel.showSplit)
             return;

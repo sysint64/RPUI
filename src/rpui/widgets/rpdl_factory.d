@@ -1,3 +1,11 @@
+/**
+ * Creating add insering widgets from rpdl file.
+ *
+ * Copyright: © 2017 RedGoosePaws
+ * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
+ * Authors: Andrey Kabylin
+ */
+
 module rpui.widgets.rpdl_factory;
 
 import traits;
@@ -15,7 +23,7 @@ import std.traits : hasUDA, getUDAs, isFunction, ParameterDefaults;
 import math.linalg;
 import basic_types;
 import rpui.widget;
-import rpui.views.attributes;
+import rpui.view.attributes;
 import rpui.manager;
 import rpui.rpdl_extensions;
 
@@ -26,10 +34,12 @@ import rpui.widgets.panel;
 import rpui.widgets.button;
 import rpui.widgets.stack_layout;
 
+/// Factory for construction view from rpdl layout data.
 class RPDLWidgetFactory {
+    /// Root view widget - container for other widgets.
     @property Widget rootWidget() { return p_rootWidget; }
-    @disable @property void rootWidget(Widget val) {};
 
+    /// Create factory for UI manager and for layout placed in `fileName`.
     this(Manager uiManager, in string fileName) {
         layoutData = new RPDLTree(dirName(fileName));
         layoutData.load(baseName(fileName), RPDLTree.IOType.text);
@@ -37,16 +47,20 @@ class RPDLWidgetFactory {
         this.uiManager = uiManager;
     }
 
+    /// Create factory for UI manager.
     this(Manager uiManager) {
         this.uiManager = uiManager;
     }
 
+    /// Create factory with loading rpdl file from compile time.
     static RPDLWidgetFactory createStatic(string fileName)(Manager uiManager) {
         RPDLWidgetFactory factory = RPDLWidgetFactory(uiManager);
         layoutData = new RPDLTree(dirName(fileName));
         layoutData.staticLoad!(baseName(fileName))();
+        return factory;
     }
 
+    /// Create widget depends of `widgetNode.name` and insert to `parentWidget`.
     Widget createWidgetFromNode(ObjectNode widgetNode, Widget parentWidget = null) {
         switch (widgetNode.name) {
             case "StackLayout":
@@ -63,6 +77,11 @@ class RPDLWidgetFactory {
         }
     }
 
+    /**
+     * This is a main method of factory - it will create and insert widgets
+     * by reading the children of `widgetNode`, if `widgetNode` is null
+     * then reading will be from layout root node.
+     */
     void createWidgets(Node widgetNode = null) {
         if (widgetNode is null)
             widgetNode = layoutData.root;
@@ -76,6 +95,10 @@ class RPDLWidgetFactory {
         }
     }
 
+    /**
+     * Create widget from `widgetNode` data and insert it to `parentWidget`.
+     * If `parentWidget` is null then insert to `uiManager` root view widget.
+     */
     Widget createWidget(T : Widget)(ObjectNode widgetNode, Widget parentWidget = null) {
         T widget = new T();
         readFields!T(widget, widgetNode);
@@ -97,8 +120,10 @@ class RPDLWidgetFactory {
         return widget;
     }
 
-    // Find all fields in widget with @Field attribute and fill widget members
-    // with values from rpdl file
+    /**
+     * Finds all fields in widget with @`rpui.widget.Widget.Field` attribute
+     * and fill widget members with values from rpdl file.
+     */
     void readFields(T : Widget)(T widget, ObjectNode widgetNode) {
         foreach (symbolName; getSymbolsNamesByUDA!(T, Widget.Field)) {
             auto defaultValue = mixin("widget." ~ symbolName);
@@ -150,9 +175,9 @@ class RPDLWidgetFactory {
 
                 static if (is(symbolType == rawType)) {
                     foundType = true;
-                    auto fullSymbolPath = symbolName ~ type[selector];
+                    const fullSymbolPath = symbolName ~ type[selector];
                     enum call = "widgetNode." ~ type[accessor] ~ "(fullSymbolPath, defaultValue)";
-                    auto value = mixin(call);
+                    const value = mixin(call);
 
                     // assign value to widget field
                     static if (type[name] == "dstring") {

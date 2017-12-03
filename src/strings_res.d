@@ -19,7 +19,6 @@ import rpdl.tree;
  * This class use RPDL as strings repository, strings needed for
  * internationalization.
  */
-
 class StringsRes {
     string locale;
 
@@ -126,7 +125,7 @@ unittest {
 }
 
 
-// Parse UTF String
+// Parsing UTF String
 unittest {
     import test.core;
 

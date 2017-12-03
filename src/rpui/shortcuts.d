@@ -1,5 +1,5 @@
 /**
- * Handle shortcuts
+ * Handle shortcuts.
  *
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
@@ -25,7 +25,7 @@ struct Shortcut {
     bool alt;
     KeyCode key;
 
-    this(bool shift, bool ctrl, bool alt, KeyCode key) {
+    private this(bool shift, bool ctrl, bool alt, KeyCode key) {
         this.shift = shift;
         this.ctrl = ctrl;
         this.alt = alt;
@@ -70,22 +70,22 @@ struct Shortcut {
      * ---
      */
     this(in string shortcut) {
-        foreach (string key; shortcut.split("+"))
+        foreach (string key; shortcut.split("+")) {
             readKey(key);
+        }
     }
 }
 
-/// Shortcuts
 class Shortcuts {
-    /// Action to be invoked when shortcut is pressed
+    /// Action to be invoked when shortcut is pressed.
     struct ShortcutAction {
-        /// Not yet used
+        /// Not yet used.
         enum Type {
             simpleWidgetListener,
             simpleFunction
-        };
+        }
 
-        Shortcut[] shortcuts;  /// Composition of shortcuts e.g. Ctrl+X Ctrl+S
+        Shortcut[] shortcuts;  /// Composition of shortcuts e.g. Ctrl+X Ctrl+S.
 
          /**
          * Create action from `shortcutString` - constructor will fill `shortcuts`
@@ -118,14 +118,14 @@ class Shortcuts {
         shortcutsData.load(baseName(fileName), RPDLTree.IOType.text);
     }
 
-    /// Load shortcuts from `rpdl` file relative to $(I resources/ui/shortcuts)
+    /// Load shortcuts from `rpdl` file relative to $(I resources/ui/shortcuts).
     static createFromFile(in string fileName) {
         auto app = Application.getInstance();
         const string path = buildPath(app.resourcesDirectory, "ui", "shortcuts", fileName);
         return new Shortcuts(path);
     }
 
-    /// Handle on key released and invoke action if shortcut is pressed
+    /// Handle on key released and invoke action if shortcut is pressed.
     void onKeyReleased(in KeyCode key) {
         foreach (ShortcutAction shortcut; shortcuts) {
             if (doShortcut(shortcut))
@@ -133,10 +133,10 @@ class Shortcuts {
         }
     }
 
-    /// Attach `action` to particular shortcut placed by `path` (in `rpdl` file)
+    /// Attach `action` to particular shortcut placed by `path` (in `rpdl` file).
     void attach(in string path, void delegate() action) {
         try {
-            const string shortcut = shortcutsData.data.getString(path ~ ".0");
+            const shortcut = shortcutsData.data.getString(path ~ ".0");
             auto shortcutAction = Shortcuts.ShortcutAction(shortcut, action);
             shortcuts[path] = shortcutAction;
         } catch (NotFoundException) {
@@ -145,10 +145,10 @@ class Shortcuts {
     }
 
 private:
-    ShortcutAction[string] shortcuts;  /// Available shortcuts
-    RPDLTree shortcutsData;  /// Shortcuts declared in `rpdl` file
+    ShortcutAction[string] shortcuts;  /// Available shortcuts.
+    RPDLTree shortcutsData;  /// Shortcuts declared in `rpdl` file.
 
-    /// Invoke shortcut action if all keys from shortcut is pressed
+    /// Invoke shortcut action if all keys from shortcut is pressed.
     bool doShortcut(ShortcutAction shortcutAction) {
         const Shortcut shortcut = shortcutAction.shortcuts[0];
 

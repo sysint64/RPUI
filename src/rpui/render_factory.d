@@ -1,5 +1,5 @@
 /**
- * Helper to creating rendering objects
+ * Helper to creating rendering objects.
  *
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
@@ -18,6 +18,7 @@ import rpui.theme;
 
 /// Factory of different renderable objects for render UI.
 class RenderFactory {
+    /// Create render factory for UI manager.
     this(Manager manager) {
         this.manager = manager;
         this.quadGeometry = gapi.GeometryFactory.createSprite();

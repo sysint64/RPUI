@@ -1,5 +1,5 @@
 /**
- * Scroll controller for widgets like `rpui.widgets.panel.Panel`
+ * Scroll controller for widgets like `rpui.widgets.panel.Panel`.
  *
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
@@ -15,20 +15,26 @@ import application;
 import basic_types;
 import input;
 
-/// clamp version without assertions
+/// Clamp version without assertions.
 private auto clamp(T1, T2, T3)(T1 val, T2 lower, T3 upper) {
     if (val < lower) return lower;
     if (val > upper) return upper;
     return val;
 }
 
+/**
+ * Describe interface for scrollable widgets, this controller computes content
+ * offsets and scroll button size and offset depending of the `contentSize` and
+ * and `visibleSize`. See how to use this controller in `rpui.widgets.panel.Panel`.
+ */
 class ScrollController {
+    /// Create controller with orientation - vertical or horizontal.
     this(in Orientation orientation) {
         app = Application.getInstance();
         this.orientation = orientation;
     }
 
-    /// Calculates `buttonSize`, `buttonOffset` and `contentOffset`
+    /// Calculates `buttonSize`, `buttonOffset` and `contentOffset`.
     void pollButton() {
         const float buttonRatio = visibleSize / contentSize;
         p_buttonSize = buttonMaxSize * buttonRatio;
@@ -55,7 +61,7 @@ class ScrollController {
         p_contentOffset = contentMaxOffset * contentRatio;
     }
 
-    /// Update parameters when widget update size
+    /// Update parameters when widget update size.
     void onResize() {
         if (contentMaxOffset == 0) {
             p_buttonOffset = 0;
@@ -88,7 +94,7 @@ class ScrollController {
         return lastScrollOffset != p_contentOffset;
     }
 
-    /// Set content offset in `percent`, `percent` should be in 0..1 range
+    /// Set content offset in `percent`, value should be in 0..1 range.
     void setOffsetInPercent(in float percent)
     in {
         assert(percent <= 1.0f, "percent should be in range 0..1");
@@ -103,18 +109,18 @@ class ScrollController {
     float buttonMaxOffset = 0;
     float buttonMinSize = 20;
     float buttonMaxSize;
-    bool  buttonClick = false;  /// If true, then user clicked button and hold it
+    bool  buttonClick = false;  /// If true, then user clicked button and hold it.
     float contentMaxOffset = 0;
-    float contentSize = 0;  /// Full content size
-    float visibleSize = 0;  /// Visible area size
+    float contentSize = 0;  /// Full content size.
+    float visibleSize = 0;  /// Visible area size.
 
-    /// Calculated button size
+    /// Calculated button size.
     @property float buttonSize() { return ceil(p_buttonSize); }
 
-    /// Calculated button offset
+    /// Calculated button offset.
     @property float buttonOffset() { return ceil(p_buttonOffset); }
 
-    /// Calculated content offset
+    /// Calculated content offset.
     @property float contentOffset() { return ceil(p_contentOffset); }
 
 private:

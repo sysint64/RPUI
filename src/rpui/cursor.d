@@ -1,8 +1,10 @@
 /**
- * Widget base interface
+ * System cursor.
+ *
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
  * Authors: Andrey Kabylin
+ *
  * Macros:
  *     CURSOR_IMG = <img src="https://tronche.com/gui/x/xlib/appendix/b/$1" style="max-width: 16px; max-height: 16px; display: block; margin: auto">
  */
@@ -14,6 +16,7 @@ import x11_cursorfont;
 
 import application;
 
+/// System cursor.
 class Cursor {
     enum Icon {
         none = -1,
@@ -32,7 +35,7 @@ class Cursor {
         topRightCorner = XC_top_right_corner,  /// $(CURSOR_IMG 136.gif)
         bottomLeftCorner = XC_bottom_left_corner,  /// $(CURSOR_IMG 12.gif)
         bottomRightCorner = XC_bottom_right_corner  /// $(CURSOR_IMG 14.gif)
-    };
+    }
 
     this() {
         app = Application.getInstance();
@@ -42,9 +45,10 @@ class Cursor {
         }
     }
 
+    private Icon p_icon = Icon.normal;
     @property Icon icon() { return p_icon; }
 
-    /// Invoke OS specified methods to update system cursor icon
+    /// Invoke OS specified methods to update system cursor icon.
     @property void icon(in Icon newIcon) {
         if (this.p_icon == newIcon)
             return;
@@ -60,7 +64,6 @@ class Cursor {
 
 private:
     Application app;
-    Icon p_icon = Icon.normal;
 
     version (linux) {
         Display *display;

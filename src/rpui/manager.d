@@ -27,8 +27,11 @@ import rpui.cursor;
 import rpui.render_factory;
 import rpui.renderer;
 
+/**
+ * Manager of all widgets.
+ */
 class Manager {
-    StringsRes stringsRes = null;  /// String resources.
+    StringsRes stringsRes = null;  /// String resources for internationalization.
 
     private Widget p_widgetUnderMouse = null;
     @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
@@ -103,7 +106,6 @@ class Manager {
 
         p_widgetUnderMouse = null;
         Widget found = null;
-        uint counter = 0;
 
         foreach_reverse (Widget widget; widgetOrdering) {
             if (found !is null && !widget.overlay)
@@ -387,10 +389,10 @@ package:
 }
 
 unittest {
-    import test.core;
+    import test.core : initApp;
 
     initApp();
-    Manager manager = new Manager();
+    auto manager = new Manager();
 
     auto scissor1 = Rect(vec2(10, 10), vec2(100, 200));
     auto scissor2 = Rect(vec2(12, 12), vec2(94, 100));
@@ -401,7 +403,7 @@ unittest {
         pushScissor(scissor2);
         pushScissor(scissor3);
 
-        auto resScissor = applyScissor();
+        const resScissor = applyScissor();
 
         assert(resScissor.left == scissor3.left);
         assert(resScissor.top == scissor3.top);

@@ -3,7 +3,6 @@ module gapi.camera;
 import math.linalg;
 import std.stdio;
 
-
 class Camera {
     this(in float viewportWidth, in float viewportHeight) {
         this.viewportWidth  = viewportWidth;
