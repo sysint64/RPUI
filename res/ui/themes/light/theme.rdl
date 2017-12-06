@@ -33,6 +33,33 @@ Button
         right               : 82, 105, 6, 25
         offsets             : [-2, -2], 4
 
+Checkbox
+    Checked
+        Leave
+            element         : 55, 3, 16, 16
+            textColor       : 0, 0, 0
+            textOffset      : 21, 0
+
+        Enter
+            element         : 72, 3, 16, 16
+            textColor       : 0, 0, 0
+            textOffset      : 21, 0
+
+    Unchecked
+        Leave
+            element         : 4, 3, 16, 16
+            textColor       : 0, 0, 0
+            textOffset      : 21, 0
+
+        Enter
+            element         : 21, 3, 16, 16
+            textColor       : 0, 0, 0
+            textOffset      : 21, 0
+
+    Focus
+        element             : 37, 3, 16, 16
+        offsets             : -1, 0
+
 Panel
     headerLeave             : 242, 85, 11, 20
     headerEnter             : 257, 85, 11, 20

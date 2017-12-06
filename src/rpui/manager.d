@@ -233,6 +233,7 @@ class Manager {
         if (focusedWidget !is null && isClickKey(key) && focusedWidget.isClick) {
             focusedWidget.isClick = false;
             focusedWidget.triggerClick();
+            focusedWidget.onClickActionInvoked();
         }
     }
 

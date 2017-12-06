@@ -38,9 +38,9 @@ class BaseObject {
     }
 
     void updateMatrices(Camera camera) {
-        mat4 translateMatrix = mat4.translation(vec3(p_position, 0.0f));
-        mat4 rotateMatrix = mat4.rotation(p_rotation, 0.0f, 0.0f, 1.0f);
-        mat4 scaleMatrix = mat4.scaling(p_scaling.x, p_scaling.y, 0.0f);
+        const translateMatrix = mat4.translation(vec3(p_position, 0.0f));
+        const rotateMatrix = mat4.rotation(p_rotation, 0.0f, 0.0f, 1.0f);
+        const scaleMatrix = mat4.scaling(p_scaling.x, p_scaling.y, 0.0f);
 
         p_modelMatrix = translateMatrix * rotateMatrix * scaleMatrix;
         p_lastMVPMatrix = camera.MVPMatrix * modelMatrix;

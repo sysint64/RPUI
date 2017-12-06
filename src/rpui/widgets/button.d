@@ -77,9 +77,6 @@ protected:
     TextRenderObject textRenderObject;
 
     void renderSkin(Camera camera) {
-        size_t[3] coordIndices;
-
-        // textRenderObject.text = caption;
         textRenderObject.textAlign = textAlign;
         textRenderObject.textVerticalAlign = textVerticalAlign;
 
@@ -87,8 +84,8 @@ protected:
         renderer.renderText(textRenderObject, state, absolutePosition, size);
 
         if (isFocused) {
-            const vec2 focusPos = absolutePosition + focusOffsets;
-            const vec2 focusSize = size + vec2(focusResize, focusResize);
+            const focusPos = absolutePosition + focusOffsets;
+            const focusSize = size + vec2(focusResize, focusResize);
 
             renderer.renderHorizontalChain(skinFocusRenderObjects, "Focus", focusPos, focusSize);
         }

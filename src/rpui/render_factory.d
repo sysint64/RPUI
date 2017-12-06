@@ -131,6 +131,16 @@ class RenderFactory {
     }
 
     /**
+     * Create quad render object and extract texture coordinates from theme rpdl
+     * data for particular `state`. Result will be stored to `renderObject`.
+     */
+    void createQuad(ref BaseRenderObject renderObject, in string style,
+                    in string state, in string part = "")
+    {
+        renderObject = createQuad(style, state, part);
+    }
+
+    /**
      * Create quad render object for particular `state` and extract texture coordinates from theme rpdl.
      * result will be stored to `renderObjects`[`part`].
      */

@@ -324,7 +324,7 @@ public:
 // Events triggers ---------------------------------------------------------------------------------
 
     /// Invoke event listener with name `event`.
-    final void triggerEvent(string event, T...)(T args) {
+    void triggerEvent(string event, T...)(T args) {
         auto listener = mixin("this.on" ~ event ~ "Listener");
 
         if (listener !is null) {
@@ -696,15 +696,19 @@ public:
         }
     }
 
-    /// Override this method if need change behaviour when system cursor have to be changed
+    /// Override this method if need change behaviour when system cursor have to be changed.
     void onCursor() {
     }
 
-    /// Invoke when widget resize
+    /// Invoke when widget resize.
     void onResize() {
         foreach (Widget widget; children) {
             widget.onResize();
         }
+    }
+
+    /// Invoke when user pressed enter on focused widget.
+    void onClickActionInvoked() {
     }
 
 package:
