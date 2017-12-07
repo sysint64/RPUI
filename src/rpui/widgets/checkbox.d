@@ -20,6 +20,7 @@ class Checkbox : Widget {
     @Field Align textAlign = Align.left;
     @Field VerticalAlign textVerticalAlign = VerticalAlign.middle;
     @Field bool checked = false;
+
     private utfstring p_caption = "Checkbox";
 
     @Field

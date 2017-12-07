@@ -73,6 +73,8 @@ Panel
             Button size: 100, 21 margin: 5 caption: "Button 3"
             Checkbox size: 100, 16 margin: 5 caption: "Checkbox 1" checked: true
             Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
+            Label size: 100, 16 margin: 6 caption: "Hello world!" focusable: false
+            Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
 
     Panel
         regionAlign: left

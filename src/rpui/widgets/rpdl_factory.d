@@ -34,6 +34,7 @@ import rpui.widgets.panel;
 import rpui.widgets.button;
 import rpui.widgets.stack_layout;
 import rpui.widgets.checkbox;
+import rpui.widgets.label;
 
 /// Factory for construction view from rpdl layout data.
 class RPDLWidgetFactory {
@@ -75,6 +76,9 @@ class RPDLWidgetFactory {
 
             case "Checkbox":
                 return createWidget!Checkbox(widgetNode, parentWidget);
+
+            case "Label":
+                return createWidget!Label(widgetNode, parentWidget);
 
             default:
                 return null;

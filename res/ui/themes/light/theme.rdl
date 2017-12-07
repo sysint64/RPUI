@@ -60,6 +60,11 @@ Checkbox
         element             : 37, 3, 16, 16
         offsets             : -1, 0
 
+Label
+    Regular
+        textOffset          : 0, 0
+        textColor           : 0, 0, 0
+
 Panel
     headerLeave             : 242, 85, 11, 20
     headerEnter             : 257, 85, 11, 20

@@ -111,6 +111,18 @@ class RenderFactory {
     }
 
     /**
+     * Create text render object and extract color and offset from theme rpdl data
+     * for particular `state`.
+     *
+     * Rpdl accessors will build like this:
+     *     $(I `style`.`states`.`part` ~ "Offset"),
+     *     $(I `style`.`states`.`part` ~ "Color")
+     */
+    TextRenderObject createText(in string style, in string state, in string prefix = "text") {
+        return createText(style, [state], prefix);
+    }
+
+    /**
      * Create quad render object for particular `state` and extract texture coordinates from theme rpdl.
      * result will be stored to `renderObjects`[`part`].
      */

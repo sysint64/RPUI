@@ -68,6 +68,7 @@ class Widget {
 
     @Field bool visible = true;
     @Field bool enabled = true;
+    @Field bool focusable = true;  /// If true then widget can be focused.
 
     /// If true, then focus navigation by children will be limited inside this widget.
     @Field bool finalFocus = false;
