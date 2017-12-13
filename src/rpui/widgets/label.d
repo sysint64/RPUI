@@ -19,6 +19,7 @@ import rpui.render_objects;
 class Label : Widget {
     @Field Align textAlign = Align.left;
     @Field VerticalAlign textVerticalAlign = VerticalAlign.middle;
+    @Field float lineHeightFactor = 1.5;
 
     private utfstring p_caption = "Label";
 
@@ -57,9 +58,8 @@ class Label : Widget {
         textRenderObject.textAlign = textAlign;
         textRenderObject.textVerticalAlign = textVerticalAlign;
 
-        // const textPos = vec2(innerOffsetStart.x + absolutePosition.x, absolutePosition.y);
-
-        renderer.renderText(textRenderObject, "Regular", absolutePosition, size);
+        const textPos = absolutePosition + innerOffsetStart;
+        renderer.renderText(textRenderObject, "Regular", textPos, size);
     }
 
 private:
@@ -79,9 +79,11 @@ protected:
         super.updateSize();
 
         if (heightType == SizeType.wrapContent) {
+            size.y = textRenderObject.lineHeight * lineHeightFactor + innerOffsetSize.y;
         }
 
         if (widthType == SizeType.wrapContent) {
+            size.x = textRenderObject.textWidth + innerOffsetSize.x;
         }
     }
 }
