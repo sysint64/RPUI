@@ -48,6 +48,7 @@ class Label : Widget {
         updateAbsolutePosition();
         updateLocationAlign();
         updateVerticalLocationAlign();
+        updateSize();
     }
 
     override void render(Camera camera) {
@@ -55,6 +56,9 @@ class Label : Widget {
 
         textRenderObject.textAlign = textAlign;
         textRenderObject.textVerticalAlign = textVerticalAlign;
+
+        // const textPos = vec2(innerOffsetStart.x + absolutePosition.x, absolutePosition.y);
+
         renderer.renderText(textRenderObject, "Regular", absolutePosition, size);
     }
 
@@ -69,5 +73,15 @@ protected:
         textRenderObject.text = caption;
 
         focusable = false;
+    }
+
+    override void updateSize() {
+        super.updateSize();
+
+        if (heightType == SizeType.wrapContent) {
+        }
+
+        if (widthType == SizeType.wrapContent) {
+        }
     }
 }

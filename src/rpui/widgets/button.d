@@ -40,6 +40,9 @@ class Button : Widget {
     this() {
         super("Button");
         this.drawChildren = false;
+
+         // TODO: rm hardcode
+        size = vec2(50, 21);
     }
 
     this(in string style) {
@@ -57,6 +60,8 @@ class Button : Widget {
         updateAbsolutePosition();
         updateLocationAlign();
         updateVerticalLocationAlign();
+        updateRegionAlign();
+        updateSize();
     }
 
     override void render(Camera camera) {

@@ -34,7 +34,7 @@ class TextFTGLImpl: TextImpl {
 
         glActiveTexture(GL_TEXTURE0);
         glColor3fv(textObject.color.value_ptr);
-        glTranslatef(posX, posY, 0);
+        glTranslatef(posX - 1, posY, 0);
 
         string text_s = to!string(textObject.text);
         const char* text_z = toStringz(text_s);
@@ -58,7 +58,7 @@ class TextFTGLImpl: TextImpl {
 
     uint getWidth(Text textObject) {
         float[6] bounds;
-        int n = to!int(textObject.text.length);
+        const n = to!int(textObject.text.length);
 
         string text_s = to!string(textObject.text);
         const char* text_z = toStringz(text_s);
@@ -66,7 +66,7 @@ class TextFTGLImpl: TextImpl {
         FTGLfont* ftglFont = textObject.font.handles.ftglHandle;
         ftglGetFontBBox(ftglFont, text_z, n, bounds);
 
-        float width = bounds[3] - bounds[0];
+        const width = round(bounds[3] - bounds[0]);
         return to!uint(width);
     }
 }

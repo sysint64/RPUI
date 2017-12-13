@@ -94,7 +94,7 @@ class Panel : Widget, FocusScrollNavigation {
         updateRegionAlign();
         updateAbsolutePosition();
         updateInnerOffset();
-        updateResize();
+        updateSize();
 
         if (!isFreezingSource() && !isFrozen()) {
             horizontalScrollButton.onProgress();
@@ -105,9 +105,9 @@ class Panel : Widget, FocusScrollNavigation {
         }
     }
 
-    override void updateResize() {
-        horizontalScrollButton.updateResize();
-        verticalScrollButton.updateResize();
+    override void updateSize() {
+        horizontalScrollButton.updateSize();
+        verticalScrollButton.updateSize();
 
         split.calculate();
 

@@ -9,6 +9,7 @@
 module rpui.rpdl_extensions;
 
 import rpui.cursor;
+import rpui.widget;
 import rpui.widgets.panel;
 
 import rpdl.accessors;
@@ -24,6 +25,11 @@ class NotCursorIconException : RPDLException {
     this(in string details) { super(details); }
 }
 
+class NotSizeTypeException : RPDLException {
+    this() { super("it is not a Widget.SizeType value"); }
+    this(in string details) { super(details); }
+}
+
 /// Retrieve `rpui.widgets.panel.Panel.Background` from rpdl tree.
 alias getPanelBackground = ufcsGetEnum!(Panel.Background, NotPanelBackgroundException);
 
@@ -35,3 +41,9 @@ alias getCursorIcon = ufcsGetEnum!(Cursor.Icon, NotCursorIconException);
 
 /// Optional retrieve `rpui.cursor.Cursor.Icon` from rpdl tree.
 alias optCursorIcon = ufcsOptEnum!(Cursor.Icon, NotCursorIconException);
+
+/// Retrieve `rpui.widget.Widget.SizeType` from rpdl tree.
+alias getWidgetSizeType = ufcsGetEnum!(Widget.SizeType, NotSizeTypeException);
+
+/// Optional retrieve `rpui.widget.Widget.SizeType` from rpdl tree.
+alias optWidgetSizeType = ufcsOptEnum!(Widget.SizeType, NotSizeTypeException);

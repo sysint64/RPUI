@@ -18,7 +18,7 @@ import std.stdio;
 import std.math;
 
 
-class Text: BaseObject {
+class Text : BaseObject {
     static class Builder(T: Text) {
         this(Geometry geometry) {
             this.geometry = geometry;
@@ -61,7 +61,7 @@ class Text: BaseObject {
 
     this(Geometry geometry, Font font) {
         super(geometry);
-        this.p_font = font;
+        this.font = font;
         createImpl();
         font.setTextSize(textSize);
     }
@@ -81,26 +81,22 @@ class Text: BaseObject {
         return 0;
     }
 
-    @property Font font() { return p_font; }
-    @property void font(Font val) { p_font = val; }
+    Font font;
 
-    @property ref uint textSize() { return p_textSize; }
+    @property uint textSize() { return p_textSize; }
     @property void textSize(in uint val) {
         p_textSize = val;
         font.setTextSize(p_textSize);
     }
 
-    @property ref dstring text() { return p_text; }
-    @property void text(in dstring val) { p_text = val; }
+    @property uint textWidth() { return impl.getWidth(this); }
+
+    utfstring text = "";
+    vec4 color;
+    Align textAlign = Align.center;
+    VerticalAlign textVerticalAlign = VerticalAlign.middle;
+
     @property bool bold() { return p_bold; }
-    @property ref vec4 color() { return p_color; }
-    @property void color(in vec4 val) { p_color = val; }
-
-    @property Align textAlign() { return p_textAlign; }
-    @property void textAlign(in Align val) { p_textAlign = val; }
-
-    @property VerticalAlign textVerticalAlign() { return p_textVerticalAlign; }
-    @property void textVerticalAlign(in VerticalAlign val) { p_textVerticalAlign = val; }
 
     // TODO: Remove hardcode
     @property uint lineHeight() { return p_textSize - 4; }
@@ -124,7 +120,7 @@ package:
         }
 
         switch (textVerticalAlign) {
-            case VerticalAlign.top:
+            case VerticalAlign.bottom:
                 textPosition.y += scaling.y - lineHeight;
                 break;
 
@@ -140,15 +136,8 @@ package:
     }
 
 private:
-    Font p_font;
     uint p_textSize = 12;
     bool p_bold = false;
-    utfstring p_text = "";
-    vec4 p_color;
-    Align p_textAlign = Align.center;
-    VerticalAlign p_textVerticalAlign = VerticalAlign.middle;
-    bool p_autoWidth = false;
-    bool p_autoHeight = false;
 
     TextImpl impl;
 

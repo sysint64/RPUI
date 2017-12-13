@@ -49,6 +49,13 @@ interface FocusScrollNavigation : Scrollable {
  * Base class widget.
  */
 class Widget {
+    /// Type of sizing for width and height.
+    enum SizeType {
+        value,  /// Using value from size.
+        wrapContent,  /// Automatically resize widget by content boundary.
+        matchParent  /// Using parent size.
+    }
+
     /**
      * Field attribute need to tell RPDL which fields are fill
      * when reading layout file.
@@ -106,7 +113,24 @@ class Widget {
     @Field FrameRect padding = FrameRect(0, 0, 0, 0);
 
     @Field vec2 position = vec2(0, 0);
-    @Field vec2 size = vec2(0, 0);
+    @Field vec2 size = vec2(0, 0);  /// Width and height.
+
+    @Field SizeType widthType;  /// Determine how to set width for widget.
+    @Field SizeType heightType;  /// Determine how to set height for widget.
+
+    /// Get `size` x component.
+    @Field
+    @property float width() { return size.x; }
+
+    /// Set `size` x component.
+    @property void width(in float val) { size.x = val; }
+
+    /// Get `size` y component.
+    @Field
+    @property float height() { return size.y; }
+
+    /// Set `size` y component.
+    @property void height(in float val) { size.y = val; }
 
     /// Unique identifier.
     @property size_t id() { return p_id; }
@@ -760,22 +784,34 @@ package:
     }
 
     /// This method invokes when widget size is updated.
-    protected void updateResize() {
+    public void updateSize() {
+        if (widthType == SizeType.matchParent) {
+            locationAlign = Align.none;
+            size.x = parent.innerSize.x - outerOffsetSize.x;
+            position.x = 0;
+        }
+
+        if (heightType == SizeType.matchParent) {
+            verticalLocationAlign = VerticalAlign.none;
+            size.y = parent.innerSize.y - outerOffsetSize.y;
+            position.y = 0;
+        }
     }
 
+    /// Recalculate size and position of widget and children widgets.
     void updateAll() {
         updateAbsolutePosition();
         updateLocationAlign();
         updateVerticalLocationAlign();
         updateRegionAlign();
-        updateResize();
+        updateSize();
 
         foreach (Widget widget; children) {
             widget.updateAll();
         }
 
         updateBoundary();
-        updateResize();
+        updateSize();
     }
 
     void updateRegionAlign() {

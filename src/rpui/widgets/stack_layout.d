@@ -47,17 +47,20 @@ class StackLayout : Widget {
         vec2 lastPosition = vec2(0, 0);
         Widget widget = null;
 
+        // TODO: move to `updateResize`
         foreach (Widget cell; children) {
             widget = cell.firstWidget;
 
             if (orientation == Orientation.vertical) {
-                cell.size.x = parent.innerSize.x;
+                cell.widthType = SizeType.matchParent;
                 cell.size.y = widget.outerSize.y;
                 cell.position.y = lastPosition.y;
+                cell.updateSize();
             } else {
                 cell.size.x = widget.outerSize.x;
-                cell.size.y = parent.innerSize.y;
+                cell.heightType = SizeType.matchParent;
                 cell.position.x = lastPosition.x;
+                cell.updateSize();
             }
 
             lastPosition += widget.size + widget.outerOffsetEnd;
@@ -66,10 +69,10 @@ class StackLayout : Widget {
                 fmax(maxSize.y, widget.outerSize.y),
             );
 
-            cell.updateAbsolutePosition();
+            cell.updateAbsolutePosition();  // TODO: Maybe it's deprecated
         }
 
-        updateResize();
+        updateSize();
 
         if (orientation == Orientation.vertical) {
             size.y = lastPosition.y + widget.outerOffset.bottom;
@@ -78,10 +81,12 @@ class StackLayout : Widget {
         }
     }
 
-    override void updateResize() {
-        if (orientation == Orientation.vertical) {
+    override void updateSize() {
+        super.updateSize();
+
+        if (orientation == Orientation.vertical && widthType == SizeType.wrapContent) {
             size.x = maxSize.x > parent.innerSize.x ? maxSize.x : parent.innerSize.x;
-        } else {
+        } else if (widthType == SizeType.wrapContent) {
             size.y = maxSize.y > parent.innerSize.y ? maxSize.y : parent.innerSize.y;
         }
     }

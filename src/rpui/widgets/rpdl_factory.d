@@ -30,11 +30,13 @@ import rpui.rpdl_extensions;
 import gapi.texture;
 
 import rpui.cursor;
+import rpui.widget;
 import rpui.widgets.panel;
 import rpui.widgets.button;
 import rpui.widgets.stack_layout;
 import rpui.widgets.checkbox;
 import rpui.widgets.label;
+import rpui.widgets.multiline_label;
 
 /// Factory for construction view from rpdl layout data.
 class RPDLWidgetFactory {
@@ -79,6 +81,9 @@ class RPDLWidgetFactory {
 
             case "Label":
                 return createWidget!Label(widgetNode, parentWidget);
+
+            case "MultilineLabel":
+                return createWidget!MultilineLabel(widgetNode, parentWidget);
 
             default:
                 return null;
@@ -174,6 +179,7 @@ class RPDLWidgetFactory {
 
                 ["Cursor.Icon", "optCursorIcon", ".0"],
                 ["Panel.Background", "optPanelBackground", ".0"],
+                ["Widget.SizeType", "optWidgetSizeType", ".0"],
             );
 
             bool foundType = false;

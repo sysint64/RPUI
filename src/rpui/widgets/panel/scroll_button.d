@@ -155,7 +155,7 @@ package struct ScrollButton {
     }
 
     /// This method invokes when panel size is updated.
-    void updateResize() {
+    void updateSize() {
         updateController();
         visible = scrollController.contentSize > scrollController.visibleSize;
 
