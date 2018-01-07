@@ -96,3 +96,28 @@ Panel
         size: 300, 300
         blackSplit: true
         margin: 5
+
+        TreeList
+            size: 200, 200
+
+            TreeListNode
+                caption: "Root"
+                icon: 3, 3
+
+                TreeListNode caption: "Node 1" icon: 7, 5
+                TreeListNode caption: "Node 2" icon: 1, 4
+
+                TreeListNode
+                    caption: "Group 1"
+                    icon: 2, 1
+
+                    TreeListNode caption: "Node 3" icon: 7, 5
+
+                    TreeListNode
+                        caption: "Node 4"
+                        icon: 7, 5
+
+                        TreeListNode caption: "Material 1" icon: 4, 4
+                        TreeListNode caption: "Texture 1" icon: 4, 7
+
+                    TreeListNode caption: "Node 5" icon: 7, 5
