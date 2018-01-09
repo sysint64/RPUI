@@ -25,21 +25,21 @@ class TreeListNode : Button {
     this(in string style = "TreeListNode") {
         super(style);
         textAlign = Align.left;
+        drawChildren = true;
+    }
+
+    override void onCreate() {
+        super.onCreate();
     }
 
     override void onProgress() {
-        super.onProgress();
-    }
-
-    override void render(Camera camera) {
         debug assert(treeList !is null);
 
-        const btnOffset = parent == treeList ? 20 : 14;
+        super.onProgress();
+        updateAbsolutePosition();
 	position.x = 20;
 
-        super.render(camera);
-
-        heightIn = size.y;
+        innerHeight = size.y;
         treeList.computedWrapHeight += size.y;
 
         if (!isOpen)
@@ -51,11 +51,12 @@ class TreeListNode : Button {
             if (treeListNode is null)
                 continue;
 
-            treeListNode.position.y = heightIn;
-            treeListNode.render(camera);
-
-            heightIn += treeListNode.heightIn;
+            treeListNode.position.y = innerHeight;
+            innerHeight += treeListNode.innerHeight;
+            treeListNode.onProgress();
         }
+
+        updateSize();
     }
 
     override void addWidget(Widget widget) {
@@ -67,7 +68,7 @@ class TreeListNode : Button {
     }
 
     protected override void updateSize() {
-        overSize.y = heightIn;
+        overSize.y = innerHeight;
         size.x = treeList.size.x - treeDepth * 20;
         size.y = 21;
     }
@@ -78,7 +79,7 @@ class TreeListNode : Button {
 
 private:
     BaseRenderObject openCloseStateRenderObject;
-    float heightIn;
+    float innerHeight;
 }
 
 class TreeList : Widget {
@@ -86,13 +87,6 @@ class TreeList : Widget {
     @property TreeListNode selected() { return p_selected; }
 
     @Field bool drawLines = true;
-
-    override void onProgress() {
-        updateAbsolutePosition();
-        updateLocationAlign();
-        updateVerticalLocationAlign();
-        updateSize();
-    }
 
     override void addWidget(Widget widget) {
         super.addWidget(widget);
@@ -103,8 +97,4 @@ class TreeList : Widget {
     }
 
     package float computedWrapHeight = 0;
-
-    protected override void updateSize() {
-        super.updateSize();
-    }
 }

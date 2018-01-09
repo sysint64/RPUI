@@ -97,6 +97,7 @@ Panel
         blackSplit: true
         margin: 5
 
+        # Tree -------------------------------------------------------------------------------------
         TreeList
             size: 200, 200
 
@@ -121,3 +122,11 @@ Panel
                         TreeListNode caption: "Texture 1" icon: 4, 7
 
                     TreeListNode caption: "Node 5" icon: 7, 5
+        # End tree ---------------------------------------------------------------------------------
+
+        Label
+            caption: "Hi"
+            height: 25
+            verticalLocationAlign: bottom
+            textAlign: center
+            widthType: matchParent
