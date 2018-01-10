@@ -1,8 +1,10 @@
 /**
- * String resources
+ * Copyright: © 2017 RedGoosePaws
+ * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
+ * Authors: Andrey Kabylin
  */
 
-module strings_res;
+module resources.strings;
 
 import std.path;
 import std.typecons;
@@ -16,11 +18,11 @@ import application;
 import rpdl.tree;
 
 /**
- * This class use RPDL as strings repository, strings needed for
+ * This class uses RPDL as strings repository, strings needed for
  * internationalization.
  */
-class StringsRes {
-    string locale;
+final class StringsRes {
+    string locale;  /// Strings locale (langauge).
 
     private this() {}
 
@@ -38,8 +40,6 @@ class StringsRes {
 
     ///
     static StringsRes createFromFile(in string fileName) {
-        StringsRes stringsRes = new StringsRes();
-
         auto app = Application.getInstance();
         const string path = buildPath(app.resourcesDirectory, "strings", fileName);
 

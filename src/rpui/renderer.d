@@ -18,6 +18,7 @@ import basic_types;
 import application;
 import rpui.render_objects;
 import rpui.manager;
+import resources.icons;
 
 /// Renderer is responsible for render different objects such as quads, texts, chains etc.
 class Renderer {
@@ -283,6 +284,12 @@ class Renderer {
         colorShader.setUniformVec4f("color", color);
 
         renderObject.render(camera);
+    }
+
+    /**
+     * Renders icon
+     */
+    void renderIcon(BaseRenderObject renderObject, in Icon icon) {
     }
 
 package:

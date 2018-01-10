@@ -4,7 +4,7 @@ import input;
 import patterns.singleton;
 import application;
 import basic_types;
-import strings_res;
+import resources.strings;
 
 import gapi.camera;
 import gapi.geometry;
@@ -148,8 +148,10 @@ class MapEditor: Application {
         uiManager = new Manager(settings.theme);
         uiManager.stringsRes = StringsRes.createForLanguage(settings.language);
         uiManager.stringsRes.addStrings("test_view.rdl");
+        uiManager.iconsRes.addIcons("icons.rdl");
+        uiManager.iconsRes.addIcons("main_toolbar_icons.rdl");
 
-        view = View.createFromFile!(MyView)(uiManager, "test.rdl");
+        view = View.createFromFile!MyView(uiManager, "test.rdl");
     }
 
     override void onKeyPressed(in KeyCode key) {

@@ -15,6 +15,7 @@ import math.linalg;
 import rpui.manager;
 import rpui.render_objects;
 import rpui.theme;
+import resources.icons;
 
 /// Factory of different renderable objects for render UI.
 class RenderFactory {
@@ -178,6 +179,20 @@ class RenderFactory {
      */
     BaseRenderObject createQuad(in string style, in string state, in string part) {
         return createQuad(style, [state], part);
+    }
+
+    /**
+     */
+    BaseRenderObject createIcon(in Icon icon) {
+        BaseRenderObject object = new BaseRenderObject(quadGeometry);
+        Texture.Coord texCoord;
+
+        texCoord.offset = icon.offset;
+        texCoord.size = icon.size;
+        // texCoord.normalize(manager.icons_manager.getTextureForGroup(icon.group));
+
+        object.setTexCoord(texCoord);
+        return object;
     }
 
 private:

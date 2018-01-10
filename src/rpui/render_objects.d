@@ -24,9 +24,19 @@ class BaseRenderObject : BaseObject {
         texCoordinates[state] = coord;
     }
 
-    /// Attach normilized texture `coord` of skin texture for `state`.
+    /// Attach normalized texture `coord` of skin texture for `state`.
     void addTexCoord(in string state, in Texture.Coord coord, Texture texture) {
         texCoordinates[state] = Texture.Coord.normalize(coord, texture);
+    }
+
+    /// Attach single texture `coord` of skin texture.
+    void setTexCoord(in Texture.Coord coord) {
+        texCoordinates["default"] = coord;
+    }
+
+    /// Attach normalized single texture `coord` of skin texture.
+    void setTexCoord(in Texture.Coord coord, Texture texture) {
+        texCoordinates["default"] = Texture.Coord.normalize(coord, texture);
     }
 
 package:

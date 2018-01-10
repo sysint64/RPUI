@@ -15,7 +15,10 @@ import input;
 import application;
 import math.linalg;
 import basic_types;
-import strings_res;
+
+import resources.strings;
+import resources.images;
+import resources.icons;
 
 import derelict.opengl3.gl;
 import gapi.camera;
@@ -32,6 +35,8 @@ import rpui.renderer;
  */
 class Manager {
     StringsRes stringsRes = null;  /// String resources for internationalization.
+    ImagesRes imagesRes = null;  /// Image resources.
+    IconsRes iconsRes = null;  /// Icons resources.
 
     private Widget p_widgetUnderMouse = null;
     @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
@@ -55,6 +60,8 @@ class Manager {
         this.theme = new Theme(themeName);
         this.renderFactory = new RenderFactory(this);
         this.renderer = new Renderer(this);
+        this.imagesRes = new ImagesRes(themeName);
+        this.iconsRes = new IconsRes(this.imagesRes);
 
         unfocusedWidgets.reserve(20);
     }

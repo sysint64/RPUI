@@ -43,10 +43,6 @@ void traverse(Node node, in int level = 0) {
     }
 }
 
-import rpui.views.view;
-import rpui.views.attributes;
-import rpui.manager;
-
 void main() {
     DerelictSFML2System.load();
     DerelictSFML2Window.load();

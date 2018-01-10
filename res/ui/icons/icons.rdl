@@ -1,0 +1,13 @@
+Icons
+    icons: "icons.png"
+    size: 18, 18
+    start: 9, 9
+    gaps: 3, 3
+
+    Items
+        file: 1, 1
+        folder: 2, 1
+        check: 4, 1
+        info: 6, 2
+        material: 4, 4
+        texture: 4, 7
