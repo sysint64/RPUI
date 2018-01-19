@@ -148,8 +148,8 @@ class MapEditor: Application {
         uiManager = new Manager(settings.theme);
         uiManager.stringsRes = StringsRes.createForLanguage(settings.language);
         uiManager.stringsRes.addStrings("test_view.rdl");
-        uiManager.iconsRes.addIcons("icons.rdl");
-        uiManager.iconsRes.addIcons("main_toolbar_icons.rdl");
+        uiManager.iconsRes.addIcons("icons", "icons.rdl");
+        uiManager.iconsRes.addIcons("main toolbar icons", "main_toolbar_icons.rdl");
 
         view = View.createFromFile!MyView(uiManager, "test.rdl");
     }

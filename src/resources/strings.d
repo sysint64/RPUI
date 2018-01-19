@@ -107,6 +107,7 @@ private:
 ///
 unittest {
     import test.core;
+    import dunit.assertion;
 
     initApp();
 
@@ -116,11 +117,11 @@ unittest {
     StringsRes stringsRes = StringsRes.createFromAbsolutePath(path);
 
     with (stringsRes) {
-        auto t = parseReference("@TestView.mainPanelCaption Test string", 0);
-        assert(t.value == "This is main panel");
-        assert(t.endPosition == "TestView.mainPanelCaption".length);
-        assert(parseString("Hello, @TestView.mainPanelCaption") == "Hello, This is main panel");
-        assert(parseString("Without reference") == "Without reference");
+        const t = parseReference("@TestView.mainPanelCaption Test string", 0);
+        assertEquals(t.value, "This is main panel"d);
+        assertEquals(t.endPosition, "TestView.mainPanelCaption".length);
+        assertEquals(parseString("Hello, @TestView.mainPanelCaption"), "Hello, This is main panel"d);
+        assertEquals(parseString("Without reference"), "Without reference"d);
     }
 }
 
@@ -128,6 +129,7 @@ unittest {
 // Parsing UTF String
 unittest {
     import test.core;
+    import dunit.assertion;
 
     initApp();
 
@@ -137,10 +139,10 @@ unittest {
     StringsRes stringsRes = StringsRes.createFromAbsolutePath(path);
 
     with (stringsRes) {
-        auto t = parseReference("@TestView.mainPanelCaption Test string", 0);
-        assert(t.value == "Это главная панель");
-        assert(t.endPosition == "TestView.mainPanelCaption".length);
-        assert(parseString("Привет, @TestView.mainPanelCaption") == "Привет, Это главная панель");
-        assert(parseString("Привет, @TestView.mainPanelCaption").length == 26);
+        const t = parseReference("@TestView.mainPanelCaption Test string", 0);
+        assertEquals(t.value, "Это главная панель"d);
+        assertEquals(t.endPosition, "TestView.mainPanelCaption".length);
+        assertEquals(parseString("Привет, @TestView.mainPanelCaption"), "Привет, Это главная панель"d);
+        assertEquals(parseString("Привет, @TestView.mainPanelCaption").length, 26);
     }
 }

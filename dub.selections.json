@@ -4,6 +4,7 @@
 		"accessors": "1.1.1",
 		"botan": "1.12.9",
 		"botan-math": "1.0.3",
+		"d-unit": "0.8.1",
 		"ddox": "0.16.6",
 		"derelict-ft": "1.1.3",
 		"derelict-gl3": "1.0.23",
@@ -22,6 +23,7 @@
 		"scod": "0.4.2",
 		"subdox": "0.1.0",
 		"taggedalgebraic": "0.10.7",
+		"unit-threaded": "0.7.36",
 		"vibe-core": "1.2.0",
 		"vibe-d": "0.8.1",
 		"x11": "1.0.19"

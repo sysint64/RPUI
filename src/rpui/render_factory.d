@@ -186,12 +186,7 @@ class RenderFactory {
     BaseRenderObject createIcon(in Icon icon) {
         BaseRenderObject object = new BaseRenderObject(quadGeometry);
         Texture.Coord texCoord;
-
-        texCoord.offset = icon.offset;
-        texCoord.size = icon.size;
-        // texCoord.normalize(manager.icons_manager.getTextureForGroup(icon.group));
-
-        object.setTexCoord(texCoord);
+        object.setTexCoord(icon.texCoord);
         return object;
     }
 
