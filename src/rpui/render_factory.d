@@ -185,7 +185,6 @@ class RenderFactory {
      */
     BaseRenderObject createIcon(in Icon icon) {
         BaseRenderObject object = new BaseRenderObject(quadGeometry);
-        Texture.Coord texCoord;
         object.setTexCoord(icon.texCoord);
         return object;
     }
