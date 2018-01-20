@@ -26,19 +26,28 @@ struct Icon {
 struct IconsConfig {
     string name;
     string textureFileName;
-    bool themed;
-    vec2 size;
-    vec2 start;
-    vec2 gaps;
+    bool themed;  /// If themed, then icon texture must placed in theme resources folder.
+    vec2 size;  /// Size of one icon.
+    vec2 start;  /// Start offset of all icons.
+    vec2 gaps;  /// Spasing beetwen icons.
 }
 
+/**
+ * This class uses RPDL files for icons repository, for each icons have group
+ * where declared default config such as size of icon, gaps etc.
+ */
 class IconsRes {
+    /**
+     * Create icons resources, this constructor get `imagesRes` as argument
+     * for getting textures for icons.
+     */
     this(ImagesRes imagesRes) {
         assert(imagesRes !is null);
         this.imagesRes = imagesRes;
         this.app = Application.getInstance();
     }
 
+    /// Get texture instance for particular group icons.
     Texture getTextureForIcons(in string group) {
         const config = iconsConfig[group];
 
@@ -49,6 +58,7 @@ class IconsRes {
         }
     }
 
+    /// Retrieve icon information from group by icon name.
     Icon getIcon(in string group, in string name) {
         auto texCoord = Texture.Coord();
 
@@ -68,6 +78,10 @@ class IconsRes {
         return Icon(group, name, texCoord);
     }
 
+    /**
+     * Add new icons group, file with icons declarations must placed in
+     * res/ui/icons folder.
+     */
     void addIcons(in string group, in string fileName) {
         const path = buildPath(app.resourcesDirectory, "ui", "icons");
         iconsData[group] = new RPDLTree(path);
