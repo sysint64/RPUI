@@ -5,7 +5,7 @@ Config
     start: 1, 1
     gaps: 1, 1
 
-Items
+Icons
     bend: 1, 1
     twist: 2, 1
     light: 3, 1

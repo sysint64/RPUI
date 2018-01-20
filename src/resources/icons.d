@@ -55,7 +55,7 @@ class IconsRes {
         const config = iconsConfig[group];
 
         // Minus vec2(1, 1) due to icons indexing starting from 1
-        const iconIndexes = iconsData[group].data.getVec2f("Items." ~ name) - vec2(1, 1);
+        const iconIndexes = iconsData[group].data.getVec2f("Icons." ~ name) - vec2(1, 1);
         const offsetWithGaps = vec2(
             iconIndexes.x * (config.size.x + config.gaps.x),
             iconIndexes.y * (config.size.y + config.gaps.y)
