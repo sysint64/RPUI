@@ -18,7 +18,8 @@ import std.path;
 import std.stdio;
 import std.typecons: tuple;
 import std.meta;
-import std.traits : hasUDA, getUDAs, isFunction, ParameterDefaults;
+import std.traits : hasUDA, getUDAs, isFunction, ParameterDefaults, Unqual;
+import std.container.array;
 
 import math.linalg;
 import basic_types;
@@ -133,6 +134,46 @@ class RPDLWidgetFactory {
         return widget;
     }
 
+    // Tell the system how to interprete types of fields in widgets
+    // and how to extract them
+    // first argumen is name of type
+    // second is accessor in RPDLTree
+    // third is selector - additional path to find value
+    private enum name = 0;
+    private enum accessor = 1;
+    private enum selector = 2;
+
+    private enum typesMap = AliasSeq!(
+        ["bool", "optBoolean", ".0"],
+        ["int", "optInteger", ".0"],
+        ["float", "optNumber", ".0"],
+        ["string", "optString", ".0"],
+        ["dstring", "optUTFString", ".0"],
+
+        ["vec2", "optVec2f", ""],
+        ["vec3", "optVec3f", ""],
+        ["vec4", "optVec4f", ""],
+        ["vec2i", "optVec2i", ""],
+        ["vec3i", "optVec3i", ""],
+        ["vec4i", "optVec4i", ""],
+        ["vec2ui", "optVec2ui", ""],
+        ["vec3ui", "optVec3ui", ""],
+        ["vec4ui", "optVec4ui", ""],
+
+        ["Texture.Coord", "optTexCoord", ""],
+        ["Align", "optAlign", ".0"],
+        ["VerticalAlign", "optVerticalAlign", ".0"],
+        ["Orientation", "optOrientation", ".0"],
+        ["RegionAlign", "optRegionAlign", ".0"],
+        ["Rect", "optRect", ""],
+        ["FrameRect", "optFrameRect", ""],
+        ["IntRect", "optIntRect", ""],
+
+        ["Cursor.Icon", "optCursorIcon", ".0"],
+        ["Panel.Background", "optPanelBackground", ".0"],
+        ["Widget.SizeType", "optWidgetSizeType", ".0"],
+    );
+
     /**
      * Finds all fields in widget with @`rpui.widget.Widget.Field` attribute
      * and fill widget members with values from rpdl file.
@@ -140,72 +181,92 @@ class RPDLWidgetFactory {
     void readFields(T : Widget)(T widget, ObjectNode widgetNode) {
         foreach (symbolName; getSymbolsNamesByUDA!(T, Widget.Field)) {
             auto defaultValue = mixin("widget." ~ symbolName);
-            alias symbolType = typeof(defaultValue);
+            alias SymbolType = typeof(defaultValue);
 
-            // Tell the system how to interprete types of fields in widgets
-            // and how to extract them
-            // first argumen is name of type
-            // second is accessor in RPDLTree
-            // third is selector - additional path to find value
-            enum name = 0;
-            enum accessor = 1;
-            enum selector = 2;
+            static if (is(SymbolType == Array!CT, CT)) {
+                auto array = widgetNode.getNode(symbolName);
 
-            enum typesMap = AliasSeq!(
-                ["bool", "optBoolean", ".0"],
-                ["int", "optInteger", ".0"],
-                ["float", "optNumber", ".0"],
-                ["string", "optString", ".0"],
-                ["dstring", "optUTFString", ".0"],
+                if (array is null)
+                    continue;
 
-                ["vec2", "optVec2f", ""],
-                ["vec3", "optVec3f", ""],
-                ["vec4", "optVec4f", ""],
-                ["vec2i", "optVec2i", ""],
-                ["vec3i", "optVec3i", ""],
-                ["vec4i", "optVec4i", ""],
-                ["vec2ui", "optVec2ui", ""],
-                ["vec3ui", "optVec3ui", ""],
-                ["vec4ui", "optVec4ui", ""],
-
-                ["Texture.Coord", "optTexCoord", ""],
-                ["Align", "optAlign", ".0"],
-                ["VerticalAlign", "optVerticalAlign", ".0"],
-                ["Orientation", "optOrientation", ".0"],
-                ["RegionAlign", "optRegionAlign", ".0"],
-                ["Rect", "optRect", ""],
-                ["FrameRect", "optFrameRect", ""],
-                ["IntRect", "optIntRect", ""],
-
-                ["Cursor.Icon", "optCursorIcon", ".0"],
-                ["Panel.Background", "optPanelBackground", ".0"],
-                ["Widget.SizeType", "optWidgetSizeType", ".0"],
-            );
-
-            bool foundType = false;
-
-            foreach (type; typesMap) {
-                mixin("alias rawType = " ~ type[name] ~ ";");
-
-                static if (is(symbolType == rawType)) {
-                    foundType = true;
-                    const fullSymbolPath = symbolName ~ type[selector];
-                    enum call = "widgetNode." ~ type[accessor] ~ "(fullSymbolPath, defaultValue)";
-                    const value = mixin(call);
-
-                    // assign value to widget field
-                    static if (type[name] == "dstring") {
-                        mixin("widget." ~ symbolName ~ " = uiManager.stringsRes.parseString(value);");
-                    } else {
-                        mixin("widget." ~ symbolName ~ " = value;");
-                    }
-
-                    break;
+                foreach (node; array.children) {
+                    readArrayField!(T, CT, symbolName)(widget, widgetNode, node.name);
                 }
+            } else {
+                readField!(T, SymbolType, symbolName)(widget, widgetNode, defaultValue);
             }
-
-            assert(foundType, "type " ~ symbolType.stringof ~ " doesn't allow");
         }
+    }
+
+    private void readField(T : Widget, SymbolType, string symbolName)
+        (T widget, Node widgetNode, SymbolType defaultValue = SymbolType.init)
+    {
+        bool foundType = false;
+
+        foreach (type; typesMap) {
+            mixin("alias RawType = " ~ type[name] ~ ";");
+
+            static if (is(SymbolType == RawType)) {
+                foundType = true;
+                const fullSymbolPath = symbolName ~ type[selector];
+                enum call = "widgetNode." ~ type[accessor] ~ "(fullSymbolPath, defaultValue)";
+                const value = mixin(call);
+
+                // assign value to widget field
+                static if (type[name] == "dstring") {
+                    mixin("widget." ~ symbolName ~ " = uiManager.stringsRes.parseString(value);");
+                } else {
+                    mixin("widget." ~ symbolName ~ " = value;");
+                }
+
+                break;
+            }
+        }
+
+        if (!foundType) {
+            // Check if unsupported type is array
+            static if (is(SymbolType == CT[], CT)) {
+                auto array = widgetNode.getNode(symbolName);
+
+                if (array is null)
+                    return;
+
+                foreach (node; array.children) {
+                    readArrayField!(T, Unqual!CT, symbolName)(widget, widgetNode, node.name);
+                }
+            } else {
+                assert(false, "type " ~ SymbolType.stringof ~ " doesn't allow");
+            }
+        }
+    }
+
+    private void readArrayField(T : Widget, SymbolType, string symbolName)
+        (T widget, Node widgetNode, string nodeName)
+    {
+        const defaultValue = SymbolType.init;
+        bool foundType = false;
+
+        foreach (type; typesMap) {
+            mixin("alias RawType = " ~ type[name] ~ ";");
+
+            static if (is(SymbolType == RawType)) {
+                foundType = true;
+                const fullSymbolPath = symbolName ~ "." ~ nodeName;// ~ type[selector];
+                enum call = "widgetNode." ~ type[accessor] ~ "(fullSymbolPath, defaultValue)";
+                const value = mixin(call);
+
+                // assign value to widget field
+                static if (type[name] == "dstring") {
+                    mixin("widget." ~ symbolName ~ " ~= uiManager.stringsRes.parseString(value);");
+                } else {
+                    mixin("widget." ~ symbolName ~ " ~= value;");
+                }
+
+                break;
+            }
+        }
+
+        assert(foundType, "type " ~ SymbolType.stringof ~ " doesn't allow");
     }
 
 private:

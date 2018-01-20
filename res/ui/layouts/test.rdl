@@ -27,6 +27,7 @@ Panel
             locationAlign: center
             verticalLocationAlign: middle
             margin: 5
+            icons: "info", "folder"
 
         Panel
             size: 150, 50

@@ -6,6 +6,7 @@
 
 module rpui.widgets.button;
 
+import std.container.array;
 import std.algorithm.comparison;
 
 import input;
@@ -22,6 +23,7 @@ class Button : Widget {
     @Field bool allowCheck = false;
     @Field Align textAlign = Align.center;
     @Field VerticalAlign textVerticalAlign = VerticalAlign.middle;
+    @Field Array!string icons;
 
     private utfstring p_caption = "Button";
 
@@ -118,5 +120,9 @@ protected:
 
         textRenderObject = renderFactory.createText(style, states);
         textRenderObject.text = caption;
+
+        foreach (icon; icons) {
+            writeln("icon: ", icon);
+        }
     }
 }
