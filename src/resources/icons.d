@@ -58,6 +58,11 @@ class IconsRes {
         }
     }
 
+    /// Get texture instance for particular icon.
+    Texture getTextureForIcons(in Icon icon) {
+        return getTextureForIcons(icon.group);
+    }
+
     /// Retrieve icon information from group by icon name.
     Icon getIcon(in string group, in string name) {
         auto texCoord = Texture.Coord();
@@ -76,6 +81,11 @@ class IconsRes {
         texCoord.normalize(getTextureForIcons(group));
 
         return Icon(group, name, texCoord);
+    }
+
+    /// Retrieve icon config from group.
+    IconsConfig getIconsConfig(in string group) {
+        return iconsConfig[group];
     }
 
     /**

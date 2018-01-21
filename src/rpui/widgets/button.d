@@ -13,11 +13,13 @@ import input;
 import gapi;
 import math.linalg;
 import std.stdio;
+import std.math;
 import basic_types;
 
 import rpui.widget;
 import rpui.manager;
 import rpui.render_objects;
+import resources.icons;
 
 class Button : Widget {
     @Field bool allowCheck = false;
@@ -39,17 +41,13 @@ class Button : Widget {
 
     @property utfstring caption() { return p_caption; }
 
-    this() {
-        super("Button");
-        this.drawChildren = false;
-
-         // TODO: rm hardcode
-        size = vec2(50, 21);
-    }
-
-    this(in string style) {
+    this(in string style = "Button", in string iconsGroup = "icons") {
         super(style);
         this.drawChildren = false;
+        this.iconsGroup = iconsGroup;
+
+        // TODO: rm hardcode
+        size = vec2(50, 21);
     }
 
     this(bool allowCheck) {
@@ -75,20 +73,40 @@ class Button : Widget {
 protected:
     vec2 focusOffsets;
     float focusResize;
+    float textLeftMargin;
+    float textRightMargin;
 
     BaseRenderObject[string] skinRenderObjects;
     BaseRenderObject[string] skinFocusRenderObjects;
 
-    BaseRenderObject icon1RenderObject;
-    BaseRenderObject icon2RenderObject;
+    string iconsGroup;
+    float iconsAreaSize = 0;
+
+    struct IconRengerObjectData {
+        BaseRenderObject renderObject;
+        Icon icon;
+        vec2 offset = vec2(0, 0);
+    }
+
+    Array!IconRengerObjectData iconsRengerObjects;
     TextRenderObject textRenderObject;
 
     void renderSkin(Camera camera) {
         textRenderObject.textAlign = textAlign;
         textRenderObject.textVerticalAlign = textVerticalAlign;
 
+        const textSize = size - vec2(iconsAreaSize, 0);
+        auto textPosition = vec2(iconsAreaSize, 0) + absolutePosition;
+
+        if (textAlign == Align.left) {
+            textPosition.x += textLeftMargin;
+        }
+        else if (textAlign == Align.right) {
+            textPosition.x -= textRightMargin;
+        }
+
         renderer.renderHorizontalChain(skinRenderObjects, state, absolutePosition, size);
-        renderer.renderText(textRenderObject, state, absolutePosition, size);
+        renderer.renderText(textRenderObject, state, textPosition, textSize);
 
         if (isFocused) {
             const focusPos = absolutePosition + focusOffsets;
@@ -99,6 +117,10 @@ protected:
     }
 
     void renderIcon(Camera camera) {
+        foreach (iconRenderObject; iconsRengerObjects) {
+            const iconPos = absolutePosition + iconRenderObject.offset;
+            renderer.renderQuad(iconRenderObject.renderObject, "default", iconPos);
+        }
     }
 
     override void onCreate() {
@@ -113,16 +135,38 @@ protected:
         }
 
         const focusKey = style ~ ".Focus";
+
         with (manager.theme.tree) {
             focusOffsets = data.getVec2f(focusKey ~ ".offsets.0");
             focusResize = data.getNumber(focusKey ~ ".offsets.1");
-        }
 
-        textRenderObject = renderFactory.createText(style, states);
-        textRenderObject.text = caption;
+            textRenderObject = renderFactory.createText(style, states);
+            textRenderObject.text = caption;
+            textLeftMargin = data.getNumber(style ~ ".textLeftMargin.0");
+            textRightMargin = data.getNumber(style ~ ".textRightMargin.0");
 
-        foreach (icon; icons) {
-            writeln("icon: ", icon);
+            const iconSize = manager.iconsRes.getIconsConfig(iconsGroup).size;
+            const iconOffsets = data.getVec2f(style ~ ".iconOffsets");
+            const iconVerticalOffset = round((size.y - iconSize.y) / 2.0f);
+            const iconGaps = data.getNumber(style ~ ".iconGaps.0");
+            float iconLastOffset = 0;
+
+            foreach (iconName; icons) {
+                const icon = manager.iconsRes.getIcon(iconsGroup, iconName);
+                const iconOffset = iconLastOffset;
+                iconLastOffset = iconOffset + iconSize.x + iconGaps;
+
+                auto iconRenderObject = IconRengerObjectData(
+                    renderFactory.createIcon(icon),
+                    icon,
+                    iconOffsets + vec2(iconOffset, iconVerticalOffset),
+                );
+
+                iconsRengerObjects.insert(iconRenderObject);
+            }
+
+            if (icons.length > 0)
+                iconsAreaSize += iconLastOffset - iconGaps - iconGaps;
         }
     }
 }

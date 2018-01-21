@@ -14,6 +14,8 @@ import std.container;
 
 /// Base renderable objects with additional information for render UI elements.
 class BaseRenderObject : BaseObject {
+    Texture texture = null;
+
     /// Create with gerometry.
     this(Geometry geometry) {
         super(geometry);

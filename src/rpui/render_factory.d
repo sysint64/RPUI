@@ -186,6 +186,7 @@ class RenderFactory {
     BaseRenderObject createIcon(in Icon icon) {
         BaseRenderObject object = new BaseRenderObject(quadGeometry);
         object.setTexCoord(icon.texCoord);
+        object.texture = manager.iconsRes.getTextureForIcons(icon);
         return object;
     }
 

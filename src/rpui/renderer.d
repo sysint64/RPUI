@@ -68,10 +68,15 @@ class Renderer {
 
         with (renderObject.texCoordinates[state]) {
             texAtlasShader.setUniformMatrix("MVP", renderObject.lastMVPMatrix);
-            texAtlasShader.setUniformTexture("texture", manager.theme.skin);
             texAtlasShader.setUniformVec2f("texOffset", normOffset);
             texAtlasShader.setUniformVec2f("texSize", normSize);
             texAtlasShader.setUniformFloat("alpha", 1.0f);
+
+            if (renderObject.texture !is null) {
+                texAtlasShader.setUniformTexture("texture", renderObject.texture);
+            } else {
+                texAtlasShader.setUniformTexture("texture", manager.theme.skin);
+            }
         }
 
         renderObject.render(camera);
@@ -284,12 +289,6 @@ class Renderer {
         colorShader.setUniformVec4f("color", color);
 
         renderObject.render(camera);
-    }
-
-    /**
-     * Renders icon
-     */
-    void renderIcon(BaseRenderObject renderObject, in Icon icon) {
     }
 
 package:

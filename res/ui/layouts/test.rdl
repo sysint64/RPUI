@@ -27,14 +27,14 @@ Panel
             locationAlign: center
             verticalLocationAlign: middle
             margin: 5
-            icons: "info", "folder"
+            icons: "info", "folder", "check"
 
         Panel
             size: 150, 50
             position: 5, 31
             background: dark
             margin: 10
-            Button position: 0, 0 size: 100, 21 caption: "Cancel" name: "cancelButton"
+            Button position: 0, 0 size: 100, 21 caption: "Cancel" name: "cancelButton" icons: "info" textAlign: center
             Button position: 5, 57 size: 100, 21 caption: "Close" name: "closeButton"
 
     Panel
@@ -74,7 +74,7 @@ Panel
             Label size: 100, 16 margin: 5 caption: "Hello world!"
             Button width: 100 margin: 5 caption: "Button 1"
             Button width: 100 margin: 5 caption: "Button 2" locationAlign: right
-            Button widthType: matchParent margin: 5 caption: "Button 3"
+            Button widthType: matchParent margin: 5 caption: "Button 3" icons: "info"
             Checkbox size: 100, 16 margin: 5 caption: "Checkbox 1" checked: true
             Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
             Label size: 100, 16 margin: 5 caption: "Hello world!"

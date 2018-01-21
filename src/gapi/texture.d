@@ -34,19 +34,7 @@ class Texture {
     private:
         float normX, normY;
         float normWidth, normHeight;
-    };
-
-    // this(in string fileName) {
-    //     const char* fileNamez = toStringz(fileName);
-    //     image = sfImage_createFromFile(fileNamez);
-
-    //     if (!image) {
-    //         throw new Error("Can't load image '" ~ fileName ~ "'");
-    //     }
-
-    //     glGenTextures(1, &p_handle);
-    //     update();
-    // }
+    }
 
     this(in string fileName) {
         const char* fileNamez = toStringz(fileName);
