@@ -153,9 +153,10 @@ Panel
 TreeListNode
     openIcon                : 4, 152, 9, 9
     closeIcon               : 17, 152, 9, 9
-
-    iconMarginLeft          : 9
-    iconMarginRight         : 9
+    iconOffsets             : 2, -1
+    iconGaps                : 2
+    textLeftMargin          : 9
+    textRightMargin         : 9
 
     Leave
         left                : 55, 180, 5, 21

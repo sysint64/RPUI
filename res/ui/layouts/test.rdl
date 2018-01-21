@@ -34,7 +34,7 @@ Panel
             position: 5, 31
             background: dark
             margin: 10
-            Button position: 0, 0 size: 100, 21 caption: "Cancel" name: "cancelButton" icons: "info" textAlign: center
+            Button position: 0, 0 size: 100, 21 caption: "Cancel" name: "cancelButton"
             Button position: 5, 57 size: 100, 21 caption: "Close" name: "closeButton"
 
     Panel
@@ -103,25 +103,25 @@ Panel
 
             TreeListNode
                 caption: "Root"
-                icon: 3, 3
+                icons: "grid"
 
-                TreeListNode caption: "Node 1" icon: 7, 5
-                TreeListNode caption: "Node 2" icon: 1, 4
+                TreeListNode caption: "Node 1" icons: "ghost"
+                TreeListNode caption: "Node 2" icons: "red_triangle"
 
                 TreeListNode
                     caption: "Group 1"
-                    icon: 2, 1
+                    icons: "folder"
 
-                    TreeListNode caption: "Node 3" icon: 7, 5
+                    TreeListNode caption: "Node 3" icons: "ghost"
 
                     TreeListNode
                         caption: "Node 4"
-                        icon: 7, 5
+                        icons: "ghost"
 
-                        TreeListNode caption: "Material 1" icon: 4, 4
-                        TreeListNode caption: "Texture 1" icon: 4, 7
+                        TreeListNode caption: "Material 1" icons: "material"
+                        TreeListNode caption: "Texture 1" icons: "texture"
 
-                    TreeListNode caption: "Node 5" icon: 7, 5
+                    TreeListNode caption: "Node 5" icons: "ghost"
         # End tree ---------------------------------------------------------------------------------
 
         Label
