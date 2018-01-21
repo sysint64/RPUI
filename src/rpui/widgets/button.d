@@ -66,8 +66,38 @@ class Button : Widget {
 
     override void render(Camera camera) {
         super.render(camera);
-        renderSkin(camera);
-        renderIcon(camera);
+
+        // Background
+        renderer.renderHorizontalChain(skinRenderObjects, state, absolutePosition, size);
+
+        if (isFocused) {
+            const focusPos = absolutePosition + focusOffsets;
+            const focusSize = size + vec2(focusResize, focusResize);
+
+            renderer.renderHorizontalChain(skinFocusRenderObjects, "Focus", focusPos, focusSize);
+        }
+
+        // Text
+        textRenderObject.textAlign = textAlign;
+        textRenderObject.textVerticalAlign = textVerticalAlign;
+
+        const textSize = size - vec2(iconsAreaSize, 0);
+        auto textPosition = vec2(iconsAreaSize, 0) + absolutePosition;
+
+        if (textAlign == Align.left) {
+            textPosition.x += textLeftMargin;
+        }
+        else if (textAlign == Align.right) {
+            textPosition.x -= textRightMargin;
+        }
+
+        renderer.renderText(textRenderObject, state, textPosition, textSize);
+
+        // Icons
+        foreach (iconRenderObject; iconsRengerObjects) {
+            const iconPos = absolutePosition + iconRenderObject.offset;
+            renderer.renderQuad(iconRenderObject.renderObject, "default", iconPos);
+        }
     }
 
 protected:
@@ -90,38 +120,6 @@ protected:
 
     Array!IconRengerObjectData iconsRengerObjects;
     TextRenderObject textRenderObject;
-
-    void renderSkin(Camera camera) {
-        textRenderObject.textAlign = textAlign;
-        textRenderObject.textVerticalAlign = textVerticalAlign;
-
-        const textSize = size - vec2(iconsAreaSize, 0);
-        auto textPosition = vec2(iconsAreaSize, 0) + absolutePosition;
-
-        if (textAlign == Align.left) {
-            textPosition.x += textLeftMargin;
-        }
-        else if (textAlign == Align.right) {
-            textPosition.x -= textRightMargin;
-        }
-
-        renderer.renderHorizontalChain(skinRenderObjects, state, absolutePosition, size);
-        renderer.renderText(textRenderObject, state, textPosition, textSize);
-
-        if (isFocused) {
-            const focusPos = absolutePosition + focusOffsets;
-            const focusSize = size + vec2(focusResize, focusResize);
-
-            renderer.renderHorizontalChain(skinFocusRenderObjects, "Focus", focusPos, focusSize);
-        }
-    }
-
-    void renderIcon(Camera camera) {
-        foreach (iconRenderObject; iconsRengerObjects) {
-            const iconPos = absolutePosition + iconRenderObject.offset;
-            renderer.renderQuad(iconRenderObject.renderObject, "default", iconPos);
-        }
-    }
 
     override void onCreate() {
         super.onCreate();
