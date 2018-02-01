@@ -121,7 +121,7 @@ Panel
                         TreeListNode caption: "Material 1" icons: "material"
                         TreeListNode caption: "Texture 1" icons: "texture"
 
-                    TreeListNode caption: "Node 5" icons: "ghost"
+                TreeListNode caption: "Node 5" icons: "ghost"
         # End tree ---------------------------------------------------------------------------------
 
         Label

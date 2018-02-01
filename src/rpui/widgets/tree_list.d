@@ -37,9 +37,9 @@ class TreeListNode : Button {
 
         with (linesGeometry) {
             addVertex(vec2(0.0f, 0.0f));
-            addVertex(vec2(0.0f, 100.0f));
-            addVertex(vec2(0.0f, 100.0f));
-            addVertex(vec2(100.0f, 100.0f));
+            addVertex(vec2(0.0f, 0.0f));
+            addVertex(vec2(0.0f, 0.0f));
+            addVertex(vec2(0.0f, 0.0f));
 
             addIndices([0, 1, 2, 3]);
         }
@@ -51,12 +51,14 @@ class TreeListNode : Button {
     override void render(Camera camera) {
         super.render(camera);
 
-        renderer.renderColoredObject(
-            treeLinesRenderObject,
-            treeList.linesColor,
-            absolutePosition,
-            vec2(1.0f, 1.0f)
-        );
+        if (treeDepth <= 2) {
+            renderer.renderColoredObject(
+                treeLinesRenderObject,
+                treeList.linesColor,
+                absolutePosition,
+                vec2(1.0f, 1.0f)
+            );
+        }
     }
 
     override void onProgress() {
@@ -85,13 +87,38 @@ class TreeListNode : Button {
 
         updateSize();
 
-        // Lines
-        linesGeometry.updateIndices([0, 1]);
-        linesGeometry.updateVertices([
-            vec2(0.0f, 0.0f),
-            vec2(100.0f, 100.0f),
-        ]);
+        if (treeDepth <= 2)
+            updateLines();
     }
+
+    private void updateLines() {
+        // TODO: get rif of hardcode
+        const length = parent == treeList ? 14 : 10;
+        const firstHeight = 10.0f;
+        const isFirst = this == parent.children.front;
+        const center = 9.0f;
+
+        if (treeDepth == 2) {
+            const top = isFirst ? firstHeight : absolutePosition.y - prevWidget.absolutePosition.y;
+            linesGeometry.updateIndices([0, 1, 2, 3]);
+            linesGeometry.updateVertices([
+                vec2(0.0f, -center),
+                vec2(-length, -center),
+                vec2(-length, -center - 1.0f),
+                vec2(-length, -center + top - 1.0f),
+            ]);
+        } else {
+            linesGeometry.updateIndices([0, 1]);
+            linesGeometry.updateVertices([
+                vec2(0.0f, -9.0f),
+                vec2(-length, -9.0f)
+            ]);
+        }
+
+        needUpdateLines = false;
+    }
+
+    private bool needUpdateLines = true;
 
     override void addWidget(Widget widget) {
         super.addWidget(widget);

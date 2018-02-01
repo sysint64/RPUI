@@ -62,8 +62,11 @@ final class Geometry {
     void updateVertex(in int index, in vec2 vertex) {
         vertices[index] = vertex;
 
+        const size = GLfloat.sizeof*2;
+        const offset = size*index;
+
         glBindBuffer(GL_ARRAY_BUFFER, verticesId);
-        glBufferSubData(GL_ARRAY_BUFFER, index, GLfloat.sizeof*2, vertices[index].value_ptr);
+        glBufferSubData(GL_ARRAY_BUFFER, offset, size, vertices[index].value_ptr);
     }
 
     void updateVertices(in vec2[] vertices) {
@@ -85,6 +88,14 @@ final class Geometry {
 
     void addIndices(in GLuint[] indices) {
         this.indices ~= indices;
+    }
+
+    @property size_t indicesLength() {
+        return indices.length;
+    }
+
+    @property size_t verticesLength() {
+        return vertices.length;
     }
 
     void updateIndices(in GLuint[] indices) {
