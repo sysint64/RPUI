@@ -102,13 +102,13 @@ package struct Split {
             return;
 
         with (renderer) {
-            renderColorQuad(
+            renderColoredObject(
                 borderRenderObject,
                 colors[state(false)],
                 borderPosition,
                 size
             );
-            renderColorQuad(
+            renderColoredObject(
                 borderInnerRenderObject,
                 colors[state(true)],
                 borderInnerPosition,

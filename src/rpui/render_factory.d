@@ -12,6 +12,8 @@ import gapi;
 import application;
 import math.linalg;
 
+import derelict.opengl3.gl;
+
 import rpui.manager;
 import rpui.render_objects;
 import rpui.theme;
@@ -22,7 +24,7 @@ class RenderFactory {
     /// Create render factory for UI manager.
     this(Manager manager) {
         this.manager = manager;
-        this.quadGeometry = gapi.GeometryFactory.createSprite();
+        this.quadGeometry = GeometryFactory.createSprite();
         this.app = Application.getInstance();
     }
 
@@ -182,6 +184,7 @@ class RenderFactory {
     }
 
     /**
+     * TODO: doc
      */
     BaseRenderObject createIcon(in Icon icon) {
         BaseRenderObject object = new BaseRenderObject(quadGeometry);
@@ -190,8 +193,24 @@ class RenderFactory {
         return object;
     }
 
+    /**
+     * TODO: doc
+     */
+    BaseRenderObject createLines(in bool mutable = false) {
+        auto geometry = new Geometry(mutable, GL_LINES);
+        return new BaseRenderObject(geometry);
+    }
+
+    /**
+     * TODO: doc
+     */
+    BaseRenderObject createLineLoop(in bool mutable = false) {
+        auto geometry = new Geometry(mutable, GL_LINE_LOOP);
+        return new BaseRenderObject(geometry);
+    }
+
 private:
     Application app;
-    gapi.Geometry quadGeometry;
+    Geometry quadGeometry;
     Manager manager;
 }

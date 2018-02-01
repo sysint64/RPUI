@@ -120,7 +120,7 @@ class Panel : Widget, FocusScrollNavigation {
 
     override void render(Camera camera) {
         if (background != Background.transparent) {
-            renderer.renderColorQuad(
+            renderer.renderColoredObject(
                 backgroundRenderObject,
                 backgroundColors[background],
                 absolutePosition, size

@@ -5,7 +5,6 @@ import gapi.geometry;
 import derelict.opengl3.gl;
 import gl3n.linalg;
 
-
 class GeometryFactory {
     static Geometry createSprite(in bool dynamic = false, in bool center = false,
                                  in bool strip = true)
@@ -33,7 +32,7 @@ class GeometryFactory {
             }
         }
 
-        spriteGeometry.init();
+        spriteGeometry.createGeometry();
         return spriteGeometry;
     }
 }

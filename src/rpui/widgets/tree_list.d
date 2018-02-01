@@ -8,6 +8,7 @@ module rpui.widgets.tree_list;
 
 import gapi;
 import basic_types;
+import math.linalg;
 
 import rpui.widget;
 import rpui.manager;
@@ -30,6 +31,32 @@ class TreeListNode : Button {
 
     override void onCreate() {
         super.onCreate();
+
+        treeLinesRenderObject = renderFactory.createLines(true);
+        linesGeometry = treeLinesRenderObject.geometry;
+
+        with (linesGeometry) {
+            addVertex(vec2(0.0f, 0.0f));
+            addVertex(vec2(0.0f, 100.0f));
+            addVertex(vec2(0.0f, 100.0f));
+            addVertex(vec2(100.0f, 100.0f));
+
+            addIndices([0, 1, 2, 3]);
+        }
+
+        // linesGeometry.linearFillIndices();
+        linesGeometry.createGeometry();
+    }
+
+    override void render(Camera camera) {
+        super.render(camera);
+
+        renderer.renderColoredObject(
+            treeLinesRenderObject,
+            treeList.linesColor,
+            absolutePosition,
+            vec2(1.0f, 1.0f)
+        );
     }
 
     override void onProgress() {
@@ -57,6 +84,13 @@ class TreeListNode : Button {
         }
 
         updateSize();
+
+        // Lines
+        linesGeometry.updateIndices([0, 1]);
+        linesGeometry.updateVertices([
+            vec2(0.0f, 0.0f),
+            vec2(100.0f, 100.0f),
+        ]);
     }
 
     override void addWidget(Widget widget) {
@@ -79,7 +113,10 @@ class TreeListNode : Button {
 
 private:
     BaseRenderObject openCloseStateRenderObject;
+    BaseRenderObject treeLinesRenderObject;
+    Geometry linesGeometry;
     float innerHeight;
+    bool lastDepth = 0;
 }
 
 class TreeList : Widget {
@@ -87,6 +124,10 @@ class TreeList : Widget {
     @property TreeListNode selected() { return p_selected; }
 
     @Field bool drawLines = true;
+
+    this(in string style = "TreeList") {
+        super(style);
+    }
 
     override void addWidget(Widget widget) {
         super.addWidget(widget);
@@ -96,5 +137,19 @@ class TreeList : Widget {
         }
     }
 
-    package float computedWrapHeight = 0;
+    override void onCreate() {
+        super.onCreate();
+
+        with (manager.theme.tree) {
+            linesColor = data.getNormColor(style ~ ".linesColor");
+            elementMargin = data.getNumber(style ~ ".margin.0");
+            rootElementMargin = data.getNumber(style ~ ".rootMargin.0");
+        }
+    }
+
+package:
+    vec4 linesColor;
+    float rootElementMargin;
+    float elementMargin;
+    float computedWrapHeight = 0;
 }

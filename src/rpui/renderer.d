@@ -276,8 +276,8 @@ class Renderer {
      *     position = position of the quad to be render.
      *     size = size of the quad to be render.
      */
-    void renderColorQuad(BaseRenderObject renderObject, in vec4 color,
-                         in vec2 position, in vec2 size)
+    void renderColoredObject(BaseRenderObject renderObject, in vec4 color,
+                             in vec2 position, in vec2 size)
     {
         colorShader.bind();
 

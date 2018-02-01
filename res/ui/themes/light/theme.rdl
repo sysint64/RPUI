@@ -150,6 +150,12 @@ Panel
                     middle  : 275, 159, 10, 8
                     bottom  : 275, 171, 10, 8
 
+TreeList
+    # linesColor              : 76, 76, 76
+    linesColor              : 0, 0, 0, 50
+    rootMargin              : 8
+    margin                  : 4
+
 TreeListNode
     openIcon                : 4, 152, 9, 9
     closeIcon               : 17, 152, 9, 9

@@ -4,12 +4,10 @@ import settings;
 import std.container;
 import std.conv;
 import derelict.opengl3.gl;
-// import derelict.opengl3.gl3;
 import std.stdio;
 import gl3n.linalg;
 
-
-class Geometry {
+final class Geometry {
     this(in bool dynamic = false, in GLuint renderMode = GL_TRIANGLES) {
         this.dynamic = dynamic;
         this.renderMode = renderMode;
@@ -22,7 +20,7 @@ class Geometry {
         glDeleteBuffers(1, &indicesId);
     }
 
-    void init() {
+    void createGeometry() {
         createVBO();
     }
 
@@ -53,11 +51,32 @@ class Geometry {
 
     void addVertex(in vec2 vertex) {
         vertices.insert(vertex);
+        texCoords.insert(vec2(0, 0));
     }
 
     void addVertex(in vec2 vertex, in vec2 texCoord) {
         vertices.insert(vertex);
         texCoords.insert(texCoord);
+    }
+
+    void updateVertex(in int index, in vec2 vertex) {
+        vertices[index] = vertex;
+
+        glBindBuffer(GL_ARRAY_BUFFER, verticesId);
+        glBufferSubData(GL_ARRAY_BUFFER, index, GLfloat.sizeof*2, vertices[index].value_ptr);
+    }
+
+    void updateVertices(in vec2[] vertices) {
+        this.vertices.clear();
+        this.vertices ~= vertices;
+        remapVertices();
+    }
+
+    void remapVertices() {
+        const verticesSize = to!int(GLfloat.sizeof*2*vertices.length);
+
+        glBindBuffer(GL_ARRAY_BUFFER, verticesId);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, verticesSize, vertices[0].value_ptr);
     }
 
     void addIndex(in GLuint index) {
@@ -66,6 +85,17 @@ class Geometry {
 
     void addIndices(in GLuint[] indices) {
         this.indices ~= indices;
+    }
+
+    void updateIndices(in GLuint[] indices) {
+        this.indices.clear();
+        this.indices ~= indices;
+    }
+
+    void linearFillIndices() {
+        for (int i = 0; i < vertices.length; ++i) {
+            addIndex(i);
+        }
     }
 
 private:
