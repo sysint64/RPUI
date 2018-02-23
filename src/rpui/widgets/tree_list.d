@@ -44,7 +44,6 @@ class TreeListNode : Button {
             addIndices([0, 1, 2, 3]);
         }
 
-        // linesGeometry.linearFillIndices();
         linesGeometry.createGeometry();
     }
 

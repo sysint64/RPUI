@@ -151,3 +151,8 @@ class MyView : View {
 
 ## Documentation
 WIP
+
+## Dependencies
+
+- ftgl
+- csfml
