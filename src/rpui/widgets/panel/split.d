@@ -64,7 +64,7 @@ package struct Split {
 
     /// Calculate split borderPosition, innerPosition and size.
     void calculate() {
-        if (!panel.resizable && !panel.showSplit)
+        if (!panel.userCanResize && !panel.showSplit)
             return;
 
         switch (panel.regionAlign) {

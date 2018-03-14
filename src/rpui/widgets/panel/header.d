@@ -74,7 +74,7 @@ package struct Header {
     }
 
     void onProgress() {
-        if (!panel.allowHide)
+        if (!panel.userCanHide)
             return;
 
         const vec2 size = vec2(panel.size.x, height);
@@ -83,7 +83,7 @@ package struct Header {
     }
 
     void render() {
-        if (!panel.allowHide)
+        if (!panel.userCanHide)
             return;
 
         const headerSize = vec2(panel.size.x, height);

@@ -1,5 +1,5 @@
 Panel
-    allowResize: true
+    userCanResize: true
     regionAlign: right
     align: center
     locationAlign: center
@@ -12,7 +12,8 @@ Panel
     Panel
         name: "testPanel"
         caption: "@TestView.mainPanelCaption"
-        allowHide: true
+        userCanHide: true
+        userCanResize: true
         regionAlign: top
         background: light
         position: 0, 0
@@ -43,8 +44,8 @@ Panel
         position: 0, 0
         size: 0, 300
         caption: "Panel 2"
-        allowResize: true
-        allowHide: true
+        userCanResize: true
+        userCanHide: true
         padding: 0, 100, 0, 0
 
         StackLayout

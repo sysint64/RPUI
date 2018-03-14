@@ -59,7 +59,7 @@ class MyView : View {
     }
 
     @OnMouseWheelListener("testPanel")
-    void onTestPanelMouseWheel(Widget widget, in uint dx, in uint dy) {
+    void onTestPanelMouseWheel(Widget widget, in int dx, in int dy) {
         writeln("dx: ", dx, " dy: ", dy);
     }
 

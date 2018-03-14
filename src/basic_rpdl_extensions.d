@@ -5,37 +5,17 @@ import rpdl.accessors;
 import rpdl.exception;
 import rpdl.node;
 
-class NotAlignException : RPDLException {
-    this() { super("it is not a align value"); }
-    this(in string details) { super(details); }
-}
+alias getAlign = ufcsGetEnum!(Align);
+alias optAlign = ufcsOptEnum!(Align);
 
-class NotOrientationException : RPDLException {
-    this() { super("it is not a orientation value"); }
-    this(in string details) { super(details); }
-}
+alias getOrientation = ufcsGetEnum!(Orientation);
+alias optOrientation = ufcsOptEnum!(Orientation);
 
-class NotRegionAlignException : RPDLException {
-    this() { super("it is not a region align value"); }
-    this(in string details) { super(details); }
-}
+alias getRegionAlign = ufcsGetEnum!(RegionAlign);
+alias optRegionAlign = ufcsOptEnum!(RegionAlign);
 
-class NotVerticalAlignException : RPDLException {
-    this() { super("it is not a vertical align value"); }
-    this(in string details) { super(details); }
-}
-
-alias getAlign = ufcsGetEnum!(Align, NotAlignException);
-alias optAlign = ufcsOptEnum!(Align, NotAlignException);
-
-alias getOrientation = ufcsGetEnum!(Orientation, NotOrientationException);
-alias optOrientation = ufcsOptEnum!(Orientation, NotOrientationException);
-
-alias getRegionAlign = ufcsGetEnum!(RegionAlign, NotRegionAlignException);
-alias optRegionAlign = ufcsOptEnum!(RegionAlign, NotRegionAlignException);
-
-alias getVerticalAlign = ufcsGetEnum!(VerticalAlign, NotVerticalAlignException);
-alias optVerticalAlign = ufcsOptEnum!(VerticalAlign, NotVerticalAlignException);
+alias getVerticalAlign = ufcsGetEnum!(VerticalAlign);
+alias optVerticalAlign = ufcsOptEnum!(VerticalAlign);
 
 Rect getRect(Node node, in string path) {
     return Rect(node.getVec4f(path));

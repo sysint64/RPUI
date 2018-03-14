@@ -61,14 +61,14 @@ class Theme {
      * e.g. for button widget it will be texture coordinates of left, center
      * and right boundaries for different states - Leave, Enter, Click and Focus
      */
-    @property RPDLTree tree() { return p_tree; }
+    @property RpdlTree tree() { return p_tree; }
 
     /// UI Elements texture
     @property Texture skin() { return p_skin; }
     @property ThemeFont regularFont() { return p_regularFont; }
 
 private:
-    RPDLTree p_tree;
+    RpdlTree p_tree;
     Texture p_skin;
     ThemeFont p_regularFont;
     Application app;
@@ -83,7 +83,7 @@ private:
      */
     bool load(in string theme, in bool critical = false) {
         const dir = buildPath(app.resourcesDirectory, "ui", "themes", theme);
-        p_tree = new RPDLTree(dir);
+        p_tree = new RpdlTree(dir);
         string msg = collectExceptionMsg(tree.load("theme.rdl"));
         const isSuccess = msg is null;
 

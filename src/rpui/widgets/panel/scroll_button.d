@@ -37,7 +37,7 @@ package struct ScrollButton {
     Renderer renderer;
     Orientation orientation;
     Panel panel;
-    RPDLNode styleData;
+    RpdlNode styleData;
     vec2 buttonOffset;
     float buttonSize;
 

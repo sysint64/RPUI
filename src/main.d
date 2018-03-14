@@ -55,8 +55,8 @@ void main() {
     app.run();
 
     // Test
-    // RPDLTree data = new RPDLTree("/home/andrey/projects/simulator/simulator/res/ui/layouts/");
-    // data.load("test.rdl.bin", RPDLTree.IOType.bin);
-    // data.save("test.rdl.txt", RPDLTree.IOType.text);
+    // RpdlTree data = new RpdlTree("/home/andrey/projects/simulator/simulator/res/ui/layouts/");
+    // data.load("test.rdl.bin", RpdlTree.FileType.bin);
+    // data.save("test.rdl.txt", RpdlTree.FileType.text);
     // traverse(data.root);
 }

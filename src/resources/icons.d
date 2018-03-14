@@ -1,7 +1,6 @@
 /**
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
- * Authors: Andrey Kabylin
  */
 
 module resources.icons;
@@ -29,7 +28,7 @@ struct IconsConfig {
     bool themed;  /// If themed, then icon texture must placed in theme resources folder.
     vec2 size;  /// Size of one icon.
     vec2 start;  /// Start offset of all icons.
-    vec2 gaps;  /// Spasing beetwen icons.
+    vec2 gaps;  /// Spacing beetwen icons.
 }
 
 /**
@@ -94,7 +93,7 @@ class IconsRes {
      */
     void addIcons(in string group, in string fileName) {
         const path = buildPath(app.resourcesDirectory, "ui", "icons");
-        iconsData[group] = new RPDLTree(path);
+        iconsData[group] = new RpdlTree(path);
         iconsData[group].load(fileName);
         iconsConfig[group] = IconsConfig();
 
@@ -113,7 +112,7 @@ class IconsRes {
 private:
     Application app;
     ImagesRes imagesRes;
-    RPDLTree[string] iconsData;
+    RpdlTree[string] iconsData;
     IconsConfig[string] iconsConfig;
 }
 

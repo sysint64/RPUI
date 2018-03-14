@@ -6,7 +6,7 @@ import gapi.texture;
 import rpdl.node;
 import rpdl.exception;
 
-class NotTextureCoordException : RPDLException {
+class NotTextureCoordException : RpdlException {
     this() { super("it is not a texture coordinate value"); }
     this(in string details) { super(details); }
 }

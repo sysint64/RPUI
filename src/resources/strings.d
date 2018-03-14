@@ -34,7 +34,7 @@ final class StringsRes {
         auto app = Application.getInstance();
         const string path = buildPath(app.resourcesDirectory, "strings", locale);
 
-        stringsRes.strings = new RPDLTree(path);
+        stringsRes.strings = new RpdlTree(path);
         return stringsRes;
     }
 
@@ -50,7 +50,7 @@ final class StringsRes {
     static StringsRes createFromAbsolutePath(in string path) {
         StringsRes stringsRes = new StringsRes();
 
-        stringsRes.strings = new RPDLTree(dirName(path));
+        stringsRes.strings = new RpdlTree(dirName(path));
         stringsRes.strings.load(baseName(path));
 
         return stringsRes;
@@ -82,7 +82,7 @@ final:
     }
 
 private:
-    RPDLTree strings;
+    RpdlTree strings;
 
     auto parseReference(in utfstring source, in size_t position) {
         utfstring reference = "";

@@ -9,7 +9,7 @@ class Settings {
     private this() {}
 
     void load(in string rootDirectory, in string fileName) {
-        settings = new RPDLTree(rootDirectory);
+        settings = new RpdlTree(rootDirectory);
         settings.load(fileName);
     }
 
@@ -46,5 +46,5 @@ class Settings {
     }
 
 private:
-    RPDLTree settings;
+    RpdlTree settings;
 }

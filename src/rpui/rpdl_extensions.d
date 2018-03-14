@@ -15,35 +15,20 @@ import rpui.widgets.panel;
 import rpdl.accessors;
 import rpdl.exception;
 
-class NotPanelBackgroundException : RPDLException {
-    this() { super("it is not a Panel.Background value"); }
-    this(in string details) { super(details); }
-}
-
-class NotCursorIconException : RPDLException {
-    this() { super("it is not a Cursor.Icon value"); }
-    this(in string details) { super(details); }
-}
-
-class NotSizeTypeException : RPDLException {
-    this() { super("it is not a Widget.SizeType value"); }
-    this(in string details) { super(details); }
-}
-
 /// Retrieve `rpui.widgets.panel.Panel.Background` from rpdl tree.
-alias getPanelBackground = ufcsGetEnum!(Panel.Background, NotPanelBackgroundException);
+alias getPanelBackground = ufcsGetEnum!(Panel.Background);
 
 /// Optional retrieve `rpui.widgets.panel.Panel.Background` from rpdl tree.
-alias optPanelBackground = ufcsOptEnum!(Panel.Background, NotPanelBackgroundException);
+alias optPanelBackground = ufcsOptEnum!(Panel.Background);
 
 /// Retrieve `rpui.cursor.Cursor.Icon` from rpdl tree.
-alias getCursorIcon = ufcsGetEnum!(Cursor.Icon, NotCursorIconException);
+alias getCursorIcon = ufcsGetEnum!(Cursor.Icon);
 
 /// Optional retrieve `rpui.cursor.Cursor.Icon` from rpdl tree.
-alias optCursorIcon = ufcsOptEnum!(Cursor.Icon, NotCursorIconException);
+alias optCursorIcon = ufcsOptEnum!(Cursor.Icon);
 
 /// Retrieve `rpui.widget.Widget.SizeType` from rpdl tree.
-alias getWidgetSizeType = ufcsGetEnum!(Widget.SizeType, NotSizeTypeException);
+alias getWidgetSizeType = ufcsGetEnum!(Widget.SizeType);
 
 /// Optional retrieve `rpui.widget.Widget.SizeType` from rpdl tree.
-alias optWidgetSizeType = ufcsOptEnum!(Widget.SizeType, NotSizeTypeException);
+alias optWidgetSizeType = ufcsOptEnum!(Widget.SizeType);

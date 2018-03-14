@@ -21,12 +21,12 @@ import rpui.manager;
 import resources.icons;
 
 /// Renderer is responsible for render different objects such as quads, texts, chains etc.
-class Renderer {
+final class Renderer {
     /// Create renderer for UI manager.
     this(Manager manager) {
-        createShaders();
         this.manager = manager;
         app = Application.getInstance();
+        initShaders();
     }
 
     /**
@@ -301,9 +301,11 @@ private:
     Manager manager;
     Application app;
 
-    void createShaders() {
-        texAtlasShader = Shader.createFromFile("tex_atlas.glsl");
-        maskTexAtlasShader = Shader.createFromFile("mask_tex_atlas.glsl");
-        colorShader = Shader.createFromFile("color.glsl");
+    void initShaders() {
+        with (manager.shadersRes) {
+            texAtlasShader = addShader("texAtlas", "tex_atlas.glsl");
+            maskTexAtlasShader = addShader("maskTexAtlas", "mask_tex_atlas.glsl");
+            colorShader = addShader("color", "color.glsl");
+        }
     }
 }

@@ -1,6 +1,5 @@
 module gapi.shader_uniform;
 
-
 mixin template ShaderUniform() {
     void setUniformFloat(in string location, in float val) {
         chechOrCreateLocation(location);

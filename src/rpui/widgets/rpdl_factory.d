@@ -47,9 +47,9 @@ class RPDLWidgetFactory {
 
     /// Create factory for UI manager and for layout placed in `fileName`.
     this(Manager uiManager, in string fileName) {
-        layoutData = new RPDLTree(dirName(fileName));
-        layoutData.load(baseName(fileName), RPDLTree.IOType.text);
-        debug layoutData.save(baseName(fileName ~ ".bin"), RPDLTree.IOType.bin);
+        layoutData = new RpdlTree(dirName(fileName));
+        layoutData.load(baseName(fileName), RpdlTree.FileType.text);
+        debug layoutData.save(baseName(fileName ~ ".bin"), RpdlTree.FileType.bin);
         this.uiManager = uiManager;
     }
 
@@ -61,7 +61,7 @@ class RPDLWidgetFactory {
     /// Create factory with loading rpdl file from compile time.
     static RPDLWidgetFactory createStatic(string fileName)(Manager uiManager) {
         RPDLWidgetFactory factory = RPDLWidgetFactory(uiManager);
-        layoutData = new RPDLTree(dirName(fileName));
+        layoutData = new RpdlTree(dirName(fileName));
         layoutData.staticLoad!(baseName(fileName))();
         return factory;
     }
@@ -144,7 +144,7 @@ class RPDLWidgetFactory {
     // Tell the system how to interprete types of fields in widgets
     // and how to extract them
     // first argumen is name of type
-    // second is accessor in RPDLTree
+    // second is accessor in RpdlTree
     // third is selector - additional path to find value
     private enum name = 0;
     private enum accessor = 1;
@@ -277,7 +277,7 @@ class RPDLWidgetFactory {
     }
 
 private:
-    RPDLTree layoutData;
+    RpdlTree layoutData;
     Manager uiManager;
     Widget p_rootWidget;
 }

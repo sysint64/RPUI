@@ -1,9 +1,6 @@
 /**
- * Widget base interface.
- *
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
- * Authors: Andrey Kabylin
  */
 
 module rpui.widget;
@@ -24,19 +21,16 @@ import rpui.render_objects;
 import rpui.cursor;
 import rpui.renderer;
 import rpui.scroll;
+import rpui.widget_position;
 
 /// Interface for scrollable widgets.
 interface Scrollable {
-    /// Handle mouse wheel scrolling.
     void onMouseWheelHandle(in int dx, in int dy);
 
-    /// Scroll to particular widget.
     void scrollToWidget(Widget widget);
 }
 
-/**
- * For scrollable widgets and if this widget allow to focus elements.
- */
+/// For scrollable widgets and if this widget allow to focus elements.
 interface FocusScrollNavigation : Scrollable {
     /**
      * Scroll to widget if it out of visible region.
@@ -45,9 +39,6 @@ interface FocusScrollNavigation : Scrollable {
     void borderScrollToWidget(Widget widget);
 }
 
-/**
- * Base class widget.
- */
 class Widget {
     /// Type of sizing for width and height.
     enum SizeType {
@@ -68,28 +59,17 @@ class Widget {
 
 // Properties --------------------------------------------------------------------------------------
 
-    @Field bool resizable = true;  /// User can change size of the widget.
-
-    /// Don't draw skin of widget, e.g. if it's button then button will be transparent.
-    @Field bool withoutSkin = false;
-
     @Field bool visible = true;
     @Field bool enabled = true;
-    @Field bool focusable = true;  /// If true then widget can be focused.
+    @Field bool focusable = true;
 
     /// If true, then focus navigation by children will be limited inside this widget.
     @Field bool finalFocus = false;
-
-    // TODO:
-    // @Field bool autoWidth;
-    // @Field bool autoHeight;
 
     /// Specifies the type of cursor to be displayed when pointing on an element.
     @Field Cursor.Icon cursor;
 
     @Field string name = "";
-    // TODO:
-    // @Field int tag = 0;
 
     /// Some help information about widget, need to display tooltip.
     @Field utfstring hint = "";
@@ -113,30 +93,24 @@ class Widget {
     @Field FrameRect padding = FrameRect(0, 0, 0, 0);
 
     @Field vec2 position = vec2(0, 0);
-    @Field vec2 size = vec2(0, 0);  /// Width and height.
+    @Field vec2 size = vec2(0, 0);
 
     @Field SizeType widthType;  /// Determine how to set width for widget.
     @Field SizeType heightType;  /// Determine how to set height for widget.
 
-    /// Get `size` x component.
     @Field
     @property float width() { return size.x; }
-
-    /// Set `size` x component.
     @property void width(in float val) { size.x = val; }
 
-    /// Get `size` y component.
     @Field
     @property float height() { return size.y; }
-
-    /// Set `size` y component.
     @property void height(in float val) { size.y = val; }
 
-    /// Unique identifier.
     @property size_t id() { return p_id; }
 
     /// Widget root rpdl node from where the data will be extracted.
-    @property string style() { return p_style; }
+    const string style;
+
     @property Widget parent() { return p_parent; }
     @property bool isFocused() { return p_isFocused; }
 
@@ -156,8 +130,74 @@ class Widget {
 
     @property uint depth() { return p_depth; }
 
+private:
+    Camera camera = null;
+    Children p_children;
+
+    size_t p_id;
+    Widget p_parent;
+    uint p_depth = 0;
+
+    // Navigation (for focus)
+    Widget p_nextWidget = null;
+    Widget p_prevWidget = null;
+    Widget p_lastWidget = null;
+    Widget p_firstWidget = null;
+
+    Widget p_associatedWidget = null;
+
+protected:
+    /**
+     * Which part of widget need to render, e.g. if it is a button
+     * then `PartDraws.left` tell that only left side and center will be
+     * rendered, this need for grouping rendering of widgets.
+     *
+     * As example consider this layout of grouping: $(I [button1|button2|button3|button4])
+     *
+     * for $(I button1) `PartDraws` will be $(B left), for $(I button2) and $(I button3) $(B center)
+     * and for $(I button4) it will be $(B right).
+     */
+    enum PartDraws {
+        all,  /// Draw all parts - left, center and right.
+        left,
+        center,
+        right
+    }
+
+    Application app;
+    Manager manager;
+    PartDraws partDraws;
+
 package:
+    bool p_isFocused;
+    bool skipFocus = false;  /// Don't focus this element.
+    bool drawChildren = true;
+    FrameRect extraInnerOffset = FrameRect(0, 0, 0, 0);  /// Extra inner offset besides padding.
+    FrameRect extraOuterOffset = FrameRect(0, 0, 0, 0);  /// Extra outer offset besides margin.
+    bool overlay;
+    vec2 overSize;
+
+    bool isEnter;  /// True if pointed on widget.
+    bool isClick;
+
+    /**
+     * When in rect of element but if another element over this
+     * isOver will still be true.
+     */
+    bool isOver;
+
+    vec2 absolutePosition = vec2(0, 0);
+
+    /// Size of boundary over childern clamped to size of widget as minimum boundary size.
+    vec2 innerBoundarySizeClamped = vec2(0, 0);
+
+    vec2 innerBoundarySize = vec2(0, 0);  /// Size of boundary over childern.
+    vec2 contentOffset = vec2(0, 0);  /// Children offset relative their absolute positions.
+
     @property Widget associatedWidget() { return p_associatedWidget; }
+    @property void associatedWidget(Widget val) { p_associatedWidget = val; }
+
+    @property Renderer renderer() { return manager.renderer; }
     @property RenderFactory renderFactory() { return manager.renderFactory; }
 
     /**
@@ -251,73 +291,6 @@ package:
         return vec2(outerOffset.right, outerOffset.bottom);
     }
 
-private:
-    Camera camera = null;
-    Children p_children;
-
-    size_t p_id;
-    string p_style;
-    Widget p_parent;
-    uint p_depth = 0;
-
-    // Navigation (for focus)
-    Widget p_nextWidget = null;
-    Widget p_prevWidget = null;
-    Widget p_lastWidget = null;
-    Widget p_firstWidget = null;
-
-    Widget p_associatedWidget = null;
-
-protected:
-    /**
-     * Which part of widget need to render, e.g. if it is a button
-     * then `PartDraws.left` tell that only left side and center will be
-     * rendered, this need for grouping rendering of widgets.
-     *
-     * As example consider this layout of grouping: $(I [button1|button2|button3|button4])
-     *
-     * for $(I button1) `PartDraws` will be $(B left), for $(I button2) and $(I button3) $(B center)
-     * and for $(I button4) it will be $(B right).
-     */
-    enum PartDraws {
-        all,  /// Draw all parts - left, center and right.
-        left,
-        center,
-        right
-    }
-
-    Application app;
-    Manager manager;
-    PartDraws partDraws;
-
-package:
-    bool p_isFocused;
-    bool skipFocus = false;  /// Don't focus this element.
-    bool drawChildren = true;
-    FrameRect extraInnerOffset = FrameRect(0, 0, 0, 0);  /// Extra inner offset besides padding.
-    FrameRect extraOuterOffset = FrameRect(0, 0, 0, 0);  /// Extra outer offset besides margin.
-    bool overlay;
-    vec2 overSize;
-
-    bool isEnter;  /// True if pointed on widget.
-    bool isClick;
-
-    /**
-     * When in rect of element but if another element over this
-     * isOver will still be true.
-     */
-    bool isOver;
-
-    vec2 absolutePosition = vec2(0, 0);
-
-    /// Size of boundary over childern clamped to size of widget as minimum boundary size.
-    vec2 innerBoundarySizeClamped = vec2(0, 0);
-
-    vec2 innerBoundarySize = vec2(0, 0);  /// Size of boundary over childern.
-    vec2 contentOffset = vec2(0, 0);  /// Children offset relative their absolute positions.
-
-    @property void associatedWidget(Widget val) { p_associatedWidget = val; }
-
 // Event Listeners ---------------------------------------------------------------------------------
 
 public:
@@ -329,7 +302,7 @@ public:
     alias OnKeyReleasedListener = void delegate(Widget, in KeyCode key);
     alias OnTextEnteredListener = void delegate(Widget, in utfchar key);
     alias OnMouseMoveListener = void delegate(Widget, in uint x, in uint y);
-    alias OnMouseWheelListener = void delegate(Widget, in uint dx, in uint dy);
+    alias OnMouseWheelListener = void delegate(Widget, in int dx, in int dy);
     alias OnMouseEnterListener = void delegate(Widget, in uint x, in uint y);
     alias OnMouseLeaveListener = void delegate(Widget, in uint x, in uint y);
     alias OnMouseDownListener = void delegate(Widget, in uint x, in uint y, in MouseButton button);
@@ -360,10 +333,7 @@ public:
         }
     }
 
-    /// Invoke click event listener.
     alias triggerClick = triggerEvent!("Click");
-
-    /// Invoke double click event listener.
     alias triggerDblClick = triggerEvent!("DblClick");
 
 // Implementation ----------------------------------------------------------------------------------
@@ -371,12 +341,13 @@ public:
     /// Default constructor with default `style`.
     this() {
         app = Application.getInstance();
+        style = "";
     }
 
     /// Construct with custom `style`.
     this(in string style) {
         app = Application.getInstance();
-        this.p_style = style;
+        this.style = style;
     }
 
     /**
@@ -414,7 +385,6 @@ public:
         return null;
     }
 
-    /// Invoke `find` method and filter by name.
     final Widget findWidgetByName(in string name) {
         return find(widget => widget.name == name);
     }
@@ -461,7 +431,6 @@ public:
         innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, innerSize.y);
     }
 
-    /// Invoke onProgress in each of children widget.
     void onProgress() {
         if (!drawChildren)
             return;
@@ -491,16 +460,13 @@ public:
         }
     }
 
-    /// Delete `widget` from view.
     void deleteWidget(Widget targetWidget) {
         deleteWidget(targetWidget.id);
     }
 
-    /// Delete widget by `id`.
     void deleteWidget(size_t id) {
     }
 
-    /// Insert `widget` in root view.
     void addWidget(Widget widget) {
         const index = manager.getNextIndex();
         widget.manager = manager;
@@ -526,7 +492,7 @@ public:
         widget.onCreate();
     }
 
-    /// Determine if `point` is inside widget area
+    /// Determine if `point` is inside widget area.
     bool pointIsEnter(in vec2i point) {
         const Rect rect = Rect(absolutePosition.x, absolutePosition.y, size.x, size.y);
         return pointInRect(point, rect);
@@ -574,7 +540,7 @@ public:
     }
 
     // NOTE: navFocusFront and navFocusBack are symmetrical
-    // focusNext and focusPrev too therefore potential code reduction
+    // focusNext and focusPrev too therefore potential code reduction reductuin
     protected void navFocusFront() {
         if (skipFocus && firstWidget !is null) {
             firstWidget.navFocusFront();
@@ -629,7 +595,6 @@ public:
 
 // Events ------------------------------------------------------------------------------------------
 
-    /// Invoke when widget will create.
     void onCreate() {
     }
 
@@ -741,6 +706,12 @@ public:
     }
 
 package:
+    this(Manager manager) {
+        this.style = "";
+        this.manager = manager;
+        app = Application.getInstance();
+    }
+
     void updateLocationAlign() {
         switch (locationAlign) {
             case Align.left:
@@ -895,13 +866,6 @@ package:
         }
 
         return region;
-    }
-
-    @property Renderer renderer() { return manager.renderer; }
-
-    this(Manager manager) {
-        this.manager = manager;
-        app = Application.getInstance();
     }
 
     void updateAbsolutePosition() {

@@ -1,9 +1,6 @@
 /**
- * Panel widget.
- *
  * Copyright: © 2017 RedGoosePaws
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
- * Authors: Andrey Kabylin
  */
 
 module rpui.widgets.panel;
@@ -44,9 +41,9 @@ class Panel : Widget, FocusScrollNavigation {
     @Field float minSize = 40;  /// Minimum size of panel.
     @Field float maxSize = 999;  /// Maximum size of panel.
     @Field Background background = Background.light;  /// Background color of panel.
-    @Field bool allowResize = false;  /// If true, user can change size of panel.
-    @Field bool allowHide = false;  /// If true, user can hide and show panel.
-    @Field bool allowDrag = false;  /// If true, user can change ordering of panels.
+    @Field bool userCanResize = false;
+    @Field bool userCanHide = false;
+    @Field bool userCanDrag = false;
 
     /// If true, then panel is open and will be rendered all content else only header.
     @Field bool isOpen = true;
@@ -70,14 +67,12 @@ class Panel : Widget, FocusScrollNavigation {
 
     @property utfstring caption() { return p_caption; }
 
-    /// Set `showVerticalScrollButton` and `showHorizontalScrollButton` to `val`.
     @property
     void showScrollButtons(in bool val) {
         showVerticalScrollButton = val;
         showHorizontalScrollButton = val;
     }
 
-    /// Create panel with custom `style`.
     this(in string style = "Panel") {
         super(style);
         skipFocus = true;
@@ -249,7 +244,7 @@ class Panel : Widget, FocusScrollNavigation {
 
     /// Change system cursor when mouse entering split.
     override void onCursor() {
-        if (!resizable || !isOpen || scrollButtonIsClicked)
+        if (!userCanResize || !isOpen || scrollButtonIsClicked)
             return;
 
         if (regionAlign == RegionAlign.top || regionAlign == RegionAlign.bottom) {
@@ -303,13 +298,12 @@ class Panel : Widget, FocusScrollNavigation {
     }
 
     private void onHeaderMouseDown() {
-        if (!header.isEnter || !allowHide)
+        if (!header.isEnter || !userCanHide)
             return;
 
         toggle();
     }
 
-    /// Open panel.
     final void open() {
         if (isOpen)
             return;
@@ -318,7 +312,6 @@ class Panel : Widget, FocusScrollNavigation {
         isOpen = true;
     }
 
-    /// Close panel.
     final void close() {
         if (!isOpen)
             return;
@@ -376,14 +369,14 @@ protected:
             extraInnerOffset.bottom = 0;
         }
 
-        if (allowHide) {
+        if (userCanHide) {
             extraInnerOffset.top = header.height;
         } else {
             extraInnerOffset.top = 0;
         }
 
         // Split extra inner offset
-        if (allowResize || showSplit) {
+        if (userCanResize || showSplit) {
             const thickness = 1;
 
             switch (regionAlign) {

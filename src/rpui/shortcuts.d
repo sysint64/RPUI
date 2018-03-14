@@ -87,7 +87,7 @@ class Shortcuts {
 
         Shortcut[] shortcuts;  /// Composition of shortcuts e.g. Ctrl+X Ctrl+S.
 
-         /**
+        /**
          * Create action from `shortcutString` - constructor will fill `shortcuts`
          * by parsing string - all shortcuts will split by space symbol.
          *
@@ -96,7 +96,6 @@ class Shortcuts {
          * // Corresponds to: shortcuts ~= Shortcut("Ctrl+X")
          * ShortcutAction("Ctrl+X")
          *
-
          * // Corresponds to: shortcuts ~= Shortcut("Ctrl+X") ~ Shortcut("Alt+Shift+C")
          * ShortcutAction("Ctrl+X Alt+C")
          * ---
@@ -114,8 +113,8 @@ class Shortcuts {
 
     /// Load shortcuts from `rpdl` file by `fileName`; `fileName` is absolute.
     this(in string fileName) {
-        shortcutsData = new RPDLTree(dirName(fileName));
-        shortcutsData.load(baseName(fileName), RPDLTree.IOType.text);
+        shortcutsData = new RpdlTree(dirName(fileName));
+        shortcutsData.load(baseName(fileName), RpdlTree.FileType.text);
     }
 
     /// Load shortcuts from `rpdl` file relative to $(I resources/ui/shortcuts).
@@ -146,7 +145,7 @@ class Shortcuts {
 
 private:
     ShortcutAction[string] shortcuts;  /// Available shortcuts.
-    RPDLTree shortcutsData;  /// Shortcuts declared in `rpdl` file.
+    RpdlTree shortcutsData;  /// Shortcuts declared in `rpdl` file.
 
     /// Invoke shortcut action if all keys from shortcut is pressed.
     bool doShortcut(ShortcutAction shortcutAction) {

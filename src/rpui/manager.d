@@ -19,6 +19,7 @@ import basic_types;
 import resources.strings;
 import resources.images;
 import resources.icons;
+import resources.shaders;
 
 import derelict.opengl3.gl;
 import gapi.camera;
@@ -34,9 +35,10 @@ import rpui.renderer;
  * Manager of all widgets.
  */
 class Manager {
-    StringsRes stringsRes = null;  /// String resources for internationalization.
-    ImagesRes imagesRes = null;  /// Image resources.
-    IconsRes iconsRes = null;  /// Icons resources.
+    StringsRes stringsRes;  /// String resources for internationalization.
+    ImagesRes imagesRes;  /// Image resources.
+    IconsRes iconsRes;  /// Icons resources.
+    ShadersRes shadersRes;
 
     private Widget p_widgetUnderMouse = null;
     @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
@@ -57,11 +59,17 @@ class Manager {
             size.y = this.app.windowHeight;
         }
 
-        this.theme = new Theme(themeName);
-        this.renderFactory = new RenderFactory(this);
-        this.renderer = new Renderer(this);
+
         this.imagesRes = new ImagesRes(themeName);
         this.iconsRes = new IconsRes(this.imagesRes);
+        this.shadersRes = new ShadersRes();
+
+        this.theme = new Theme(themeName);
+        this.renderFactory = new RenderFactory(this);
+                            import std.stdio;
+            writeln("Hello world!");
+
+        this.renderer = new Renderer(this);
 
         unfocusedWidgets.reserve(20);
     }
