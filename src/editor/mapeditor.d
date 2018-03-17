@@ -22,6 +22,7 @@ import rpui.widgets.stack_layout;
 import rpui.widgets.panel;
 import rpui.view;
 import rpui.view.attributes;
+import rpui.events;
 
 import math.linalg;
 import std.stdio;
@@ -41,26 +42,31 @@ class MyView : View {
     this(Manager manager, in string laytoutFileName, in string shortcutsFileName) {
         super(manager, laytoutFileName, shortcutsFileName);
         // testPanel.freezeUI(false);
+
+        okButton.events.subscribe!KeyPressedEvent(delegate(in event) {
+            import std.stdio;
+            writeln("Hello world! ", event.key);
+        });
     }
 
     @OnClickListener("okButton")
-    void onOkButtonClick(Widget widget) {
+    void onOkButtonClick() {
         writeln("Hello world! a = ", a);
         a += 1;
         okButton.caption = "YAY!";
         myButton.caption = "WORKS!";
         buttons[2].caption = "YES!";
-        okButton.triggerEvent!("DblClick");
+        // okButton.triggerEvent!("DblClick");
     }
 
-    @OnDblClickListener("okButton")
-    void onOkDblClick(Widget widget) {
-        writeln("Double!");
-    }
+    // @OnDblClickListener("okButton")
+    // void onOkDblClick(Widget widget) {
+    //     writeln("Double!");
+    // }
 
     @OnMouseWheelListener("testPanel")
-    void onTestPanelMouseWheel(Widget widget, in int dx, in int dy) {
-        writeln("dx: ", dx, " dy: ", dy);
+    void onTestPanelMouseWheel(in MouseWheelEvent event) {
+        writeln("dx: ", event.dx, " dy: ", event.dy);
     }
 
     @Shortcut("TestGroup.cancel")
@@ -70,15 +76,18 @@ class MyView : View {
 
     @OnClickListener("closeButton")
     @OnClickListener("cancelButton")
-    void onCancelButtonClick(Widget widget) {
+    void onCancelButtonClick() {
         writeln("Close!");
     }
 }
 
 
-class MapEditor: Application {
+final class MapEditor: Application {
     mixin Singleton!MapEditor;
-    private this() {}
+
+    private this() {
+        super();
+    }
 
     override void onProgress() {
         uiManager.onProgress();
@@ -151,48 +160,15 @@ class MapEditor: Application {
         uiManager.iconsRes.addIcons("icons", "icons.rdl");
         uiManager.iconsRes.addIcons("main toolbar icons", "main_toolbar_icons.rdl");
 
-        view = View.createFromFile!MyView(uiManager, "test.rdl");
-    }
+        events.join(uiManager.events);
+        events.subscribe(uiManager);
 
-    override void onKeyPressed(in KeyCode key) {
-        super.onKeyPressed(key);
-        uiManager.onKeyPressed(key);
+        view = View.createFromFile!MyView(uiManager, "test.rdl");
     }
 
     override void onKeyReleased(in KeyCode key) {
         view.shortcuts.onKeyReleased(key);
-        uiManager.onKeyReleased(key);
         super.onKeyReleased(key);
-    }
-
-    override void onTextEntered(in utfchar key) {
-        super.onTextEntered(key);
-        uiManager.onTextEntered(key);
-    }
-
-    override void onMouseDown(in uint x, in uint y, in MouseButton button) {
-        super.onMouseDown(x, y, button);
-        uiManager.onMouseDown(x, y, button);
-    }
-
-    override void onMouseUp(in uint x, in uint y, in MouseButton button) {
-        super.onMouseUp(x, y, button);
-        uiManager.onMouseUp(x, y, button);
-    }
-
-    override void onDblClick(in uint x, in uint y, in MouseButton button) {
-        super.onDblClick(x, y, button);
-        uiManager.onDblClick(x, y, button);
-    }
-
-    override void onMouseMove(in uint x, in uint y) {
-        super.onMouseMove(x, y);
-        uiManager.onMouseMove(x, y);
-    }
-
-    override void onMouseWheel(in int dx, in int dy) {
-        super.onMouseWheel(dx, dy);
-        uiManager.onMouseWheel(dx, dy);
     }
 
     override void onResize(in uint width, in uint height) {

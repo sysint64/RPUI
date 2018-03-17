@@ -2,7 +2,7 @@ module rpui.widget_resolver;
 
 import rpui.widget;
 
-final class WidgetResolver {
+package final class WidgetResolver {
     private Widget cursor;
 
     this(Widget widget) {

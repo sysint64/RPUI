@@ -19,6 +19,8 @@ import rpui.widgets.rpdl_factory;
 import rpui.view.attributes;
 import rpui.manager;
 import rpui.shortcuts : Shortcuts;
+import rpui.events;
+import rpui.widget_events;
 
 /**
  * View is a container for widgets with additional attributes processing
@@ -98,7 +100,7 @@ private:
      * widget with name uda.widgetName, where uda is attribute
      */
     void readEventAttribute(T : View, string eventName)(T view) {
-        mixin("alias event = " ~ eventName ~ ";");
+        mixin("alias event = " ~ eventName ~ "Listener;");
 
         foreach (symbolName; getSymbolsNamesByUDA!(T, event)) {
             mixin("alias symbol = T." ~ symbolName ~ ";");
@@ -108,31 +110,32 @@ private:
                 Widget widget = findWidgetByName(uda.widgetName);
                 assert(widget !is null, widget.name);
 
-                enum widgetEventName = "on" ~ eventName[2..$];
-                mixin("widget." ~ widgetEventName ~ " = &view." ~ symbolName ~ ";");
+                enum widgetEventName = eventName[2..$];
+
+                // widget.events.subscribe!(ClickEvent)(&view.onOkButtonClick);
+                mixin("widget.events.subscribe!(" ~ widgetEventName ~ "Event)(&view." ~ symbolName ~ ");");
             }
         }
     }
 
     void readEventsAttributes(T : View)(T view) {
         enum events = AliasSeq!(
-            "OnClickListener",
-            "OnDblClickListener",
-            "OnFocusListener",
-            "OnBlurListener",
-            "OnKeyPressedListener",
-            "OnKeyReleasedListener",
-            "OnTextEnteredListener",
-            "OnMouseMoveListener",
-            "OnMouseWheelListener",
-            "OnMouseEnterListener",
-            "OnMouseLeaveListener",
-            "OnMouseDownListener",
-            "OnMouseUpListener"
+            "OnClick",
+            "OnDblClick",
+            "OnFocus",
+            "OnBlur",
+            "OnMouseWheel",
+            "OnKeyReleased",
+            "OnTextEntered",
+            "OnMouseMove",
+            "OnMouseWheel",
+            "OnMouseEnter",
+            "OnMouseLeave",
+            "OnMouseDown",
+            "OnMouseUp"
         );
 
-        foreach (eventName; events) {
-            mixin("alias event = " ~ eventName ~ ";");
+        static foreach (eventName; events) {
             readEventAttribute!(T, eventName)(view);
         }
     }
@@ -164,6 +167,8 @@ private:
                 Widget widget = findWidgetByName(widgetName);
                 assert(widget !is null, widgetName ~ " not found");
 
+                // alias WidgetType = typeof(view.cancelButton);
+                // view.cancelButton = cast(WidgetType) widget;
                 mixin("alias WidgetType = typeof(view." ~ symbolName ~ ");");
                 mixin("view." ~ symbolName ~ " = cast(WidgetType) widget;");
             }
@@ -184,6 +189,8 @@ private:
                 Widget parentWidget = findWidgetByName(parentWidgetName);
                 assert(parentWidget !is null);
 
+                // alias WidgetType = ForeachType!(typeof(view.buttons));
+                // alias symbolType = typeof(view.buttons);
                 mixin("alias WidgetType = ForeachType!(typeof(view." ~ symbolName ~ "));");
                 mixin("alias symbolType = typeof(view." ~ symbolName ~ ");");
 
@@ -200,11 +207,13 @@ private:
                         targetWidget = childWidget;
 
                     auto typedTargetWidget = cast(WidgetType) targetWidget;
-                    immutable string t = "view." ~ symbolName ~ " ~= typedTargetWidget;";
+                    immutable t = "view." ~ symbolName ~ " ~= typedTargetWidget;";
 
                     static if (is(StaticArrayTypeOf!symbolType)) {
+                        // view.buttons[staticArrayIndex] = typedTargetWidget;
                         mixin("view." ~ symbolName ~ "[staticArrayIndex] = typedTargetWidget;");
                     } else {
+                        // view.buttons ~= typedTargetWidget;
                         mixin("view." ~ symbolName ~ " ~= typedTargetWidget;");
                     }
 
@@ -216,10 +225,12 @@ private:
 
     void readShortcutsAttributes(T : View)(T view) {
         foreach (symbolName; getSymbolsNamesByUDA!(T, Shortcut)) {
+            // alias symbol = T.shortcutAction;
             mixin("alias symbol = T." ~ symbolName ~ ";");
 
             foreach (uda; getUDAs!(symbol, Shortcut)) {
                 enum shortcutPath = uda.shortcutPath;
+                // shortcuts.attach(shortcutPath, &view.shortcutAction);
                 shortcuts.attach(shortcutPath, &mixin("view." ~ symbolName));
             }
         }

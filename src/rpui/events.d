@@ -3,32 +3,71 @@ module rpui.events;
 import input;
 import basic_types;
 
-interface Events {
-    void onKeyPressed(in KeyCode key);
-
-    void onKeyReleased(in KeyCode key);
-
-    void onTextEntered(in utfchar key);
-
-    void onMouseDown(in uint x, in uint y, in MouseButton button);
-
-    void onMouseUp(in uint x, in uint y, in MouseButton button);
-
-    void onDblClick(in uint x, in uint y, in MouseButton button);
-
-    void onMouseMove(in uint x, in uint y);
-
-    void onMouseWheel(in int dx, in int dy);
-
-    void onWindowResize(in uint width, in uint height);
+struct KeyPressedEvent {
+    KeyCode key;
 }
 
-final class EventsObserver {
-    void notify(string event, T...)(T args) {
-        auto listener = mixin("this.on" ~ event ~ "Listener");
+struct KeyReleasedEvent {
+    KeyCode key;
+}
 
-        if (listener !is null) {
-            listener(this, args);
-        }
-    }
+struct TextEnteredEvent {
+    utfchar key;
+}
+
+struct MouseDownEvent {
+    uint x;
+    uint y;
+    MouseButton button;
+}
+
+struct MouseUpEvent {
+    uint x;
+    uint y;
+    MouseButton button;
+}
+
+struct DblClickEvent {
+    uint x;
+    uint y;
+    MouseButton button;
+}
+
+struct MouseMoveEvent {
+    uint x;
+    uint y;
+}
+
+struct MouseWheelEvent {
+    int dx;
+    int dy;
+}
+
+struct WindowResizeEvent {
+    uint width;
+    uint height;
+}
+
+interface EventsListener {
+    void onKeyPressed(in KeyPressedEvent event);
+    void onKeyReleased(in KeyReleasedEvent event);
+    void onTextEntered(in TextEnteredEvent event);
+    void onMouseDown(in MouseDownEvent event);
+    void onMouseUp(in MouseUpEvent event);
+    void onDblClick(in DblClickEvent event);
+    void onMouseMove(in MouseMoveEvent event);
+    void onMouseWheel(in MouseWheelEvent event);
+    void onWindowResize(in WindowResizeEvent event);
+}
+
+abstract class EventsListenerEmpty : EventsListener {
+    void onKeyPressed(in KeyPressedEvent event) {}
+    void onKeyReleased(in KeyReleasedEvent event) {}
+    void onTextEntered(in TextEnteredEvent event) {}
+    void onMouseDown(in MouseDownEvent event) {}
+    void onMouseUp(in MouseUpEvent event) {}
+    void onDblClick(in DblClickEvent event) {}
+    void onMouseMove(in MouseMoveEvent event) {}
+    void onMouseWheel(in MouseWheelEvent event) {}
+    void onWindowResize(in WindowResizeEvent event) {}
 }

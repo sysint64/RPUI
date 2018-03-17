@@ -30,15 +30,19 @@ import rpui.widget;
 import rpui.cursor;
 import rpui.render_factory;
 import rpui.renderer;
+import rpui.events;
+import rpui.events_observer;
+import rpui.widget_events;
 
 /**
  * Manager of all widgets.
  */
-class Manager {
+class Manager : EventsListenerEmpty {
     StringsRes stringsRes;  /// String resources for internationalization.
     ImagesRes imagesRes;  /// Image resources.
     IconsRes iconsRes;  /// Icons resources.
     ShadersRes shadersRes;
+    EventsObserver events;
 
     private Widget p_widgetUnderMouse = null;
     @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
@@ -46,7 +50,10 @@ class Manager {
     private this() {
         app = Application.getInstance();
         unfocusedWidgets.reserve(20);
+        events = new EventsObserver();
     }
+
+    private Subscriber rootWidgetSubscriber;
 
     /// Creating manager with particular theme.
     this(in string themeName) {
@@ -58,6 +65,10 @@ class Manager {
             size.x = this.app.windowWidth;
             size.y = this.app.windowHeight;
         }
+
+        events = new EventsObserver();
+        events.join(rootWidget.events);
+        // rootWidgetSubscriber = rootWidget.events.subscribe(rootWidget);
 
         this.imagesRes = new ImagesRes(themeName);
         this.iconsRes = new IconsRes(this.imagesRes);
@@ -141,9 +152,6 @@ class Manager {
                 p_widgetUnderMouse = widget;
                 found = widget;
             }
-
-            widget.isClick = (widget.isClick || widget.isFocused) && widget.isEnter &&
-                app.mouseButton == MouseButton.mouseLeft;
         }
     }
 
@@ -233,31 +241,22 @@ class Manager {
         return freezeSources.empty ? rootWidget : freezeSources.front;
     }
 
-    void onKeyPressed(in KeyCode key) {
-        eventRootWidget.onKeyPressed(key);
-
-        if (focusedWidget !is null && isClickKey(key)) {
+    override void onKeyPressed(in KeyPressedEvent event) {
+        if (focusedWidget !is null && isClickKey(event.key)) {
             focusedWidget.isClick = true;
         }
     }
 
-    void onKeyReleased(in KeyCode key) {
-        eventRootWidget.onKeyReleased(key);
-
-        if (focusedWidget !is null && isClickKey(key) && focusedWidget.isClick) {
+    override void onKeyReleased(in KeyReleasedEvent event) {
+        if (focusedWidget !is null && isClickKey(event.key)) {
             focusedWidget.isClick = false;
-            focusedWidget.triggerClick();
             focusedWidget.onClickActionInvoked();
+            focusedWidget.events.notify(ClickEvent());
+            focusedWidget.events.notify(ClickActionInvokedEvent());
         }
     }
 
-    void onTextEntered(in utfchar key) {
-        eventRootWidget.onTextEntered(key);
-    }
-
-    void onMouseDown(in uint x, in uint y, in MouseButton button) {
-        eventRootWidget.onMouseDown(x, y, button);
-
+    override void onMouseDown(in MouseDownEvent event) {
         foreach_reverse (Widget widget; widgetOrdering) {
             if (widget is null || isWidgetFrozen(widget))
                 continue;
@@ -269,7 +268,7 @@ class Manager {
         }
     }
 
-    void onMouseUp(in uint x, in uint y, in MouseButton button) {
+    override void onMouseUp(in MouseUpEvent event) {
         foreach_reverse (Widget widget; widgetOrdering) {
             if (widget is null || isWidgetFrozen(widget))
                 continue;
@@ -279,28 +278,16 @@ class Manager {
                 break;
             }
         }
-
-        eventRootWidget.onMouseUp(x, y, button);
     }
 
-    void onDblClick(in uint x, in uint y, in MouseButton button) {
-        eventRootWidget.onDblClick(x, y, button);
-    }
-
-    void onMouseMove(in uint x, in uint y) {
-        eventRootWidget.onMouseMove(x, y);
-    }
-
-    void onMouseWheel(in int dx, in int dy) {
-        int horizontalDelta = dx;
-        int verticalDelta = dy;
+    override void onMouseWheel(in MouseWheelEvent event) {
+        int horizontalDelta = event.dx;
+        int verticalDelta = event.dy;
 
         if (isKeyPressed(KeyCode.Shift)) { // Inverse
-            horizontalDelta = dy;
-            verticalDelta = dx;
+            horizontalDelta = event.dy;
+            verticalDelta = event.dx;
         }
-
-        eventRootWidget.onMouseWheel(horizontalDelta, verticalDelta);
 
         Scrollable scrollable = null;
         Widget widget = widgetUnderMouse;
@@ -333,9 +320,7 @@ private:
     void blur() {
         foreach (Widget widget; unfocusedWidgets) {
             widget.p_isFocused = false;
-
-            if (widget.onBlurListener !is null)
-                widget.onBlurListener(widget);
+            widget.events.notify(BlurEvent());
         }
 
         unfocusedWidgets.clear();
@@ -364,18 +349,38 @@ package:
      * Freez UI except `widget`.
      * If `nestedFreeze` is true then will be frozen all children of widget.
      */
-    void freezeUI(Widget widget, bool nestedFreeze = true) {
-        this.freezeSources.insert(widget);
-        this.isNestedFreezeStack.insert(nestedFreeze);
+    void freezeUI(Widget widget, in bool nestedFreeze = true) {
+        silentPreviousEventsEmitter(widget);
+        freezeSources.insert(widget);
+        isNestedFreezeStack.insert(nestedFreeze);
+        events.join(widget.events);
     }
 
     /**
      * Unfreeze UI where source of freezing is `widget`.
      */
     void unfreezeUI(Widget widget) {
-        if (this.freezeSources.front == widget) {
-            this.freezeSources.removeFront();
-            this.isNestedFreezeStack.removeFront();
+        if (freezeSources.front == widget) {
+            freezeSources.removeFront();
+            isNestedFreezeStack.removeFront();
+            unsilentPreviousEventsEmitter(widget);
+            events.unjoin(widget.events);
+        }
+    }
+
+    private void silentPreviousEventsEmitter(Widget widget) {
+        if (freezeSources.empty) {
+            events.silent(rootWidget.events);
+        } else {
+            events.silent(freezeSources.front.events);
+        }
+    }
+
+    private void unsilentPreviousEventsEmitter(Widget widget) {
+        if (freezeSources.empty) {
+            events.unsilent(rootWidget.events);
+        } else {
+            events.unsilent(freezeSources.front.events);
         }
     }
 

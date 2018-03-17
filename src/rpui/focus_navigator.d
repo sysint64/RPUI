@@ -1,6 +1,7 @@
 module rpui.focus_navigator;
 
 import rpui.widget;
+import rpui.widget_events;
 
 package final class FocusNavigator {
     private Widget holder;
@@ -13,6 +14,8 @@ package final class FocusNavigator {
     // focusNext and focusPrev too therefore potential code reduction reductuin
     package void navFocusFront() {
         with (holder) {
+            events.notify(FocusFrontEvent());
+
             if (skipFocus && firstWidget !is null) {
                 firstWidget.focusNavigator.navFocusFront();
             } else {
@@ -43,6 +46,8 @@ package final class FocusNavigator {
 
     package void navFocusBack() {
         with (holder) {
+            events.notify(FocusBackEvent());
+
             if (skipFocus && lastWidget !is null) {
                 lastWidget.focusNavigator.navFocusBack();
             } else {

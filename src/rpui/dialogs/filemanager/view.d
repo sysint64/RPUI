@@ -1,1 +1,0 @@
-module rpui.filemanager.view;

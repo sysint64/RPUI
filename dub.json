@@ -9,6 +9,23 @@
     "libs-posix": ["ftgl", "glu"],
     "libs-windows": ["ftgl", "glu32"],
     "versions": ["FTGLFont"],
+    "targetType": "executable",
+    "targetPath": "build",
+    "configurations": [
+        {
+            "name": "executable"
+        },
+        {
+            "name": "unittest",
+            "targetType": "executable",
+            "preBuildCommands": ["dub run unit-threaded -c gen_ut_main -- -f bin/ut.d"],
+            "mainSourceFile": "bin/ut.d",
+            "excludedSourceFiles": ["src/main.d"],
+            "dependencies": {
+                "unit-threaded": "~>0.7.11"
+            }
+        }
+    ],
     "dependencies": {
         "derelict-sfml2": "~>3.0.2",
         "derelict-gl3": "~>1.0.21",

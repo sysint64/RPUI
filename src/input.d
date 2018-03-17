@@ -119,6 +119,7 @@ enum KeyCode {
     Shift,
     Ctrl,
     Alt,
+    Unspecified,
 };
 
 private static bool[KeyCode] keyPressed;

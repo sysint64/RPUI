@@ -47,6 +47,7 @@ Panel
         userCanResize: true
         userCanHide: true
         padding: 0, 100, 0, 0
+        userCanResize: true
 
         StackLayout
             # padding: 0, 100, 0, 0
@@ -67,6 +68,7 @@ Panel
         blackSplit: true
         finalFocus: true
         margin: 5
+        userCanResize: true
 
         StackLayout
             orientation: vertical
@@ -97,6 +99,7 @@ Panel
         size: 300, 300
         blackSplit: true
         margin: 5
+        userCanResize: true
 
         # Tree -------------------------------------------------------------------------------------
         TreeList

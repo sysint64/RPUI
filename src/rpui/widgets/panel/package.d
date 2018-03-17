@@ -21,6 +21,8 @@ import rpui.scroll;
 import rpui.manager;
 import rpui.cursor;
 import rpui.render_objects;
+import rpui.events;
+import rpui.widget_events;
 
 import rpui.widgets.panel.split;
 import rpui.widgets.panel.header;
@@ -41,7 +43,7 @@ class Panel : Widget, FocusScrollNavigation {
     @Field float minSize = 40;  /// Minimum size of panel.
     @Field float maxSize = 999;  /// Maximum size of panel.
     @Field Background background = Background.light;  /// Background color of panel.
-    @Field bool userCanResize = false;
+    @Field bool userCanResize = true;
     @Field bool userCanHide = false;
     @Field bool userCanDrag = false;
 
@@ -227,6 +229,10 @@ class Panel : Widget, FocusScrollNavigation {
      */
     override void onCreate() {
         super.onCreate();
+
+        events.subscribe!FocusFrontEvent(&open);
+        events.subscribe!FocusBackEvent(&open);
+
         renderFactory.createQuad(backgroundRenderObject);
 
         with (manager.theme.tree) {
@@ -275,7 +281,7 @@ class Panel : Widget, FocusScrollNavigation {
     }
 
     /// Handle mouse down event - avoid it if UI is forzen.
-    override void onMouseDown(in uint x, in uint y, in MouseButton button) {
+    override void onMouseDown(in MouseDownEvent event) {
         if (isFreezingSource() && manager.isNestedFreeze)
             return;
 
@@ -289,12 +295,12 @@ class Panel : Widget, FocusScrollNavigation {
             verticalScrollButton.isClick = verticalScrollButton.isEnter;
             horizontalScrollButton.isClick = horizontalScrollButton.isEnter;
 
-            verticalScrollButton.scrollController.onMouseDown(x, y, button);
-            horizontalScrollButton.scrollController.onMouseDown(x, y, button);
+            verticalScrollButton.scrollController.onMouseDown(event);
+            horizontalScrollButton.scrollController.onMouseDown(event);
         }
 
         onHeaderMouseDown();
-        super.onMouseDown(x, y, button);
+        super.onMouseDown(event);
     }
 
     private void onHeaderMouseDown() {
@@ -333,7 +339,7 @@ class Panel : Widget, FocusScrollNavigation {
         }
     }
 
-    override void onMouseUp(in uint x, in uint y, in MouseButton button) {
+    override void onMouseUp(in MouseUpEvent event) {
         verticalScrollButton.isClick = false;
         horizontalScrollButton.isClick = false;
 
@@ -342,7 +348,7 @@ class Panel : Widget, FocusScrollNavigation {
             unfreezeUI();
         }
 
-        super.onMouseUp(x, y, button);
+        super.onMouseUp(event);
     }
 
     override void onResize() {
@@ -424,17 +430,6 @@ protected:
         }
     }
 
-    // TODO: Uncomment with events observer
-    // override void navFocusFront() {
-    //     open();
-    //     super.navFocusFront();
-    // }
-
-    // override void navFocusBack() {
-    //     open();
-    //     super.navFocusBack();
-    // }
-
 private:
     BaseRenderObject backgroundRenderObject;
     TextRenderObject textRenderObject;
@@ -493,6 +488,6 @@ private:
             size.x = clamp(size.x, minSize, maxSize);
 
         parent.updateAll();
-        parent.onResize();
+        parent.events.notify(ResizeEvent());
     }
 }

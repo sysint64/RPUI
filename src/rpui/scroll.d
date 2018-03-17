@@ -14,6 +14,7 @@ import std.conv : to;
 import application;
 import basic_types;
 import input;
+import rpui.events;
 
 /// Clamp version without assertions.
 private auto clamp(T1, T2, T3)(T1 val, T2 lower, T3 upper) {
@@ -73,7 +74,7 @@ class ScrollController {
         clampValues();
     }
 
-    void onMouseDown(in uint x, in uint y, in MouseButton button) {
+    void onMouseDown(in MouseDownEvent event) {
         buttonClickOffset = p_buttonOffset;
     }
 

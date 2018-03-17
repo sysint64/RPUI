@@ -2,8 +2,9 @@ module rpui.widgets_container;
 
 import std.container.array;
 import rpui.widget;
+import rpui.widget_events;
 
-package class WidgetsContainer {
+package final class WidgetsContainer {
     Widget rootWidget;
     private Array!Widget widgets;
     Widget delegate(Widget) decorator = null;
@@ -39,6 +40,9 @@ package class WidgetsContainer {
     void addWidgetWithoutDecorator(Widget widget) {
         const index = rootWidget.manager.getNextIndex();
         widget.manager = rootWidget.manager;
+
+        widget.events.subscribeWidget(widget);
+        rootWidget.events.join(widget.events);
 
         if (widgets.length == 0) {
             rootWidget.p_firstWidget = widget;

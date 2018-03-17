@@ -26,6 +26,7 @@ import rpui.widget_locator;
 import rpui.focus_navigator;
 import rpui.widgets_container;
 import rpui.widget_resolver;
+import rpui.events;
 
 /// Interface for scrollable widgets.
 interface Scrollable {
@@ -43,7 +44,9 @@ interface FocusScrollNavigation : Scrollable {
     void borderScrollToWidget(Widget widget);
 }
 
-class Widget {
+class Widget : EventsListenerEmpty {
+    WidgetEventsObserver events;
+
     /// Type of sizing for width and height.
     enum SizeType {
         value,  /// Using value from size.
@@ -109,39 +112,43 @@ class Widget {
     @property void height(in float val) { size.y = val; }
 
     @property size_t id() { return p_id; }
+    private size_t p_id;
 
     /// Widget root rpdl node from where the data will be extracted.
     const string style;
 
     @property Widget parent() { return p_parent; }
+    package Widget p_parent;
+
     @property bool isFocused() { return p_isFocused; }
 
     /// Next widget in `parent` children after this.
     @property Widget nextWidget() { return p_nextWidget; }
+    package Widget p_nextWidget = null;
 
     /// Previous widget in `parent` children before this.
     @property Widget prevWidget() { return p_prevWidget; }
+    package Widget p_prevWidget = null;
 
     /// Last widget in `parent` children.
     @property Widget lastWidget() { return p_lastWidget; }
+    package Widget p_lastWidget = null;
 
     /// First widget in `parent` children.
     @property Widget firstWidget() { return p_firstWidget; }
+    package Widget p_firstWidget = null;
 
     @property ref WidgetsContainer children() { return p_children; }
+    private WidgetsContainer p_children;
 
     @property uint depth() { return p_depth; }
+    uint p_depth = 0;
 
-    WidgetEventsSubject eventsSubject = new WidgetEventsSubject();
-    FocusNavigator focusNavigator;
-    WidgetResolver resolver;
+    @property WidgetResolver resolver() { return p_resolver; }
+    private WidgetResolver p_resolver;
 
-private:
-    WidgetsContainer p_children;
-
-    size_t p_id;
-    package Widget p_parent;
-    Widget p_associatedWidget = null;
+    @property FocusNavigator focusNavigator() { return p_focusNavigator; }
+    private FocusNavigator p_focusNavigator;
 
 protected:
     /**
@@ -177,13 +184,6 @@ package:
     bool isEnter;  /// True if pointed on widget.
     bool isClick;
 
-    // Navigation (for focus)
-    Widget p_nextWidget = null;
-    Widget p_prevWidget = null;
-    Widget p_lastWidget = null;
-    Widget p_firstWidget = null;
-    uint p_depth = 0;
-
     /**
      * When in rect of element but if another element over this
      * isOver will still be true.
@@ -198,8 +198,7 @@ package:
     vec2 innerBoundarySize = vec2(0, 0);  /// Size of boundary over childern.
     vec2 contentOffset = vec2(0, 0);  /// Children offset relative their absolute positions.
 
-    @property Widget associatedWidget() { return p_associatedWidget; }
-    @property void associatedWidget(Widget val) { p_associatedWidget = val; }
+    Widget associatedWidget = null;
 
     @property Renderer renderer() { return manager.renderer; }
     @property RenderFactory renderFactory() { return manager.renderFactory; }
@@ -295,52 +294,7 @@ package:
         return vec2(outerOffset.right, outerOffset.bottom);
     }
 
-// Event Listeners ---------------------------------------------------------------------------------
-
 public:
-    alias OnClickListener = void delegate(Widget);
-    alias OnDblClickListener = void delegate(Widget);
-    alias OnFocusListener = void delegate(Widget);
-    alias OnBlurListener = void delegate(Widget);
-    alias OnKeyPressedListener = void delegate(Widget, in KeyCode key);
-    alias OnKeyReleasedListener = void delegate(Widget, in KeyCode key);
-    alias OnTextEnteredListener = void delegate(Widget, in utfchar key);
-    alias OnMouseMoveListener = void delegate(Widget, in uint x, in uint y);
-    alias OnMouseWheelListener = void delegate(Widget, in int dx, in int dy);
-    alias OnMouseEnterListener = void delegate(Widget, in uint x, in uint y);
-    alias OnMouseLeaveListener = void delegate(Widget, in uint x, in uint y);
-    alias OnMouseDownListener = void delegate(Widget, in uint x, in uint y, in MouseButton button);
-    alias OnMouseUpListener = void delegate(Widget, in uint x, in uint y, in MouseButton button);
-
-    OnClickListener onClickListener = null;
-    OnDblClickListener onDblClickListener = null;
-    OnFocusListener onFocusListener = null;
-    OnBlurListener onBlurListener = null;
-    OnKeyPressedListener onKeyPressedListener = null;
-    OnKeyReleasedListener onKeyReleasedListener = null;
-    OnTextEnteredListener onTextEnteredListener = null;
-    OnMouseMoveListener onMouseMoveListener = null;
-    OnMouseWheelListener onMouseWheelListener = null;
-    OnMouseEnterListener onMouseEnterListener = null;
-    OnMouseLeaveListener onMouseLeaveListener = null;
-    OnMouseDownListener onMouseDownListener = null;
-    OnMouseUpListener onMouseUpListener = null;
-
-// Events triggers ---------------------------------------------------------------------------------
-
-    /// Invoke event listener with name `event`.
-    void triggerEvent(string event, T...)(T args) {
-        auto listener = mixin("this.on" ~ event ~ "Listener");
-
-        if (listener !is null) {
-            listener(this, args);
-        }
-    }
-
-    alias triggerClick = triggerEvent!("Click");
-    alias triggerDblClick = triggerEvent!("DblClick");
-
-// Implementation ----------------------------------------------------------------------------------
 
     /// Default constructor with default `style`.
     this() {
@@ -365,9 +319,10 @@ public:
 
     private void createComponents() {
         this.locator = new WidgetLocator(this);
-        this.focusNavigator = new FocusNavigator(this);
+        this.p_focusNavigator = new FocusNavigator(this);
         this.p_children = new WidgetsContainer(this);
-        this.resolver = new WidgetResolver(this);
+        this.p_resolver = new WidgetResolver(this);
+        this.events = new WidgetEventsObserver();
     }
 
     /// Update widget inner bounary and clamped boundary.
@@ -456,8 +411,7 @@ public:
         if (!this.skipFocus)
             focusNavigator.borderScrollToWidget();
 
-        if (onFocusListener !is null)
-            onFocusListener(this);
+        events.notify(FocusEvent());
     }
 
     /// Clear focus from widget
@@ -465,115 +419,35 @@ public:
         manager.unfocusedWidgets.insert(this);
     }
 
-// Events ------------------------------------------------------------------------------------------
-
     void onCreate() {
     }
 
-    void onKeyPressed(in KeyCode key) {
-        foreach (Widget widget; children) {
-            if (widget.isFrozen())
-                continue;
+    private bool memoizedIsClick = false;
 
-            widget.onKeyPressed(key);
-            widget.triggerEvent!("KeyPressed")(key);
-        }
+    override void onMouseDown(in MouseDownEvent event) {
+        isClick = isEnter;
+        memoizedIsClick = isClick;
     }
 
-    void onKeyReleased(in KeyCode key) {
-        foreach (Widget widget; children) {
-            if (widget.isFrozen())
-                continue;
-
-            widget.onKeyReleased(key);
-            widget.triggerEvent!("KeyReleased")(key);
-        }
+    override void onMouseMove(in MouseMoveEvent event) {
+        isClick = isEnter && memoizedIsClick;
     }
 
-    void onTextEntered(in utfchar key) {
-        foreach (Widget widget; children) {
-            if (widget.isFrozen())
-                continue;
+    override void onMouseUp(in MouseUpEvent event) {
+        isClick = false;
+        memoizedIsClick = isClick;
 
-            widget.onTextEntered(key);
-            widget.triggerEvent!("TextEntered")(key);
-        }
-    }
-
-    void onMouseDown(in uint x, in uint y, in MouseButton button) {
-        foreach (Widget widget; children) {
-            if (widget.isFrozen())
-                continue;
-
-            widget.onMouseDown(x, y, button);
-
-            if (widget.isEnter)
-                widget.triggerEvent!("MouseDown")(x, y, button);
-        }
-    }
-
-    void onMouseUp(in uint x, in uint y, in MouseButton button) {
-        foreach (Widget widget; children) {
-            if (widget.isFrozen())
-                continue;
-
-            widget.onMouseUp(x, y, button);
-
-            if (widget.isEnter) {
-                widget.triggerEvent!("MouseUp")(x, y, button);
-                widget.triggerClick();
-            }
-        }
-    }
-
-    void onDblClick(in uint x, in uint y, in MouseButton button) {
-        foreach (Widget widget; children) {
-            if (widget.isFrozen())
-                continue;
-
-            widget.onDblClick(x, y, button);
-
-            if (widget.isEnter)
-                widget.triggerDblClick();
-        }
-    }
-
-    void onMouseMove(in uint x, in uint y) {
-        foreach (Widget widget; children) {
-            if (widget.isFrozen())
-                continue;
-
-            widget.onMouseMove(x, y);
-
-            if (widget.isEnter)
-                widget.triggerEvent!("MouseMove")(x, y);
-        }
-    }
-
-    void onMouseWheel(in int dx, in int dy) {
-        foreach (Widget widget; children) {
-            if (widget.isFrozen())
-                continue;
-
-            widget.onMouseWheel(dx, dy);
-
-            if (widget.isEnter)
-                widget.triggerEvent!("MouseWheel")(dx, dy);
-        }
+        if (isEnter)
+            events.notify(ClickEvent());
     }
 
     /// Override this method if need change behaviour when system cursor have to be changed.
     void onCursor() {
     }
 
-    /// Invoke when widget resize.
     void onResize() {
-        foreach (Widget widget; children) {
-            widget.onResize();
-        }
     }
 
-    /// Invoke when user pressed enter on focused widget.
     void onClickActionInvoked() {
     }
 

@@ -21,8 +21,16 @@ import math.linalg;
 import gapi.shader;
 import gapi.camera;
 import rpui.cursor;
+import rpui.events;
+import rpui.events_observer;
 
 abstract class Application {
+    EventsObserver events;
+
+    this() {
+        events = new EventsObserver();
+    }
+
     static Application getInstance() {
         return MapEditor.getInstance();
     }
@@ -94,29 +102,44 @@ abstract class Application {
 
     void onKeyPressed(in KeyCode key) {
         setKeyPressed(key, true);
+        events.notify(KeyPressedEvent(key));
     }
 
     void onKeyReleased(in KeyCode key) {
         setKeyPressed(key, false);
+        events.notify(KeyReleasedEvent(key));
     }
 
-    void onTextEntered(in utfchar key) {}
+    void onTextEntered(in utfchar key) {
+        events.notify(TextEnteredEvent(key));
+    }
 
     void onMouseDown(in uint x, in uint y, in MouseButton button) {
         p_mouseButton = button;
+        events.notify(MouseDownEvent(x, y, button));
     }
 
     void onMouseUp(in uint x, in uint y, in MouseButton button) {
         p_mouseButton = MouseButton.mouseNone;
+        events.notify(MouseUpEvent(x, y, button));
     }
 
-    void onDblClick(in uint x, in uint y, in MouseButton button) {}
-    void onMouseMove(in uint x, in uint y) {}
-    void onMouseWheel(in int dx, in int dy) {}
+    void onDblClick(in uint x, in uint y, in MouseButton button) {
+        events.notify(DblClickEvent(x, y, button));
+    }
+
+    void onMouseMove(in uint x, in uint y) {
+        events.notify(MouseMoveEvent(x, y));
+    }
+
+    void onMouseWheel(in int dx, in int dy) {
+        events.notify(MouseWheelEvent(dx, dy));
+    }
 
     void onResize(in uint width, in uint height) {
         p_windowWidth = width;
         p_windowHeight = height;
+        events.notify(WindowResizeEvent(width, height));
     }
 
     @property string binDirectory() { return p_binDirectory; }

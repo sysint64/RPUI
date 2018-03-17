@@ -15,6 +15,7 @@ import gapi;
 import rpui.widget;
 import rpui.manager;
 import rpui.render_objects;
+import rpui.events;
 
 class Checkbox : Widget {
     @Field Align textAlign = Align.left;
@@ -69,8 +70,8 @@ class Checkbox : Widget {
         }
     }
 
-    override void onMouseDown(in uint x, in uint y, in MouseButton button) {
-        super.onMouseDown(x, y, button);
+    override void onMouseDown(in MouseDownEvent event) {
+        super.onMouseDown(event);
 
         if (isEnter) {
             checked = !checked;
