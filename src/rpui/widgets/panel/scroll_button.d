@@ -181,7 +181,7 @@ package struct ScrollButton {
         scrollController.pollButton();
     }
 
-    void onProgress() {
+    void progress() {
         Rect rect;
 
         if (orientation == Orientation.horizontal) {

@@ -83,7 +83,7 @@ class View {
 
     /// Find widget in relative view root widget.
     Widget findWidgetByName(in string name) {
-        return rootWidget.findWidgetByName(name);
+        return rootWidget.resolver.findWidgetByName(name);
     }
 
 private:

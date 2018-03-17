@@ -125,7 +125,7 @@ class RPDLWidgetFactory {
         readFields!T(widget, widgetNode);
 
         if (parentWidget !is null) {
-            parentWidget.addWidget(widget);
+            parentWidget.children.addWidget(widget);
         } else {
             p_rootWidget = uiManager.rootWidget;
             uiManager.addWidget(widget);

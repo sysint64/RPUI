@@ -73,7 +73,7 @@ package struct Header {
         return panel.isOpen ? "Open" : "Close";
     }
 
-    void onProgress() {
+    void progress() {
         if (!panel.userCanHide)
             return;
 

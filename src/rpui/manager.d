@@ -59,7 +59,6 @@ class Manager {
             size.y = this.app.windowHeight;
         }
 
-
         this.imagesRes = new ImagesRes(themeName);
         this.iconsRes = new IconsRes(this.imagesRes);
         this.shadersRes = new ShadersRes();
@@ -77,7 +76,7 @@ class Manager {
     /// Invokes all `onProgress` of all widgets and `poll` widgets.
     void onProgress() {
         cursor = Cursor.Icon.normal;
-        rootWidget.onProgress();
+        rootWidget.progress();
         poll();
         blur();
         app.cursor = cursor;
@@ -150,17 +149,17 @@ class Manager {
 
     /// Add `widget` to root children.
     void addWidget(Widget widget) {
-        rootWidget.addWidget(widget);
+        rootWidget.children.addWidget(widget);
     }
 
     /// Delete `widget` from root children.
     void deleteWidget(Widget widget) {
-        rootWidget.deleteWidget(widget);
+        rootWidget.children.deleteWidget(widget);
     }
 
     /// Delete widget by `id` from root children.
     void deleteWidget(in size_t id) {
-        rootWidget.deleteWidget(id);
+        rootWidget.children.deleteWidget(id);
     }
 
     /// Push scissor to stack.
@@ -213,13 +212,13 @@ class Manager {
     /// Focusing next widget after the current focused widget.
     void focusNext() {
         if (focusedWidget !is null)
-            focusedWidget.focusNext();
+            focusedWidget.focusNavigator.focusNext();
     }
 
     /// Focusing previous widget before the current focused widget.
     void focusPrev() {
         if (focusedWidget !is null)
-            focusedWidget.focusPrev();
+            focusedWidget.focusNavigator.focusPrev();
     }
 
 // Events ------------------------------------------------------------------------------------------
@@ -390,7 +389,7 @@ package:
             return false;
 
         if (!isNestedFreeze) {
-            auto freezeSourceParent = widget.closest(
+            auto freezeSourceParent = widget.resolver.closest(
                 (Widget parent) => freezeSources.front == parent
             );
             return freezeSourceParent is null;

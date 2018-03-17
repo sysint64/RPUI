@@ -56,11 +56,11 @@ class Button : Widget {
         this.drawChildren = false;
     }
 
-    override void onProgress() {
-        updateAbsolutePosition();
-        updateLocationAlign();
-        updateVerticalLocationAlign();
-        updateRegionAlign();
+    override void progress() {
+        locator.updateAbsolutePosition();
+        locator.updateLocationAlign();
+        locator.updateVerticalLocationAlign();
+        locator.updateRegionAlign();
         updateSize();
     }
 

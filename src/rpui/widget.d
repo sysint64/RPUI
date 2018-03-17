@@ -21,7 +21,11 @@ import rpui.render_objects;
 import rpui.cursor;
 import rpui.renderer;
 import rpui.scroll;
-import rpui.widget_position;
+import rpui.widget_events;
+import rpui.widget_locator;
+import rpui.focus_navigator;
+import rpui.widgets_container;
+import rpui.widget_resolver;
 
 /// Interface for scrollable widgets.
 interface Scrollable {
@@ -54,8 +58,6 @@ class Widget {
     struct Field {
         string name = "";  /// Override name of variable.
     }
-
-    alias Children = Array!Widget;
 
 // Properties --------------------------------------------------------------------------------------
 
@@ -126,24 +128,19 @@ class Widget {
     /// First widget in `parent` children.
     @property Widget firstWidget() { return p_firstWidget; }
 
-    @property ref Children children() { return p_children; }
+    @property ref WidgetsContainer children() { return p_children; }
 
     @property uint depth() { return p_depth; }
 
+    WidgetEventsSubject eventsSubject = new WidgetEventsSubject();
+    FocusNavigator focusNavigator;
+    WidgetResolver resolver;
+
 private:
-    Camera camera = null;
-    Children p_children;
+    WidgetsContainer p_children;
 
     size_t p_id;
-    Widget p_parent;
-    uint p_depth = 0;
-
-    // Navigation (for focus)
-    Widget p_nextWidget = null;
-    Widget p_prevWidget = null;
-    Widget p_lastWidget = null;
-    Widget p_firstWidget = null;
-
+    package Widget p_parent;
     Widget p_associatedWidget = null;
 
 protected:
@@ -165,10 +162,10 @@ protected:
     }
 
     Application app;
-    Manager manager;
     PartDraws partDraws;
 
 package:
+    Manager manager;
     bool p_isFocused;
     bool skipFocus = false;  /// Don't focus this element.
     bool drawChildren = true;
@@ -179,6 +176,13 @@ package:
 
     bool isEnter;  /// True if pointed on widget.
     bool isClick;
+
+    // Navigation (for focus)
+    Widget p_nextWidget = null;
+    Widget p_prevWidget = null;
+    Widget p_lastWidget = null;
+    Widget p_firstWidget = null;
+    uint p_depth = 0;
 
     /**
      * When in rect of element but if another element over this
@@ -340,53 +344,30 @@ public:
 
     /// Default constructor with default `style`.
     this() {
-        app = Application.getInstance();
-        style = "";
+        this.app = Application.getInstance();
+        this.style = "";
+        createComponents();
     }
 
     /// Construct with custom `style`.
     this(in string style) {
-        app = Application.getInstance();
+        this.app = Application.getInstance();
         this.style = style;
+        createComponents();
     }
 
-    /**
-     * Find the first element that satisfying the `predicate`
-     * traversing up through its ancestors.
-     */
-    final Widget closest(bool delegate(Widget) predicate) {
-        Widget widget = this.parent;
-
-        while (widget !is null) {
-            if (predicate(widget))
-                return widget;
-
-            widget = widget.parent;
-        }
-
-        return null;
+    package this(Manager manager) {
+        this.app = Application.getInstance();
+        this.style = "";
+        this.manager = manager;
+        createComponents();
     }
 
-    /**
-     * Find the first element that satisfying the `predicate`
-     * traversing down through its ancestors.
-     */
-    final Widget find(bool delegate(Widget) predicate) {
-        foreach (Widget widget; children) {
-            if (predicate(widget))
-                return widget;
-
-            Widget foundWidget = widget.find(predicate);
-
-            if (foundWidget !is null)
-                return foundWidget;
-        }
-
-        return null;
-    }
-
-    final Widget findWidgetByName(in string name) {
-        return find(widget => widget.name == name);
+    private void createComponents() {
+        this.locator = new WidgetLocator(this);
+        this.focusNavigator = new FocusNavigator(this);
+        this.p_children = new WidgetsContainer(this);
+        this.resolver = new WidgetResolver(this);
     }
 
     /// Update widget inner bounary and clamped boundary.
@@ -431,7 +412,7 @@ public:
         innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, innerSize.y);
     }
 
-    void onProgress() {
+    void progress() {
         if (!drawChildren)
             return;
 
@@ -439,7 +420,7 @@ public:
             if (!widget.visible)
                 continue;
 
-            widget.onProgress();
+            widget.progress();
         }
 
         updateBoundary();
@@ -447,8 +428,6 @@ public:
 
     /// Render widget in camera view.
     void render(Camera camera) {
-        this.camera = camera;
-
         if (!drawChildren)
             return;
 
@@ -458,38 +437,6 @@ public:
 
             widget.render(camera);
         }
-    }
-
-    void deleteWidget(Widget targetWidget) {
-        deleteWidget(targetWidget.id);
-    }
-
-    void deleteWidget(size_t id) {
-    }
-
-    void addWidget(Widget widget) {
-        const index = manager.getNextIndex();
-        widget.manager = manager;
-
-        if (children.length == 0) {
-            p_firstWidget = widget;
-            p_lastWidget = widget;
-        }
-
-        // Links
-        widget.p_parent = this;
-        widget.p_nextWidget = p_firstWidget;
-        widget.p_prevWidget = p_lastWidget;
-        widget.p_depth = p_depth + 1;
-
-        p_lastWidget.p_nextWidget = widget;
-        p_firstWidget.p_prevWidget = widget;
-        p_lastWidget = widget;
-
-        // Insert
-        children.insert(widget);
-        manager.widgetOrdering.insert(widget);
-        widget.onCreate();
     }
 
     /// Determine if `point` is inside widget area.
@@ -507,7 +454,7 @@ public:
         p_isFocused = true;
 
         if (!this.skipFocus)
-            borderScrollToWidget();
+            focusNavigator.borderScrollToWidget();
 
         if (onFocusListener !is null)
             onFocusListener(this);
@@ -516,81 +463,6 @@ public:
     /// Clear focus from widget
     void blur() {
         manager.unfocusedWidgets.insert(this);
-    }
-
-// Handle focus navigation -------------------------------------------------------------------------
-
-    private void borderScrollToWidget() {
-        Widget parent = this.parent;
-
-        while (parent !is null) {
-            auto scrollable = cast(Scrollable) parent;
-            auto focusScrollNavigation = cast(FocusScrollNavigation) parent;
-            parent = parent.p_parent;
-
-            if (scrollable is null)
-                continue;
-
-            if (focusScrollNavigation is null) {
-                scrollable.scrollToWidget(this);
-            } else {
-                focusScrollNavigation.borderScrollToWidget(this);
-            }
-        }
-    }
-
-    // NOTE: navFocusFront and navFocusBack are symmetrical
-    // focusNext and focusPrev too therefore potential code reduction reductuin
-    protected void navFocusFront() {
-        if (skipFocus && firstWidget !is null) {
-            firstWidget.navFocusFront();
-        } else {
-            this.focus();
-        }
-    }
-
-    /// Focus to the next widget.
-    void focusNext() {
-        if (skipFocus && isFocused) {
-            navFocusFront();
-            return;
-        }
-
-        if (p_parent.p_lastWidget != this) {
-            this.p_nextWidget.navFocusFront();
-        } else {
-            if (p_parent.finalFocus) {
-                p_parent.navFocusFront();
-            } else {
-                p_parent.focusNext();
-            }
-        }
-    }
-
-    protected void navFocusBack() {
-        if (skipFocus && lastWidget !is null) {
-            lastWidget.navFocusBack();
-        } else {
-            this.focus();
-        }
-    }
-
-    /// Focus to the previous widget.
-    void focusPrev() {
-        if (skipFocus && isFocused) {
-            navFocusBack();
-            return;
-        }
-
-        if (p_parent.p_firstWidget != this) {
-            this.p_prevWidget.navFocusBack();
-        } else {
-            if (p_parent.finalFocus) {
-                p_parent.navFocusBack();
-            } else {
-                p_parent.focusPrev();
-            }
-        }
     }
 
 // Events ------------------------------------------------------------------------------------------
@@ -706,57 +578,7 @@ public:
     }
 
 package:
-    this(Manager manager) {
-        this.style = "";
-        this.manager = manager;
-        app = Application.getInstance();
-    }
-
-    void updateLocationAlign() {
-        switch (locationAlign) {
-            case Align.left:
-                absolutePosition.x = parent.absolutePosition.x + parent.innerOffset.left +
-                    outerOffset.left;
-                break;
-
-            case Align.right:
-                absolutePosition.x = parent.absolutePosition.x + parent.size.x -
-                    parent.innerOffset.right - outerOffset.right - size.x;
-                break;
-
-            case Align.center:
-                const halfSize = (parent.innerSize.x - size.x) / 2;
-                absolutePosition.x = parent.absolutePosition.x + parent.innerOffset.left
-                    + floor(halfSize);
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    void updateVerticalLocationAlign() {
-        switch (verticalLocationAlign) {
-            case VerticalAlign.top:
-                absolutePosition.y = parent.absolutePosition.y + parent.innerOffset.top +
-                    outerOffset.top;
-                break;
-
-            case VerticalAlign.bottom:
-                absolutePosition.y = parent.absolutePosition.y + parent.size.y -
-                    parent.innerOffset.bottom - outerOffset.bottom - size.y;
-                break;
-
-            case VerticalAlign.middle:
-                const halfSize = (parent.innerSize.y - size.y) / 2;
-                absolutePosition.y = parent.absolutePosition.y + parent.innerOffset.top +
-                    floor(halfSize);
-                break;
-
-            default:
-                break;
-        }
-    }
+    WidgetLocator locator;
 
     /// This method invokes when widget size is updated.
     public void updateSize() {
@@ -775,10 +597,10 @@ package:
 
     /// Recalculate size and position of widget and children widgets.
     void updateAll() {
-        updateAbsolutePosition();
-        updateLocationAlign();
-        updateVerticalLocationAlign();
-        updateRegionAlign();
+        locator.updateAbsolutePosition();
+        locator.updateLocationAlign();
+        locator.updateVerticalLocationAlign();
+        locator.updateRegionAlign();
         updateSize();
 
         foreach (Widget widget; children) {
@@ -787,100 +609,6 @@ package:
 
         updateBoundary();
         updateSize();
-    }
-
-    void updateRegionAlign() {
-        if (regionAlign == RegionAlign.none)
-            return;
-
-        const FrameRect region = findRegion();
-        const vec2 regionSize = vec2(
-            parent.innerSize.x - region.right  - region.left - outerOffsetSize.x,
-            parent.innerSize.y - region.bottom - region.top  - outerOffsetSize.y
-        );
-
-        switch (regionAlign) {
-            case RegionAlign.client:
-                size.x = regionSize.x;
-                size.y = regionSize.y;
-                position = vec2(region.left, region.top);
-                break;
-
-            case RegionAlign.top:
-                size.x = regionSize.x;
-                position = vec2(region.left, region.top);
-                break;
-
-            case RegionAlign.bottom:
-                size.x = regionSize.x;
-                position.x = region.left;
-                position.y = parent.innerSize.y - outerSize.y - region.bottom;
-                break;
-
-            case RegionAlign.left:
-                size.y = regionSize.y;
-                position = vec2(region.left, region.top);
-                break;
-
-            case RegionAlign.right:
-                size.y = regionSize.y;
-                position.x = parent.innerSize.x - outerSize.x - region.right;
-                position.y = region.top;
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    FrameRect findRegion() {
-        FrameRect region;
-
-        foreach (Widget widget; parent.children) {
-            if (widget == this)
-                break;
-
-            if (!widget.visible || widget.regionAlign == RegionAlign.none)
-                continue;
-
-            switch (widget.regionAlign) {
-                case RegionAlign.top:
-                    region.top += widget.size.y + widget.outerOffset.bottom;
-                    break;
-
-                case RegionAlign.left:
-                    region.left += widget.size.x + widget.outerOffset.right;
-                    break;
-
-                case RegionAlign.bottom:
-                    region.bottom += widget.size.y + widget.outerOffset.top;
-                    break;
-
-                case RegionAlign.right:
-                    region.right += widget.size.x + widget.outerOffset.left;
-                    break;
-
-                default:
-                    continue;
-            }
-        }
-
-        return region;
-    }
-
-    void updateAbsolutePosition() {
-        vec2 res = vec2(0, 0);
-	Widget lastParent = parent;
-
-        while (lastParent !is null) {
-            res += lastParent.position - lastParent.contentOffset;
-            res += lastParent.innerOffsetStart + lastParent.outerOffsetStart;
-            lastParent = lastParent.parent;
-        }
-
-        absolutePosition = position + res + outerOffsetStart;
-        absolutePosition.x = round(absolutePosition.x);
-        absolutePosition.y = round(absolutePosition.y);
     }
 
     void freezeUI(bool isNestedFreeze = true) {

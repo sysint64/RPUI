@@ -45,10 +45,10 @@ class Checkbox : Widget {
         this.drawChildren = false;
     }
 
-    override void onProgress() {
-        updateAbsolutePosition();
-        updateLocationAlign();
-        updateVerticalLocationAlign();
+    override void progress() {
+        locator.updateAbsolutePosition();
+        locator.updateLocationAlign();
+        locator.updateVerticalLocationAlign();
     }
 
     override void render(Camera camera) {

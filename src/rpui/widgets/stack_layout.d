@@ -23,26 +23,28 @@ class StackLayout : Widget {
     this() {
         super();
         skipFocus = true;
+        setDecorator();
     }
 
     this(Orientation orientation) {
         super();
         this.orientation = orientation;
         skipFocus = true;
+        setDecorator();
     }
 
-    override void addWidget(Widget widget) {
-        assert(parent !is null, "Can't add widget to widget without parent!");
-        Widget cell = new Widget();
-        super.addWidget(cell);
-        cell.addWidget(widget);
-        cell.associatedWidget = widget;
-        cell.skipFocus = true;
+    private void setDecorator() {
+        children.decorateWidgets(delegate(Widget widget) {
+            Widget cell = new Widget();
+            cell.associatedWidget = widget;
+            cell.skipFocus = true;
+            return cell;
+        });
     }
 
-    override void onProgress() {
-        super.onProgress();
-        updateAbsolutePosition();
+    override void progress() {
+        super.progress();
+        locator.updateAbsolutePosition();
 
         vec2 lastPosition = vec2(0, 0);
         Widget widget = null;
@@ -69,7 +71,7 @@ class StackLayout : Widget {
                 fmax(maxSize.y, widget.outerSize.y),
             );
 
-            cell.updateAbsolutePosition();  // TODO: Maybe it's deprecated
+            cell.locator.updateAbsolutePosition();  // TODO: Maybe it's deprecated
         }
 
         updateSize();

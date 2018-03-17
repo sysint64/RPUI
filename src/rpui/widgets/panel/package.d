@@ -78,22 +78,22 @@ class Panel : Widget, FocusScrollNavigation {
         skipFocus = true;
     }
 
-    override void onProgress() {
-        super.onProgress();
+    override void progress() {
+        super.progress();
         split.isEnter = false;
 
         handleResize();
-        header.onProgress();
+        header.progress();
 
         // Update render elements position and sizes
-        updateRegionAlign();
-        updateAbsolutePosition();
+        locator.updateRegionAlign();
+        locator.updateAbsolutePosition();
         updateInnerOffset();
         updateSize();
 
         if (!isFreezingSource() && !isFrozen()) {
-            horizontalScrollButton.onProgress();
-            verticalScrollButton.onProgress();
+            horizontalScrollButton.progress();
+            verticalScrollButton.progress();
         } else {
             horizontalScrollButton.isEnter = false;
             verticalScrollButton.isEnter = false;
@@ -424,15 +424,16 @@ protected:
         }
     }
 
-    override void navFocusFront() {
-        open();
-        super.navFocusFront();
-    }
+    // TODO: Uncomment with events observer
+    // override void navFocusFront() {
+    //     open();
+    //     super.navFocusFront();
+    // }
 
-    override void navFocusBack() {
-        open();
-        super.navFocusBack();
-    }
+    // override void navFocusBack() {
+    //     open();
+    //     super.navFocusBack();
+    // }
 
 private:
     BaseRenderObject backgroundRenderObject;

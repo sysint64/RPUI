@@ -45,10 +45,10 @@ class Label : Widget {
         this.drawChildren = false;
     }
 
-    override void onProgress() {
-        updateAbsolutePosition();
-        updateLocationAlign();
-        updateVerticalLocationAlign();
+    override void progress() {
+        locator.updateAbsolutePosition();
+        locator.updateLocationAlign();
+        locator.updateVerticalLocationAlign();
         updateSize();
     }
 

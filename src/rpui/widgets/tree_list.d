@@ -17,7 +17,7 @@ import rpui.render_objects;
 import rpui.widgets.button;
 
 class TreeListNode : Button {
-    package TreeList p_treeList = null;
+    private TreeList p_treeList;
     @property TreeList treeList() { return p_treeList; }
 
     @Field bool isOpen = true;
@@ -31,6 +31,8 @@ class TreeListNode : Button {
 
     override void onCreate() {
         super.onCreate();
+
+        setTreeList();
 
         treeLinesRenderObject = renderFactory.createLines(true);
         linesGeometry = treeLinesRenderObject.geometry;
@@ -47,6 +49,15 @@ class TreeListNode : Button {
         linesGeometry.createGeometry();
     }
 
+    private void setTreeList() {
+        if (auto treeList = cast(TreeList) parent) {
+            p_treeList = treeList;
+        } else {
+            auto treeListNode = cast(TreeListNode) parent;
+            p_treeList = treeListNode.treeList;
+        }
+    }
+
     override void render(Camera camera) {
         super.render(camera);
 
@@ -60,11 +71,11 @@ class TreeListNode : Button {
         }
     }
 
-    override void onProgress() {
+    override void progress() {
         debug assert(treeList !is null);
 
-        super.onProgress();
-        updateAbsolutePosition();
+        super.progress();
+        locator.updateAbsolutePosition();
 	position.x = 20;
 
         innerHeight = size.y;
@@ -81,7 +92,7 @@ class TreeListNode : Button {
 
             treeListNode.position.y = innerHeight;
             innerHeight += treeListNode.innerHeight;
-            treeListNode.onProgress();
+            treeListNode.progress();
         }
 
         updateSize();
@@ -119,14 +130,6 @@ class TreeListNode : Button {
 
     private bool needUpdateLines = true;
 
-    override void addWidget(Widget widget) {
-        super.addWidget(widget);
-
-        if (auto treeListNode = cast(TreeListNode) widget) {
-            treeListNode.p_treeList = p_treeList;
-        }
-    }
-
     protected override void updateSize() {
         overSize.y = innerHeight;
         size.x = treeList.size.x - treeDepth * 20;
@@ -153,14 +156,6 @@ class TreeList : Widget {
 
     this(in string style = "TreeList") {
         super(style);
-    }
-
-    override void addWidget(Widget widget) {
-        super.addWidget(widget);
-
-        if (auto treeListNode = cast(TreeListNode) widget) {
-            treeListNode.p_treeList = this;
-        }
     }
 
     override void onCreate() {
