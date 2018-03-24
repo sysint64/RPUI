@@ -14,6 +14,7 @@ import std.conv;
 
 import basic_types;
 import application;
+import path;
 
 import rpdl.tree;
 
@@ -26,43 +27,33 @@ final class StringsRes {
 
     private this() {}
 
-    ///
-    static StringsRes createForLanguage(in string locale) {
+    static StringsRes createForLanguage(in Pathes pathes, in string locale) {
         StringsRes stringsRes = new StringsRes();
         stringsRes.locale = locale;
 
-        auto app = Application.getInstance();
-        const string path = buildPath(app.resourcesDirectory, "strings", locale);
-
+        const string path = buildPath(pathes.resources, "strings", locale);
         stringsRes.strings = new RpdlTree(path);
+
         return stringsRes;
     }
 
-    ///
-    static StringsRes createFromFile(in string fileName) {
-        auto app = Application.getInstance();
-        const string path = buildPath(app.resourcesDirectory, "strings", fileName);
-
+    static StringsRes createFromFile(in Pathes pathes, in string fileName) {
+        const string path = buildPath(pathes.resources, "strings", fileName);
         return createFromAbsolutePath(path);
     }
 
-    ///
     static StringsRes createFromAbsolutePath(in string path) {
         StringsRes stringsRes = new StringsRes();
-
         stringsRes.strings = new RpdlTree(dirName(path));
         stringsRes.strings.load(baseName(path));
-
         return stringsRes;
     }
 
 final:
-    ///
     void addStrings(in string fileName) {
         strings.load(fileName);
     }
 
-    ///
     utfstring parseString(in utfstring source) {
         utfstring result = "";
 
@@ -104,45 +95,37 @@ private:
     }
 }
 
+version(unittest) {
+    import unit_threaded;
+}
+
 ///
+@("Should parse strings with strings resources")
 unittest {
-    import test.core;
-    import dunit.assertion;
-
-    initApp();
-
-    auto app = Application.getInstance();
-    const path = buildPath(app.testsDirectory, "strings", "en.rdl");
-
-    StringsRes stringsRes = StringsRes.createFromAbsolutePath(path);
+    const pathes = initPathes();
+    const path = buildPath(pathes.tests, "strings", "en.rdl");
+    auto stringsRes = StringsRes.createFromAbsolutePath(path);
 
     with (stringsRes) {
         const t = parseReference("@TestView.mainPanelCaption Test string", 0);
-        assertEquals(t.value, "This is main panel"d);
-        assertEquals(t.endPosition, "TestView.mainPanelCaption".length);
-        assertEquals(parseString("Hello, @TestView.mainPanelCaption"), "Hello, This is main panel"d);
-        assertEquals(parseString("Without reference"), "Without reference"d);
+        t.value.shouldEqual("This is main panel"d);
+        t.endPosition.shouldEqual("TestView.mainPanelCaption".length);
+        parseString("Hello, @TestView.mainPanelCaption").shouldEqual("Hello, This is main panel"d);
+        parseString("Without reference").shouldEqual("Without reference"d);
     }
 }
 
-
-// Parsing UTF String
+@("Should parse strings with UTF strings resources")
 unittest {
-    import test.core;
-    import dunit.assertion;
-
-    initApp();
-
-    auto app = Application.getInstance();
-    const path = buildPath(app.testsDirectory, "strings", "ru.rdl");
-
-    StringsRes stringsRes = StringsRes.createFromAbsolutePath(path);
+    const pathes = initPathes();
+    const path = buildPath(pathes.tests, "strings", "ru.rdl");
+    auto stringsRes = StringsRes.createFromAbsolutePath(path);
 
     with (stringsRes) {
         const t = parseReference("@TestView.mainPanelCaption Test string", 0);
-        assertEquals(t.value, "Это главная панель"d);
-        assertEquals(t.endPosition, "TestView.mainPanelCaption".length);
-        assertEquals(parseString("Привет, @TestView.mainPanelCaption"), "Привет, Это главная панель"d);
-        assertEquals(parseString("Привет, @TestView.mainPanelCaption").length, 26);
+        t.value.shouldEqual("Это главная панель"d);
+        t.endPosition.shouldEqual("TestView.mainPanelCaption".length);
+        parseString("Привет, @TestView.mainPanelCaption").shouldEqual("Привет, Это главная панель"d);
+        parseString("Привет, @TestView.mainPanelCaption").length.shouldEqual(26);
     }
 }

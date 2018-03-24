@@ -10,7 +10,6 @@ import derelict.opengl3.gl;
 
 import math.linalg;
 
-
 class Texture {
     struct Coord {
         vec2 offset;

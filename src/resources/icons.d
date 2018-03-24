@@ -7,7 +7,6 @@ module resources.icons;
 
 import std.path;
 
-import application;
 import math.linalg;
 import gapi.texture;
 
@@ -15,6 +14,7 @@ import resources.images;
 
 import rpdl.tree;
 import math.linalg;
+import path;
 
 struct Icon {
     string group;
@@ -36,14 +36,16 @@ struct IconsConfig {
  * where declared default config such as size of icon, gaps etc.
  */
 class IconsRes {
+    const Pathes pathes;
+
     /**
      * Create icons resources, this constructor get `imagesRes` as argument
      * for getting textures for icons.
      */
-    this(ImagesRes imagesRes) {
+    this(in Pathes pathes, ImagesRes imagesRes) {
         assert(imagesRes !is null);
         this.imagesRes = imagesRes;
-        this.app = Application.getInstance();
+        this.pathes = pathes;
     }
 
     /// Get texture instance for particular group icons.
@@ -92,7 +94,7 @@ class IconsRes {
      * res/ui/icons folder.
      */
     void addIcons(in string group, in string fileName) {
-        const path = buildPath(app.resourcesDirectory, "ui", "icons");
+        const path = buildPath(pathes.resources, "ui", "icons");
         iconsData[group] = new RpdlTree(path);
         iconsData[group].load(fileName);
         iconsConfig[group] = IconsConfig();
@@ -110,68 +112,78 @@ class IconsRes {
     }
 
 private:
-    Application app;
     ImagesRes imagesRes;
     RpdlTree[string] iconsData;
     IconsConfig[string] iconsConfig;
 }
 
+version(unittest) {
+    import unit_threaded;
 
+    IconsRes iconsRes;
+
+    private void setUp() {
+        // TODO: encapsulate
+        import derelict.sfml2.graphics;
+        DerelictSFML2Graphics.load();
+
+        const pathes = initPathes();
+        auto imagesRes = new ImagesRes(pathes, "light");
+        iconsRes = new IconsRes(pathes, imagesRes);
+
+        iconsRes.addIcons("icons", "icons.rdl");
+        iconsRes.addIcons("main toolbar icons", "main_toolbar_icons.rdl");
+    }
+}
+
+@("Should have correct icons bounds for icons.rdl")
 unittest {
-    import test.core;
-    import dunit.assertion;
-
-    initApp();
-
-    auto imagesRes = new ImagesRes("light");
-    auto iconsRes = new IconsRes(imagesRes);
-
-    iconsRes.addIcons("icons", "icons.rdl");
-    iconsRes.addIcons("main toolbar icons", "main_toolbar_icons.rdl");
-
-// icons.rdl ---------------------------------------------------------------------------------------
+    setUp();
 
     const folder = iconsRes.getIcon("icons", "folder");
 
-    assertEquals("icons", folder.group);
-    assertEquals("folder", folder.name);
+    folder.group.shouldEqual("icons");
+    folder.name.shouldEqual("folder");
 
     with (folder.texCoord) {
-        assertEquals(18, size.x);
-        assertEquals(18, size.y);
-        assertEquals(30, offset.x);
-        assertEquals(9, offset.y);
+        size.x.shouldEqual(18);
+        size.y.shouldEqual(18);
+        offset.x.shouldEqual(30);
+        offset.y.shouldEqual(9);
     }
 
     const material = iconsRes.getIcon("icons", "material");
 
     with (material.texCoord) {
-        assertEquals(72, offset.x);
-        assertEquals(72, offset.y);
+        offset.x.shouldEqual(72);
+        offset.y.shouldEqual(72);
     }
 
     const info = iconsRes.getIcon("icons", "info");
 
     with (info.texCoord) {
-        assertEquals(114, offset.x);
-        assertEquals(30, offset.y);
+        offset.x.shouldEqual(114);
+        offset.y.shouldEqual(30);
     }
+}
 
-// main_toolbar_icons.rdl --------------------------------------------------------------------------
+@("Should have correct bounds for main_toolbar_icons.rdl")
+unittest {
+    setUp();
 
     const wave = iconsRes.getIcon("main toolbar icons", "wave");
 
     with (wave.texCoord) {
-        assertEquals(48, size.x);
-        assertEquals(48, size.y);
-        assertEquals(148, offset.x);
-        assertEquals(50, offset.y);
+        size.x.shouldEqual(48);
+        size.y.shouldEqual(48);
+        offset.x.shouldEqual(148);
+        offset.y.shouldEqual(50);
     }
 
     const arc = iconsRes.getIcon("main toolbar icons", "arc");
 
     with (arc.texCoord) {
-        assertEquals(50, offset.x);
-        assertEquals(99, offset.y);
+        offset.x.shouldEqual(50);
+        offset.y.shouldEqual(99);
     }
 }

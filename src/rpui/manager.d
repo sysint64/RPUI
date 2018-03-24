@@ -70,8 +70,8 @@ class Manager : EventsListenerEmpty {
         events.join(rootWidget.events);
         // rootWidgetSubscriber = rootWidget.events.subscribe(rootWidget);
 
-        this.imagesRes = new ImagesRes(themeName);
-        this.iconsRes = new IconsRes(this.imagesRes);
+        this.imagesRes = new ImagesRes(app.pathes, themeName);
+        this.iconsRes = new IconsRes(app.pathes, this.imagesRes);
         this.shadersRes = new ShadersRes();
 
         this.theme = new Theme(themeName);

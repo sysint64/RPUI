@@ -155,7 +155,7 @@ final class MapEditor: Application {
         // spriteGeometry.bind();
 
         uiManager = new Manager(settings.theme);
-        uiManager.stringsRes = StringsRes.createForLanguage(settings.language);
+        uiManager.stringsRes = StringsRes.createForLanguage(pathes, settings.language);
         uiManager.stringsRes.addStrings("test_view.rdl");
         uiManager.iconsRes.addIcons("icons", "icons.rdl");
         uiManager.iconsRes.addIcons("main toolbar icons", "main_toolbar_icons.rdl");

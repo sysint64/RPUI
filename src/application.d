@@ -23,30 +23,24 @@ import gapi.camera;
 import rpui.cursor;
 import rpui.events;
 import rpui.events_observer;
+import path;
 
 abstract class Application {
     EventsObserver events;
+    const Pathes pathes;
 
     this() {
         events = new EventsObserver();
+        pathes = initPathes();
     }
 
     static Application getInstance() {
         return MapEditor.getInstance();
     }
 
-    final void initPath() {
-        p_binDirectory = dirName(thisExePath());
-        p_resourcesDirectory = buildPath(p_binDirectory, "res");
-        p_testsDirectory = buildPath(p_binDirectory, "tests");
-
-        writeln(p_resourcesDirectory);
-    }
-
     final void run(in bool runLoop = true) {
         p_cursor = new Cursor();
 
-        initPath();
         initSFML();
         initGL();
         log = new Log();
@@ -142,9 +136,9 @@ abstract class Application {
         events.notify(WindowResizeEvent(width, height));
     }
 
-    @property string binDirectory() { return p_binDirectory; }
-    @property string resourcesDirectory() { return p_resourcesDirectory; }
-    @property string testsDirectory() { return p_testsDirectory; }
+    @property string binDirectory() { return pathes.bin; }
+    @property string resourcesDirectory() { return pathes.resources; }
+    @property string testsDirectory() { return pathes.tests; }
     @property Settings settings() { return p_settings; }
 
     @property uint screenWidth() { return p_screenWidth; }
@@ -153,7 +147,6 @@ abstract class Application {
     @property uint windowHeight() { return p_windowHeight; }
     @property uint viewportWidth() { return p_windowWidth; }
     @property uint viewportHeight() { return p_windowHeight; }
-
 
     @property vec2i mousePos() { return p_mousePos; }
     @property vec2i mouseClickPos() { return p_mouseClickPos; }
@@ -170,9 +163,6 @@ abstract class Application {
     @property sfWindowHandle windowHandle() { return p_windowHandle; }
 
 private:
-    string p_binDirectory;
-    string p_resourcesDirectory;
-    string p_testsDirectory;
     sfWindow* window;
     sfWindowHandle p_windowHandle;
     Log log;

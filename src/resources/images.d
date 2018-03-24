@@ -9,13 +9,16 @@ module resources.images;
 import std.path;
 import application;
 import gapi.texture;
+import path;
 
 /**
  * Get textures from files.
  */
 final class ImagesRes {
-    this(in string uiTheme = "") {
-        app = Application.getInstance();
+    const Pathes pathes;
+
+    this(in Pathes pathes, in string uiTheme = "") {
+        this.pathes = pathes;
         this.uiTheme = uiTheme;
     }
 
@@ -26,8 +29,8 @@ final class ImagesRes {
         const key = "res:" ~ fileName;
 
         if (fileName !in textures) {
-            const path = buildPath(app.resourcesDirectory, "images", fileName);
-            textures[key] = new gapi.Texture(path);
+            const path = buildPath(pathes.resources, "images", fileName);
+            textures[key] = new Texture(path);
         }
 
         return textures[key];
@@ -42,10 +45,10 @@ final class ImagesRes {
         const key = "ui:" ~ fileName;
 
         if (fileName !in textures) {
-            const path = buildPath(app.resourcesDirectory, "ui", "themes",
+            const path = buildPath(pathes.resources, "ui", "themes",
                                    uiTheme, "images", fileName);
 
-            textures[key] = new gapi.Texture(path);
+            textures[key] = new Texture(path);
         }
 
         return textures[key];
@@ -58,28 +61,28 @@ final class ImagesRes {
         const key = "absolute:" ~ fileName;
 
         if (fileName !in textures) {
-            textures[key] = new gapi.Texture(fileName);
+            textures[key] = new Texture(fileName);
         }
 
         return textures[key];
     }
 
 private:
-    Application app;
     Texture[string] textures;
     string uiTheme;
 }
 
-
 ///
+@("Should not throw any exception when loading resources")
 unittest {
-    import test.core;
-    initApp();
+    const pathes = initPathes();
+    auto res = new ImagesRes(pathes, "light");
 
-    auto res = new ImagesRes("light");
-    auto app = Application.getInstance();
+    // TODO: encapsulate
+    import derelict.sfml2.graphics;
+    DerelictSFML2Graphics.load();
 
     res.getTexture(buildPath("icons", "main_toolbar_icons.png"));
     res.getTextureForUiTheme(buildPath("icons", "icons.png"));
-    res.getTextureFromAbsolutePath(buildPath(app.resourcesDirectory, "images", "icons", "main_toolbar_icons.png"));
+    res.getTextureFromAbsolutePath(buildPath(pathes.resources, "images", "icons", "main_toolbar_icons.png"));
 }

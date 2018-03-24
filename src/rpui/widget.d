@@ -45,8 +45,6 @@ interface FocusScrollNavigation : Scrollable {
 }
 
 class Widget : EventsListenerEmpty {
-    WidgetEventsObserver events;
-
     /// Type of sizing for width and height.
     enum SizeType {
         value,  /// Using value from size.
@@ -149,6 +147,9 @@ class Widget : EventsListenerEmpty {
 
     @property FocusNavigator focusNavigator() { return p_focusNavigator; }
     private FocusNavigator p_focusNavigator;
+
+    @property WidgetEventsObserver events() { return p_events; }
+    private WidgetEventsObserver p_events;
 
 protected:
     /**
@@ -322,7 +323,7 @@ public:
         this.p_focusNavigator = new FocusNavigator(this);
         this.p_children = new WidgetsContainer(this);
         this.p_resolver = new WidgetResolver(this);
-        this.events = new WidgetEventsObserver();
+        this.p_events = new WidgetEventsObserver();
     }
 
     /// Update widget inner bounary and clamped boundary.
@@ -486,18 +487,18 @@ package:
     }
 
     void freezeUI(bool isNestedFreeze = true) {
-        this.manager.freezeUI(this, isNestedFreeze);
+        manager.freezeUI(this, isNestedFreeze);
     }
 
     void unfreezeUI() {
-        this.manager.unfreezeUI(this);
+        manager.unfreezeUI(this);
     }
 
     bool isFrozen() {
-        return this.manager.isWidgetFrozen(this);
+        return manager.isWidgetFrozen(this);
     }
 
     bool isFreezingSource() {
-        return this.manager.isWidgetFreezingSource(this);
+        return manager.isWidgetFreezingSource(this);
     }
 }
