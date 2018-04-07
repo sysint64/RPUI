@@ -1,9 +1,8 @@
 /**
  * System cursor.
  *
- * Copyright: © 2017 RedGoosePaws
+ * Copyright: © 2017 Andrey Kabylin
  * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
- * Authors: Andrey Kabylin
  *
  * Macros:
  *     CURSOR_IMG = <img src="https://tronche.com/gui/x/xlib/appendix/b/$1" style="max-width: 16px; max-height: 16px; display: block; margin: auto">
