@@ -153,8 +153,9 @@ Panel
 TreeList
     # linesColor              : 76, 76, 76
     linesColor              : 0, 0, 0, 20
-    rootMargin              : 20
-    margin                  : 14
+    rootLineLength          : 14
+    lineLength              : 10
+    nodeLeftOffset          : 20
 
 TreeListNode
     openIcon                : 4, 152, 9, 9

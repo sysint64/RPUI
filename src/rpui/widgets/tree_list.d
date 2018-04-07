@@ -76,7 +76,7 @@ class TreeListNode : Button {
 
         super.progress();
         locator.updateAbsolutePosition();
-	position.x = 20;
+	position.x = treeList.nodeLeftOffset;
 
         innerHeight = size.y;
         treeList.computedWrapHeight += size.y;
@@ -102,26 +102,28 @@ class TreeListNode : Button {
     }
 
     private void updateLines() {
-        // TODO: get rif of hardcode
-        const length = parent == treeList ? 14 : 10;
-        const firstHeight = 10.0f;
+        const length = parent == treeList ? treeList.rootLineLength : treeList.lineLength;
         const isFirst = this == parent.children.front;
-        const center = 9.0f;
+        const halfHeight = height / 2.0f - 1.0f;  // -1 due-to line height
 
         if (treeDepth == 2) {
-            const top = isFirst ? firstHeight : absolutePosition.y - prevWidget.absolutePosition.y;
+            const deltaBeetwenNodes = absolutePosition.y - prevWidget.absolutePosition.y;
+
+            // TODO: -1 is magic a number and it's just adjustment for root node line.
+            const top = isFirst ? halfHeight - 1.0f : deltaBeetwenNodes;
+
             linesGeometry.updateIndices([0, 1, 2, 3]);
             linesGeometry.updateVertices([
-                vec2(0.0f, -center),
-                vec2(-length, -center),
-                vec2(-length, -center - 1.0f),
-                vec2(-length, -center + top - 1.0f),
+                vec2(0.0f, -halfHeight),
+                vec2(-length, -halfHeight),
+                vec2(-length, -halfHeight),
+                vec2(-length, -halfHeight + top),
             ]);
         } else {
             linesGeometry.updateIndices([0, 1]);
             linesGeometry.updateVertices([
-                vec2(0.0f, -9.0f),
-                vec2(-length, -9.0f)
+                vec2(0.0f, -halfHeight),
+                vec2(-length, -halfHeight)
             ]);
         }
 
@@ -163,14 +165,16 @@ class TreeList : Widget {
 
         with (manager.theme.tree) {
             linesColor = data.getNormColor(style ~ ".linesColor");
-            elementMargin = data.getNumber(style ~ ".margin.0");
-            rootElementMargin = data.getNumber(style ~ ".rootMargin.0");
+            lineLength = data.getNumber(style ~ ".lineLength.0");
+            rootLineLength = data.getNumber(style ~ ".rootLineLength.0");
+            nodeLeftOffset = data.getNumber(style ~ ".nodeLeftOffset.0");
         }
     }
 
 package:
     vec4 linesColor;
-    float rootElementMargin;
-    float elementMargin;
     float computedWrapHeight = 0;
+    float lineLength;
+    float rootLineLength;
+    float nodeLeftOffset;
 }
