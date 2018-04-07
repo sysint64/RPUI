@@ -436,10 +436,11 @@ public:
 
     override void onMouseUp(in MouseUpEvent event) {
         isClick = false;
-        memoizedIsClick = isClick;
 
-        if (isEnter)
+        if (isEnter && memoizedIsClick)
             events.notify(ClickEvent());
+
+        memoizedIsClick = isClick;
     }
 
     /// Override this method if need change behaviour when system cursor have to be changed.
