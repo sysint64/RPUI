@@ -39,6 +39,7 @@ import rpui.widgets.checkbox;
 import rpui.widgets.label;
 import rpui.widgets.multiline_label;
 import rpui.widgets.tree_list;
+import rpui.widgets.text_input;
 
 /// Factory for construction view from rpdl layout data.
 class RPDLWidgetFactory {
@@ -92,6 +93,9 @@ class RPDLWidgetFactory {
 
             case "TreeListNode":
                 return createWidget!TreeListNode(widgetNode, parentWidget);
+
+            case "TextInput":
+                return createWidget!TextInput(widgetNode, parentWidget);
 
             default:
                 return null;
@@ -168,10 +172,6 @@ class RPDLWidgetFactory {
         ["vec4ui", "optVec4ui", ""],
 
         ["Texture.Coord", "optTexCoord", ""],
-        ["Align", "optAlign", ".0"],
-        ["VerticalAlign", "optVerticalAlign", ".0"],
-        ["Orientation", "optOrientation", ".0"],
-        ["RegionAlign", "optRegionAlign", ".0"],
         ["Rect", "optRect", ""],
         ["FrameRect", "optFrameRect", ""],
         ["IntRect", "optIntRect", ""],
@@ -231,6 +231,11 @@ class RPDLWidgetFactory {
         }
 
         if (!foundType) {
+            static if (is(SymbolType == enum)) {
+                const value = widgetNode.optEnum!(SymbolType)(symbolName ~ ".0", defaultValue);
+                mixin("widget." ~ symbolName ~ " = value;");
+            } else
+
             // Check if unsupported type is array
             static if (is(SymbolType == CT[], CT)) {
                 auto array = widgetNode.getNode(symbolName);

@@ -76,9 +76,6 @@ class Manager : EventsListenerEmpty {
 
         this.theme = new Theme(themeName);
         this.renderFactory = new RenderFactory(this);
-                            import std.stdio;
-            writeln("Hello world!");
-
         this.renderer = new Renderer(this);
 
         unfocusedWidgets.reserve(20);
@@ -151,6 +148,12 @@ class Manager : EventsListenerEmpty {
                 widget.isEnter = true;
                 p_widgetUnderMouse = widget;
                 found = widget;
+
+                if (cursor == Cursor.Icon.normal) {
+                    cursor = widget.cursor;
+                }
+
+                break;
             }
         }
     }

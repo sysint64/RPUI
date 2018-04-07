@@ -43,6 +43,7 @@ class Button : Widget {
 
     this(in string style = "Button", in string iconsGroup = "icons") {
         super(style);
+
         this.drawChildren = false;
         this.iconsGroup = iconsGroup;
 
@@ -52,6 +53,7 @@ class Button : Widget {
 
     this(bool allowCheck) {
         super();
+
         this.allowCheck = allowCheck;
         this.drawChildren = false;
     }
@@ -100,7 +102,7 @@ class Button : Widget {
         }
     }
 
-protected:
+private:
     vec2 focusOffsets;
     float focusResize;
     float textLeftMargin;
@@ -121,7 +123,7 @@ protected:
     Array!IconRengerObjectData iconsRengerObjects;
     TextRenderObject textRenderObject;
 
-    override void onCreate() {
+    protected override void onCreate() {
         super.onCreate();
 
         const states = ["Leave", "Enter", "Click"];

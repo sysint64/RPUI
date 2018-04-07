@@ -93,6 +93,7 @@ Panel
                 heightType: wrapContent
 
             Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
+            TextInput size: 100, 21 margin: 5 text: "Hello world!"
 
     Panel
         regionAlign: left

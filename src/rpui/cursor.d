@@ -17,7 +17,7 @@ import x11_cursorfont;
 import application;
 
 /// System cursor.
-class Cursor {
+final class Cursor {
     enum Icon {
         none = -1,
         hand = XC_hand1,  /// $(CURSOR_IMG 58.gif)
@@ -50,13 +50,13 @@ class Cursor {
 
     /// Invoke OS specified methods to update system cursor icon.
     @property void icon(in Icon newIcon) {
-        if (this.p_icon == newIcon)
+        if (p_icon == newIcon || p_icon == Icon.none)
             return;
 
-        this.p_icon = newIcon;
+        p_icon = newIcon;
 
         version (linux) {
-            cursor = XCreateFontCursor(display, cast(uint) this.p_icon);
+            cursor = XCreateFontCursor(display, cast(uint) p_icon);
             XDefineCursor(display, app.windowHandle, cursor);
             XFlush(display);
         }
