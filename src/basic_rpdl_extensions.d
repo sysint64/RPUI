@@ -5,18 +5,6 @@ import rpdl.accessors;
 import rpdl.exception;
 import rpdl.node;
 
-alias getAlign = ufcsGetEnum!(Align);
-alias optAlign = ufcsOptEnum!(Align);
-
-alias getOrientation = ufcsGetEnum!(Orientation);
-alias optOrientation = ufcsOptEnum!(Orientation);
-
-alias getRegionAlign = ufcsGetEnum!(RegionAlign);
-alias optRegionAlign = ufcsOptEnum!(RegionAlign);
-
-alias getVerticalAlign = ufcsGetEnum!(VerticalAlign);
-alias optVerticalAlign = ufcsOptEnum!(VerticalAlign);
-
 Rect getRect(Node node, in string path) {
     return Rect(node.getVec4f(path));
 }

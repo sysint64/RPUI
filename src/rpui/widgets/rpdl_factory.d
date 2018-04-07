@@ -26,7 +26,6 @@ import basic_types;
 import rpui.widget;
 import rpui.view.attributes;
 import rpui.manager;
-import rpui.rpdl_extensions;
 
 import gapi.texture;
 
@@ -175,10 +174,6 @@ class RPDLWidgetFactory {
         ["Rect", "optRect", ""],
         ["FrameRect", "optFrameRect", ""],
         ["IntRect", "optIntRect", ""],
-
-        ["Cursor.Icon", "optCursorIcon", ".0"],
-        ["Panel.Background", "optPanelBackground", ".0"],
-        ["Widget.SizeType", "optWidgetSizeType", ".0"],
     );
 
     /**
