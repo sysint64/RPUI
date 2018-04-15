@@ -183,6 +183,20 @@ class RenderFactory {
     }
 
     /**
+     * Create quad render object and extract texture coordinates from theme rpdl
+     * data by path.
+     */
+    BaseRenderObject createQuad(in string path) {
+        BaseRenderObject object = new BaseRenderObject(quadGeometry);
+
+        auto texCoord = manager.theme.tree.data.getTexCoord(path);
+        texCoord.normalize(manager.theme.skin);
+        object.setTexCoord(texCoord);
+
+        return object;
+    }
+
+    /**
      * TODO: doc
      */
     BaseRenderObject createIcon(in Icon icon) {

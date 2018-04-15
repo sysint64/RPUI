@@ -95,7 +95,7 @@ class Button : Widget {
         renderer.renderText(textRenderObject, state, textPosition, textSize);
 
         // Icons
-        foreach (iconRenderObject; iconsRengerObjects) {
+        foreach (iconRenderObject; iconsRenderObjects) {
             const iconPos = absolutePosition + iconRenderObject.offset;
             renderer.renderQuad(iconRenderObject.renderObject, "default", iconPos);
         }
@@ -119,7 +119,7 @@ private:
         vec2 offset = vec2(0, 0);
     }
 
-    Array!IconRengerObjectData iconsRengerObjects;
+    Array!IconRengerObjectData iconsRenderObjects;
     TextRenderObject textRenderObject;
 
     protected override void onCreate() {
@@ -144,6 +144,15 @@ private:
             textLeftMargin = data.getNumber(style ~ ".textLeftMargin.0");
             textRightMargin = data.getNumber(style ~ ".textRightMargin.0");
 
+            updateIcons();
+        }
+    }
+
+    public final void updateIcons() {
+        iconsRenderObjects.clear();
+        iconsAreaSize = 0;
+
+        with (manager.theme.tree) {
             const iconSize = manager.iconsRes.getIconsConfig(iconsGroup).size;
             const iconOffsets = data.getVec2f(style ~ ".iconOffsets");
             const iconVerticalOffset = round((size.y - iconSize.y) / 2.0f);
@@ -161,7 +170,7 @@ private:
                     iconOffsets + vec2(iconOffset, iconVerticalOffset),
                 );
 
-                iconsRengerObjects.insert(iconRenderObject);
+                iconsRenderObjects.insert(iconRenderObject);
             }
 
             if (icons.length > 0)

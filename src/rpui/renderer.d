@@ -88,7 +88,18 @@ final class Renderer {
     void renderQuad(BaseRenderObject renderObject, in string state,
                     in vec2 position)
     {
-        vec2 size = renderObject.texCoordinates[state].size;
+        const size = renderObject.texCoordinates[state].size;
+        renderQuad(renderObject, state, position, size);
+    }
+
+    void renderQuad(BaseRenderObject renderObject, in vec2 position) {
+        const state = "default";
+        const size = renderObject.texCoordinates[state].size;
+        renderQuad(renderObject, state, position, size);
+    }
+
+    void renderQuad(BaseRenderObject renderObject, in vec2 position, in vec2 size) {
+        const state = "default";
         renderQuad(renderObject, state, position, size);
     }
 

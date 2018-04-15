@@ -196,6 +196,9 @@ TextInput
     stick                   : 38, 35, 5, 21
     selectColor             : 98, 140, 206, 100
     selectOffset            : 2, 2
+    textLeftMargin          : 6
+    textRightMargin         : 6
+    carriageBoundary        : 2
 
     Leave
         left                : 4 , 35, 5, 21
