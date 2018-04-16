@@ -4,6 +4,7 @@ import basic_types;
 
 import gapi;
 import math.linalg;
+import std.algorithm.comparison;
 
 import rpui.widget;
 import rpui.manager;
@@ -75,9 +76,11 @@ class TextInput : Widget {
         }
 
         if (carriage.visible) {
+            const position = absolutePosition + vec2(textLeftMargin - carriageBoundary, 0);
+
             renderer.renderQuad(
                 carriage.renderObject,
-                absolutePosition + vec2(textLeftMargin - carriageBoundary, 0)
+                position + getCarriageOffset()
             );
         }
 
@@ -87,6 +90,13 @@ class TextInput : Widget {
             carriage.visible = !carriage.visible;
             carriage.timer = 0;
         }
+    }
+
+    vec2 getCarriageOffset() {
+        return vec2(
+            textRenderObject.getRegionTextWidth(0, carriage.pos),
+            0
+        );
     }
 
     private void drawText() {
@@ -135,12 +145,50 @@ class TextInput : Widget {
         }
     }
 
+    private bool isCharAllowed(in utfchar ch) {
+        const b1 = ch;
+        const b2 = ch >> 8;
+
+        // TODO: why? link!
+        return (b2 != 0 || b1 >= 0x20) && b1 <= 0x7E;
+    }
+
     override void onTextEntered(in TextEnteredEvent event) {
         if (!isFocused)
             return;
 
         carriage.timer = 0;
         carriage.visible = true;
+
+        const charToPut = event.key;
+
+        if (!isCharAllowed(charToPut))
+            return;
+
+        // Splitting text to two parts by carriage position
+
+        const regionMin = min(selectRegion.start, selectRegion.end);
+        const regionMax = max(selectRegion.start, selectRegion.end);
+
+        utfstring leftPart;
+        utfstring rightPart;
+
+        if (regionMin == regionMax) {
+            leftPart = text[0 .. carriage.pos];
+            rightPart = text[carriage.pos .. $];
+        } else {
+            throw new Error("TODO");
+        }
+
+        text = leftPart ~ charToPut ~ rightPart;
+
+        carriage.lastPos = carriage.pos;
+        carriage.pos++;
+
+        events.notify(ChangeEvent());
+    }
+
+    override void onKeyPressed(in KeyPressedEvent event) {
     }
 
 private:
@@ -158,13 +206,20 @@ private:
 
     struct Carriage {
         float timer = 0;
-        int offset = 0;
+        int lastPos = 0;
+        int pos = 0;
         bool visible = true;
         BaseRenderObject renderObject;
         const blinkThreshold = 500f;
     }
 
+    struct SelectRegion {
+        int start;
+        int end;
+    }
+
     Carriage carriage;
+    SelectRegion selectRegion;
 
     const splitChars = " ,.;:?'!|/\\~*+-=(){}<>[]#%&^@$№`\""d;
 }

@@ -15,6 +15,9 @@ struct TextEnteredEvent {
     utfchar key;
 }
 
+struct ChangeEvent {
+}
+
 struct MouseDownEvent {
     uint x;
     uint y;

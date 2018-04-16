@@ -67,4 +67,8 @@ class TextSFMLImpl: TextImpl {
     uint getWidth(Text textObject) {
         return 0;
     }
+
+    uint getRegionTextWidth(Text textObject, in size_t start, in size_t end) {
+        return 0;
+    }
 }

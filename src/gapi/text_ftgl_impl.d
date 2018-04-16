@@ -57,10 +57,15 @@ class TextFTGLImpl: TextImpl {
     }
 
     uint getWidth(Text textObject) {
-        float[6] bounds;
-        const n = to!int(textObject.text.length);
+        return getRegionTextWidth(textObject, 0, textObject.text.length);
+    }
 
-        string text_s = to!string(textObject.text);
+    uint getRegionTextWidth(Text textObject, in size_t start, in size_t end) {
+        float[6] bounds;
+        const regionText = textObject.text[start .. end];
+        const n = to!int(regionText.length);
+
+        string text_s = to!string(regionText);
         const char* text_z = toStringz(text_s);
 
         FTGLfont* ftglFont = textObject.font.handles.ftglHandle;

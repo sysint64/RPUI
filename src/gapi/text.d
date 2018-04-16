@@ -91,6 +91,10 @@ class Text : BaseObject {
 
     @property uint textWidth() { return impl.getWidth(this); }
 
+    uint getRegionTextWidth(in size_t start, in size_t end) {
+        return impl.getRegionTextWidth(this, start, end);
+    }
+
     utfstring text = "";
     vec4 color;
     Align textAlign = Align.center;
