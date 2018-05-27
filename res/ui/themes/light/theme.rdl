@@ -198,7 +198,7 @@ TextInput
     selectOffset            : 2, 2
     textLeftMargin          : 6
     textRightMargin         : 6
-    carriageBoundary        : 2
+    carriageBoundary        : 1
 
     Leave
         left                : 4 , 35, 5, 21

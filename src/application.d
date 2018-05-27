@@ -9,7 +9,7 @@ import core.thread;
 
 import derelict.sfml2.system;
 import derelict.sfml2.window;
-import derelict.opengl3.gl;
+import opengl;
 
 import basic_types: utfchar;
 import input;
@@ -224,7 +224,7 @@ private:
         sfWindow_setVerticalSyncEnabled(window, true);
         sfWindow_setFramerateLimit(window, 60);
 
-        DerelictGL.reload();
+        DerelictGL3.reload();
         clock = sfClock_create();
     }
 

@@ -14,13 +14,7 @@ import application;
 import basic_types;
 import input;
 import rpui.events;
-
-/// Clamp version without assertions.
-private auto clamp(T1, T2, T3)(T1 val, T2 lower, T3 upper) {
-    if (val < lower) return lower;
-    if (val > upper) return upper;
-    return val;
-}
+import math.linalg;
 
 /**
  * Describe interface for scrollable widgets, this controller computes content
@@ -134,7 +128,7 @@ private:
     float buttonClickOffset;
 
     void clampValues() {
-        p_buttonOffset = clamp(p_buttonOffset, 0, buttonMaxOffset - p_buttonSize);
-        p_contentOffset = clamp(p_contentOffset, 0, contentMaxOffset);
+        p_buttonOffset = unsafeClamp(p_buttonOffset, 0, buttonMaxOffset - p_buttonSize);
+        p_contentOffset = unsafeClamp(p_contentOffset, 0, contentMaxOffset);
     }
 }

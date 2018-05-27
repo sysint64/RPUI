@@ -11,7 +11,7 @@ import gapi;
 import application;
 import math.linalg;
 
-import derelict.opengl3.gl;
+import opengl;
 
 import rpui.manager;
 import rpui.render_objects;

@@ -1,6 +1,6 @@
 module gapi.utils;
 
-import derelict.opengl3.gl;
+import opengl;
 import glu;
 
 import application;

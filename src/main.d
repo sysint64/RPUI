@@ -17,7 +17,7 @@ import rpui.cursor;
 
 import editor.mapeditor;
 
-import derelict.opengl3.gl;
+import derelict.opengl.gl;
 import derelict.freetype.ft;
 
 import derelict.sfml2.system;
@@ -49,7 +49,7 @@ void main() {
     DerelictSFML2Graphics.load();
 
     DerelictFT.load();
-    DerelictGL.load();
+    DerelictGL3.load();
 
     auto app = MapEditor.getInstance();
     app.run();

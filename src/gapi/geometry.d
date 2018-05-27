@@ -3,7 +3,7 @@ module gapi.geometry;
 import settings;
 import std.container;
 import std.conv;
-import derelict.opengl3.gl;
+import opengl;
 import std.stdio;
 import gl3n.linalg;
 

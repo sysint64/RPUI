@@ -6,7 +6,7 @@ import std.string;
 import std.path;
 import std.conv : to;
 
-import derelict.opengl3.gl;
+import opengl;
 
 import application;
 import math.linalg;

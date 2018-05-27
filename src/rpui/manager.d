@@ -20,7 +20,7 @@ import resources.images;
 import resources.icons;
 import resources.shaders;
 
-import derelict.opengl3.gl;
+import opengl;
 import gapi.camera;
 
 import rpui.theme;

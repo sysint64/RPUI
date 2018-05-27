@@ -6,7 +6,7 @@ import std.conv;
 import std.exception;
 
 import derelict.sfml2.graphics;
-import derelict.opengl3.gl;
+import opengl;
 
 import math.linalg;
 

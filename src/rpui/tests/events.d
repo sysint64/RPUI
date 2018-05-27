@@ -4,11 +4,7 @@ import input;
 import rpui.events;
 import rpui.events_observer;
 
-version(unittest) {
-    import unit_threaded;
-} else {
-    struct ShouldFail { string v1; }
-}
+version(unittest) import unit_threaded;
 
 @("Should emit event to subscribers")
 unittest {

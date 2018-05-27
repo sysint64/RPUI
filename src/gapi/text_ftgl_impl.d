@@ -4,7 +4,7 @@ import std.conv;
 import std.math;
 import std.string;
 
-import derelict.opengl3.gl;
+import opengl;
 
 import ftgl;
 import application;

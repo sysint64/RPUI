@@ -2,7 +2,7 @@ module gapi.geometry_factory;
 
 import patterns.singleton;
 import gapi.geometry;
-import derelict.opengl3.gl;
+import opengl;
 import gl3n.linalg;
 
 class GeometryFactory {

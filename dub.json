@@ -4,11 +4,14 @@
         "Andrey Kabylin"
     ],
     "description": "Simulator",
-    "copyright": "Copyright © 2016 - 2017, Red Paws",
+    "copyright": "Copyright © 2016 - 2018, Andrey Kabylin",
     "license": "MIT",
     "libs-posix": ["ftgl", "glu"],
     "libs-windows": ["ftgl", "glu32"],
-    "versions": ["FTGLFont"],
+    "versions": [
+        "FTGLFont",
+        "DerelictGL3_CustomFreeFuncs"
+    ],
     "targetType": "executable",
     "targetPath": "build",
     "configurations": [
@@ -21,17 +24,18 @@
             "preBuildCommands": ["dub run unit-threaded -c gen_ut_main -- -f build/ut.d"],
             "mainSourceFile": "build/ut.d",
             "excludedSourceFiles": ["src/main.d"],
+            "buildRequirements": ["silenceDeprecations"],
             "dependencies": {
-                "unit-threaded": "~>0.7.11"
+                "unit-threaded": "*"
             }
         }
     ],
     "dependencies": {
-        "derelict-sfml2": "~>3.0.2",
-        "derelict-gl3": "~>1.0.21",
-        "derelict-ft": "~>1.1.3",
+        "derelict-sfml2": "~>4.0.0-beta.2",
+        "derelict-gl3": "~>2.0.0-beta.6",
+        "derelict-ft": "~>2.0.0-beta.4",
         "gl3n": "~>1.3.1",
-        "x11": "~>1.0.16",
+        "x11": "~>1.0.20",
         "emsi_containers": "~>0.5.3",
         "accessors": "~>1.1.1",
         "d-unit": "~>0.8.1",

@@ -29,7 +29,7 @@ import std.stdio;
 import std.container;
 
 import derelict.sfml2.graphics;
-import derelict.opengl3.gl;
+import derelict.opengl.gl;
 
 class MyView : View {
     @ViewWidget Button okButton;

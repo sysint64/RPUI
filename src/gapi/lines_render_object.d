@@ -1,7 +1,7 @@
 module gapi.lines_render_object;
 
 import gapi.geometry;
-import derelict.opengl3.gl;
+import opengl;
 import gl3n.linalg;
 
 final class LinesRenderObject {

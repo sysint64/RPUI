@@ -17,7 +17,6 @@ import std.conv;
 import std.stdio;
 import std.math;
 
-
 class Text : BaseObject {
     static class Builder(T: Text) {
         this(Geometry geometry) {

@@ -3,7 +3,7 @@ module test.core;
 void initApp() {
     import application;
 
-    import derelict.opengl3.gl;
+    import opengl;
     import derelict.freetype.ft;
 
     import derelict.sfml2.system;
@@ -15,7 +15,7 @@ void initApp() {
     DerelictSFML2Graphics.load();
 
     DerelictFT.load();
-    DerelictGL.load();
+    DerelictGL3.load();
 
     auto app = Application.getInstance();
     app.run(false);

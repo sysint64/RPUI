@@ -5,12 +5,14 @@ import basic_types;
 import gapi;
 import math.linalg;
 import std.algorithm.comparison;
+import input;
 
 import rpui.widget;
 import rpui.manager;
 import rpui.render_objects;
 import rpui.cursor;
 import rpui.events;
+import rpui.widgets.text_input.edit_component;
 
 class TextInput : Widget {
     enum InputType { text, integer, number }
@@ -18,19 +20,17 @@ class TextInput : Widget {
     @Field Align textAlign = Align.left;
     @Field InputType inputType = InputType.text;
 
-    private utfstring p_text = "TextInput";
-
     @Field
     @property void text(utfstring value) {
         if (manager is null) {
-            p_text = value;
+            editComponent.text = value;
         } else {
-            p_text = value;
+            editComponent.text = value;
             textRenderObject.text = value;
         }
     }
 
-    @property utfstring text() { return p_text; }
+    @property utfstring text() { return editComponent.text; }
 
     this(in string style = "TextInput") {
         super(style);
@@ -71,30 +71,30 @@ class TextInput : Widget {
 
     private void drawCarriage() {
         if (!isFocused) {
-            carriage.timer = 0;
+            editComponent.carriage.timer = 0;
             return;
         }
 
-        if (carriage.visible) {
+        if (editComponent.carriage.visible) {
             const position = absolutePosition + vec2(textLeftMargin - carriageBoundary, 0);
 
             renderer.renderQuad(
-                carriage.renderObject,
+                editComponent.carriage.renderObject,
                 position + getCarriageOffset()
             );
         }
 
-        carriage.timer += app.deltaTime;
+        editComponent.carriage.timer += app.deltaTime;
 
-        if (carriage.timer >= carriage.blinkThreshold) {
-            carriage.visible = !carriage.visible;
-            carriage.timer = 0;
+        if (editComponent.carriage.timer >= editComponent.carriage.blinkThreshold) {
+            editComponent.carriage.visible = !editComponent.carriage.visible;
+            editComponent.carriage.timer = 0;
         }
     }
 
     vec2 getCarriageOffset() {
         return vec2(
-            textRenderObject.getRegionTextWidth(0, carriage.pos),
+            textRenderObject.getRegionTextWidth(0, editComponent.carriage.pos),
             0
         );
     }
@@ -118,6 +118,8 @@ class TextInput : Widget {
     protected override void onCreate() {
         super.onCreate();
 
+        editComponent.bind(this);
+
         const states = ["Leave", "Enter", "Click"];
         const keys = ["left", "center", "right"];
 
@@ -126,7 +128,7 @@ class TextInput : Widget {
             renderFactory.createQuad(skinFocusRenderObjects, style, "Focus", key);
         }
 
-        carriage.renderObject = renderFactory.createQuad(style ~ ".stick");
+        editComponent.carriage.renderObject = renderFactory.createQuad(style ~ ".stick");
         renderFactory.createQuad(leftArrowRenderObject, style, states, "arrowLeft");
         renderFactory.createQuad(rightArrowRenderObject, style, states, "arrowRight");
 
@@ -157,8 +159,8 @@ class TextInput : Widget {
         if (!isFocused)
             return;
 
-        carriage.timer = 0;
-        carriage.visible = true;
+        editComponent.carriage.timer = 0;
+        editComponent.carriage.visible = true;
 
         const charToPut = event.key;
 
@@ -167,28 +169,34 @@ class TextInput : Widget {
 
         // Splitting text to two parts by carriage position
 
-        const regionMin = min(selectRegion.start, selectRegion.end);
-        const regionMax = max(selectRegion.start, selectRegion.end);
+        const regionMin = min(editComponent.selectRegion.start, editComponent.selectRegion.end);
+        const regionMax = max(editComponent.selectRegion.start, editComponent.selectRegion.end);
 
         utfstring leftPart;
         utfstring rightPart;
 
         if (regionMin == regionMax) {
-            leftPart = text[0 .. carriage.pos];
-            rightPart = text[carriage.pos .. $];
+            leftPart = text[0 .. editComponent.carriage.pos];
+            rightPart = text[editComponent.carriage.pos .. $];
         } else {
             throw new Error("TODO");
         }
 
         text = leftPart ~ charToPut ~ rightPart;
 
-        carriage.lastPos = carriage.pos;
-        carriage.pos++;
+        editComponent.carriage.lastPos = editComponent.carriage.pos;
+        editComponent.carriage.pos++;
 
         events.notify(ChangeEvent());
     }
 
     override void onKeyPressed(in KeyPressedEvent event) {
+        if (!isFocused)
+            return;
+
+        editComponent.carriage.timer = 0;
+        editComponent.carriage.visible = true;
+        editComponent.onKeyPressed(event);
     }
 
 private:
@@ -203,23 +211,5 @@ private:
     float textLeftMargin;
     float textRightMargin;
     float carriageBoundary;
-
-    struct Carriage {
-        float timer = 0;
-        int lastPos = 0;
-        int pos = 0;
-        bool visible = true;
-        BaseRenderObject renderObject;
-        const blinkThreshold = 500f;
-    }
-
-    struct SelectRegion {
-        int start;
-        int end;
-    }
-
-    Carriage carriage;
-    SelectRegion selectRegion;
-
-    const splitChars = " ,.;:?'!|/\\~*+-=(){}<>[]#%&^@$№`\""d;
+    EditComponent editComponent;
 }
