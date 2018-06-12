@@ -16,7 +16,6 @@ import gapi.font;
 import gapi.text;
 import gapi.text_impl;
 
-
 class TextFTGLImpl: TextImpl {
     void render(Text textObject, Camera camera) {
         auto app = Application.getInstance();
@@ -29,8 +28,8 @@ class TextFTGLImpl: TextImpl {
 
         glBegin2D();
 
-        const float posY = textObject.getTextRelativePosition().y + textObject.position.y;
-        const float posX = textObject.getTextRelativePosition().x + textObject.position.x;
+        const float posY = floor(textObject.getTextRelativePosition().y + textObject.position.y);
+        const float posX = floor(textObject.getTextRelativePosition().x + textObject.position.x);
 
         glActiveTexture(GL_TEXTURE0);
         glColor3fv(textObject.color.value_ptr);
@@ -61,6 +60,9 @@ class TextFTGLImpl: TextImpl {
     }
 
     private uint getRegionTextWidthFromStart(Text textObject, in size_t end) const {
+        if (end > textObject.text.length)
+            return getRegionTextWidthFromStart(textObject, textObject.text.length);
+
         float[6] bounds;
         const regionText = textObject.text[0 .. end];
         const n = to!int(regionText.length);

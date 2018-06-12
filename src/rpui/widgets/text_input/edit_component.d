@@ -29,6 +29,8 @@ struct EditComponent {
     struct SelectRegion {
         int start = 0;
         int end = 0;
+        vec2 size;
+        vec2 absolutePosition;
     }
 
     TextInput textInput;
@@ -75,6 +77,7 @@ struct EditComponent {
         carriage.pos = 0;
         carriage.visible = true;
         carriage.timer = 0;
+        scrollDelta = 0;
     }
 
     void onKeyPressed(in KeyPressedEvent event) {
@@ -109,16 +112,38 @@ struct EditComponent {
                 break;
 
             case KeyCode.Delete:
-                removeRegion(carriage.pos, carriage.pos+1);
+                if (textIsSelected()) {
+                    removeSelectedRegion();
+                } else {
+                    if (isKeyPressed(KeyCode.Ctrl)) {
+                        const end = navigateCarriage(1);
+                        removeRegion(carriage.pos, end);
+                    } else {
+                        removeRegion(carriage.pos, carriage.pos+1);
+                    }
+                }
                 break;
 
             case KeyCode.Back:
-                removeRegion(carriage.pos-1, carriage.pos);
+                if (textIsSelected()) {
+                    removeSelectedRegion();
+                } else {
+                    if (isKeyPressed(KeyCode.Ctrl)) {
+                        const start = navigateCarriage(-1);
+                        removeRegion(start, carriage.pos);
+                    } else {
+                        removeRegion(carriage.pos-1, carriage.pos);
+                    }
+                }
                 break;
 
             default:
                 // Nothing
         }
+    }
+
+    bool textIsSelected() {
+        return selectRegion.start != selectRegion.end;
     }
 
     void moveCarriage(in int delta) {
@@ -185,6 +210,10 @@ struct EditComponent {
 
         if (!isKeyPressed(KeyCode.Shift))
             stopSelection();
+    }
+
+    void removeSelectedRegion() {
+        removeRegion(selectRegion.start, selectRegion.end);
     }
 
     void removeRegion(in int start, in int end) {

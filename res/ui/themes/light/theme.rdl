@@ -202,6 +202,7 @@ TextInput
     carriageBoundary        : 1
     selectRegionHeight      : 16
     selectRegionOffset      : 1, 2
+    selectedTextColor       : 255, 255, 255
 
     Leave
         left                : 4 , 35, 5, 21

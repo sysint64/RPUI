@@ -66,6 +66,16 @@ class RenderFactory {
         return object;
     }
 
+    TextRenderObject createText() {
+        ThemeFont font = manager.theme.regularFont;
+        TextRenderObject text = new TextRenderObject.Builder(quadGeometry)
+            .setTextSize(font.defaultFontSize)
+            .setFont(font)
+            .build();
+
+        return text;
+    }
+
     /**
      * Create text render object and extract color and offset from theme rpdl data
      * for all `states`.

@@ -23,12 +23,7 @@ class TextInput : Widget {
 
     @Field
     @property void text(utfstring value) {
-        if (manager is null) {
-            editComponent.text = value;
-        } else {
-            editComponent.text = value;
-            textRenderObject.text = value;
-        }
+        editComponent.text = value;
     }
 
     @property utfstring text() { return editComponent.text; }
@@ -56,10 +51,32 @@ class TextInput : Widget {
     override void render(Camera camera) {
         super.render(camera);
 
+        if (!isFocused)
+            editComponent.reset();
+
         drawBackground();
-        drawSelectRegion();
-        drawCarriage();
+
+        pushScissor();
         drawText();
+        drawSelectRegion();  // Overlay text
+        drawSelectedText();
+        manager.popScissor();
+
+        drawCarriage();
+    }
+
+    private void pushScissor() {
+        Rect scissor;
+        scissor.point = vec2(
+            absolutePosition.x + textLeftMargin,
+            absolutePosition.y
+        );
+        scissor.size = vec2(
+            size.x - textLeftMargin - textRightMargin,
+            size.y
+        );
+
+        manager.pushScissor(scissor);
     }
 
     private void drawBackground() {
@@ -98,25 +115,21 @@ class TextInput : Widget {
         if (editComponent.selectRegion.start == editComponent.selectRegion.end)
             return;
 
-        if (!isFocused) {
-            editComponent.reset();
-            return;
-        }
-
         const regionSize = getTextRegionSize(
             editComponent.selectRegion.start,
             editComponent.selectRegion.end
         );
 
-        const selectRegionPosition = absolutePosition +
+        editComponent.selectRegion.size = vec2(regionSize, selectRegionHeight);
+        editComponent.selectRegion.absolutePosition = absolutePosition +
             getTextRegionOffset(editComponent.selectRegion.start) +
             selectRegionOffset;
 
         renderer.renderColoredObject(
             selectRegionRenderObject,
             selectColor,
-            selectRegionPosition,
-            vec2(regionSize, selectRegionHeight)
+            editComponent.selectRegion.absolutePosition,
+            editComponent.selectRegion.size
         );
     }
 
@@ -165,6 +178,30 @@ class TextInput : Widget {
 
     private void drawText() {
         textRenderObject.textAlign = textAlign;
+        textRenderObject.text = editComponent.text;
+        renderer.renderText(textRenderObject, state, getTextPosition(), size);
+    }
+
+    private void drawSelectedText() {
+        if (!editComponent.textIsSelected())
+            return;
+
+        const textPosition = getTextPosition();
+        const scissor = Rect(
+            editComponent.selectRegion.absolutePosition,
+            editComponent.selectRegion.size
+        );
+
+        manager.pushScissor(scissor);
+
+        selectedTextRenderObject.textAlign = textAlign;
+        selectedTextRenderObject.text = editComponent.text;
+        renderer.renderText(selectedTextRenderObject, getTextPosition(), size);
+
+        manager.popScissor();
+    }
+
+    private vec2 getTextPosition() {
         auto textPosition = absolutePosition;
 
         if (textAlign == Align.left) {
@@ -174,7 +211,7 @@ class TextInput : Widget {
             textPosition.x -= textRightMargin - editComponent.scrollDelta;
         }
 
-        renderer.renderText(textRenderObject, state, textPosition, size);
+        return textPosition;
     }
 
     protected override void onCreate() {
@@ -210,6 +247,10 @@ class TextInput : Widget {
             selectColor = data.getNormColor(style ~ ".selectColor");
             selectRegionHeight = data.getNumber(style ~ ".selectRegionHeight.0");
             selectRegionOffset = data.getVec2f(style ~ ".selectRegionOffset");
+            selectedTextColor = data.getNormColor(style ~ ".selectedTextColor");
+
+            selectedTextRenderObject = renderFactory.createText();
+            selectedTextRenderObject.color = selectedTextColor;
         }
     }
 
@@ -243,7 +284,8 @@ class TextInput : Widget {
                 leftPart = text[0 .. carriage.pos];
                 rightPart = text[carriage.pos .. $];
                 editComponent.carriage.pos++;
-            } else {
+            }
+            else {
                 leftPart = text[0 .. selectRegion.start];
                 rightPart = text[selectRegion.end .. $];
                 editComponent.carriage.pos = selectRegion.start + 1;
@@ -271,6 +313,7 @@ private:
     BaseRenderObject leftArrowRenderObject;
     BaseRenderObject rightArrowRenderObject;
     TextRenderObject textRenderObject;
+    TextRenderObject selectedTextRenderObject;
     BaseRenderObject selectRegionRenderObject;
 
     vec2 focusOffsets;
@@ -281,6 +324,7 @@ private:
     float carriageBoundary;
     EditComponent editComponent;
     vec4 selectColor;
+    vec4 selectedTextColor;
     float selectRegionHeight;
     vec2 selectRegionOffset;
 }

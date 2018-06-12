@@ -277,6 +277,12 @@ final class Renderer {
         text.render(camera);
     }
 
+    void renderText(TextRenderObject text, in vec2 position, in vec2 size) {
+        text.scaling = vec2(size);
+        text.position = toScreenPosition(position, vec2(size));
+        text.render(camera);
+    }
+
     /**
      * Renders `renderObject` colored with `color`.
      *
