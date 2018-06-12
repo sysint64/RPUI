@@ -5,7 +5,7 @@ version(unittest) {
     import rpui.widgets.text_input.edit_component;
 }
 
-@("navigateCarriage backward test 1")
+@("navigateCarriage backward 1")
 unittest {
     auto editComponent = EditComponent();
     editComponent.text = "Hello wordl!";
@@ -25,7 +25,7 @@ unittest {
     pos.shouldEqual(5);
 }
 
-@("navigateCarriage backward test 2")
+@("navigateCarriage backward 2")
 unittest {
     auto editComponent = EditComponent();
     editComponent.text = "Hello wordl!";
@@ -45,7 +45,7 @@ unittest {
     pos.shouldEqual(11);
 }
 
-@("navigateCarriage backward test 3")
+@("navigateCarriage backward 3")
 unittest {
     auto editComponent = EditComponent();
     editComponent.text = "Hello (%@)wordl! Test(*)";
@@ -65,7 +65,7 @@ unittest {
     pos.shouldEqual(15);
 }
 
-@("navigateCarriage backward test 4")
+@("navigateCarriage backward 4")
 unittest {
     auto editComponent = EditComponent();
     editComponent.text = "Hello (%@)wordl! Test(*)";
@@ -85,7 +85,7 @@ unittest {
     pos.shouldEqual(15);
 }
 
-@("navigateCarriage backward test 5")
+@("navigateCarriage backward 5")
 unittest {
     auto editComponent = EditComponent();
     editComponent.text = "Hello (....)wordl! Test(*)";
@@ -122,7 +122,27 @@ unittest {
     //                                             ^
     editComponent.carriage.pos = 25;
     const pos = editComponent.navigateCarriage(1);
-    pos.shouldEqual(25);
+    pos.shouldEqual(26);
+}
+
+@("navigateCarriage backward 7")
+unittest {
+    auto editComponent = EditComponent();
+    editComponent.text = "!Hello World";
+    //                    |^
+    editComponent.carriage.pos = 1;
+    const pos = editComponent.navigateCarriage(-1);
+    pos.shouldEqual(0);
+}
+
+@("navigateCarriage forward 7")
+unittest {
+    auto editComponent = EditComponent();
+    editComponent.text = "Hello World!";
+    //                              ^|
+    editComponent.carriage.pos = 10;
+    const pos = editComponent.navigateCarriage(1);
+    pos.shouldEqual(12);
 }
 
 @("findPosUntilSeparator backward 1")

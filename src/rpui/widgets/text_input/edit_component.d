@@ -1,3 +1,4 @@
+
 module rpui.widgets.text_input.edit_component;
 
 import input;
@@ -10,7 +11,10 @@ import rpui.render_objects;
 import rpui.events;
 
 struct EditComponent {
-    const splitChars = " ,.;:?'!|/\\~*+-=(){}<>[]#%&^@$№`\""d;
+    const commonSplitChars = " ,.;:?'!|/\\~*+-=(){}<>[]#%&^@$№`\""d;
+    const japanesePunctuation = "\u3000｛｝（）［］【】、，…‥。〽「」『』〝〟〜：！？"d;
+    const splitChars = commonSplitChars ~ japanesePunctuation;
+
     utfstring text;
 
     struct Carriage {
@@ -41,11 +45,21 @@ struct EditComponent {
     void onKeyPressed(in KeyPressedEvent event) {
         switch (event.key) {
             case KeyCode.Left:
-                moveCarriage(-1);
+                if (isKeyPressed(KeyCode.Ctrl)) {
+                    setCarriagePos(navigateCarriage(-1));
+                } else {
+                    moveCarriage(-1);
+                }
+
                 break;
 
             case KeyCode.Right:
-                moveCarriage(1);
+                if (isKeyPressed(KeyCode.Ctrl)) {
+                    setCarriagePos(navigateCarriage(1));
+                } else {
+                    moveCarriage(1);
+                }
+
                 break;
 
             case KeyCode.Home:
@@ -79,23 +93,18 @@ struct EditComponent {
         assert(direction == -1 || direction == 1);
     }
     do {
-        int i = carriage.pos;
+        int i = carriage.pos + direction;
 
-        if (i + direction <= 0 || i + direction >= text.length)
-            return i;
+        if (i <= 0 || i >= text.length)
+            return clamp(i, 0, text.length);
 
-        auto skipSplitChars =
-            splitChars.canFind(text[i]) ||
-            splitChars.canFind(text[i + direction]);
+        auto skipSplitChars = splitChars.canFind(text[i]);
 
         while (true) {
             i += direction;
 
-            if (i <= 0)
-                return i;
-
-            if (i >= text.length)
-                return i;
+            if (i <= 0 || i >= text.length)
+                return clamp(i, 0, text.length);
 
             if (splitChars.canFind(text[i])) {
                 if (!skipSplitChars)
@@ -113,6 +122,9 @@ struct EditComponent {
     }
     do {
         int i = carriage.pos;
+
+        if (i + direction <= 0 || i + direction >= text.length)
+            return i;
 
         while (true) {
             i += direction;
