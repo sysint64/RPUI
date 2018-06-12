@@ -19,7 +19,6 @@ struct EditComponent {
 
     struct Carriage {
         float timer = 0;
-        int lastPos = 0;
         int pos = 0;
         bool visible = true;
         BaseRenderObject renderObject;
@@ -28,19 +27,60 @@ struct EditComponent {
     }
 
     struct SelectRegion {
-        int start;
-        int end;
+        int start = 0;
+        int end = 0;
     }
 
     TextInput textInput;
     Carriage carriage;
     SelectRegion selectRegion;
     float scrollDelta = 0.0f;
+    bool startedSelection = false;
+    int startSelectionPos = 0;
 
     void updateSelect() {
+        if (!startedSelection)
+            return;
+
+        selectRegion.start = startSelectionPos;
+        selectRegion.end = carriage.pos;
+
+        clampSelectRegion();
+    }
+
+    void clampSelectRegion() {
+        const regionMin = min(selectRegion.start, selectRegion.end);
+        const regionMax = max(selectRegion.start, selectRegion.end);
+
+        selectRegion.start = regionMin;
+        selectRegion.end = regionMax;
+    }
+
+    void startSelection() {
+        startedSelection = true;
+        startSelectionPos = carriage.pos;
+        selectRegion.start = startSelectionPos;
+        selectRegion.end = startSelectionPos;
+    }
+
+    void stopSelection() {
+        startedSelection = false;
+        selectRegion.start = 0;
+        selectRegion.end = 0;
+        startSelectionPos = 0;
+    }
+
+    void reset() {
+        stopSelection();
+        carriage.pos = 0;
+        carriage.visible = true;
+        carriage.timer = 0;
     }
 
     void onKeyPressed(in KeyPressedEvent event) {
+        if (isKeyPressed(KeyCode.Shift) && !startedSelection)
+            startSelection();
+
         switch (event.key) {
             case KeyCode.Left:
                 if (isKeyPressed(KeyCode.Ctrl)) {
@@ -139,8 +179,12 @@ struct EditComponent {
     }
 
     void setCarriagePos(in int newPos) {
+        const oldPos = carriage.pos;
         carriage.pos = clamp(newPos, 0, text.length);
         updateSelect();
+
+        if (!isKeyPressed(KeyCode.Shift))
+            stopSelection();
     }
 
     void removeRegion(in int start, in int end) {

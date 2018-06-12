@@ -200,6 +200,8 @@ TextInput
     textRightMargin         : 6
     textTopMargin           : 1
     carriageBoundary        : 1
+    selectRegionHeight      : 16
+    selectRegionOffset      : 1, 2
 
     Leave
         left                : 4 , 35, 5, 21

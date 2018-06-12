@@ -60,9 +60,9 @@ class TextFTGLImpl: TextImpl {
         return getRegionTextWidth(textObject, 0, textObject.text.length);
     }
 
-    uint getRegionTextWidth(Text textObject, in size_t start, in size_t end) {
+    private uint getRegionTextWidthFromStart(Text textObject, in size_t end) const {
         float[6] bounds;
-        const regionText = textObject.text[start .. end];
+        const regionText = textObject.text[0 .. end];
         const n = to!int(regionText.length);
 
         string text_s = to!string(regionText);
@@ -78,5 +78,15 @@ class TextFTGLImpl: TextImpl {
             width += 5;
 
         return to!uint(width);
+    }
+
+    uint getRegionTextWidth(Text textObject, in size_t start, in size_t end) {
+        if (start == 0) {
+            return getRegionTextWidthFromStart(textObject, end);
+        } else {
+            const a = getRegionTextWidthFromStart(textObject, start);
+            const b = getRegionTextWidthFromStart(textObject, end);
+            return b - a;
+        }
     }
 }

@@ -19,6 +19,7 @@ class TextInput : Widget {
 
     @Field Align textAlign = Align.left;
     @Field InputType inputType = InputType.text;
+    @Field bool autoSelectOnFocus = false;
 
     @Field
     @property void text(utfstring value) {
@@ -56,6 +57,7 @@ class TextInput : Widget {
         super.render(camera);
 
         drawBackground();
+        drawSelectRegion();
         drawCarriage();
         drawText();
     }
@@ -92,36 +94,73 @@ class TextInput : Widget {
         }
     }
 
+    private void drawSelectRegion() {
+        if (editComponent.selectRegion.start == editComponent.selectRegion.end)
+            return;
+
+        if (!isFocused) {
+            editComponent.reset();
+            return;
+        }
+
+        const regionSize = getTextRegionSize(
+            editComponent.selectRegion.start,
+            editComponent.selectRegion.end
+        );
+
+        const selectRegionPosition = absolutePosition +
+            getTextRegionOffset(editComponent.selectRegion.start) +
+            selectRegionOffset;
+
+        renderer.renderColoredObject(
+            selectRegionRenderObject,
+            selectColor,
+            selectRegionPosition,
+            vec2(regionSize, selectRegionHeight)
+        );
+    }
+
+    // TODO: dmd PR #8155
+    private float getTextRegionSize(in int start, in int end)
+    in {
+        assert(start <= end);
+    }
+    do {
+        if (start == end)
+            return 0.0f;
+
+        return cast(float) textRenderObject.getRegionTextWidth(start, end);
+    }
+
+    private vec2 getTextRegionOffset(in int charPos) {
+        const regionSize = getTextRegionSize(0, charPos);
+        const offset = vec2(
+            regionSize + editComponent.scrollDelta,
+            -cast(float)(textRenderObject.lineHeight) + textTopMargin
+        );
+        return vec2(textLeftMargin - carriageBoundary, 0) +
+            textRenderObject.getTextRelativePosition() + offset;
+    }
+
     private void updateScroll() {
         const rightBorder = absolutePosition.x + size.x - textRightMargin;
         const leftBorder = absolutePosition.x + textLeftMargin;
         const padding = textRightMargin + textLeftMargin;
-        const regionOffset = textRenderObject.getRegionTextWidth(0, editComponent.carriage.pos);
+        const regionOffset = getTextRegionSize(0, editComponent.carriage.pos);
 
         if (editComponent.carriage.absolutePosition.x > rightBorder) {
-            editComponent.scrollDelta = -cast(float)(regionOffset) + size.x - padding;
+            editComponent.scrollDelta = -regionOffset + size.x - padding;
             updateCarriagePostion();
         }
         else if (editComponent.carriage.absolutePosition.x < leftBorder) {
-            editComponent.scrollDelta = -cast(float)(regionOffset) ;
+            editComponent.scrollDelta = -regionOffset;
             updateCarriagePostion();
         }
     }
 
     private void updateCarriagePostion() {
-        editComponent.carriage.absolutePosition =
-            absolutePosition +
-            vec2(textLeftMargin - carriageBoundary, 0) +
-            getCarriageOffset();
-    }
-
-    private vec2 getCarriageOffset() {
-        const regionOffset = textRenderObject.getRegionTextWidth(0, editComponent.carriage.pos);
-        const carriagePos = vec2(
-            regionOffset + editComponent.scrollDelta,
-            -cast(float)(textRenderObject.lineHeight) + textTopMargin
-        );
-        return textRenderObject.getTextRelativePosition() + carriagePos;
+        editComponent.carriage.absolutePosition = absolutePosition +
+            getTextRegionOffset(editComponent.carriage.pos);
     }
 
     private void drawText() {
@@ -140,6 +179,8 @@ class TextInput : Widget {
 
     protected override void onCreate() {
         super.onCreate();
+
+        renderFactory.createQuad(selectRegionRenderObject);
 
         const states = ["Leave", "Enter", "Click"];
         const keys = ["left", "center", "right"];
@@ -166,6 +207,9 @@ class TextInput : Widget {
             textTopMargin = data.getNumber(style ~ ".textTopMargin.0");
 
             carriageBoundary = data.getNumber(style ~ ".carriageBoundary.0");
+            selectColor = data.getNormColor(style ~ ".selectColor");
+            selectRegionHeight = data.getNumber(style ~ ".selectRegionHeight.0");
+            selectRegionOffset = data.getVec2f(style ~ ".selectRegionOffset");
         }
     }
 
@@ -191,23 +235,23 @@ class TextInput : Widget {
 
         // Splitting text to two parts by carriage position
 
-        const regionMin = min(editComponent.selectRegion.start, editComponent.selectRegion.end);
-        const regionMax = max(editComponent.selectRegion.start, editComponent.selectRegion.end);
-
         utfstring leftPart;
         utfstring rightPart;
 
-        if (regionMin == regionMax) {
-            leftPart = text[0 .. editComponent.carriage.pos];
-            rightPart = text[editComponent.carriage.pos .. $];
-        } else {
-            throw new Error("TODO");
+        with (editComponent) {
+            if (selectRegion.start == selectRegion.end) {
+                leftPart = text[0 .. carriage.pos];
+                rightPart = text[carriage.pos .. $];
+                editComponent.carriage.pos++;
+            } else {
+                leftPart = text[0 .. selectRegion.start];
+                rightPart = text[selectRegion.end .. $];
+                editComponent.carriage.pos = selectRegion.start + 1;
+            }
         }
 
         text = leftPart ~ charToPut ~ rightPart;
-
-        editComponent.carriage.lastPos = editComponent.carriage.pos;
-        editComponent.carriage.pos++;
+        editComponent.stopSelection();
 
         events.notify(ChangeEvent());
     }
@@ -227,6 +271,7 @@ private:
     BaseRenderObject leftArrowRenderObject;
     BaseRenderObject rightArrowRenderObject;
     TextRenderObject textRenderObject;
+    BaseRenderObject selectRegionRenderObject;
 
     vec2 focusOffsets;
     float focusResize;
@@ -235,4 +280,7 @@ private:
     float textTopMargin;
     float carriageBoundary;
     EditComponent editComponent;
+    vec4 selectColor;
+    float selectRegionHeight;
+    vec2 selectRegionOffset;
 }
