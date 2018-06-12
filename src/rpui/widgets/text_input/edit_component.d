@@ -1,8 +1,8 @@
-
 module rpui.widgets.text_input.edit_component;
 
 import input;
 import basic_types;
+import math.linalg;
 import std.algorithm.comparison;
 import std.algorithm.searching;
 
@@ -24,6 +24,7 @@ struct EditComponent {
         bool visible = true;
         BaseRenderObject renderObject;
         const blinkThreshold = 500f;
+        vec2 absolutePosition;
     }
 
     struct SelectRegion {
@@ -31,13 +32,10 @@ struct EditComponent {
         int end;
     }
 
-    // TextInput textInput;
+    TextInput textInput;
     Carriage carriage;
     SelectRegion selectRegion;
-
-    void bind(TextInput textInput) {
-        // this.textInput = textInput;
-    }
+    float scrollDelta = 0.0f;
 
     void updateSelect() {
     }

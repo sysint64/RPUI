@@ -104,9 +104,8 @@ class Text : BaseObject {
     // TODO: Remove hardcode
     @property uint lineHeight() { return p_textSize - 4; }
 
-package:
-    vec2 getTextPosition() {
-        vec2 textPosition = position;
+    vec2 getTextRelativePosition() {
+        vec2 textPosition = vec2(0, 0);
         const uint textWidth = impl.getWidth(this);
 
         switch (textAlign) {

@@ -29,8 +29,8 @@ class TextFTGLImpl: TextImpl {
 
         glBegin2D();
 
-        const float posY = textObject.getTextPosition().y;
-        const float posX = textObject.getTextPosition().x;
+        const float posY = textObject.getTextRelativePosition().y + textObject.position.y;
+        const float posX = textObject.getTextRelativePosition().x + textObject.position.x;
 
         glActiveTexture(GL_TEXTURE0);
         glColor3fv(textObject.color.value_ptr);
@@ -71,7 +71,12 @@ class TextFTGLImpl: TextImpl {
         FTGLfont* ftglFont = textObject.font.handles.ftglHandle;
         ftglGetFontBBox(ftglFont, text_z, n, bounds);
 
-        const width = round(bounds[3] - bounds[0]);
+        auto width = round(bounds[3] - bounds[0]);
+
+        // TODO: this due to trimming
+        if (regionText.length > 0 && regionText[$ - 1] == ' ')
+            width += 5;
+
         return to!uint(width);
     }
 }

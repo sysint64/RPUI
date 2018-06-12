@@ -43,6 +43,8 @@ class TextInput : Widget {
     }
 
     override void progress() {
+        updateCarriagePostion();
+        updateScroll();
         locator.updateAbsolutePosition();
         locator.updateLocationAlign();
         locator.updateVerticalLocationAlign();
@@ -76,11 +78,9 @@ class TextInput : Widget {
         }
 
         if (editComponent.carriage.visible) {
-            const position = absolutePosition + vec2(textLeftMargin - carriageBoundary, 0);
-
             renderer.renderQuad(
                 editComponent.carriage.renderObject,
-                position + getCarriageOffset()
+                editComponent.carriage.absolutePosition
             );
         }
 
@@ -92,24 +92,47 @@ class TextInput : Widget {
         }
     }
 
-    vec2 getCarriageOffset() {
-        return vec2(
-            textRenderObject.getRegionTextWidth(0, editComponent.carriage.pos),
-            0
+    private void updateScroll() {
+        const rightBorder = absolutePosition.x + size.x - textRightMargin;
+        const leftBorder = absolutePosition.x + textLeftMargin;
+        const padding = textRightMargin + textLeftMargin;
+        const regionOffset = textRenderObject.getRegionTextWidth(0, editComponent.carriage.pos);
+
+        if (editComponent.carriage.absolutePosition.x > rightBorder) {
+            editComponent.scrollDelta = -cast(float)(regionOffset) + size.x - padding;
+            updateCarriagePostion();
+        }
+        else if (editComponent.carriage.absolutePosition.x < leftBorder) {
+            editComponent.scrollDelta = -cast(float)(regionOffset) ;
+            updateCarriagePostion();
+        }
+    }
+
+    private void updateCarriagePostion() {
+        editComponent.carriage.absolutePosition =
+            absolutePosition +
+            vec2(textLeftMargin - carriageBoundary, 0) +
+            getCarriageOffset();
+    }
+
+    private vec2 getCarriageOffset() {
+        const regionOffset = textRenderObject.getRegionTextWidth(0, editComponent.carriage.pos);
+        const carriagePos = vec2(
+            regionOffset + editComponent.scrollDelta,
+            -cast(float)(textRenderObject.lineHeight) + textTopMargin
         );
+        return textRenderObject.getTextRelativePosition() + carriagePos;
     }
 
     private void drawText() {
         textRenderObject.textAlign = textAlign;
-        // textRenderObject.textVerticalAlign = textVerticalAlign;
-
         auto textPosition = absolutePosition;
 
         if (textAlign == Align.left) {
-            textPosition.x += textLeftMargin;
+            textPosition.x += textLeftMargin + editComponent.scrollDelta;
         }
         else if (textAlign == Align.right) {
-            textPosition.x -= textRightMargin;
+            textPosition.x -= textRightMargin - editComponent.scrollDelta;
         }
 
         renderer.renderText(textRenderObject, state, textPosition, size);
@@ -117,8 +140,6 @@ class TextInput : Widget {
 
     protected override void onCreate() {
         super.onCreate();
-
-        editComponent.bind(this);
 
         const states = ["Leave", "Enter", "Click"];
         const keys = ["left", "center", "right"];
@@ -142,6 +163,7 @@ class TextInput : Widget {
             textRenderObject.text = text;
             textLeftMargin = data.getNumber(style ~ ".textLeftMargin.0");
             textRightMargin = data.getNumber(style ~ ".textRightMargin.0");
+            textTopMargin = data.getNumber(style ~ ".textTopMargin.0");
 
             carriageBoundary = data.getNumber(style ~ ".carriageBoundary.0");
         }
@@ -210,6 +232,7 @@ private:
     float focusResize;
     float textLeftMargin;
     float textRightMargin;
+    float textTopMargin;
     float carriageBoundary;
     EditComponent editComponent;
 }
