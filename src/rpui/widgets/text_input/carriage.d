@@ -105,11 +105,37 @@ struct Carriage {
     }
 
     void setCarriagePos(in int newPos) {
+        timer = 0;
+        visible = true;
+
         const oldPos = pos;
         pos = clamp(newPos, 0, editComponent.text.length);
         editComponent.selectRegion.updateSelect(pos);
 
         if (!isKeyPressed(KeyCode.Shift))
             editComponent.selectRegion.stopSelection();
+    }
+
+    void setCarriagePosFromMousePos(in int x, in int y) {
+        const relativeCursorPos = x - editComponent.absoulteTextPosition.x;
+
+        if (x > editComponent.absoulteTextPosition.x + editComponent.getTextWidth()) {
+            setCarriagePos(cast(int) editComponent.text.length);
+            return;
+        }
+
+        /**
+	 * Find optimal position
+	 * Traverse all sizes of slice of text from [0..1, 0..2, ... , 0..text.size()-1]
+	 * And get max size with condition: size <= bmax
+	 */
+        for (int i = 0; i < editComponent.text.length; ++i) {
+            const sliceWidth = editComponent.getTextRegionSize(0, i);
+
+            if (sliceWidth + 6 > relativeCursorPos) {
+                setCarriagePos(i);
+                break;
+            }
+        }
     }
 }

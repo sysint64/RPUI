@@ -9,6 +9,7 @@ import std.algorithm.searching;
 import rpui.widgets.text_input;
 import rpui.widgets.text_input.select_component;
 import rpui.widgets.text_input.carriage;
+import rpui.widgets.text_input.render_data;
 import rpui.render_objects;
 import rpui.render_factory;
 import rpui.renderer;
@@ -23,8 +24,10 @@ struct EditComponent {
     utfstring text;
     Carriage carriage;
     float scrollDelta = 0.0f;
+    vec2 absoulteTextPosition;
 
     SelectRegion selectRegion;
+    RenderData renderData;
 
     void reset() {
         selectRegion.stopSelection();
@@ -151,5 +154,45 @@ struct EditComponent {
         selectRegion.stopSelection();
 
         return true;
+    }
+
+    void onMouseDown(in MouseDownEvent event) {
+         carriage.setCarriagePosFromMousePos(event.x, event.y);
+    }
+
+    float getTextWidth() {
+        return renderData.textRenderObject.textWidth;
+    }
+
+    // TODO: dmd PR #8155
+    float getTextRegionSize(in int start, in int end)
+    in {
+        assert(start <= end);
+    }
+    do {
+        if (start == end)
+            return 0.0f;
+
+        return cast(float) renderData.textRenderObject.getRegionTextWidth(start, end);
+    }
+
+    vec2 getTextRegionOffset(in int charPos) {
+        const regionSize = getTextRegionSize(0, charPos);
+        const offset = vec2(
+            regionSize + scrollDelta,
+            -cast(float)(renderData.textRenderObject.lineHeight) + renderData.textTopMargin
+        );
+
+        float alignOffset = 0;
+
+        if (renderData.textRenderObject.textAlign == Align.left) {
+            alignOffset = renderData.textLeftMargin;
+        }
+        else if (renderData.textRenderObject.textAlign == Align.right) {
+            alignOffset = -renderData.textRightMargin;
+        }
+
+        return vec2(alignOffset - renderData.carriageBoundary, 0) +
+            renderData.textRenderObject.getTextRelativePosition() + offset;
     }
 }

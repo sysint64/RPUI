@@ -324,6 +324,9 @@ public:
         this.p_children = new WidgetsContainer(this);
         this.p_resolver = new WidgetResolver(this);
         this.p_events = new WidgetEventsObserver();
+
+        this.p_events.subscribe!BlurEvent(&onBlur);
+        this.p_events.subscribe!FocusEvent(&onFocus);
     }
 
     /// Update widget inner bounary and clamped boundary.
@@ -442,6 +445,10 @@ public:
 
         memoizedIsClick = isClick;
     }
+
+    void onFocus(in FocusEvent event) {}
+
+    void onBlur(in BlurEvent event) {}
 
     /// Override this method if need change behaviour when system cursor have to be changed.
     void onCursor() {

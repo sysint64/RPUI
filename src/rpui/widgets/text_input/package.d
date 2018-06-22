@@ -12,9 +12,11 @@ import rpui.manager;
 import rpui.render_objects;
 import rpui.cursor;
 import rpui.events;
+import rpui.widget_events;
 import rpui.widgets.text_input.edit_component;
 import rpui.widgets.text_input.select_component;
 import rpui.widgets.text_input.number_input_type_component;
+import rpui.widgets.text_input.render_data;
 
 class TextInput : Widget {
     enum InputType { text, integer, number }
@@ -72,11 +74,17 @@ class TextInput : Widget {
         updateSize();
     }
 
+    override void updateSize() {
+        super.updateSize();
+        updateCarriagePostion();
+    }
+
+    override void onBlur(in BlurEvent event) {
+        editComponent.reset();
+    }
+
     override void render(Camera camera) {
         super.render(camera);
-
-        if (!isFocused)
-            editComponent.reset();
 
         drawBackground();
 
@@ -97,11 +105,11 @@ class TextInput : Widget {
     private void pushScissor() {
         Rect scissor;
         scissor.point = vec2(
-            absolutePosition.x + textLeftMargin,
+            absolutePosition.x + renderData.textLeftMargin,
             absolutePosition.y
         );
         scissor.size = vec2(
-            size.x - textLeftMargin - textRightMargin,
+            size.x - renderData.textLeftMargin - renderData.textRightMargin,
             size.y
         );
 
@@ -109,13 +117,13 @@ class TextInput : Widget {
     }
 
     private void drawBackground() {
-        renderer.renderHorizontalChain(skinRenderObjects, state, absolutePosition, size);
+        renderer.renderHorizontalChain(renderData.skinRenderObjects, state, absolutePosition, size);
 
         if (isFocused) {
-            const focusPos = absolutePosition + focusOffsets;
-            const focusSize = size + vec2(focusResize, focusResize);
+            const focusPos = absolutePosition + renderData.focusOffsets;
+            const focusSize = size + vec2(renderData.focusResize, renderData.focusResize);
 
-            renderer.renderHorizontalChain(skinFocusRenderObjects, "Focus", focusPos, focusSize);
+            renderer.renderHorizontalChain(renderData.skinFocusRenderObjects, "Focus", focusPos, focusSize);
         }
     }
 
@@ -126,14 +134,14 @@ class TextInput : Widget {
         with (editComponent) {
             const regionSize = getTextRegionSize(selectRegion.start, selectRegion.end);
 
-            selectRegion.size = vec2(regionSize, selectRegionHeight);
+            selectRegion.size = vec2(regionSize, renderData.selectRegionHeight);
             selectRegion.absolutePosition = absolutePosition +
                 getTextRegionOffset(selectRegion.start) +
-                selectRegionOffset;
+                renderData.selectRegionOffset;
 
             renderer.renderColoredObject(
-                selectRegionRenderObject,
-                selectColor,
+                renderData.selectRegionRenderObject,
+                renderData.selectColor,
                 selectRegion.absolutePosition,
                 selectRegion.size
             );
@@ -152,51 +160,19 @@ class TextInput : Widget {
 
         manager.pushScissor(scissor);
 
-        selectedTextRenderObject.textAlign = textAlign;
-        selectedTextRenderObject.text = editComponent.text;
-        renderer.renderText(selectedTextRenderObject, getTextPosition(), size);
+        renderData.selectedTextRenderObject.textAlign = textAlign;
+        renderData.selectedTextRenderObject.text = editComponent.text;
+        renderer.renderText(renderData.selectedTextRenderObject, getTextPosition(), size);
 
         manager.popScissor();
     }
 
     private void drawArrows() {
         renderer.renderQuad(
-            leftArrowRenderObject,
+            renderData.leftArrowRenderObject,
             state,
             absolutePosition
         );
-    }
-
-    // TODO: dmd PR #8155
-    package float getTextRegionSize(in int start, in int end)
-    in {
-        assert(start <= end);
-    }
-    do {
-        if (start == end)
-            return 0.0f;
-
-        return cast(float) textRenderObject.getRegionTextWidth(start, end);
-    }
-
-    package vec2 getTextRegionOffset(in int charPos) {
-        const regionSize = getTextRegionSize(0, charPos);
-        const offset = vec2(
-            regionSize + editComponent.scrollDelta,
-            -cast(float)(textRenderObject.lineHeight) + textTopMargin
-        );
-
-        float alignOffset = 0;
-
-        if (textAlign == Align.left) {
-            alignOffset = textLeftMargin;
-        }
-        else if (textAlign == Align.right) {
-            alignOffset = -textRightMargin;
-        }
-
-        return vec2(alignOffset - carriageBoundary, 0) +
-            textRenderObject.getTextRelativePosition() + offset;
     }
 
     private void updateScroll() {
@@ -205,10 +181,10 @@ class TextInput : Widget {
             return;
         }
 
-        const rightBorder = absolutePosition.x + size.x - textRightMargin;
-        const leftBorder = absolutePosition.x + textLeftMargin;
-        const padding = textRightMargin + textLeftMargin;
-        const regionOffset = getTextRegionSize(0, editComponent.carriage.pos);
+        const rightBorder = absolutePosition.x + size.x - renderData.textRightMargin;
+        const leftBorder = absolutePosition.x + renderData.textLeftMargin;
+        const padding = renderData.textRightMargin + renderData.textLeftMargin;
+        const regionOffset = editComponent.getTextRegionSize(0, editComponent.carriage.pos);
 
         if (editComponent.carriage.absolutePosition.x > rightBorder) {
             editComponent.scrollDelta = -regionOffset + size.x - padding;
@@ -222,13 +198,13 @@ class TextInput : Widget {
 
     private void updateCarriagePostion() {
         editComponent.carriage.absolutePosition = absolutePosition +
-            getTextRegionOffset(editComponent.carriage.pos);
+            editComponent.getTextRegionOffset(editComponent.carriage.pos);
     }
 
     private void drawText() {
-        textRenderObject.textAlign = textAlign;
-        textRenderObject.text = editComponent.text;
-        renderer.renderText(textRenderObject, state, getTextPosition(), size);
+        renderData.textRenderObject.textAlign = textAlign;
+        renderData.textRenderObject.text = editComponent.text;
+        renderer.renderText(renderData.textRenderObject, state, getTextPosition(), size);
     }
 
     private void drawCarriage() {
@@ -237,21 +213,24 @@ class TextInput : Widget {
 
         if (editComponent.carriage.visible)
             renderer.renderQuad(
-                carriageRenderObject,
+                renderData.carriageRenderObject,
                 editComponent.carriage.absolutePosition
             );
     }
 
+    // TODO: Update name to update text position and remove returning.
+    // we have result in editComponent.absoluteTextPosition
     package vec2 getTextPosition() {
         auto textPosition = absolutePosition;
 
         if (textAlign == Align.left) {
-            textPosition.x += textLeftMargin + editComponent.scrollDelta;
+            textPosition.x += renderData.textLeftMargin + editComponent.scrollDelta;
         }
         else if (textAlign == Align.right) {
-            textPosition.x -= textRightMargin - editComponent.scrollDelta;
+            textPosition.x -= renderData.textRightMargin - editComponent.scrollDelta;
         }
 
+        editComponent.absoulteTextPosition = textPosition;
         return textPosition;
     }
 
@@ -259,42 +238,7 @@ class TextInput : Widget {
         super.onCreate();
 
         editComponent.carriage.bind(&editComponent);
-
-        const states = ["Leave", "Enter", "Click"];
-        const keys = ["left", "center", "right"];
-
-        foreach (string key; keys) {
-            renderFactory.createQuad(skinRenderObjects, style, states, key);
-            renderFactory.createQuad(skinFocusRenderObjects, style, "Focus", key);
-        }
-
-        renderFactory.createQuad(selectRegionRenderObject);
-        renderFactory.createQuad(leftArrowRenderObject, style, states, "arrowLeft");
-        renderFactory.createQuad(rightArrowRenderObject, style, states, "arrowRight");
-
-        const focusKey = style ~ ".Focus";
-
-        with (manager.theme.tree) {
-            focusOffsets = data.getVec2f(focusKey ~ ".offsets.0");
-            focusResize = data.getNumber(focusKey ~ ".offsets.1");
-
-            textRenderObject = renderFactory.createText(style, states);
-            textRenderObject.text = text;
-            textLeftMargin = data.getNumber(style ~ ".textLeftMargin.0");
-            textRightMargin = data.getNumber(style ~ ".textRightMargin.0");
-            textTopMargin = data.getNumber(style ~ ".textTopMargin.0");
-
-            carriageRenderObject = renderFactory.createQuad(style ~ ".stick");
-            carriageBoundary = data.getNumber(style ~ ".carriageBoundary.0");
-
-            selectColor = data.getNormColor(style ~ ".selectColor");
-            selectRegionHeight = data.getNumber(style ~ ".selectRegionHeight.0");
-            selectRegionOffset = data.getVec2f(style ~ ".selectRegionOffset");
-            selectedTextColor = data.getNormColor(style ~ ".selectedTextColor");
-
-            selectedTextRenderObject = renderFactory.createText();
-            selectedTextRenderObject.color = selectedTextColor;
-        }
+        editComponent.renderData.onCreate(renderFactory, manager.theme, style);
     }
 
     override void onTextEntered(in TextEnteredEvent event) {
@@ -312,28 +256,17 @@ class TextInput : Widget {
         editComponent.onKeyPressed(event);
     }
 
+    override void onMouseDown(in MouseDownEvent event) {
+        if (!isFocused && autoSelectOnFocus)
+            return;
+
+        if (isEnter)
+            editComponent.onMouseDown(event);
+    }
+
 private:
-    BaseRenderObject[string] skinRenderObjects;
-    BaseRenderObject[string] skinFocusRenderObjects;
-    BaseRenderObject leftArrowRenderObject;
-    BaseRenderObject rightArrowRenderObject;
-    TextRenderObject textRenderObject;
-    BaseRenderObject carriageRenderObject;
-    TextRenderObject selectedTextRenderObject;
-    BaseRenderObject selectRegionRenderObject;
-
-    vec2 focusOffsets;
-    float focusResize;
-    float textLeftMargin;
-    float textRightMargin;
-    float textTopMargin;
-    float carriageBoundary;
-
-    vec4 selectColor;
-    vec4 selectedTextColor;
-    float selectRegionHeight;
-    vec2 selectRegionOffset;
-
     EditComponent editComponent;
     NumberInputTypeComponent numberInputTypeComponent;
+
+    @property RenderData renderData() { return editComponent.renderData; }
 }
