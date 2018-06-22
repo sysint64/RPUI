@@ -406,6 +406,8 @@ public:
 
     /// Make focus for widget, and clear focus from focused widget.
     void focus() {
+        events.notify(FocusEvent());
+
         if (manager.focusedWidget != this && manager.focusedWidget !is null)
             manager.focusedWidget.blur();
 
@@ -414,8 +416,6 @@ public:
 
         if (!this.skipFocus)
             focusNavigator.borderScrollToWidget();
-
-        events.notify(FocusEvent());
     }
 
     /// Clear focus from widget

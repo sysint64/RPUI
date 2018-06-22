@@ -23,7 +23,7 @@ class TextInput : Widget {
 
     @Field Align textAlign = Align.left;
     @Field InputType inputType = InputType.text;
-    @Field bool autoSelectOnFocus = false;
+    @Field bool autoSelectOnFocus = true;
 
     int integerStep = 1;
     float numberStep = 0.1;
@@ -81,6 +81,11 @@ class TextInput : Widget {
 
     override void onBlur(in BlurEvent event) {
         editComponent.reset();
+    }
+
+    override void onFocus(in FocusEvent event) {
+        if (autoSelectOnFocus && !isFocused)
+            editComponent.selectAll();
     }
 
     override void render(Camera camera) {

@@ -195,4 +195,11 @@ struct EditComponent {
         return vec2(alignOffset - renderData.carriageBoundary, 0) +
             renderData.textRenderObject.getTextRelativePosition() + offset;
     }
+
+    void selectAll() {
+        selectRegion.start = 0;
+        selectRegion.end = cast(int) text.length;
+        selectRegion.startedSelection = true;
+        carriage.pos = selectRegion.end;
+    }
 }
