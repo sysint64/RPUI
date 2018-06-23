@@ -1,6 +1,7 @@
 module rpui.widgets_container;
 
 import std.container.array;
+import rpui.events;
 import rpui.widget;
 import rpui.widget_events;
 
@@ -42,7 +43,7 @@ package final class WidgetsContainer {
         widget.manager = rootWidget.manager;
 
         widget.events.subscribeWidget(widget);
-        rootWidget.events.join(widget.events);
+        rootWidget.events.join(widget.events, windowEvents);
 
         if (widgets.length == 0) {
             rootWidget.p_firstWidget = widget;

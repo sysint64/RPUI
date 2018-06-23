@@ -2,6 +2,7 @@ module rpui.events_observer;
 
 import rpui.events;
 import std.algorithm.mutation;
+import std.algorithm.searching;
 import std.variant;
 
 interface Subscriber {
@@ -70,6 +71,7 @@ class EventsSubscriber(T) : Subscriber {
 
 class EventsObserver {
     private bool[EventsObserver] observerIsActive;
+    private const(TypeInfo)[][EventsObserver] observerJoinedEvents;
     private EventsObserver[] joinedObservers;
     private Subscriber[] subscribers;
 
@@ -106,29 +108,38 @@ final:
         }
 
         foreach (observer; joinedObservers) {
-            if (observerIsActive[observer])
+            const shouldNotify = observerJoinedEvents[observer].length == 0 ||
+                observerJoinedEvents[observer].canFind(typeid(T));
+
+            if (observerIsActive[observer] && shouldNotify)
                 observer.notify(event);
         }
+    }
+
+    void join(EventsObserver observer, in TypeInfo[] events) {
+        joinedObservers ~= observer;
+        observerIsActive[observer] = true;
+        observerJoinedEvents[observer] = events;
     }
 
     void join(EventsObserver observer) {
         joinedObservers ~= observer;
         observerIsActive[observer] = true;
+
+        // when list is empty, then join to all events
+        observerJoinedEvents[observer] = [];
     }
 
     void unjoin(EventsObserver observer) {
-        // debug assert(observer in joinedObservers);
         observerIsActive.remove(observer);
         joinedObservers = joinedObservers.remove!(a => a == observer);
     }
 
     void silent(EventsObserver observer) {
-        // debug assert(observer in joinedObservers);
         observerIsActive[observer] = false;
     }
 
     void unsilent(EventsObserver observer) {
-        // debug assert(observer in joinedObservers);
         observerIsActive[observer] = true;
     }
 }

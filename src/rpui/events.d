@@ -52,6 +52,18 @@ struct WindowResizeEvent {
     uint height;
 }
 
+const windowEvents = [
+    typeid(KeyPressedEvent),
+    typeid(KeyReleasedEvent),
+    typeid(TextEnteredEvent),
+    typeid(MouseDownEvent),
+    typeid(MouseUpEvent),
+    typeid(DblClickEvent),
+    typeid(MouseMoveEvent),
+    typeid(MouseWheelEvent),
+    typeid(WindowResizeEvent)
+];
+
 interface EventsListener {
     void onKeyPressed(in KeyPressedEvent event);
     void onKeyReleased(in KeyReleasedEvent event);
