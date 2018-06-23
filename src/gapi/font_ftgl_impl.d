@@ -10,7 +10,6 @@ import gapi.text;
 import gapi.font_impl;
 import gapi.texture;
 
-
 class FontFTGLImpl : FontImpl {
     void createFontFromFile(in string fileName) {
         const char* fileNamez = toStringz(fileName);

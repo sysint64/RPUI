@@ -23,7 +23,7 @@ class TextInput : Widget {
 
     @Field Align textAlign = Align.left;
     @Field InputType inputType = InputType.text;
-    @Field bool autoSelectOnFocus = true;
+    @Field bool autoSelectOnFocus = false;
 
     int integerStep = 1;
     float numberStep = 0.1;
@@ -190,15 +190,23 @@ class TextInput : Widget {
         const leftBorder = absolutePosition.x + renderData.textLeftMargin;
         const padding = renderData.textRightMargin + renderData.textLeftMargin;
         const regionOffset = editComponent.getTextRegionSize(0, editComponent.carriage.pos);
+        const textSize = cast(float) renderData.textRenderObject.textWidth;
+        const minScroll = -textSize + size.x - padding;
 
-        if (editComponent.carriage.absolutePosition.x > rightBorder) {
+        if (editComponent.scrollDelta <= minScroll)
+            editComponent.scrollDelta = minScroll;
+
+        if (textSize + padding < size.x) {
+            editComponent.scrollDelta = 0;
+        }
+        else if (editComponent.carriage.absolutePosition.x > rightBorder) {
             editComponent.scrollDelta = -regionOffset + size.x - padding;
-            updateCarriagePostion();
         }
         else if (editComponent.carriage.absolutePosition.x < leftBorder) {
             editComponent.scrollDelta = -regionOffset;
-            updateCarriagePostion();
         }
+
+        updateCarriagePostion();
     }
 
     private void updateCarriagePostion() {
@@ -262,11 +270,21 @@ class TextInput : Widget {
     }
 
     override void onMouseDown(in MouseDownEvent event) {
-        if (!isFocused && autoSelectOnFocus)
+        if (autoSelectOnFocus)
             return;
 
         if (isEnter)
             editComponent.onMouseDown(event);
+    }
+
+    override void onMouseMove(in MouseMoveEvent event) {
+        if (isEnter)
+            editComponent.onMouseMove(event);
+    }
+
+    override void onDblClick(in DblClickEvent event) {
+        if (isEnter)
+            editComponent.onDblClick(event);
     }
 
 private:

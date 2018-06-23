@@ -79,31 +79,6 @@ struct Carriage {
         }
     }
 
-    // TODO: dmd PR #8155
-    int findPosUntilSeparator(in int direction)
-    in {
-        assert(direction == -1 || direction == 1);
-    }
-    do {
-        int i = pos;
-
-        if (i + direction <= 0 || i + direction >= editComponent.text.length)
-            return i;
-
-        while (true) {
-            i += direction;
-
-            if (i <= 0)
-                return i;
-
-            if (i >= editComponent.text.length)
-                return i;
-
-            if (splitChars.canFind(editComponent.text[i]))
-                return i;
-        }
-    }
-
     void setCarriagePos(in int newPos) {
         timer = 0;
         visible = true;
@@ -111,9 +86,6 @@ struct Carriage {
         const oldPos = pos;
         pos = clamp(newPos, 0, editComponent.text.length);
         editComponent.selectRegion.updateSelect(pos);
-
-        if (!isKeyPressed(KeyCode.Shift))
-            editComponent.selectRegion.stopSelection();
     }
 
     void setCarriagePosFromMousePos(in int x, in int y) {

@@ -123,7 +123,7 @@ abstract class Application {
     }
 
     void onMouseMove(in uint x, in uint y) {
-        events.notify(MouseMoveEvent(x, y));
+        events.notify(MouseMoveEvent(x, y, to!MouseButton(p_mouseButton)));
     }
 
     void onMouseWheel(in int dx, in int dy) {

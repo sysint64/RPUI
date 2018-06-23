@@ -41,6 +41,9 @@ struct EditComponent {
         if (isKeyPressed(KeyCode.Shift) && !selectRegion.startedSelection)
             selectRegion.startSelection(carriage.pos);
 
+        if (!isKeyPressed(KeyCode.Shift))
+            selectRegion.stopSelection();
+
         switch (event.key) {
             case KeyCode.Left:
                 if (isKeyPressed(KeyCode.Ctrl)) {
@@ -157,7 +160,26 @@ struct EditComponent {
     }
 
     void onMouseDown(in MouseDownEvent event) {
-         carriage.setCarriagePosFromMousePos(event.x, event.y);
+        carriage.setCarriagePosFromMousePos(event.x, event.y);
+
+        if (!isKeyPressed(KeyCode.Shift))
+            selectRegion.startSelection(carriage.pos);
+    }
+
+    void onMouseMove(in MouseMoveEvent event) {
+        if (event.button != MouseButton.mouseLeft)
+            return;
+
+        carriage.setCarriagePosFromMousePos(event.x, event.y);
+    }
+
+    void onDblClick(in DblClickEvent event) {
+        const left = carriage.navigateCarriage(-1);
+        const right = carriage.navigateCarriage(1);
+
+        selectRegion.start = left;
+        selectRegion.end = right;
+        carriage.pos = right;
     }
 
     float getTextWidth() {
