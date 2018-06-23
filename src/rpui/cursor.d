@@ -19,6 +19,7 @@ import application;
 final class Cursor {
     enum Icon {
         none = -1,
+        inherit = -2,
         hand = XC_hand1,  /// $(CURSOR_IMG 58.gif)
         normal = XC_left_ptr,  /// $(CURSOR_IMG 68.gif)
         iBeam = XC_xterm,  /// $(CURSOR_IMG 152.gif)

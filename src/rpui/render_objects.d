@@ -40,6 +40,10 @@ class BaseRenderObject : BaseObject {
         texCoordinates["default"] = Texture.Coord.normalize(coord, texture);
     }
 
+    vec2 getTextureSize(in string state) {
+        return texCoordinates[state].size;
+    }
+
 package:
     Texture.Coord[string] texCoordinates;
 }

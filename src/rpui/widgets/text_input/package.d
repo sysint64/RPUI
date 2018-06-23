@@ -67,6 +67,12 @@ class TextInput : Widget {
         editComponent.carriage.onProgress(app.deltaTime);
         updateCarriagePostion();
         updateScroll();
+
+        if (isNumberMode()) {
+            updateArrowAbsolutePositions();
+            updateArrowStates();
+        }
+
         locator.updateAbsolutePosition();
         locator.updateLocationAlign();
         locator.updateVerticalLocationAlign();
@@ -99,12 +105,16 @@ class TextInput : Widget {
         drawSelectedText();
         manager.popScissor();
 
-        if (inputType == InputType.integer || inputType == InputType.number) {
+        if (isNumberMode()) {
             textAlign = Align.center;
             drawArrows();
         }
 
         drawCarriage();
+    }
+
+    private bool isNumberMode() {
+        return inputType == InputType.integer || inputType == InputType.number;
     }
 
     private void pushScissor() {
@@ -175,9 +185,61 @@ class TextInput : Widget {
     private void drawArrows() {
         renderer.renderQuad(
             renderData.leftArrowRenderObject,
-            state,
-            absolutePosition
+            numberInputTypeComponent.leftArrow.state,
+            numberInputTypeComponent.leftArrow.absolutePosition
         );
+
+        renderer.renderQuad(
+            renderData.rightArrowRenderObject,
+            numberInputTypeComponent.rightArrow.state,
+            numberInputTypeComponent.rightArrow.absolutePosition
+        );
+    }
+
+    private void updateArrowAbsolutePositions() {
+        with (numberInputTypeComponent) {
+            leftArrow.absolutePosition = absolutePosition + renderData.arrowOffsets;
+
+            const rightArrowWidth = renderData
+                .rightArrowRenderObject
+                .getTextureSize(rightArrow.state).x;
+
+            const rightArrowOffsets = vec2(
+                size.x - rightArrowWidth - renderData.arrowOffsets.x,
+                renderData.arrowOffsets.y
+            );
+
+            rightArrow.absolutePosition = absolutePosition + rightArrowOffsets;
+        }
+    }
+
+    private void updateArrowStates() {
+        with (numberInputTypeComponent) {
+            const areaSize = vec2(renderData.arrowsAreaWidth, size.y);
+
+            leftArrow.area = Rect(
+                absolutePosition,
+                areaSize
+            );
+
+            rightArrow.area = Rect(
+                absolutePosition + vec2(size.x - areaSize.x, 0),
+                areaSize
+            );
+
+            leftArrow.isEnter = pointInRect(app.mousePos, leftArrow.area);
+            rightArrow.isEnter = pointInRect(app.mousePos, rightArrow.area);
+        }
+    }
+
+    /// Change system cursor when mouse entering to arrows.
+    override void onCursor() {
+        if (numberInputTypeComponent.leftArrow.isEnter) {
+            manager.cursor = Cursor.Icon.normal;
+        }
+        else if (numberInputTypeComponent.rightArrow.isEnter) {
+            manager.cursor = Cursor.Icon.normal;
+        }
     }
 
     private void updateScroll() {

@@ -27,6 +27,9 @@ struct RenderData {
     float selectRegionHeight;
     vec2 selectRegionOffset;
 
+    vec2 arrowOffsets;
+    float arrowsAreaWidth;
+
     void onCreate(RenderFactory renderFactory, Theme theme, in string style) {
         const states = ["Leave", "Enter", "Click"];
         const keys = ["left", "center", "right"];
@@ -61,6 +64,9 @@ struct RenderData {
 
             selectedTextRenderObject = renderFactory.createText();
             selectedTextRenderObject.color = selectedTextColor;
+
+            arrowOffsets = data.getVec2f(style ~ ".arrowOffsets");
+            arrowsAreaWidth = data.getNumber(style ~ ".arrowsAreaWidth.0");
         }
     }
 }

@@ -82,7 +82,7 @@ class Manager : EventsListenerEmpty {
 
     /// Invokes all `onProgress` of all widgets and `poll` widgets.
     void onProgress() {
-        cursor = Cursor.Icon.normal;
+        cursor = Cursor.Icon.inherit;
         rootWidget.progress();
         poll();
         blur();
@@ -148,7 +148,7 @@ class Manager : EventsListenerEmpty {
                 p_widgetUnderMouse = widget;
                 found = widget;
 
-                if (cursor == Cursor.Icon.normal) {
+                if (cursor == Cursor.Icon.inherit) {
                     cursor = widget.cursor;
                 }
 
@@ -312,7 +312,7 @@ package:
     RenderFactory renderFactory;
     Renderer renderer;
 
-    Cursor.Icon cursor = Cursor.Icon.normal;
+    Cursor.Icon cursor = Cursor.Icon.inherit;
 
 private:
     Application app;

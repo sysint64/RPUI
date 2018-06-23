@@ -203,6 +203,8 @@ TextInput
     selectRegionHeight      : 16
     selectRegionOffset      : 1, 2
     selectedTextColor       : 255, 255, 255
+    arrowOffsets            : 4, 5
+    arrowsAreaWidth         : 14
 
     Leave
         left                : 4 , 35, 5, 21
