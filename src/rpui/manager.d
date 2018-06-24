@@ -108,13 +108,13 @@ class Manager : EventsListenerEmpty {
             if (widget is null)
                 continue;
 
-            widget.isEnter = false;
-
             if (!widget.visible)
                 continue;
 
             if (!isWidgetFrozen(widget))
                 widget.onCursor();
+
+            widget.isEnter = false;
 
             const size = vec2(
                 widget.overSize.x > 0 ? widget.overSize.x : widget.size.x,
@@ -362,7 +362,7 @@ package:
      * Unfreeze UI where source of freezing is `widget`.
      */
     void unfreezeUI(Widget widget) {
-        if (freezeSources.front == widget) {
+        if (!freezeSources.empty && freezeSources.front == widget) {
             freezeSources.removeFront();
             isNestedFreezeStack.removeFront();
             unsilentPreviousEventsEmitter(widget);

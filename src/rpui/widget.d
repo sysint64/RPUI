@@ -169,7 +169,7 @@ protected:
         right
     }
 
-    Application app;
+    package Application app;
     PartDraws partDraws;
 
 package:
@@ -296,7 +296,6 @@ package:
     }
 
 public:
-
     /// Default constructor with default `style`.
     this() {
         this.app = Application.getInstance();
@@ -420,6 +419,8 @@ public:
 
     /// Clear focus from widget
     void blur() {
+        isClick = false;
+        p_isFocused = false;
         manager.unfocusedWidgets.insert(this);
     }
 

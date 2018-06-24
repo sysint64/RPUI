@@ -50,7 +50,7 @@ final class Cursor {
 
     /// Invoke OS specified methods to update system cursor icon.
     @property void icon(in Icon newIcon) {
-        if (p_icon == newIcon || p_icon == Icon.none)
+        if (p_icon == newIcon || p_icon == Icon.none || newIcon == Icon.inherit)
             return;
 
         p_icon = newIcon;

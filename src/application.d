@@ -58,28 +58,38 @@ abstract class Application {
 
     void render() {}
 
-    final void logError(Char, T...)(in Char[] fmt, T args) {
+    void logError(Char, T...)(in Char[] fmt, T args) {
         debug log.display(vec4(0.8f, 0.1f, 0.1f, 1), fmt, args);
     }
 
-    final void logWarning(Char, T...)(in Char[] fmt, T args) {
+    void logWarning(Char, T...)(in Char[] fmt, T args) {
         debug log.display(vec4(0.1f, 0.1f, 0.8f, 1), fmt, args);
     }
 
-    final void logDebug(Char, T...)(in Char[] fmt, T args) {
+    void logDebug(Char, T...)(in Char[] fmt, T args) {
         debug log.display(vec4(0.3f, 0.3f, 0.3f, 1), fmt, args);
     }
 
-    final void warning(Char, T...)(in Char[] fmt, T args) {
-
+    void warning(Char, T...)(in Char[] fmt, T args) {
     }
 
-    final void error(Char, T...)(in Char[] fmt, T args) {
-
+    void error(Char, T...)(in Char[] fmt, T args) {
     }
 
-    final void criticalError(Char, T...)(in Char[] fmt, T args) {
+    void criticalError(Char, T...)(in Char[] fmt, T args) {
         logError(fmt, args);
+    }
+
+    void hideCursor() {
+        sfWindow_setMouseCursorVisible(window, false);
+    }
+
+    void showCursor() {
+        sfWindow_setMouseCursorVisible(window, true);
+    }
+
+    void setMousePositon(in int x, in int y) {
+        sfMouse_setPosition(sfVector2i(x, y), window);
     }
 
     // Events

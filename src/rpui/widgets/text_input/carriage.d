@@ -97,10 +97,10 @@ struct Carriage {
         }
 
         /**
-	 * Find optimal position
-	 * Traverse all sizes of slice of text from [0..1, 0..2, ... , 0..text.size()-1]
-	 * And get max size with condition: size <= bmax
-	 */
+         * Find optimal position
+         * Traverse all sizes of slice of text from [0..1, 0..2, ... , 0..text.size()-1]
+         * And get max size with condition: size <= bmax
+         */
         for (int i = 0; i < editComponent.text.length; ++i) {
             const sliceWidth = editComponent.getTextRegionSize(0, i);
 

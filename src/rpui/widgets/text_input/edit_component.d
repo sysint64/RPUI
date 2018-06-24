@@ -170,7 +170,7 @@ struct EditComponent {
         if (event.button != MouseButton.mouseLeft)
             return;
 
-        carriage.setCarriagePosFromMousePos(event.x, event.y);
+        // carriage.setCarriagePosFromMousePos(event.x, event.y);
     }
 
     void onDblClick(in DblClickEvent event) {

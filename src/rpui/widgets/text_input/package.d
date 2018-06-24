@@ -57,7 +57,6 @@ class TextInput : Widget {
         super(style);
 
         this.drawChildren = false;
-        this.cursor = Cursor.Icon.iBeam;
 
         // TODO: rm hardcode
         size = vec2(50, 21);
@@ -167,7 +166,6 @@ class TextInput : Widget {
         if (!editComponent.selectRegion.textIsSelected())
             return;
 
-        const textPosition = getTextPosition();
         const scissor = Rect(
             editComponent.selectRegion.absolutePosition,
             editComponent.selectRegion.size
@@ -227,13 +225,21 @@ class TextInput : Widget {
                 areaSize
             );
 
-            leftArrow.isEnter = pointInRect(app.mousePos, leftArrow.area);
-            rightArrow.isEnter = pointInRect(app.mousePos, rightArrow.area);
+            if (numberInputTypeComponent.isClick) {
+                leftArrow.isEnter = false;
+                rightArrow.isEnter = false;
+            } else {
+                leftArrow.isEnter = pointInRect(app.mousePos, leftArrow.area);
+                rightArrow.isEnter = pointInRect(app.mousePos, rightArrow.area);
+            }
         }
     }
 
     /// Change system cursor when mouse entering to arrows.
     override void onCursor() {
+        if (isFocused && isEnter)
+            manager.cursor = Cursor.Icon.iBeam;
+
         if (numberInputTypeComponent.leftArrow.isEnter) {
             manager.cursor = Cursor.Icon.normal;
         }
@@ -283,7 +289,7 @@ class TextInput : Widget {
     }
 
     private void drawCarriage() {
-        if (!isFocused())
+        if (!isFocused)
             return;
 
         if (editComponent.carriage.visible)
@@ -314,6 +320,7 @@ class TextInput : Widget {
 
         editComponent.carriage.bind(&editComponent);
         editComponent.renderData.onCreate(renderFactory, manager.theme, style);
+        numberInputTypeComponent.bind(this);
     }
 
     override void onTextEntered(in TextEnteredEvent event) {
@@ -335,13 +342,26 @@ class TextInput : Widget {
         if (autoSelectOnFocus)
             return;
 
-        if (isEnter)
+        if (isEnter) {
             editComponent.onMouseDown(event);
+        }
+
+        if (isNumberMode())
+            numberInputTypeComponent.onMouseDown(event);
+    }
+
+    override void onMouseUp(in MouseUpEvent event) {
+        if (isNumberMode())
+            numberInputTypeComponent.onMouseUp(event);
+        // blur();
     }
 
     override void onMouseMove(in MouseMoveEvent event) {
         if (isEnter)
             editComponent.onMouseMove(event);
+
+        if (isNumberMode())
+            numberInputTypeComponent.onMouseMove(event);
     }
 
     override void onDblClick(in DblClickEvent event) {
