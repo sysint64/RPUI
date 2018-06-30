@@ -41,7 +41,7 @@ class EventsSubscriber(T) : Subscriber {
     }
 
     override void onEventReceived(in Variant event) {
-        enum events = [
+        static immutable events = [
             "KeyPressed",
             "KeyReleased",
             "TextEntered",

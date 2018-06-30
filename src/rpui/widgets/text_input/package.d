@@ -22,27 +22,22 @@ class TextInput : Widget {
     enum InputType { text, integer, number }
 
     @Field Align textAlign = Align.left;
-    @Field InputType inputType = InputType.text;
     @Field bool autoSelectOnFocus = false;
+    @Field float maxValue = float.max;
+    @Field float minValue = float.min_normal;
+    @Field float numberStep = 1f;
 
-    int integerStep = 1;
-    float numberStep = 0.1;
+    private InputType p_inputType = InputType.text;
 
     @Field
-    @property void step(in float value) {
-        if (inputType == InputType.integer) {
-            integerStep = cast(int) value;
-        }
-        else if (inputType == InputType.number) {
-            numberStep = value;
-        }
-    }
+    @property InputType inputType() { return p_inputType; }
+    @property void inputType(in InputType val) {
+        p_inputType = val;
 
-    @property float step() {
-        if (inputType == InputType.integer) {
-            return integerStep;
+        if (val == InputType.integer || val == InputType.number) {
+            focusOnMousUp = true;
         } else {
-            return numberStep;
+            focusOnMousUp = false;
         }
     }
 
@@ -52,6 +47,10 @@ class TextInput : Widget {
     }
 
     @property utfstring text() { return editComponent.text; }
+
+    private EditComponent editComponent;
+    private NumberInputTypeComponent numberInputTypeComponent;
+    private @property RenderData renderData() { return editComponent.renderData; }
 
     this(in string style = "TextInput") {
         super(style);
@@ -76,12 +75,16 @@ class TextInput : Widget {
         locator.updateLocationAlign();
         locator.updateVerticalLocationAlign();
         locator.updateRegionAlign();
-        updateSize();
     }
 
     override void updateSize() {
         super.updateSize();
         updateCarriagePostion();
+
+        if (isNumberMode()) {
+            updateArrowAbsolutePositions();
+            updateArrowStates();
+        }
     }
 
     override void onBlur(in BlurEvent event) {
@@ -112,7 +115,7 @@ class TextInput : Widget {
         drawCarriage();
     }
 
-    private bool isNumberMode() {
+    package bool isNumberMode() {
         return inputType == InputType.integer || inputType == InputType.number;
     }
 
@@ -237,8 +240,9 @@ class TextInput : Widget {
 
     /// Change system cursor when mouse entering to arrows.
     override void onCursor() {
-        if (isFocused && isEnter)
+        if (isFocused && (isEnter || isClick)) {
             manager.cursor = Cursor.Icon.iBeam;
+        }
 
         if (numberInputTypeComponent.leftArrow.isEnter) {
             manager.cursor = Cursor.Icon.normal;
@@ -318,8 +322,10 @@ class TextInput : Widget {
     protected override void onCreate() {
         super.onCreate();
 
+        editComponent.bind(this);
         editComponent.carriage.bind(&editComponent);
         editComponent.renderData.onCreate(renderFactory, manager.theme, style);
+
         numberInputTypeComponent.bind(this);
     }
 
@@ -353,7 +359,6 @@ class TextInput : Widget {
     override void onMouseUp(in MouseUpEvent event) {
         if (isNumberMode())
             numberInputTypeComponent.onMouseUp(event);
-        // blur();
     }
 
     override void onMouseMove(in MouseMoveEvent event) {
@@ -368,10 +373,4 @@ class TextInput : Widget {
         if (isEnter)
             editComponent.onDblClick(event);
     }
-
-private:
-    EditComponent editComponent;
-    NumberInputTypeComponent numberInputTypeComponent;
-
-    @property RenderData renderData() { return editComponent.renderData; }
 }

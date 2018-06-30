@@ -2,7 +2,6 @@ module rpui.widgets.text_input.number_input_type_component;
 
 import std.conv;
 import std.math;
-import std.stdio;
 
 import math.linalg;
 import basic_types;
@@ -28,9 +27,9 @@ struct NumberInputTypeComponent {
     bool isClick = false;
     int startX = 0;
     int startY = 0;
-    int value = 0;
-    int initialValue = 0;
-    float step = 5.0f;
+    float value = 0;
+    float initialValue = 0;
+    float mouseSensetive = 20.0f;
     bool shouldBlur = false;
 
     void bind(TextInput textInput) {
@@ -67,8 +66,7 @@ struct NumberInputTypeComponent {
         if (!isClick)
             return;
 
-        delta = (event.x - startX) / step;
-        writeln(delta);
+        delta = (event.x - startX) / mouseSensetive;
 
         if (delta > 0) {
             addValue(floor(delta).to!(int));
@@ -79,6 +77,7 @@ struct NumberInputTypeComponent {
         if (abs(delta) >= 1) {
             textInput.app.setMousePositon(startX, startY);
             shouldBlur = true;
+            delta = 0;
         }
     }
 
@@ -100,8 +99,11 @@ struct NumberInputTypeComponent {
     void onBlur() {
     }
 
-    void addValue(in int delta) {
-        value = textInput.text.to!(int) + delta;
+    void addValue(in float sign) {
+        if (sign == 0)
+            return;
+
+        value = textInput.text.to!(float) + sign * textInput.numberStep;
         textInput.text = value.to!(dstring);
     }
 }

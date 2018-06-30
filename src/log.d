@@ -33,7 +33,7 @@ void logDebug(Char, T...)(in Char[] fmt, T args) {
 
 class Log {
     this() {
-        font = Font.createFromFile("ttf-dejavu/DejaVuSans.ttf");
+        font = Font.createFromFile("DejaVuSans.ttf");
     }
 
     void display(vec4, Char, T...)(in vec4 color, in Char[] fmt, T args) {

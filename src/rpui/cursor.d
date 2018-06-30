@@ -45,18 +45,21 @@ final class Cursor {
         }
     }
 
-    private Icon p_icon = Icon.normal;
-    @property Icon icon() { return p_icon; }
+    private Icon icon = Icon.normal;
 
-    /// Invoke OS specified methods to update system cursor icon.
-    @property void icon(in Icon newIcon) {
-        if (p_icon == newIcon || newIcon == Icon.none || newIcon == Icon.inherit)
+    void setIcon(in Icon newIcon) {
+        if (icon == newIcon || newIcon == Icon.none)
             return;
 
-        p_icon = newIcon;
+        if (newIcon == Icon.inherit) {
+            icon = Icon.normal;
+        }
+        else {
+            icon = newIcon;
+        }
 
         version (linux) {
-            cursor = XCreateFontCursor(display, cast(uint) p_icon);
+            cursor = XCreateFontCursor(display, cast(uint) icon);
             XDefineCursor(display, app.windowHandle, cursor);
             XFlush(display);
         }

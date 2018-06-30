@@ -1,10 +1,12 @@
 module rpui.widgets.text_input.edit_component;
 
+import std.algorithm.comparison;
+import std.algorithm.searching;
+import std.string;
+
 import input;
 import basic_types;
 import math.linalg;
-import std.algorithm.comparison;
-import std.algorithm.searching;
 
 import rpui.widgets.text_input;
 import rpui.widgets.text_input.select_component;
@@ -28,6 +30,11 @@ struct EditComponent {
 
     SelectRegion selectRegion;
     RenderData renderData;
+    TextInput textInput;
+
+    void bind(TextInput textInput) {
+        this.textInput = textInput;
+    }
 
     void reset() {
         selectRegion.stopSelection();
@@ -141,21 +148,28 @@ struct EditComponent {
 
         utfstring leftPart;
         utfstring rightPart;
+        auto newCarriagePos = carriage.pos;
 
         if (!selectRegion.textIsSelected()) {
             leftPart = text[0 .. carriage.pos];
             rightPart = text[carriage.pos .. $];
-            carriage.pos++;
+            newCarriagePos++;
         }
         else {
             leftPart = text[0 .. selectRegion.start];
             rightPart = text[selectRegion.end .. $];
-            carriage.pos = selectRegion.start + 1;
+            newCarriagePos = selectRegion.start + 1;
         }
 
-        text = leftPart ~ charToPut ~ rightPart;
-        selectRegion.stopSelection();
+        const newText = leftPart ~ charToPut ~ rightPart;
 
+        if (textInput.inputType == TextInput.InputType.number && !isNumeric(newText))
+            return false;
+
+        text = newText;
+        carriage.pos = newCarriagePos;
+
+        selectRegion.stopSelection();
         return true;
     }
 
@@ -170,7 +184,9 @@ struct EditComponent {
         if (event.button != MouseButton.mouseLeft)
             return;
 
-        // carriage.setCarriagePosFromMousePos(event.x, event.y);
+        // if (!textInput.isNumberMode())
+        if (textInput.isFocused)
+            carriage.setCarriagePosFromMousePos(event.x, event.y);
     }
 
     void onDblClick(in DblClickEvent event) {

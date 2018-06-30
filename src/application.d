@@ -28,6 +28,7 @@ import path;
 abstract class Application {
     EventsObserver events;
     const Pathes pathes;
+    private bool isCursorVisible = true;
 
     this() {
         events = new EventsObserver();
@@ -39,7 +40,7 @@ abstract class Application {
     }
 
     final void run(in bool runLoop = true) {
-        p_cursor = new Cursor();
+        cursor = new Cursor();
 
         initSFML();
         initGL();
@@ -81,11 +82,19 @@ abstract class Application {
     }
 
     void hideCursor() {
+        if (!isCursorVisible)
+            return;
+
         sfWindow_setMouseCursorVisible(window, false);
+        isCursorVisible = false;
     }
 
     void showCursor() {
+        if (isCursorVisible)
+            return;
+
         sfWindow_setMouseCursorVisible(window, true);
+        isCursorVisible = true;
     }
 
     void setMousePositon(in int x, in int y) {
@@ -167,8 +176,9 @@ abstract class Application {
     @property float deltaTime() { return p_deltaTime; }
     @property float currentTime() { return p_currentTime; }
 
-    @property Cursor.Icon cursor() { return p_cursor.icon; }
-    @property void cursor(in Cursor.Icon val) { p_cursor.icon = val; }
+    void setCursor(in Cursor.Icon val) {
+        cursor.setIcon(val);
+    }
 
     @property sfWindowHandle windowHandle() { return p_windowHandle; }
 
@@ -189,7 +199,7 @@ private:
     uint p_windowHeight;
 
     // Cursor
-    Cursor p_cursor;
+    Cursor cursor;
     vec2i p_mousePos;
     vec2i p_mouseClickPos;
     uint p_mouseButton = MouseButton.mouseNone;

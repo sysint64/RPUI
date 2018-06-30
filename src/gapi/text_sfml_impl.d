@@ -71,8 +71,11 @@ class TextSFMLImpl : TextImpl {
 
             texCoord.offset = vec2(glyph.textureRect.left, glyph.textureRect.top);
 
-            // magic number 0.375 - is just for adding some antialiasing
-            texCoord.size = vec2(glyph.textureRect.width + 0.375f, glyph.textureRect.height);
+            if (textObject.font.antiAliasing == Font.AntiAliasing.stretchAA) {
+                texCoord.size = vec2(glyph.textureRect.width + 0.375f, glyph.textureRect.height);
+            } else {
+                texCoord.size = vec2(glyph.textureRect.width, glyph.textureRect.height);
+            }
 
             Texture texture = textObject.font.getTexture(textSize);
             texCoord.normalize(texture);

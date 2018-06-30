@@ -1,5 +1,5 @@
 General
-    regularFont             : "ttf-dejavu/DejaVuSans.ttf", 12
+    regularFont             : "DejaVuSans.ttf", 12, stretchAA
 
 Button
     split                   : 44, 35, 3, 21

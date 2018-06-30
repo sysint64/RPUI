@@ -9,7 +9,6 @@ import gapi.text;
 import gapi.font_impl;
 import gapi.texture;
 
-
 class FontSFMLImpl : FontImpl {
     bool createFont(ref FontHandles handles, in string fileName) {
         const char* fileNamez = toStringz(fileName);

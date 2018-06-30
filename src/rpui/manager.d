@@ -86,7 +86,7 @@ class Manager : EventsListenerEmpty {
         rootWidget.progress();
         poll();
         blur();
-        app.cursor = cursor;
+        app.setCursor(cursor);
     }
 
     /// Renders all widgets inside `camera` view.
@@ -265,6 +265,11 @@ class Manager : EventsListenerEmpty {
 
             if (widget.isEnter) {
                 widget.isClick = true;
+                widget.isMouseDown = true;
+
+                if (!widget.focusOnMousUp)
+                    widget.focus();
+
                 break;
             }
         }
@@ -275,10 +280,11 @@ class Manager : EventsListenerEmpty {
             if (widget is null || isWidgetFrozen(widget))
                 continue;
 
-            if (widget.isEnter) {
+            if (widget.isEnter && widget.focusOnMousUp && widget.isMouseDown)
                 widget.focus();
-                break;
-            }
+
+            widget.isClick = false;
+            widget.isMouseDown = false;
         }
     }
 

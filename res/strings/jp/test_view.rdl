@@ -1,0 +1,3 @@
+TestView
+    mainPanelCaption: "これがメインパネルです"
+    helloWorld: "こんにちは世界!"

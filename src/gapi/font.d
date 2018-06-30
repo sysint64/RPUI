@@ -12,8 +12,11 @@ import gapi.font_ftgl_impl;
 import gapi.font_sfml_impl;
 import gapi.texture;
 
-
 class Font {
+    enum AntiAliasing { stretchAA, strictAA }
+
+    AntiAliasing antiAliasing = AntiAliasing.stretchAA;
+
     this(in string fileName) {
         version (FTGLFont) {
             impl = new FontFTGLImpl();

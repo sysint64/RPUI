@@ -103,6 +103,10 @@ private:
         );
         const regularFontSize = tree.data.optInteger("General.regularFont.1", 12);
         p_regularFont = ThemeFont.createFromFile(regularFontFileName, regularFontSize);
+        p_regularFont.antiAliasing = tree.data.optEnum(
+            "General.regularFont.2",
+            Font.AntiAliasing.stretchAA
+        );
     }
 
     /**

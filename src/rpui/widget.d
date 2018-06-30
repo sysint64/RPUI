@@ -181,9 +181,11 @@ package:
     FrameRect extraOuterOffset = FrameRect(0, 0, 0, 0);  /// Extra outer offset besides margin.
     bool overlay;
     vec2 overSize;
+    bool focusOnMousUp = false;
 
     bool isEnter;  /// True if pointed on widget.
     bool isClick;
+    bool isMouseDown = false;
 
     /**
      * When in rect of element but if another element over this
@@ -427,24 +429,13 @@ public:
     void onCreate() {
     }
 
-    private bool memoizedIsClick = false;
-
-    override void onMouseDown(in MouseDownEvent event) {
-        isClick = isEnter;
-        memoizedIsClick = isClick;
-    }
-
     override void onMouseMove(in MouseMoveEvent event) {
-        isClick = isEnter && memoizedIsClick;
+        isClick = isEnter && isMouseDown;
     }
 
     override void onMouseUp(in MouseUpEvent event) {
-        isClick = false;
-
-        if (isEnter && memoizedIsClick)
+        if (isFocused)
             events.notify(ClickEvent());
-
-        memoizedIsClick = isClick;
     }
 
     void onFocus(in FocusEvent event) {}
