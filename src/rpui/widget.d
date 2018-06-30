@@ -187,6 +187,8 @@ package:
     bool isClick;
     bool isMouseDown = false;
 
+    WidgetLocator locator;
+
     /**
      * When in rect of element but if another element over this
      * isOver will still be true.
@@ -453,8 +455,6 @@ public:
     }
 
 package:
-    WidgetLocator locator;
-
     /// This method invokes when widget size is updated.
     public void updateSize() {
         if (widthType == SizeType.matchParent) {

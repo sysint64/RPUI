@@ -36,6 +36,7 @@ class TextInput : Widget {
 
         if (val == InputType.integer || val == InputType.number) {
             focusOnMousUp = true;
+            autoSelectOnFocus = true;
         } else {
             focusOnMousUp = false;
         }
@@ -345,9 +346,6 @@ class TextInput : Widget {
     }
 
     override void onMouseDown(in MouseDownEvent event) {
-        if (autoSelectOnFocus)
-            return;
-
         if (isEnter) {
             editComponent.onMouseDown(event);
         }

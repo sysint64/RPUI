@@ -177,7 +177,8 @@ abstract class Application {
     @property float currentTime() { return p_currentTime; }
 
     void setCursor(in Cursor.Icon val) {
-        cursor.setIcon(val);
+        if (isCursorVisible)
+            cursor.setIcon(val);
     }
 
     @property sfWindowHandle windowHandle() { return p_windowHandle; }

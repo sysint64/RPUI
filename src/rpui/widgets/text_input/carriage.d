@@ -83,7 +83,17 @@ struct Carriage {
         timer = 0;
         visible = true;
 
-        const oldPos = pos;
+        pos = clamp(newPos, 0, editComponent.text.length);
+        editComponent.selectRegion.updateSelect(pos);
+
+        if (!isKeyPressed(KeyCode.Shift))
+            editComponent.selectRegion.stopSelection();
+    }
+
+    void setCarriagePosWithoutCheckSelection(in int newPos) {
+        timer = 0;
+        visible = true;
+
         pos = clamp(newPos, 0, editComponent.text.length);
         editComponent.selectRegion.updateSelect(pos);
     }
@@ -92,7 +102,7 @@ struct Carriage {
         const relativeCursorPos = x - editComponent.absoulteTextPosition.x;
 
         if (x > editComponent.absoulteTextPosition.x + editComponent.getTextWidth()) {
-            setCarriagePos(cast(int) editComponent.text.length);
+            setCarriagePosWithoutCheckSelection(cast(int) editComponent.text.length);
             return;
         }
 
@@ -105,7 +115,7 @@ struct Carriage {
             const sliceWidth = editComponent.getTextRegionSize(0, i);
 
             if (sliceWidth + 6 > relativeCursorPos) {
-                setCarriagePos(i);
+                setCarriagePosWithoutCheckSelection(i);
                 break;
             }
         }

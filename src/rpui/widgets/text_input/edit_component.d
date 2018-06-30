@@ -48,9 +48,6 @@ struct EditComponent {
         if (isKeyPressed(KeyCode.Shift) && !selectRegion.startedSelection)
             selectRegion.startSelection(carriage.pos);
 
-        if (!isKeyPressed(KeyCode.Shift))
-            selectRegion.stopSelection();
-
         switch (event.key) {
             case KeyCode.Left:
                 if (isKeyPressed(KeyCode.Ctrl)) {
@@ -174,6 +171,9 @@ struct EditComponent {
     }
 
     void onMouseDown(in MouseDownEvent event) {
+        if (textInput.autoSelectOnFocus)
+            return;
+
         carriage.setCarriagePosFromMousePos(event.x, event.y);
 
         if (!isKeyPressed(KeyCode.Shift))
