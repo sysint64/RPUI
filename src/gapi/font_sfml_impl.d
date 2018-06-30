@@ -37,6 +37,7 @@ class FontSFMLImpl : FontImpl {
             texture[characterSize].sf_texture = sf_texture;
         }
 
+        texture[characterSize].smooth = true;
         return texture[characterSize];
     }
 

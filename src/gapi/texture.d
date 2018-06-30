@@ -35,6 +35,9 @@ class Texture {
         float normWidth, normHeight;
     }
 
+    bool smooth = false;
+    bool repeated = false;
+
     this(in string fileName) {
         const char* fileNamez = toStringz(fileName);
         sf_texture = sfTexture_createFromFile(fileNamez, null);
@@ -57,16 +60,6 @@ class Texture {
         } else {
             glBindTexture(GL_TEXTURE_2D, p_handle);
         }
-    }
-
-    void unbind() {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    void update() {
-        const(ubyte)* data = sfImage_getPixelsPtr(image);
-        glBindTexture(GL_TEXTURE_2D, p_handle);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
         GLuint wrap = repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE;
         GLuint filter = smooth ? GL_LINEAR : GL_NEAREST;
@@ -77,6 +70,16 @@ class Texture {
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
     }
 
+    void unbind() {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void update() {
+        const(ubyte)* data = sfImage_getPixelsPtr(image);
+        glBindTexture(GL_TEXTURE_2D, p_handle);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    }
+
     void saveToFile(in string fileName) {
         const char* fileNamez = toStringz(fileName);
         sfImage* image = sfTexture_copyToImage(sf_texture);
@@ -84,18 +87,6 @@ class Texture {
     }
 
     @property GLuint handle() { return p_handle; }
-    @property ref bool repeated() { return p_repeated; }
-    @property void repeated(bool val) {
-        p_repeated = val;
-        update();
-    }
-
-    @property ref bool smooth() { return p_smooth; }
-    @property void smooth(bool val) {
-        p_smooth = val;
-        update();
-    }
-
     @property uint width() {
         if (sf_texture !is null) {
             return sfTexture_getSize(sf_texture).x;
@@ -122,7 +113,4 @@ package:
 private:
     sfImage* image;
     GLuint p_handle;
-
-    bool p_smooth = false;
-    bool p_repeated = false;
 }

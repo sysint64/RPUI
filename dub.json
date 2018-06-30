@@ -9,7 +9,7 @@
     "libs-posix": ["ftgl", "glu"],
     "libs-windows": ["ftgl", "glu32"],
     "versions": [
-        "FTGLFont",
+        "SFMLFont",
         "DerelictGL3_CustomFreeFuncs"
     ],
     "targetType": "executable",
