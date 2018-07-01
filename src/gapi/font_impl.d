@@ -16,8 +16,14 @@ struct FontHandles {
 
 interface FontImpl {
     bool createFont(ref FontHandles handles, in string fileName);
+
     void destroyFont(ref FontHandles handles);
+
     void setTextSize(Font font, in uint textSize);
+
     Texture getTexture(Font font);
+
     void bind(ref FontHandles handles, Text text);
+
+    void update(Font font);
 }

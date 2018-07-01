@@ -50,6 +50,9 @@ class FontFTGLImpl : FontImpl {
         handles.ftglHandle = ftglFonts[text.textSize];
     }
 
+    void update(Font font) {
+    }
+
 private:
     FTGLfont* createdFtglFont = null;
     FTGLfont*[uint] ftglFonts;

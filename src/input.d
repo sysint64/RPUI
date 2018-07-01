@@ -10,7 +10,7 @@ enum MouseButton {
     mouseLeft = sfMouseLeft,
     mouseRight = sfMouseRight,
     mouseMiddle = sfMouseMiddle,
-};
+}
 
 /// break the dependence on SFML Keyboard
 enum KeyCode {
@@ -120,7 +120,7 @@ enum KeyCode {
     Ctrl,
     Alt,
     Unspecified,
-};
+}
 
 private static bool[KeyCode] keyPressed;
 

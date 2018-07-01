@@ -5,8 +5,8 @@ import std.conv : to;
 import std.math;
 
 
-alias utfchar = dchar;
-alias utfstring = dstring;
+alias utf32char = dchar;
+alias utf32string = dstring;
 
 enum Orientation {horizontal, vertical};
 

@@ -11,7 +11,7 @@ import derelict.sfml2.system;
 import derelict.sfml2.window;
 import opengl;
 
-import basic_types: utfchar;
+import basic_types: utf32char;
 import input;
 import log;
 import settings;
@@ -23,16 +23,20 @@ import gapi.camera;
 import rpui.cursor;
 import rpui.events;
 import rpui.events_observer;
+import rpui.clipboard;
+import rpui.clipboard_sfml;
 import path;
 
 abstract class Application {
     EventsObserver events;
     const Pathes pathes;
     private bool isCursorVisible = true;
+    Clipboard clipboard = null;
 
     this() {
         events = new EventsObserver();
         pathes = initPathes();
+        clipboard = new SFMLClipboard();
     }
 
     static Application getInstance() {
@@ -123,7 +127,7 @@ abstract class Application {
         events.notify(KeyReleasedEvent(key));
     }
 
-    void onTextEntered(in utfchar key) {
+    void onTextEntered(in utf32char key) {
         events.notify(TextEnteredEvent(key));
     }
 

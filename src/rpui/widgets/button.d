@@ -26,10 +26,10 @@ class Button : Widget {
     @Field VerticalAlign textVerticalAlign = VerticalAlign.middle;
     @Field Array!string icons;
 
-    private utfstring p_caption = "Button";
+    private utf32string p_caption = "Button";
 
     @Field
-    @property void caption(utfstring value) {
+    @property void caption(utf32string value) {
         if (manager is null) {
             p_caption = value;
         } else {
@@ -38,7 +38,7 @@ class Button : Widget {
         }
     }
 
-    @property utfstring caption() { return p_caption; }
+    @property utf32string caption() { return p_caption; }
 
     this(in string style = "Button", in string iconsGroup = "icons") {
         super(style);

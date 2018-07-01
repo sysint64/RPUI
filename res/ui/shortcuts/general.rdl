@@ -2,3 +2,6 @@ General
     focusNext: "Tab"
     focusPrev: "Shift+Tab"
     submit: "Ctrl+Return"
+    cut: "Ctrl+X"
+    copy: "Ctrl+C"
+    paste: "Ctrl+V"

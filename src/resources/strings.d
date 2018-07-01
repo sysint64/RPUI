@@ -53,11 +53,11 @@ final:
         strings.load(fileName);
     }
 
-    utfstring parseString(in utfstring source) {
-        utfstring result = "";
+    utf32string parseString(in utf32string source) {
+        utf32string result = "";
 
         for (size_t i = 0; i < source.length; ++i) {
-            const utfchar ch = source[i];
+            const utf32char ch = source[i];
 
             if (ch == '@') {
                 auto reference = parseReference(source, i);
@@ -74,13 +74,13 @@ final:
 private:
     RpdlTree strings;
 
-    auto parseReference(in utfstring source, in size_t position) {
-        utfstring reference = "";
+    auto parseReference(in utf32string source, in size_t position) {
+        utf32string reference = "";
         size_t endPosition = position + 1;
         const referenceAlphabet = letters ~ digits ~ ".";
 
         for (size_t i = position + 1; i < source.length; ++i) {
-            const utfchar ch = source[i];
+            const utf32char ch = source[i];
 
             if (!referenceAlphabet.canFind(ch))
                 break;
@@ -89,7 +89,7 @@ private:
             endPosition = i;
         }
 
-        const value = strings.data.optUTFString(to!string(reference) ~ ".0", reference);
+        const value = strings.data.optUTF32String(to!string(reference) ~ ".0", reference);
         return tuple!("value", "endPosition")(value, endPosition);
     }
 }

@@ -92,6 +92,7 @@ final class MapEditor: Application {
     override void onProgress() {
         uiManager.onProgress();
         camera.update();
+        uiManager.theme.regularFont.update();
     }
 
     override void render() {

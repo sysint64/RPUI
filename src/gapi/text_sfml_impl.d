@@ -52,6 +52,7 @@ class TextSFMLImpl : TextImpl {
         uint prevChar = 0;
 
         shader.bind();
+        textObject.geometry.bind();
 
         for (size_t i = 0; i < textObject.text.length; ++i) {
             const curChar = textObject.text[i];

@@ -30,7 +30,7 @@ struct NumberInputTypeComponent {
     float value = 0;
     float initialValue = 0;
     float mouseSensetive = 20.0f;
-    bool shouldBlur = false;
+    bool avoidFocusing = false;
 
     void bind(TextInput textInput) {
         this.textInput = textInput;
@@ -38,13 +38,15 @@ struct NumberInputTypeComponent {
 
     void onMouseDown(in MouseDownEvent event) {
         if (leftArrow.isEnter) {
-            shouldBlur = true;
+            textInput.blur();
+            avoidFocusing = true;
             addValue(-1);
             return;
         }
 
         if (rightArrow.isEnter) {
-            shouldBlur = true;
+            textInput.blur();
+            avoidFocusing = true;
             addValue(1);
             return;
         }
@@ -57,7 +59,7 @@ struct NumberInputTypeComponent {
         startX = event.x;
         startY = event.y;
         initialValue = value;
-        shouldBlur = false;
+        avoidFocusing = false;
         textInput.app.hideCursor();
         textInput.freezeUI();
     }
@@ -76,7 +78,7 @@ struct NumberInputTypeComponent {
 
         if (abs(delta) >= 1) {
             textInput.app.setMousePositon(startX, startY);
-            shouldBlur = true;
+            avoidFocusing = true;
             delta = 0;
         }
     }
@@ -84,8 +86,8 @@ struct NumberInputTypeComponent {
     void onMouseUp(in MouseUpEvent event) {
         textInput.unfreezeUI();
 
-        if (shouldBlur) {
-            shouldBlur = false;
+        if (avoidFocusing) {
+            avoidFocusing = false;
             textInput.blur();
             // TODO: notify on change event
         }

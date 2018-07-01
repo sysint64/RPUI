@@ -75,7 +75,7 @@ class Widget : EventsListenerEmpty {
     @Field string name = "";
 
     /// Some help information about widget, need to display tooltip.
-    @Field utfstring hint = "";
+    @Field utf32string hint = "";
 
     /// How to place a widget horizontally.
     @Field Align locationAlign = Align.none;
@@ -436,7 +436,7 @@ public:
     }
 
     override void onMouseUp(in MouseUpEvent event) {
-        if (isFocused)
+        if (isFocused && isEnter)
             events.notify(ClickEvent());
     }
 

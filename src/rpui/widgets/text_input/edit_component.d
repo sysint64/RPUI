@@ -23,7 +23,7 @@ struct EditComponent {
     const japanesePunctuation = "\u3000｛｝（）［］【】、，…‥。〽「」『』〝〟〜：！？"d;
     const splitChars = commonSplitChars ~ japanesePunctuation;
 
-    utfstring text;
+    utf32string text;
     Carriage carriage;
     float scrollDelta = 0.0f;
     vec2 absoulteTextPosition;
@@ -124,7 +124,7 @@ struct EditComponent {
         carriage.setCarriagePos(start);
     }
 
-    private bool isCharAllowed(in utfchar ch) {
+    private bool isCharAllowed(in utf32char ch) {
         const b1 = ch;
         const b2 = ch >> 8;
 
@@ -143,8 +143,8 @@ struct EditComponent {
 
         // Splitting text to two parts by carriage position
 
-        utfstring leftPart;
-        utfstring rightPart;
+        utf32string leftPart;
+        utf32string rightPart;
         auto newCarriagePos = carriage.pos;
 
         if (!selectRegion.textIsSelected()) {

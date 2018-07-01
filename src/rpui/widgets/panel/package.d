@@ -55,10 +55,10 @@ class Panel : Widget, FocusScrollNavigation {
     @Field bool showVerticalScrollButton = true;
     @Field bool showHorizontalScrollButton = true;
 
-    private utfstring p_caption = "";
+    private utf32string p_caption = "";
 
     @Field
-    @property void caption(utfstring value) {
+    @property void caption(utf32string value) {
         if (manager is null) {
             p_caption = value;
         } else {
@@ -67,7 +67,7 @@ class Panel : Widget, FocusScrollNavigation {
         }
     }
 
-    @property utfstring caption() { return p_caption; }
+    @property utf32string caption() { return p_caption; }
 
     @property
     void showScrollButtons(in bool val) {

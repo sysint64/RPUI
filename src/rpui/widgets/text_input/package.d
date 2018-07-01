@@ -43,11 +43,11 @@ class TextInput : Widget {
     }
 
     @Field
-    @property void text(utfstring value) {
+    @property void text(utf32string value) {
         editComponent.text = value;
     }
 
-    @property utfstring text() { return editComponent.text; }
+    @property utf32string text() { return editComponent.text; }
 
     private EditComponent editComponent;
     private NumberInputTypeComponent numberInputTypeComponent;

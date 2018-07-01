@@ -75,7 +75,10 @@ struct Shortcut {
     }
 }
 
-class Shortcuts {
+final class Shortcuts {
+    private ShortcutAction[string] shortcuts;  /// Available shortcuts.
+    private RpdlTree shortcutsData;  /// Shortcuts declared in `rpdl` file.
+
     /// Action to be invoked when shortcut is pressed.
     struct ShortcutAction {
         /// Not yet used.
@@ -125,7 +128,7 @@ class Shortcuts {
 
     /// Handle on key released and invoke action if shortcut is pressed.
     void onKeyReleased(in KeyCode key) {
-        foreach (ShortcutAction shortcut; shortcuts) {
+        foreach (shortcut; shortcuts) {
             if (doShortcut(shortcut))
                 return;
         }
@@ -136,18 +139,15 @@ class Shortcuts {
         try {
             const shortcut = shortcutsData.data.getString(path ~ ".0");
             auto shortcutAction = Shortcuts.ShortcutAction(shortcut, action);
+
             shortcuts[path] = shortcutAction;
         } catch (NotFoundException) {
             debug assert(false, "Not found shortcut with path " ~ path);
         }
     }
 
-private:
-    ShortcutAction[string] shortcuts;  /// Available shortcuts.
-    RpdlTree shortcutsData;  /// Shortcuts declared in `rpdl` file.
-
     /// Invoke shortcut action if all keys from shortcut is pressed.
-    bool doShortcut(ShortcutAction shortcutAction) {
+    private bool doShortcut(in ShortcutAction shortcutAction) {
         const Shortcut shortcut = shortcutAction.shortcuts[0];
 
         if (isKeyPressed(shortcut.key) &&

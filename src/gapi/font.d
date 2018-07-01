@@ -50,6 +50,10 @@ class Font {
         impl.bind(handles, text);
     }
 
+    void update() {
+        impl.update(this);
+    }
+
 private:
     FontImpl impl;
 

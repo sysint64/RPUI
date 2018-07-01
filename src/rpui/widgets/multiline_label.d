@@ -25,10 +25,10 @@ class MultilineLabel : Widget {
     @Field VerticalAlign textVerticalAlign = VerticalAlign.middle;
     @Field float lineHeightFactor = 1.5;
 
-    private utfstring p_caption = "Label";
+    private utf32string p_caption = "Label";
 
     @Field
-    @property void caption(utfstring value) {
+    @property void caption(utf32string value) {
         if (manager is null) {
             p_caption = value;
         } else {
@@ -37,7 +37,7 @@ class MultilineLabel : Widget {
         }
     }
 
-    @property utfstring caption() { return p_caption; }
+    @property utf32string caption() { return p_caption; }
 
     this() {
         super("Label");
@@ -99,7 +99,7 @@ protected:
         textRenderObjects.clear();
         const lines = lineSplitter(p_caption).array;
 
-        foreach (utfstring line; lines) {
+        foreach (utf32string line; lines) {
             auto renderObject = renderFactory.createText(style, "Regular");
             renderObject.text = line;
             lineHeight = renderObject.lineHeight;

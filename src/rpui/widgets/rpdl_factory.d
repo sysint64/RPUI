@@ -157,7 +157,7 @@ class RPDLWidgetFactory {
         ["int", "optInteger", ".0"],
         ["float", "optNumber", ".0"],
         ["string", "optString", ".0"],
-        ["dstring", "optUTFString", ".0"],
+        ["dstring", "optUTF32String", ".0"],
 
         ["vec2", "optVec2f", ""],
         ["vec3", "optVec3f", ""],

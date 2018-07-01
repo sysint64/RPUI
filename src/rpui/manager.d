@@ -313,7 +313,7 @@ class Manager : EventsListenerEmpty {
             scrollable.onMouseWheelHandle(horizontalDelta, verticalDelta);
     }
 
-package:
+public:
     Theme theme;
     RenderFactory renderFactory;
     Renderer renderer;

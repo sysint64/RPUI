@@ -94,10 +94,18 @@ class Text : BaseObject {
         return impl.getRegionTextWidth(this, start, end);
     }
 
-    utfstring text = "";
+    utf32string p_text = "";
     vec4 color;
     Align textAlign = Align.center;
     VerticalAlign textVerticalAlign = VerticalAlign.middle;
+
+    @property utf32string text() { return p_text; }
+    @property void text(in utf32string val) {
+        if (val == p_text)
+            return;
+
+        p_text = val;
+    }
 
     @property bool bold() { return p_bold; }
 

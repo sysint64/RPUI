@@ -21,10 +21,10 @@ class Checkbox : Widget {
     @Field VerticalAlign textVerticalAlign = VerticalAlign.middle;
     @Field bool checked = false;
 
-    private utfstring p_caption = "Checkbox";
+    private utf32string p_caption = "Checkbox";
 
     @Field
-    @property void caption(utfstring value) {
+    @property void caption(utf32string value) {
         if (manager is null) {
             p_caption = value;
         } else {
@@ -33,7 +33,7 @@ class Checkbox : Widget {
         }
     }
 
-    @property utfstring caption() { return p_caption; }
+    @property utf32string caption() { return p_caption; }
 
     this() {
         super("Checkbox");

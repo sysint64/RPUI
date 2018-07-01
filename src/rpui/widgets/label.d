@@ -20,10 +20,10 @@ class Label : Widget {
     @Field VerticalAlign textVerticalAlign = VerticalAlign.middle;
     @Field float lineHeightFactor = 1.5;
 
-    private utfstring p_caption = "Label";
+    private utf32string p_caption = "Label";
 
     @Field
-    @property void caption(utfstring value) {
+    @property void caption(utf32string value) {
         if (manager is null) {
             p_caption = value;
         } else {
@@ -32,7 +32,7 @@ class Label : Widget {
         }
     }
 
-    @property utfstring caption() { return p_caption; }
+    @property utf32string caption() { return p_caption; }
 
     this() {
         super("Label");
