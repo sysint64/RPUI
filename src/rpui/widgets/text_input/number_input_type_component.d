@@ -71,9 +71,9 @@ struct NumberInputTypeComponent {
         delta = (event.x - startX) / mouseSensetive;
 
         if (delta > 0) {
-            addValue(floor(delta).to!(int));
+            addValue(floor(delta).to!int);
         } else {
-            addValue(ceil(delta).to!(int));
+            addValue(ceil(delta).to!int);
         }
 
         if (abs(delta) >= 1) {

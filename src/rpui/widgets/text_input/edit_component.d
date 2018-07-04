@@ -3,6 +3,8 @@ module rpui.widgets.text_input.edit_component;
 import std.algorithm.comparison;
 import std.algorithm.searching;
 import std.string;
+import std.math;
+import std.conv;
 
 import input;
 import basic_types;
@@ -31,6 +33,7 @@ struct EditComponent {
     SelectRegion selectRegion;
     RenderData renderData;
     TextInput textInput;
+    private utf32string lastText;
 
     void bind(TextInput textInput) {
         this.textInput = textInput;
@@ -124,22 +127,11 @@ struct EditComponent {
         carriage.setCarriagePos(start);
     }
 
-    private bool isCharAllowed(in utf32char ch) {
-        const b1 = ch;
-        const b2 = ch >> 8;
-
-        // TODO: why? link!
-        return (b2 != 0 || b1 >= 0x20) && b1 <= 0x7E;
-    }
-
     bool onTextEntered(in TextEnteredEvent event) {
         carriage.timer = 0;
         carriage.visible = true;
 
         const charToPut = event.key;
-
-        if (!isCharAllowed(charToPut))
-            return false;
 
         // Splitting text to two parts by carriage position
 
@@ -159,9 +151,6 @@ struct EditComponent {
         }
 
         const newText = leftPart ~ charToPut ~ rightPart;
-
-        if (textInput.inputType == TextInput.InputType.number && !isNumeric(newText))
-            return false;
 
         text = newText;
         carriage.pos = newCarriagePos;
@@ -239,5 +228,35 @@ struct EditComponent {
         selectRegion.end = cast(int) text.length;
         selectRegion.startedSelection = true;
         carriage.pos = selectRegion.end;
+    }
+
+    void onFocus() {
+        lastText = textInput.text;
+    }
+
+    void onBlur() {
+        switch (textInput.inputType) {
+            case TextInput.InputType.integer:
+                if (!isNumeric(textInput.text)) {
+                    textInput.text = lastText;
+                } else {
+                    const value = textInput.text.to!float;
+                    textInput.text = round(value).to!utf32string;
+                }
+
+                break;
+
+            case TextInput.InputType.number:
+                if (!isNumeric(textInput.text))
+                    textInput.text = lastText;
+
+                break;
+
+            case TextInput.InputType.text:
+                return;
+
+            default:
+                return;
+        }
     }
 }

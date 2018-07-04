@@ -90,9 +90,12 @@ class TextInput : Widget {
 
     override void onBlur(in BlurEvent event) {
         editComponent.reset();
+        editComponent.onBlur();
     }
 
     override void onFocus(in FocusEvent event) {
+        editComponent.onFocus();
+
         if (autoSelectOnFocus && !isFocused)
             editComponent.selectAll();
     }

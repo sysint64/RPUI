@@ -51,8 +51,13 @@ class TextSFMLImpl : TextImpl {
         vec2 glyphPosition = vec2(posX, posY);
         uint prevChar = 0;
 
-        shader.bind();
+        Texture fontTexture = textObject.font.getTexture(textSize);
+
         textObject.geometry.bind();
+        shader.bind();
+
+        shader.setUniformTexture("texture", fontTexture);
+        shader.setUniformVec4f("color", textObject.color);
 
         for (size_t i = 0; i < textObject.text.length; ++i) {
             const curChar = textObject.text[i];
@@ -78,16 +83,12 @@ class TextSFMLImpl : TextImpl {
                 texCoord.size = vec2(glyph.textureRect.width, glyph.textureRect.height);
             }
 
-            Texture texture = textObject.font.getTexture(textSize);
-            texCoord.normalize(texture);
-
+            texCoord.normalize(fontTexture);
             textObject.updateMatrices(camera);
 
             shader.setUniformMatrix("MVP", textObject.lastMVPMatrix);
-            shader.setUniformTexture("texture", texture);
             shader.setUniformVec2f("texOffset", texCoord.normOffset);
             shader.setUniformVec2f("texSize", texCoord.normSize);
-            shader.setUniformVec4f("color", textObject.color);
 
             textObject.geometry.render();
 
