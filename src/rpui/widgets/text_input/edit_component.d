@@ -127,11 +127,20 @@ struct EditComponent {
         carriage.setCarriagePos(start);
     }
 
+    private bool isISOControlCharacter(in utf32char ch) {
+        // Control characters
+        // https://www.utf8-chartable.de/unicode-utf8-table.pl?utf8=0x
+        return (ch >= 0x00 && ch <= 0x1F) || (ch >= 0x7F && ch <= 0x9F);
+    }
+
     bool onTextEntered(in TextEnteredEvent event) {
         carriage.timer = 0;
         carriage.visible = true;
 
         const charToPut = event.key;
+
+        if (isISOControlCharacter(charToPut))
+            return false;
 
         // Splitting text to two parts by carriage position
 
