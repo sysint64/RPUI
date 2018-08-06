@@ -19,8 +19,9 @@ class StackLayout : Widget {
 
     private vec2 maxSize = vec2(0, 0);
 
-    this() {
-        super();
+    this(in string style = "StackLayout") {
+        super(style);
+
         skipFocus = true;
         setDecorator();
     }
@@ -76,9 +77,9 @@ class StackLayout : Widget {
         updateSize();
 
         if (orientation == Orientation.vertical) {
-            size.y = lastPosition.y + widget.outerOffset.bottom;
+            size.y = lastPosition.y + widget.outerOffset.bottom + innerOffsetSize.y;
         } else {
-            size.x = lastPosition.x + widget.outerOffset.right;
+            size.x = lastPosition.x + widget.outerOffset.right + innerOffsetSize.x;
         }
     }
 

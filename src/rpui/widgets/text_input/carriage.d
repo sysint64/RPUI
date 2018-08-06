@@ -51,12 +51,9 @@ struct Carriage {
         setCarriagePos(pos + delta);
     }
 
-    // TODO: dmd PR #8155
     int navigateCarriage(in int direction)
-    in {
-        assert(direction == -1 || direction == 1);
-    }
-    do {
+        in(direction == -1 || direction == 1)
+    {
         int i = pos + direction;
 
         if (i <= 0 || i >= editComponent.text.length)

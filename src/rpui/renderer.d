@@ -249,6 +249,32 @@ final class Renderer {
     }
 
     /**
+     * Renders block from 9 parts:
+     *     $(I Top.left), $(I Top.center), $(I Top.right),
+     *     $(I Middle.left), $(I Middle.center), $(I Middle.right),
+     *     $(I Bottom.left), $(I Bottom.center), $(I Bottom.right).
+     *
+     * Params:
+     *     renderObjects = block parts.
+     *     position = position of block.
+     *     size = full size of block.
+     */
+    void renderBlock(BaseRenderObject[string] renderObjects, in vec2 position, in vec2 size) {
+        const topYOffset = renderObjects["center"].texCoordinates["Top"].size.y;
+        const bottomYOffset = renderObjects["center"].texCoordinates["Bottom"].size.y;
+
+        renderHorizontalChain(renderObjects, "Top", position, size.x);
+
+        const middleSize = size - vec2(0, topYOffset + bottomYOffset);
+        const middlePosition = position + vec2(0, topYOffset);
+
+        renderHorizontalChain(renderObjects, "Middle", middlePosition, middleSize);
+
+        const bottomPosition = middlePosition + vec2(0, middleSize.y);
+        renderHorizontalChain(renderObjects, "Bottom", bottomPosition, size.x);
+    }
+
+    /**
      * Renders `text` render object for particular `state` with text color
      * and additional offset placed in rpdl theme data.
      *

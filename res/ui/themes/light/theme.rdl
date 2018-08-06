@@ -244,3 +244,61 @@ TextInput
         center              : 16, 83, 5, 21
         right               : 30, 83, 5, 21
         offsets             : [0, 0], 0
+
+ListItem(Button) # TODO: implement inheritance
+    split                   : 44, 35, 3, 21
+    iconOffsets             : 2, -1
+    iconGaps                : 2
+    textLeftMargin          : 9
+    textRightMargin         : 9
+
+    Leave
+        left                : 55 , 180, 5, 21
+        center              : 68 , 180, 5, 21
+        right               : 81 , 180, 5, 21
+        submenuArrow        : 162, 131, 15, 21
+        textOffset          : 0,  0
+        textColor           : 200, 200, 200
+
+    Enter
+        left                : 129, 107, 5, 21
+        center              : 129, 107, 5, 21
+        right               : 129, 107, 5, 21
+        submenuArrow        : 178, 131, 15, 21
+        textOffset          : 0,  0
+        textColor           : 40, 40, 40
+
+    Click
+        left                : 129, 107, 5, 21
+        center              : 129, 107, 5, 21
+        right               : 129, 107, 5, 21
+        submenuArrow        : 178, 131, 15, 21
+        textOffset          : 0,  0
+        textColor           : 40, 40, 40
+
+    Focus
+        left                : 55, 180, 5, 21
+        center              : 68, 180, 5, 21
+        right               : 81, 180, 5, 21
+        offsets             : [0, 0], 0
+
+ListMenu
+    popupExtraPadding       : 4, 4, 4, 4
+
+    Top
+        left                : 123, 39, 8, 8
+        center              : 157, 39, 8, 8
+        right               : 189, 39, 8, 8
+
+    Middle
+        left                : 123, 61, 8, 8
+        center              : 157, 61, 8, 8
+        right               : 189, 61, 8, 8
+
+    Bottom
+        left                : 123, 87, 8, 8
+        center              : 157, 87, 8, 8
+        right               : 189, 87, 8, 8
+
+ListMenuSplitLine
+    background              : 10, 141, 2, 2

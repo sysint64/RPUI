@@ -200,12 +200,9 @@ struct EditComponent {
         return renderData.textRenderObject.textWidth;
     }
 
-    // TODO: dmd PR #8155
     float getTextRegionSize(in int start, in int end)
-    in {
-        assert(start <= end);
-    }
-    do {
+        in(start <= end)
+    {
         if (start == end)
             return 0.0f;
 

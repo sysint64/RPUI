@@ -263,7 +263,7 @@ private:
     }
 
     void calculateTime() {
-        sfTime time = sfClock_getElapsedTime(clock);
+        const time = sfClock_getElapsedTime(clock);
         p_currentTime = time.microseconds;
         p_deltaTime = (p_currentTime - lastTime) * 0.001f;
         lastTime = p_currentTime;

@@ -17,7 +17,7 @@ Panel
         regionAlign: top
         background: light
         position: 0, 0
-        size: 0, 100.5
+        size: 0, 100
         padding: 5
 
         Button
@@ -94,7 +94,15 @@ Panel
 
             Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
             TextInput size: 100, 21 margin: 5 text: "Hello world!"
-            TextInput size: 100, 21 margin: 5 text: "100" inputType: integer
+            TextInput size: 100, 21 margin: 5 text: "100" inputType: number
+
+            ListMenu
+                size: 200, 200
+                isPopup: true
+
+                ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
+                ListMenuItem caption: "Menu item 2"
+                ListMenuItem caption: "Menu item 3"
 
     Panel
         regionAlign: left

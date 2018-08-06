@@ -38,6 +38,8 @@ import rpui.widgets.label;
 import rpui.widgets.multiline_label;
 import rpui.widgets.tree_list;
 import rpui.widgets.text_input;
+import rpui.widgets.list_menu;
+import rpui.widgets.list_menu_item;
 
 /// Factory for construction view from rpdl layout data.
 class RPDLWidgetFactory {
@@ -94,6 +96,12 @@ class RPDLWidgetFactory {
 
             case "TextInput":
                 return createWidget!TextInput(widgetNode, parentWidget);
+
+            case "ListMenu":
+                return createWidget!ListMenu(widgetNode, parentWidget);
+
+            case "ListMenuItem":
+                return createWidget!ListMenuItem(widgetNode, parentWidget);
 
             default:
                 return null;
