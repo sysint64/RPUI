@@ -86,6 +86,12 @@ class Manager : EventsListenerEmpty {
         rootWidget.progress();
         poll();
         blur();
+
+        foreach (Widget widget; frontWidgets) {
+            if (widget.visible)
+                widget.progress();
+        }
+
         app.setCursor(cursor);
     }
 
@@ -96,6 +102,11 @@ class Manager : EventsListenerEmpty {
 
         renderer.camera = camera;
         rootWidget.render(camera);
+
+        foreach (Widget widget; frontWidgets) {
+            if (widget.visible)
+                widget.render(camera);
+        }
     }
 
     /**
@@ -104,7 +115,9 @@ class Manager : EventsListenerEmpty {
      * but widget can be overlapped by another widget.
      */
     private void poll() {
-        foreach_reverse (Widget widget; widgetOrdering) {
+        auto widgetsOrderingChain = widgetOrdering ~ frontWidgetsOrdering;
+
+        foreach_reverse (Widget widget; widgetsOrderingChain) {
             if (widget is null)
                 continue;
 
@@ -128,7 +141,7 @@ class Manager : EventsListenerEmpty {
         p_widgetUnderMouse = null;
         Widget found = null;
 
-        foreach_reverse (Widget widget; widgetOrdering) {
+        foreach_reverse (Widget widget; widgetsOrderingChain) {
             if (found !is null && !widget.overlay)
                 continue;
 
@@ -337,12 +350,30 @@ private:
 package:
     uint lastIndex = 0;
     Widget rootWidget;
+    Array!Widget frontWidgets;  // This widgets are drawn last.
+    Array!Widget frontWidgetsOrdering;  // This widgets are process firstly.
     Widget focusedWidget = null;
     Array!Widget widgetOrdering;
     Array!Widget unfocusedWidgets;
 
     SList!Widget freezeSources;
     SList!bool isNestedFreezeStack;
+
+    void moveWidgetToFront(Widget widget) {
+
+        void moveChildrensToFrontOrdering(Widget parentWidget) {
+            frontWidgetsOrdering.insert(parentWidget);
+
+            foreach (Widget child; parentWidget.children) {
+                moveChildrensToFrontOrdering(child);
+            }
+        }
+
+        frontWidgets.insert(widget);
+        moveChildrensToFrontOrdering(widget);
+        widget.parent.children.deleteWidget(widget);
+        widget.p_parent = rootWidget;
+    }
 
     @property bool isNestedFreeze() {
         return !isNestedFreezeStack.empty && isNestedFreezeStack.front;

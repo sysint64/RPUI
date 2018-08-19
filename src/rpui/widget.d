@@ -431,6 +431,12 @@ public:
     void onCreate() {
     }
 
+    void onPostCreate() {
+        foreach (Widget widget; children) {
+            widget.onPostCreate();
+        }
+    }
+
     override void onMouseMove(in MouseMoveEvent event) {
         isClick = isEnter && isMouseDown;
     }

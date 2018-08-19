@@ -10,7 +10,7 @@ import basic_types;
 
 import rpui.widgets.button;
 
-class ListMenuItem : Button {
+final class ListMenuItem : Button {
     @Field string shortcut = "";
 
     this(in string style = "ListItem", in string iconsGroup = "icons") {

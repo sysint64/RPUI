@@ -40,6 +40,7 @@ import rpui.widgets.tree_list;
 import rpui.widgets.text_input;
 import rpui.widgets.list_menu;
 import rpui.widgets.list_menu_item;
+import rpui.widgets.drop_list_menu;
 
 /// Factory for construction view from rpdl layout data.
 class RPDLWidgetFactory {
@@ -103,6 +104,9 @@ class RPDLWidgetFactory {
             case "ListMenuItem":
                 return createWidget!ListMenuItem(widgetNode, parentWidget);
 
+            case "DropListMenu":
+                return createWidget!DropListMenu(widgetNode, parentWidget);
+
             default:
                 return null;
         }
@@ -119,7 +123,8 @@ class RPDLWidgetFactory {
 
         foreach (Node childNode; widgetNode.children) {
             if (auto objectNode = cast(ObjectNode) childNode) {
-                createWidgetFromNode(objectNode);
+                auto widget = createWidgetFromNode(objectNode);
+                widget.onPostCreate();
             } else {
                 // TODO: throw an exception
             }

@@ -86,7 +86,7 @@ Panel
                 size: 0, 200
                 margin: 5
                 padding: 10
-                caption: "Hello world!\nblablabla\nLol!"
+                caption: "Hello world!\nblablabla\nLol!\u30D4"
                 textAlign: left
                 textVerticalAlign: bottom
                 widthType: wrapContent
@@ -103,6 +103,17 @@ Panel
                 ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
                 ListMenuItem caption: "Menu item 2"
                 ListMenuItem caption: "Menu item 3"
+
+            DropListMenu
+                margin: 5
+
+                ListMenu
+                    size: 200, 200
+                    isPopup: true
+
+                    ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
+                    ListMenuItem caption: "Menu item 2"
+                    ListMenuItem caption: "Menu item 3"
 
     Panel
         regionAlign: left
