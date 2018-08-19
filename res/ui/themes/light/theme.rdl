@@ -285,6 +285,7 @@ ListItem(Button) # TODO: implement inheritance
 
 ListMenu
     popupExtraPadding       : 4, 4, 4, 4
+    popupOffset             : -3, 0
 
     Top
         left                : 123, 39, 8, 8

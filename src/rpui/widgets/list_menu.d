@@ -8,6 +8,7 @@ module rpui.widgets.list_menu;
 import gapi;
 import basic_types;
 import basic_rpdl_extensions;
+import math.linalg;
 
 import rpui.widget;
 import rpui.render_objects;
@@ -22,6 +23,7 @@ class ListMenu : StackLayout {
     private float displayDelay = 0f;
     private BaseRenderObject[string] backgroundParts;
     private FrameRect popupExtraPadding;
+    package vec2 popupOffset;
 
     this(in string style = "ListMenu") {
         super(style);
@@ -62,6 +64,7 @@ class ListMenu : StackLayout {
 
         with (manager.theme.tree) {
             popupExtraPadding = data.getFrameRect(style ~ ".popupExtraPadding");
+            popupOffset = data.getVec2f(style ~ ".popupOffset");
         }
     }
 }
