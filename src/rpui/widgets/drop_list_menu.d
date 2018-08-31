@@ -7,6 +7,7 @@ module rpui.widgets.drop_list_menu;
 
 import gapi;
 import basic_types;
+import basic_rpdl_extensions;
 import math.linalg;
 
 import rpui.widgets.button;
@@ -21,29 +22,43 @@ final class DropListMenu : Button {
 
     private bool isInVisibilityArea = false;
     private bool isInMenuArea = false;
+    private FrameRect extraMenuVisibleBorder;
 
     this(in string style = "DropListMenu", in string iconsGroup = "icons") {
         super(style, iconsGroup);
         textAlign = Align.left;
     }
 
+    protected override void onCreate() {
+        super.onCreate();
+
+        with (manager.theme.tree) {
+            extraMenuVisibleBorder = data.getFrameRect(style ~ ".extraMenuVisibleBorder");
+        }
+    }
+
     protected override void onPostCreate() {
         super.onPostCreate();
 
         menu.visible = false;
+        menu.focusable = false;
         manager.moveWidgetToFront(menu);
     }
 
     override void progress() {
         super.progress();
 
-        const pos = absolutePosition - vec2(20, 0);
-        const extend = vec2(40, 50);
+        const visibleBorderStart = vec2(extraMenuVisibleBorder.left, extraMenuVisibleBorder.top);
+        const visibleBorderEnd = vec2(extraMenuVisibleBorder.right, extraMenuVisibleBorder.bottom);
 
         const extraStartArea = vec2(menu.popupExtraPadding.left, menu.popupExtraPadding.top);
         const extraEndArea = vec2(menu.popupExtraPadding.right, menu.popupExtraPadding.bottom);
 
-        const visibileArea = Rect(pos, vec2(0, size.y) + menu.size + extend);
+        const visibileArea = Rect(
+            absolutePosition - visibleBorderStart,
+            vec2(0, size.y) + menu.size + visibleBorderEnd + visibleBorderStart
+        );
+
         const menuArea = Rect(
             menu.absolutePosition + extraStartArea,
             menu.size - extraStartArea - extraEndArea
@@ -64,7 +79,12 @@ final class DropListMenu : Button {
             toggleMenu();
             focus();
         }
-        else if (!isInMenuArea) {
+    }
+
+    override void onBlur(in BlurEvent event) {
+        super.onBlur(event);
+
+        if (!isInMenuArea) {
             hideMenu();
         }
     }

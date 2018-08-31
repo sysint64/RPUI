@@ -132,7 +132,7 @@ class TreeListNode : Button {
     private bool needUpdateLines = true;
 
     protected override void updateSize() {
-        // overSize.y = innerHeight;
+        overSize.y = innerHeight;
         size.x = treeList.size.x - treeDepth * 20;
         size.y = 21;
     }

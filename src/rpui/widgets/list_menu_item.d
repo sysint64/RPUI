@@ -17,6 +17,7 @@ final class ListMenuItem : Button {
         super(style, iconsGroup);
         textAlign = Align.left;
         widthType = SizeType.matchParent;
+        focusable = false;
     }
 
     override void render(Camera camera) {

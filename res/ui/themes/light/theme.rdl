@@ -311,6 +311,7 @@ DropListMenu(Button)
     iconGaps                : 2
     textLeftMargin          : 9
     textRightMargin         : 9
+    extraMenuVisibleBorder  : 20, 0, 20, 50
 
     Leave
         left                : 89 , 35, 5 , 21
