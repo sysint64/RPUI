@@ -284,7 +284,7 @@ ListItem(Button) # TODO: implement inheritance
         offsets             : [0, 0], 0
 
 ListMenu
-    popupExtraPadding       : 4, 4, 4, 4
+    popupExtraPadding       : 5, 4, 4, 4
     popupOffset             : -3, 0
 
     Top
@@ -318,6 +318,7 @@ DropListMenu(Button)
         right               : 115, 35, 5 , 21
         textOffset          : 0,  0
         textColor           : 20, 20, 20
+        dropChevron         : 40, 59, 10, 21
 
     Enter
         left                : 89 , 59, 5, 21
@@ -325,6 +326,7 @@ DropListMenu(Button)
         right               : 115, 59, 5, 21
         textOffset          : 0,  0
         textColor           : 40, 40, 40
+        dropChevron         : 40, 59, 10, 21
 
     Click
         left                : 89 , 83, 5, 21
@@ -332,6 +334,7 @@ DropListMenu(Button)
         right               : 115, 83, 5, 21
         textOffset          : 0, 0
         textColor           : 20, 20, 20
+        dropChevron         : 40, 59, 10, 21
 
     Focus
         left                : 53, 105, 6, 25

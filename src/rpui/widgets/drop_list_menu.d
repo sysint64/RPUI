@@ -19,6 +19,9 @@ final class DropListMenu : Button {
         return cast(ListMenu) children.front;
     }
 
+    private bool isInVisibilityArea = false;
+    private bool isInMenuArea = false;
+
     this(in string style = "DropListMenu", in string iconsGroup = "icons") {
         super(style, iconsGroup);
         textAlign = Align.left;
@@ -31,11 +34,39 @@ final class DropListMenu : Button {
         manager.moveWidgetToFront(menu);
     }
 
+    override void progress() {
+        super.progress();
+
+        const pos = absolutePosition - vec2(20, 0);
+        const extend = vec2(40, 50);
+
+        const extraStartArea = vec2(menu.popupExtraPadding.left, menu.popupExtraPadding.top);
+        const extraEndArea = vec2(menu.popupExtraPadding.right, menu.popupExtraPadding.bottom);
+
+        const visibileArea = Rect(pos, vec2(0, size.y) + menu.size + extend);
+        const menuArea = Rect(
+            menu.absolutePosition + extraStartArea,
+            menu.size - extraStartArea - extraEndArea
+        );
+
+        isInVisibilityArea = pointInRect(app.mousePos, visibileArea);
+        isInMenuArea = pointInRect(app.mousePos, menuArea);
+
+        if (!isInVisibilityArea) {
+            hideMenu();
+        }
+    }
+
     override void onMouseDown(in MouseDownEvent event) {
         super.onMouseDown(event);
 
-        if (isEnter)
+        if (isEnter) {
             toggleMenu();
+            focus();
+        }
+        else if (!isInMenuArea) {
+            hideMenu();
+        }
     }
 
     void toggleMenu() {
@@ -53,10 +84,5 @@ final class DropListMenu : Button {
 
     void hideMenu() {
         menu.visible = false;
-    }
-
-    override void onBlur(in BlurEvent event) {
-        super.onBlur(event);
-        hideMenu();
     }
 }

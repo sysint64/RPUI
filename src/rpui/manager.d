@@ -117,7 +117,9 @@ class Manager : EventsListenerEmpty {
     private void poll() {
         auto widgetsOrderingChain = widgetOrdering ~ frontWidgetsOrdering;
 
-        foreach_reverse (Widget widget; widgetsOrderingChain) {
+        rootWidget.isOver = true;
+
+        foreach (Widget widget; widgetsOrderingChain) {
             if (widget is null)
                 continue;
 
@@ -134,7 +136,14 @@ class Manager : EventsListenerEmpty {
                 widget.overSize.y > 0 ? widget.overSize.y : widget.size.y
             );
 
-            Rect rect = Rect(widget.absolutePosition, size);
+            Rect rect;
+
+            if (widget.overlayRect == emptyRect) {
+                rect = Rect(widget.absolutePosition, size);
+            } else {
+                rect = widget.overlayRect;
+            }
+
             widget.isOver = widget.parent.isOver && pointInRect(app.mousePos, rect);
         }
 

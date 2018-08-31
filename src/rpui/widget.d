@@ -181,6 +181,7 @@ package:
     FrameRect extraOuterOffset = FrameRect(0, 0, 0, 0);  /// Extra outer offset besides margin.
     bool overlay;
     vec2 overSize;
+    Rect overlayRect = emptyRect;
     bool focusOnMousUp = false;
 
     bool isEnter;  /// True if pointed on widget.

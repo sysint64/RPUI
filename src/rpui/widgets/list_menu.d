@@ -22,7 +22,7 @@ class ListMenu : StackLayout {
 
     private float displayDelay = 0f;
     private BaseRenderObject[string] backgroundParts;
-    private FrameRect popupExtraPadding;
+    package FrameRect popupExtraPadding;
     package vec2 popupOffset;
 
     this(in string style = "ListMenu") {
