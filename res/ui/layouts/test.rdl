@@ -113,7 +113,15 @@ Panel
 
                     ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
                     ListMenuItem caption: "Menu item 2"
-                    ListMenuItem caption: "Menu item 3"
+                    ListMenuItem
+                        caption: "Menu item 3"
+
+                        ListMenu
+                            size: 200, 200
+                            isPoput: true
+
+                            ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
+                            ListMenuItem caption: "Menu item 2"
 
     Panel
         regionAlign: left

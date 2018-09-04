@@ -252,6 +252,7 @@ ListItem(Button) # TODO: implement inheritance
     iconGaps                : 2
     textLeftMargin          : 9
     textRightMargin         : 9
+    submenuArrowOffset      : 0, 0
 
     Leave
         left                : 55 , 180, 5, 21
@@ -284,7 +285,7 @@ ListItem(Button) # TODO: implement inheritance
         offsets             : [0, 0], 0
 
 ListMenu
-    popupExtraPadding       : 5, 4, 4, 4
+    popupExtraPadding       : 4, 4, 4, 4
     popupOffset             : -3, 0
 
     Top
