@@ -446,7 +446,7 @@ public:
     }
 
     override void onMouseUp(in MouseUpEvent event) {
-        if (isFocused && isEnter)
+        if ((isFocused && isEnter) || (!focusable && isEnter))
             events.notify(ClickEvent());
     }
 

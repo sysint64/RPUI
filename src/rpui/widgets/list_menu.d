@@ -24,6 +24,7 @@ class ListMenu : StackLayout {
     private BaseRenderObject[string] backgroundParts;
     package FrameRect popupExtraPadding;
     package vec2 popupOffset;
+    package FrameRect extraMenuVisibleBorder;
 
     this(in string style = "ListMenu") {
         super(style);
@@ -65,6 +66,7 @@ class ListMenu : StackLayout {
         with (manager.theme.tree) {
             popupExtraPadding = data.getFrameRect(style ~ ".popupExtraPadding");
             popupOffset = data.getVec2f(style ~ ".popupOffset");
+            extraMenuVisibleBorder = data.getFrameRect(style ~ ".extraMenuVisibleBorder");
         }
     }
 }

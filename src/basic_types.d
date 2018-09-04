@@ -62,6 +62,7 @@ struct FrameRect {
 }
 
 const emptyRect = Rect(0, 0, 0, 0);
+const emptyFrameRect = FrameRect(0, 0, 0, 0);
 
 struct Rect {
     float left;

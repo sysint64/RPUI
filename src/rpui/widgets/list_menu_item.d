@@ -12,6 +12,8 @@ import math.linalg;
 import rpui.widgets.button;
 import rpui.widgets.list_menu;
 import rpui.render_objects;
+import rpui.widget_events;
+import rpui.widgets.drop_menu_delegate;
 
 final class ListMenuItem : Button {
     @Field string shortcut = "";
@@ -19,6 +21,7 @@ final class ListMenuItem : Button {
     private ListMenu menu = null;
     private BaseRenderObject submenuArrowRenderObject;
     private vec2 submenuArrowOffset;
+    private DropMenuDelegate dropMenuDelegate;
 
     protected override void onCreate() {
         super.onCreate();
@@ -45,6 +48,20 @@ final class ListMenuItem : Button {
         menu.visible = false;
         menu.focusable = false;
         manager.moveWidgetToFront(menu);
+
+        events.subscribe!ClickEvent(&onClick);
+        dropMenuDelegate = new DropMenuDelegate(menu, this);
+    }
+
+    override void progress() {
+        super.progress();
+
+        if (dropMenuDelegate is null)
+            return;
+
+        if (dropMenuDelegate.isInVisibilityArea) {
+            isEnter = true;
+        }
     }
 
     this(in string style = "ListItem", in string iconsGroup = "icons") {
@@ -61,5 +78,13 @@ final class ListMenuItem : Button {
             const arrowPosition = absolutePosition + vec2(size.x - submenuArrowRenderObject.scaling.x, 0);
             renderer.renderQuad(submenuArrowRenderObject, state, arrowPosition + submenuArrowOffset);
         }
+    }
+
+    private void onClick() {
+        dropMenuDelegate.dropMenu(vec2(size.x, 0) + menu.popupOffset);
+    }
+
+    void hideMenu() {
+        menu.visible = false;
     }
 }
