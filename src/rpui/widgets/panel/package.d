@@ -285,7 +285,7 @@ class Panel : Widget, FocusScrollNavigation {
         if (isFreezingSource() && manager.isNestedFreeze)
             return;
 
-        if (split.isEnter && isOpen) {
+        if (split.isEnter && isOpen && manager.cursor != Cursor.Icon.inherit) {
             lastSize = size;
             split.isClick = true;
             freezeUI();

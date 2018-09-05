@@ -125,8 +125,12 @@ class Manager : EventsListenerEmpty {
             if (widget is null)
                 continue;
 
-            if (!widget.visible)
+            if (!widget.visible) {
+                widget.isOver = false;
+                widget.isEnter = false;
+                widget.isClick = false;
                 continue;
+            }
 
             if (!isWidgetFrozen(widget))
                 widget.onCursor();
