@@ -90,6 +90,9 @@ class Manager : EventsListenerEmpty {
         foreach (Widget widget; frontWidgets) {
             if (widget.visible)
                 widget.progress();
+
+            if (widget.isOver)
+                cursor = Cursor.Icon.inherit;
         }
 
         app.setCursor(cursor);
@@ -115,9 +118,8 @@ class Manager : EventsListenerEmpty {
      * but widget can be overlapped by another widget.
      */
     private void poll() {
-        auto widgetsOrderingChain = widgetOrdering ~ frontWidgetsOrdering;
-
         rootWidget.isOver = true;
+        auto widgetsOrderingChain = widgetOrdering ~ frontWidgetsOrdering;
 
         foreach (Widget widget; widgetsOrderingChain) {
             if (widget is null)

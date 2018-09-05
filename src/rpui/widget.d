@@ -118,6 +118,8 @@ class Widget : EventsListenerEmpty {
     @property Widget parent() { return p_parent; }
     package Widget p_parent;
 
+    package Widget owner;
+
     @property bool isFocused() { return p_isFocused; }
 
     /// Next widget in `parent` children after this.
@@ -185,6 +187,7 @@ package:
     bool focusOnMousUp = false;
 
     bool isEnter;  /// True if pointed on widget.
+    bool overrideIsEnter;  /// Override isEnter state i.e. ignore isEnter value and use overrided value.
     bool isClick;
     bool isMouseDown = false;
 
@@ -215,7 +218,7 @@ package:
     @property inout(string) state() inout {
         if (isClick) {
             return "Click";
-        } else if (isEnter) {
+        } else if (isEnter || overrideIsEnter) {
             return "Enter";
         } else {
             return "Leave";

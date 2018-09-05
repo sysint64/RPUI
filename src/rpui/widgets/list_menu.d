@@ -13,6 +13,7 @@ import math.linalg;
 import rpui.widget;
 import rpui.render_objects;
 import rpui.widgets.stack_layout;
+import rpui.widgets.list_menu_item;
 
 class ListMenu : StackLayout {
     @Field bool transparent = false;
@@ -23,7 +24,8 @@ class ListMenu : StackLayout {
     private float displayDelay = 0f;
     private BaseRenderObject[string] backgroundParts;
     package FrameRect popupExtraPadding;
-    package vec2 popupOffset;
+    package vec2 downPopupOffset;
+    package vec2 rightPopupOffset;
     package FrameRect extraMenuVisibleBorder;
 
     this(in string style = "ListMenu") {
@@ -53,6 +55,16 @@ class ListMenu : StackLayout {
         super.render(camera);
     }
 
+    void hideAllSubMenus() {
+        foreach (Widget widget; children) {
+            const row = widget.associatedWidget;
+
+            if (auto item = cast(MenuActions) row) {
+                item.hideMenu();
+            }
+        }
+    }
+
     protected override void onCreate() {
         super.onCreate();
 
@@ -65,7 +77,8 @@ class ListMenu : StackLayout {
 
         with (manager.theme.tree) {
             popupExtraPadding = data.getFrameRect(style ~ ".popupExtraPadding");
-            popupOffset = data.getVec2f(style ~ ".popupOffset");
+            rightPopupOffset = data.getVec2f(style ~ ".rightPopupOffset");
+            downPopupOffset = data.getVec2f(style ~ ".downPopupOffset");
             extraMenuVisibleBorder = data.getFrameRect(style ~ ".extraMenuVisibleBorder");
         }
     }

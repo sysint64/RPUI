@@ -52,6 +52,7 @@ package final class WidgetsContainer {
 
         // Links
         widget.p_parent = rootWidget;
+        widget.owner = rootWidget;
         widget.p_nextWidget = rootWidget.p_firstWidget;
         widget.p_prevWidget = rootWidget.p_lastWidget;
         widget.p_depth = rootWidget.p_depth + 1;

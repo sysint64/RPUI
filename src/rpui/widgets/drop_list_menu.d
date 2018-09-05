@@ -15,8 +15,9 @@ import rpui.widgets.list_menu;
 import rpui.widget_events;
 import rpui.events;
 import rpui.widgets.drop_menu_delegate;
+import rpui.widgets.list_menu_item;
 
-final class DropListMenu : Button {
+final class DropListMenu : Button, MenuActions {
     @property ListMenu menu() {
         return cast(ListMenu) children.front;
     }
@@ -37,7 +38,7 @@ final class DropListMenu : Button {
         menu.focusable = false;
         manager.moveWidgetToFront(menu);
 
-        dropMenuDelegate = new DropMenuDelegate(menu, this);
+        dropMenuDelegate.attach(menu, this);
     }
 
     override void progress() {
@@ -70,7 +71,11 @@ final class DropListMenu : Button {
         dropMenuDelegate.dropMenu(vec2(0, size.y));
     }
 
-    void hideMenu() {
+    override void hideMenu() {
         dropMenuDelegate.hideMenu();
+    }
+
+    override MenuActions parentActions() {
+        return null;
     }
 }
