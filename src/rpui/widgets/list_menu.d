@@ -65,6 +65,19 @@ class ListMenu : StackLayout {
         }
     }
 
+    package void hideAllSubMenusExpect(Widget menuItem) {
+        foreach (Widget widget; children) {
+            const row = widget.associatedWidget;
+
+            if (row == menuItem)
+                continue;
+
+            if (auto item = cast(MenuActions) row) {
+                item.hideMenu();
+            }
+        }
+    }
+
     protected override void onCreate() {
         super.onCreate();
 

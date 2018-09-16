@@ -67,6 +67,10 @@ final class ListMenuItem : Button, MenuActions {
     override void progress() {
         super.progress();
 
+        if (isEnter) {
+            parentMenu.hideAllSubMenusExpect(this);
+        }
+
         if (dropMenuDelegate.isAttached()) {
             dropMenuDelegate.progress(vec2(size.x, 0) + menu.rightPopupOffset);
             overrideIsEnter = dropMenuDelegate.isInVisibilityArea && menu.visible;
