@@ -7,6 +7,7 @@ struct Interval {
     /// It true, after time is out timer will stops working else repeat interval.
     bool haltOnTimout;
 
+    private int ticks = 0;
     private float time;
     private bool halt = true;
 
@@ -23,8 +24,13 @@ struct Interval {
                 halt = true;
             } else {
                 time = 0;
+                ticks += 1;
             }
         }
+    }
+
+    int getTick() {
+        return ticks;
     }
 
     void start() {

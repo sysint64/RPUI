@@ -87,9 +87,14 @@ class Manager : EventsListenerEmpty {
         poll();
         blur();
 
-        foreach (Widget widget; frontWidgets) {
-            if (widget.visible)
-                widget.progress();
+        // NOTE: If progress will lag or get incorrect data, we can just
+        // add additional foreach traverse, for resolve update due-to
+        // some other widget values dependenciec.
+        foreach_reverse (Widget widget; frontWidgets) {
+            if (!widget.visible)
+                continue;
+
+            widget.progress();
 
             if (widget.isOver)
                 cursor = Cursor.Icon.inherit;
