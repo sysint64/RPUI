@@ -6,6 +6,7 @@
 module rpui.widgets.list_menu_item;
 
 import gapi;
+import time;
 import basic_types;
 import math.linalg;
 
@@ -29,6 +30,7 @@ final class ListMenuItem : Button, MenuActions {
     private BaseRenderObject submenuArrowRenderObject;
     private vec2 submenuArrowOffset;
     private DropMenuDelegate dropMenuDelegate;
+    private Interval submenuDisplayTimeout;
 
     protected override void onCreate() {
         super.onCreate();
@@ -62,13 +64,24 @@ final class ListMenuItem : Button, MenuActions {
         manager.moveWidgetToFront(menu);
 
         dropMenuDelegate.attach(menu, this);
+
+        submenuDisplayTimeout = createTimeout(menu.displayDelay, delegate() {
+            if (isEnter) {
+                dropMenuDelegate.dropMenu(vec2(size.x, 0) + menu.rightPopupOffset);
+            }
+        });
     }
 
     override void progress() {
         super.progress();
+        submenuDisplayTimeout.onProgress(app.deltaTime);
 
         if (isEnter) {
             parentMenu.hideAllSubMenusExpect(this);
+        }
+
+        if (isEnter && !submenuDisplayTimeout.isStarted()) {
+            submenuDisplayTimeout.start();
         }
 
         if (dropMenuDelegate.isAttached()) {

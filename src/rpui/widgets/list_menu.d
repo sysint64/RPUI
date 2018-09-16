@@ -21,7 +21,7 @@ class ListMenu : StackLayout {
     @Field bool isPopup = true;
     @Field string listItemStyle = "ListItem";
 
-    private float displayDelay = 0f;
+    package float displayDelay = 0f;
     private BaseRenderObject[string] backgroundParts;
     package FrameRect popupExtraPadding;
     package vec2 downPopupOffset;
@@ -93,6 +93,7 @@ class ListMenu : StackLayout {
             rightPopupOffset = data.getVec2f(style ~ ".rightPopupOffset");
             downPopupOffset = data.getVec2f(style ~ ".downPopupOffset");
             extraMenuVisibleBorder = data.getFrameRect(style ~ ".extraMenuVisibleBorder");
+            displayDelay = data.getNumber(style ~ ".displayDelay.0");
         }
     }
 }
