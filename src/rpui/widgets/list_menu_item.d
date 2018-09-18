@@ -32,6 +32,14 @@ final class ListMenuItem : Button, MenuActions {
     private DropMenuDelegate dropMenuDelegate;
     private Interval submenuDisplayTimeout;
 
+    this(in string style = "ListItem", in string iconsGroup = "icons") {
+        super(style, iconsGroup);
+
+        textAlign = Align.left;
+        widthType = SizeType.matchParent;
+        focusable = false;
+    }
+
     protected override void onCreate() {
         super.onCreate();
 
@@ -88,14 +96,6 @@ final class ListMenuItem : Button, MenuActions {
             dropMenuDelegate.progress(vec2(size.x, 0) + menu.rightPopupOffset);
             overrideIsEnter = dropMenuDelegate.isInVisibilityArea && menu.visible;
         }
-    }
-
-    this(in string style = "ListItem", in string iconsGroup = "icons") {
-        super(style, iconsGroup);
-
-        textAlign = Align.left;
-        widthType = SizeType.matchParent;
-        focusable = false;
     }
 
     override void render(Camera camera) {

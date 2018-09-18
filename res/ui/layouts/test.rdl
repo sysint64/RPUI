@@ -175,3 +175,37 @@ Panel
             verticalLocationAlign: bottom
             textAlign: center
             widthType: matchParent
+
+    Panel
+        regionAlign: left
+        blackSplit: true
+        size: 300, 300
+        userCanResize: true
+        background: action
+
+        Panel
+            userCanResize: true
+            regionAlign: top
+            caption: "@TestView.mainPanelCaption"
+            userCanHide: true
+            size: 300, 300
+
+        StackLayout
+            orientation: horizontal
+            height: 21
+            regionAlign: top
+            margin: 5
+
+            TabButton
+                checked: true
+                caption: "Tab 1"
+                width: 100
+
+            TabButton
+                caption: "Tab 1"
+                width: 100
+
+        Panel
+            userCanResize: true
+            regionAlign: top
+            size: 300, 300

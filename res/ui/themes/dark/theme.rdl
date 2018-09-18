@@ -252,6 +252,7 @@ ListItem(Button) # TODO: implement inheritance
     iconGaps                : 2
     textLeftMargin          : 9
     textRightMargin         : 9
+    submenuArrowOffset      : 0, 0
 
     Leave
         left                : 55 , 180, 5, 21
@@ -285,6 +286,11 @@ ListItem(Button) # TODO: implement inheritance
 
 ListMenu
     popupExtraPadding       : 4, 4, 4, 4
+    popupExtraPadding       : 4, 4, 4, 4
+    downPopupOffset         : -3, 0
+    rightPopupOffset        : 3, -3
+    extraMenuVisibleBorder  : 20, 20, 20, 50
+    displayDelay            : 500
 
     Top
         left                : 123, 39, 8, 8
@@ -331,6 +337,40 @@ DropListMenu(Button)
         right               : 115, 83, 5, 21
         textOffset          : 0, 0
         textColor           : 180, 180, 180
+
+    Focus
+        left                : 0, 0, 0, 0
+        center              : 0, 0, 0, 0
+        right               : 0, 0, 0, 0
+        offsets             : [0, 0], 0
+
+TabButton(Button)
+    split                   : 44, 35, 3, 21
+    iconOffsets             : 2, -1
+    iconGaps                : 2
+    textLeftMargin          : 9
+    textRightMargin         : 9
+
+    Leave
+        left                : 289, 226, 6, 21
+        center              : 308, 226, 6, 21
+        right               : 327, 226, 6, 21
+        textOffset          : 0, 2
+        textColor           : 20, 20, 20
+
+    Enter
+        left                : 338, 226, 6, 21
+        center              : 357, 226, 6, 21
+        right               : 376, 226, 6, 21
+        textOffset          : 0, 2
+        textColor           : 40, 40, 40
+
+    Click
+        left                : 240, 226, 6, 21
+        center              : 259, 226, 6, 21
+        right               : 278, 226, 6, 21
+        textOffset          : 0, 2
+        textColor           : 20, 20, 20
 
     Focus
         left                : 0, 0, 0, 0

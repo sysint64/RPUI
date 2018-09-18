@@ -44,7 +44,9 @@ class StackLayout : Widget {
 
     override void progress() {
         super.progress();
+
         locator.updateAbsolutePosition();
+        locator.updateRegionAlign();
 
         vec2 lastPosition = vec2(0, 0);
         Widget widget = null;

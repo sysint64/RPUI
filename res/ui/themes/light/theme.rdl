@@ -345,3 +345,37 @@ DropListMenu(Button)
         center              : 68, 105, 6, 25
         right               : 82, 105, 6, 25
         offsets             : [-2, -2], 4
+
+TabButton(Button)
+    split                   : 44, 35, 3, 21
+    iconOffsets             : 2, -1
+    iconGaps                : 2
+    textLeftMargin          : 9
+    textRightMargin         : 9
+
+    Leave
+        left                : 289, 226, 6, 21
+        center              : 308, 226, 6, 21
+        right               : 327, 226, 6, 21
+        textOffset          : 0, 2
+        textColor           : 20, 20, 20
+
+    Enter
+        left                : 338, 226, 6, 21
+        center              : 357, 226, 6, 21
+        right               : 376, 226, 6, 21
+        textOffset          : 0, 2
+        textColor           : 20, 20, 20
+
+    Click
+        left                : 240, 226, 6, 21
+        center              : 259, 226, 6, 21
+        right               : 278, 226, 6, 21
+        textOffset          : 0, 2
+        textColor           : 20, 20, 20
+
+    Focus
+        left                : 0, 0, 0, 0
+        center              : 0, 0, 0, 0
+        right               : 0, 0, 0, 0
+        offsets             : [0, 0], 0
