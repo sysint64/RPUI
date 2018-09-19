@@ -122,7 +122,7 @@ class Panel : Widget, FocusScrollNavigation {
             renderer.renderColoredObject(
                 backgroundRenderObject,
                 backgroundColors[background],
-                absolutePosition, size
+                absolutePosition, outerBoundarySize
             );
         }
 
@@ -133,20 +133,14 @@ class Panel : Widget, FocusScrollNavigation {
             return;
         }
 
-        horizontalScrollButton.render();
-        verticalScrollButton.render();
-
         // Render children widgets
         Rect scissor;
         scissor.point = vec2(
             absolutePosition.x + extraInnerOffset.left,
             absolutePosition.y + extraInnerOffset.top
         );
-        scissor.size = vec2(
-            size.x - extraInnerOffset.left - extraInnerOffset.right,
-            size.y - extraInnerOffset.top - extraInnerOffset.bottom
-        );
 
+        scissor.size = size;
         manager.pushScissor(scissor);
 
         foreach (Widget widget; children) {
@@ -163,6 +157,9 @@ class Panel : Widget, FocusScrollNavigation {
 
         manager.popScissor();
         split.render();
+
+        horizontalScrollButton.render();
+        verticalScrollButton.render();
     }
 
     override void scrollToWidget(Widget widget) {

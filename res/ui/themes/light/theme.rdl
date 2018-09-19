@@ -74,7 +74,7 @@ Panel
 
     backgroundLight         : 213, 213, 213, 100
     backgroundDark          : 172, 172, 172, 100
-    backgroundAction        : 194, 194, 194, 100
+    backgroundAction        : 205, 205, 205, 100
 
     Split
         thickness           : 1

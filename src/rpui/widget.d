@@ -206,6 +206,7 @@ package:
 
     vec2 innerBoundarySize = vec2(0, 0);  /// Size of boundary over childern.
     vec2 contentOffset = vec2(0, 0);  /// Children offset relative their absolute positions.
+    vec2 outerBoundarySize = vec2(0, 0); /// Full region size including inner offsets.
 
     Widget associatedWidget = null;
 

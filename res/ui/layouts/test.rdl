@@ -8,6 +8,7 @@ Panel
     finalFocusRegion: true
     blackSplit: true
     finalFocus: true
+    background: action
 
     Panel
         name: "testPanel"

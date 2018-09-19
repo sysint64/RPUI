@@ -92,31 +92,42 @@ package final class WidgetLocator {
                 parent.innerSize.y - region.bottom - region.top  - outerOffsetSize.y
             );
 
+            const vec2 fullRegionSize = vec2(
+                parent.size.x - region.right  - region.left - outerOffsetSize.x,
+                parent.size.y - region.bottom - region.top  - outerOffsetSize.y
+            );
+
+            outerBoundarySize = size;
+
             switch (regionAlign) {
                 case RegionAlign.client:
-                    size.x = regionSize.x;
-                    size.y = regionSize.y;
+                    size = regionSize;
+                    outerBoundarySize = fullRegionSize;
                     position = vec2(region.left, region.top);
                     break;
 
                 case RegionAlign.top:
                     size.x = regionSize.x;
+                    outerBoundarySize.x = fullRegionSize.x;
                     position = vec2(region.left, region.top);
                     break;
 
                 case RegionAlign.bottom:
                     size.x = regionSize.x;
+                    outerBoundarySize.x = fullRegionSize.x;
                     position.x = region.left;
                     position.y = parent.innerSize.y - outerSize.y - region.bottom;
                     break;
 
                 case RegionAlign.left:
                     size.y = regionSize.y;
+                    outerBoundarySize.y = fullRegionSize.y;
                     position = vec2(region.left, region.top);
                     break;
 
                 case RegionAlign.right:
                     size.y = regionSize.y;
+                    outerBoundarySize.y = fullRegionSize.y;
                     position.x = parent.innerSize.x - outerSize.x - region.right;
                     position.y = region.top;
                     break;
