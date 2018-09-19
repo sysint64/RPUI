@@ -35,6 +35,25 @@ package struct Split {
     Panel panel;
     Renderer renderer;
 
+    @property Orientation orientation() {
+        switch (panel.regionAlign) {
+            case RegionAlign.top:
+                return Orientation.horizontal;
+
+            case RegionAlign.bottom:
+                return Orientation.horizontal;
+
+            case RegionAlign.left:
+                return Orientation.vertical;
+
+            case RegionAlign.right:
+                return Orientation.vertical;
+
+            default:
+                return Orientation.horizontal;
+        }
+    }
+
     /// Get rpdl relative selector depends of color.
     string state(in bool innerColor, in bool useBlackColor = false) const {
         const string color = innerColor ? "innerColor" : "borderColor";

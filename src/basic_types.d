@@ -8,7 +8,7 @@ import std.math;
 alias utf32char = dchar;
 alias utf32string = dstring;
 
-enum Orientation {horizontal, vertical};
+enum Orientation {horizontal, vertical}
 
 enum RegionAlign {
     none,
@@ -78,6 +78,14 @@ struct Rect {
     @property void size(in vec2 val) {
         width = val.x;
         height = val.y;
+    }
+
+    @property vec2 point() const {
+        return vec2(left, top);
+    }
+
+    @property vec2 size() const {
+        return vec2(width, height);
     }
 
     // piar of points: (left, top), (right, bottom)

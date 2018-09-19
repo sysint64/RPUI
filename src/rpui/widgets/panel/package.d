@@ -135,12 +135,29 @@ class Panel : Widget, FocusScrollNavigation {
 
         // Render children widgets
         Rect scissor;
-        scissor.point = vec2(
-            absolutePosition.x + extraInnerOffset.left,
-            absolutePosition.y + extraInnerOffset.top
-        );
 
+        scissor.point = absolutePosition + extraInnerOffsetStart;
         scissor.size = size;
+
+        if (userCanHide) {
+            scissor.size = scissor.size - vec2(0, header.height);
+        }
+
+        if (userCanResize && blackSplit) {
+            switch (split.orientation) {
+                case Orientation.horizontal:
+                    scissor.size = scissor.size - vec2(0, split.thickness);
+                    break;
+
+                case Orientation.vertical:
+                    scissor.size = scissor.size - vec2(split.thickness, 0);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         manager.pushScissor(scissor);
 
         foreach (Widget widget; children) {
