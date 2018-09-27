@@ -18,7 +18,7 @@ final class TabButton : Button {
     this(in string style = "TabButton", in string iconsGroup = "icons") {
         super(style, iconsGroup);
 
-        // widthType = SizeType.wrapContent;
+        widthType = SizeType.wrapContent;
         focusable = false;
     }
 

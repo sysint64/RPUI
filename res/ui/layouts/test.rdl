@@ -231,7 +231,7 @@ Panel
             regionAlign: top
             size: 300, 45
             padding: 10
-            tabVisibilityRule: "settingsTab"
+            tabVisibleRule: "settingsTab"
 
             Label caption: "Settings" size: 0, 21 widthType: matchParent
 
@@ -241,7 +241,7 @@ Panel
             regionAlign: top
             size: 300, 45
             padding: 10
-            tabVisibilityRule: "triangleTab"
+            tabVisibleRule: "triangleTab"
 
             Label caption: "Triangle" size: 0, 21 widthType: matchParent
 
@@ -251,6 +251,6 @@ Panel
             regionAlign: top
             size: 300, 45
             padding: 10
-            tabVisibilityRule: "materialTab"
+            tabVisibleRule: "materialTab"
 
             Label caption: "Material" size: 0, 21 widthType: matchParent

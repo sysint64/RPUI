@@ -8,6 +8,8 @@ module rpui.widget;
 import std.container;
 import std.conv;
 import std.math;
+import std.functional;
+import std.algorithm;
 
 import input;
 import gapi;
@@ -152,6 +154,12 @@ class Widget : EventsListenerEmpty {
 
     @property WidgetEventsObserver events() { return p_events; }
     private WidgetEventsObserver p_events;
+
+    /// Additional rules appart from `visible` to set widget visible or not.
+    Array!(bool delegate()) visibleRules;
+
+    /// Additional rules appart from `enabled` to set widget enabled or not.
+    Array!(bool delegate()) enableRules;
 
 protected:
     /**
@@ -380,17 +388,41 @@ public:
     }
 
     void progress() {
+        checkRules();
+
         if (!drawChildren)
             return;
 
         foreach (Widget widget; children) {
-            if (!widget.visible)
+            if (!widget.visible && !widget.processPorgress())
                 continue;
 
             widget.progress();
         }
 
         updateBoundary();
+    }
+
+    package bool processPorgress() {
+        return !visibleRules.empty || !enableRules.empty;
+    }
+
+    void checkRules() {
+        if (!visibleRules.empty) {
+            visible = true;
+
+            foreach (bool delegate() rule; visibleRules) {
+                visible = visible && rule();
+            }
+        }
+
+        if (!enableRules.empty) {
+            enabled = true;
+
+            foreach (bool delegate() rule; enableRules) {
+                enabled = enabled && rule();
+            }
+        }
     }
 
     /// Render widget in camera view.

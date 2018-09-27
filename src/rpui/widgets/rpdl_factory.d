@@ -45,7 +45,7 @@ import rpui.widgets.tab_button;
 import rpui.widgets.tab_layout;
 
 /// Factory for construction view from rpdl layout data.
-class RPDLWidgetFactory {
+final class RPDLWidgetFactory {
     /// Root view widget - container for other widgets.
     @property Widget rootWidget() { return p_rootWidget; }
 
@@ -132,6 +132,7 @@ class RPDLWidgetFactory {
         foreach (Node childNode; widgetNode.children) {
             if (auto objectNode = cast(ObjectNode) childNode) {
                 auto widget = createWidgetFromNode(objectNode);
+                readVisibleRules(widget, objectNode);
                 widget.onPostCreate();
             } else {
                 // TODO: throw an exception
@@ -157,11 +158,30 @@ class RPDLWidgetFactory {
         // Create children widgets
         foreach (Node childNode; widgetNode.children) {
             if (auto objectNode = cast(ObjectNode) childNode) {
-                createWidgetFromNode(objectNode, widget);
+                Widget newWidget = createWidgetFromNode(objectNode, widget);
+                readVisibleRules(newWidget, objectNode);
+                newWidget.onPostCreate();
             }
         }
 
         return widget;
+    }
+
+    private void readVisibleRules(Widget widget, ObjectNode widgetNode) {
+        const rule = widgetNode.optString("tabVisibleRule.0", null);
+
+        if (rule !is null ) {
+            auto dependWidget = cast(TabButton) rootWidget.resolver.findWidgetByName(rule);
+
+            if (dependWidget !is null) {
+                widget.visibleRules.insert(() => dependWidget.checked);
+                writeln("ADDED RULE");
+            } else {
+                import std.stdio;
+                writeln("NOT FOUND :/");
+            }
+        }
+        // tabVisibilityRule
     }
 
     // Tell the system how to interprete types of fields in widgets

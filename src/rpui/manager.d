@@ -91,7 +91,7 @@ class Manager : EventsListenerEmpty {
         // add additional foreach traverse, for resolve update due-to
         // some other widget values dependenciec.
         foreach_reverse (Widget widget; frontWidgets) {
-            if (!widget.visible)
+            if (!widget.visible && !widget.processPorgress())
                 continue;
 
             widget.progress();
