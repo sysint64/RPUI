@@ -6,7 +6,6 @@ import gapi.texture;
 import gapi.shader;
 import gapi.geometry;
 
-
 private class RenderPool(T) {
     mixin Singleton!(RenderPool!T);
 
@@ -25,7 +24,6 @@ private class RenderPool(T) {
 private:
     T lastBinded = null;
 }
-
 
 alias RenderPool!Geometry GeometryPool;
 alias RenderPool!Texture TexturePool;

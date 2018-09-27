@@ -54,6 +54,7 @@ final class ListMenuItem : Button, MenuActions {
     protected override void onPostCreate() {
         super.onPostCreate();
 
+        // Because item places in wrapper called Cell.
         parentMenu = cast(ListMenu) parent.parent;
         assert(parentMenu !is null);
 

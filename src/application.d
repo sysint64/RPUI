@@ -157,6 +157,9 @@ abstract class Application {
         p_windowWidth = width;
         p_windowHeight = height;
         events.notify(WindowResizeEvent(width, height));
+        glViewport(0, 0, width, height);
+        glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        render();
     }
 
     @property string binDirectory() { return pathes.bin; }

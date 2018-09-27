@@ -15,3 +15,9 @@ Icons
     info: 6, 2
     material: 4, 4
     texture: 4, 7
+    settings: 2, 3
+    triangle: 6, 4
+    joins: 1, 8
+    particles: 2, 4
+    bounce: 5, 4
+    tape: 6, 9

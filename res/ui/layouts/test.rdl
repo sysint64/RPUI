@@ -191,7 +191,7 @@ Panel
             userCanHide: true
             size: 300, 300
 
-        StackLayout
+        TabLayout
             orientation: horizontal
             height: 21
             regionAlign: top
@@ -203,10 +203,54 @@ Panel
                 width: 100
 
             TabButton
-                caption: "Tab 1"
+                caption: "Tab 2"
                 width: 100
 
         Panel
             userCanResize: true
             regionAlign: top
-            size: 300, 300
+            size: 300, 100
+
+        TabLayout
+            orientation: horizontal
+            height: 21
+            regionAlign: top
+            margin: 5
+
+            TabButton name: "settingsTab" checked: true caption: "Settings" width: 90 icons: "settings"
+            TabButton name: "triangleTab" caption: "" width: 30 icons: "triangle"
+            TabButton name: "materialTab" caption: "" width: 30 icons: "material"
+            TabButton caption: "" width: 30 icons: "joins"
+            TabButton caption: "" width: 30 icons: "particles"
+            TabButton caption: "" width: 30 icons: "bounce"
+            TabButton caption: "" width: 30 icons: "tape"
+
+        Panel
+            name: "settingsTabPanel"
+            userCanResize: true
+            regionAlign: top
+            size: 300, 45
+            padding: 10
+            tabVisibilityRule: "settingsTab"
+
+            Label caption: "Settings" size: 0, 21 widthType: matchParent
+
+        Panel
+            name: "triangleTabPanel"
+            userCanResize: true
+            regionAlign: top
+            size: 300, 45
+            padding: 10
+            tabVisibilityRule: "triangleTab"
+
+            Label caption: "Triangle" size: 0, 21 widthType: matchParent
+
+        Panel
+            name: "materialTabPanel"
+            userCanResize: true
+            regionAlign: top
+            size: 300, 45
+            padding: 10
+            tabVisibilityRule: "materialTab"
+
+            Label caption: "Material" size: 0, 21 widthType: matchParent

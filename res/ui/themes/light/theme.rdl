@@ -348,7 +348,7 @@ DropListMenu(Button)
 
 TabButton(Button)
     split                   : 44, 35, 3, 21
-    iconOffsets             : 2, -1
+    iconOffsets             : 6, 1
     iconGaps                : 2
     textLeftMargin          : 9
     textRightMargin         : 9

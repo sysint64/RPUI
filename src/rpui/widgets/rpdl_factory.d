@@ -42,6 +42,7 @@ import rpui.widgets.list_menu;
 import rpui.widgets.list_menu_item;
 import rpui.widgets.drop_list_menu;
 import rpui.widgets.tab_button;
+import rpui.widgets.tab_layout;
 
 /// Factory for construction view from rpdl layout data.
 class RPDLWidgetFactory {
@@ -110,6 +111,9 @@ class RPDLWidgetFactory {
 
             case "TabButton":
                 return createWidget!TabButton(widgetNode, parentWidget);
+
+            case "TabLayout":
+                return createWidget!TabLayout(widgetNode, parentWidget);
 
             default:
                 return null;
