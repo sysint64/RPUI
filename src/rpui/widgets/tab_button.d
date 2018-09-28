@@ -43,5 +43,6 @@ final class TabButton : Button {
 
         parentTabLayout.uncheckAllTabs();
         checked = true;
+        parentTabLayout.parent.progress();
     }
 }
