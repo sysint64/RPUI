@@ -18,13 +18,10 @@ import rpui.widgets.drop_menu_delegate;
 import rpui.widgets.list_menu_item;
 
 final class DropListMenu : Button, MenuActions {
-    @property ListMenu menu() {
-        return cast(ListMenu) children.front;
-    }
-
     private bool isInVisibilityArea = false;
     private bool isInMenuArea = false;
     private DropMenuDelegate dropMenuDelegate;
+    private ListMenu menu = null;
 
     this(in string style = "DropListMenu", in string iconsGroup = "icons") {
         super(style, iconsGroup);
@@ -33,6 +30,12 @@ final class DropListMenu : Button, MenuActions {
 
     protected override void onPostCreate() {
         super.onPostCreate();
+
+        if (menu !is null)
+            return;
+
+        menu = cast(ListMenu) children.front;
+        assert(menu !is null);
 
         menu.visible = false;
         menu.focusable = false;
