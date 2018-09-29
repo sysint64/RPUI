@@ -217,8 +217,20 @@ Panel
             regionAlign: top
             margin: 5
 
-            TabButton name: "settingsTab" checked: true caption: "Settings" width: 90 icons: "settings"
-            TabButton name: "triangleTab" caption: "" width: 30 icons: "triangle"
+            TabButton name: "settingsTab"
+                checked: true
+                caption: "Settings"
+                widthType: wrapContent
+                icons: "settings"
+                hideCaptionWhenUnchecked: true
+
+            TabButton
+                name: "triangleTab"
+                caption: "Boundaries"
+                icons: "triangle"
+                widthType: wrapContent
+                hideCaptionWhenUnchecked: true
+
             TabButton name: "materialTab" caption: "" width: 30 icons: "material"
             TabButton caption: "" width: 30 icons: "joins"
             TabButton caption: "" width: 30 icons: "particles"

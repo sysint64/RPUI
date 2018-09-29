@@ -9,9 +9,11 @@ import rpui.widget;
 import rpui.widgets.button;
 import rpui.events;
 import rpui.widgets.tab_layout;
+import basic_types;
 
 final class TabButton : Button {
     @Field bool checked = false;
+    @Field bool hideCaptionWhenUnchecked = false;
 
     private TabLayout parentTabLayout = null;
 
@@ -44,5 +46,18 @@ final class TabButton : Button {
         parentTabLayout.uncheckAllTabs();
         checked = true;
         parentTabLayout.parent.progress();
+    }
+
+    override void renderText() {
+        if (checked)
+            super.renderText();
+    }
+
+    override utf32string getCaptionForMeasure() {
+        if (hideCaptionWhenUnchecked && !checked) {
+            return ""d;
+        } else {
+            return caption;
+        }
     }
 }

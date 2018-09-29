@@ -78,9 +78,19 @@ class Button : Widget {
             renderer.renderHorizontalChain(skinFocusRenderObjects, "Focus", focusPos, focusSize);
         }
 
-        // Text
+        renderText();
+
+        // Icons
+        foreach (iconRenderObject; iconsRenderObjects) {
+            const iconPos = absolutePosition + iconRenderObject.offset;
+            renderer.renderQuad(iconRenderObject.renderObject, "default", iconPos);
+        }
+    }
+
+    protected void renderText() {
         textRenderObject.textAlign = textAlign;
         textRenderObject.textVerticalAlign = textVerticalAlign;
+        textRenderObject.text = caption;
 
         const textSize = size - vec2(iconsAreaSize, 0);
         auto textPosition = vec2(iconsAreaSize, 0) + absolutePosition;
@@ -93,12 +103,24 @@ class Button : Widget {
         }
 
         renderer.renderText(textRenderObject, state, textPosition, textSize);
+    }
 
-        // Icons
-        foreach (iconRenderObject; iconsRenderObjects) {
-            const iconPos = absolutePosition + iconRenderObject.offset;
-            renderer.renderQuad(iconRenderObject.renderObject, "default", iconPos);
+    override void updateSize() {
+        super.updateSize();
+
+        if (widthType == SizeType.wrapContent) {
+            size.x = iconsAreaSize + textLeftMargin + iconGaps * 2;
+            textAlign = Align.right;
+
+            if (getCaptionForMeasure().length != 0) {
+                size.x += textRenderObject.textWidth;
+                size.x += textRightMargin;
+            }
         }
+    }
+
+    protected utf32string getCaptionForMeasure() {
+        return caption;
     }
 
 private:
@@ -106,6 +128,8 @@ private:
     float focusResize;
     float textLeftMargin;
     float textRightMargin;
+    float iconGaps;
+    vec2 iconOffsets;
 
     BaseRenderObject[string] skinRenderObjects;
     BaseRenderObject[string] skinFocusRenderObjects;
@@ -154,9 +178,9 @@ private:
 
         with (manager.theme.tree) {
             const iconSize = manager.iconsRes.getIconsConfig(iconsGroup).size;
-            const iconOffsets = data.getVec2f(style ~ ".iconOffsets");
+            iconOffsets = data.getVec2f(style ~ ".iconOffsets");
             const iconVerticalOffset = round((size.y - iconSize.y) / 2.0f);
-            const iconGaps = data.getNumber(style ~ ".iconGaps.0");
+            iconGaps = data.getNumber(style ~ ".iconGaps.0");
             float iconLastOffset = 0;
 
             foreach (iconName; icons) {
