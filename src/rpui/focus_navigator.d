@@ -16,10 +16,14 @@ package final class FocusNavigator {
         with (holder) {
             events.notify(FocusFrontEvent());
 
-            if (skipFocus && firstWidget !is null) {
+            if (skipFocus && visible && firstWidget !is null) {
                 firstWidget.focusNavigator.navFocusFront();
             } else {
-                holder.focus();
+                if (focusable && visible) {
+                    focus();
+                } else {
+                    focusNext();
+                }
             }
         }
     }
@@ -48,10 +52,14 @@ package final class FocusNavigator {
         with (holder) {
             events.notify(FocusBackEvent());
 
-            if (skipFocus && lastWidget !is null) {
+            if (skipFocus && visible && lastWidget !is null) {
                 lastWidget.focusNavigator.navFocusBack();
             } else {
-                holder.focus();
+                if (focusable && visible) {
+                    focus();
+                } else {
+                    focusPrev();
+                }
             }
         }
     }

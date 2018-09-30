@@ -183,6 +183,7 @@ Panel
         size: 300, 300
         userCanResize: true
         background: action
+        finalFocus: true
 
         Panel
             userCanResize: true
@@ -190,6 +191,8 @@ Panel
             caption: "@TestView.mainPanelCaption"
             userCanHide: true
             size: 300, 300
+
+            Button margin: 5
 
         TabLayout
             orientation: horizontal
@@ -210,6 +213,8 @@ Panel
             userCanResize: true
             regionAlign: top
             size: 300, 100
+
+            Button margin: 5
 
         TabLayout
             orientation: horizontal
@@ -305,6 +310,7 @@ Panel
             tabVisibleRule: "triangleTab"
 
             Label caption: "Triangle" size: 0, 21 widthType: matchParent
+            Button caption: "Grouped"
 
         Panel
             name: "materialTabPanel"
@@ -315,3 +321,4 @@ Panel
             tabVisibleRule: "materialTab"
 
             Label caption: "Material" size: 0, 21 widthType: matchParent
+            Button caption: "Grouped"

@@ -34,12 +34,7 @@ class Label : Widget {
 
     @property utf32string caption() { return p_caption; }
 
-    this() {
-        super("Label");
-        this.drawChildren = false;
-    }
-
-    this(in string style) {
+    this(in string style = "Label") {
         super(style);
         this.drawChildren = false;
     }
