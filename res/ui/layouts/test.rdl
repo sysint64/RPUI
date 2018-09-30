@@ -231,21 +231,70 @@ Panel
                 widthType: wrapContent
                 hideCaptionWhenUnchecked: true
 
-            TabButton name: "materialTab" caption: "" width: 30 icons: "material"
-            TabButton caption: "" width: 30 icons: "joins"
-            TabButton caption: "" width: 30 icons: "particles"
-            TabButton caption: "" width: 30 icons: "bounce"
-            TabButton caption: "" width: 30 icons: "tape"
+            TabButton
+                name: "materialTab"
+                caption: "Materials"
+                icons: "material"
+                widthType: wrapContent
+                hideCaptionWhenUnchecked: true
+
+            TabButton
+                caption: "Joins"
+                icons: "joins"
+                widthType: wrapContent
+                hideCaptionWhenUnchecked: true
+
+            TabButton
+                caption: "Particles"
+                icons: "particles"
+                widthType: wrapContent
+                hideCaptionWhenUnchecked: true
+
+            TabButton
+                caption: "Physics"
+                icons: "bounce"
+                widthType: wrapContent
+                hideCaptionWhenUnchecked: true
+
+            TabButton
+                caption: "Animations"
+                icons: "tape"
+                widthType: wrapContent
+                hideCaptionWhenUnchecked: true
 
         Panel
             name: "settingsTabPanel"
             userCanResize: true
             regionAlign: top
-            size: 300, 45
+            size: 300, 100
             padding: 10
             tabVisibleRule: "settingsTab"
 
-            Label caption: "Settings" size: 0, 21 widthType: matchParent
+            StackLayout
+                Label caption: "Settings" size: 0, 21
+
+                ChainLayout
+                    Button caption: "Hello world!"
+                    TextInput text: "Hello world!"
+                    Button caption: "Grouped"
+
+                StackLayout
+                    orientation: horizontal
+                    margin: 0, -4
+
+                    ChainLayout
+                        margin: 4
+
+                        Button caption: "H" width: 20 widthType: value
+                        Button caption: "S" width: 20 widthType: value
+                        Button caption: "B" width: 20 widthType: value
+
+                    ChainLayout
+                        margin: 4
+
+                        Button caption: "R"
+                        Button caption: "G"
+                        Button caption: "B"
 
         Panel
             name: "triangleTabPanel"

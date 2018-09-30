@@ -48,6 +48,7 @@ class Button : Widget {
 
         // TODO: rm hardcode
         size = vec2(50, 21);
+        widthType = SizeType.wrapContent;
     }
 
     this(bool allowCheck) {
@@ -69,13 +70,13 @@ class Button : Widget {
         super.render(camera);
 
         // Background
-        renderer.renderHorizontalChain(skinRenderObjects, state, absolutePosition, size);
+        renderer.renderHorizontalChain(skinRenderObjects, state, absolutePosition, size, partDraws);
 
         if (isFocused) {
             const focusPos = absolutePosition + focusOffsets;
             const focusSize = size + vec2(focusResize, focusResize);
 
-            renderer.renderHorizontalChain(skinFocusRenderObjects, "Focus", focusPos, focusSize);
+            renderer.renderHorizontalChain(skinFocusRenderObjects, "Focus", focusPos, focusSize, partDraws);
         }
 
         renderText();
@@ -109,7 +110,12 @@ class Button : Widget {
         super.updateSize();
 
         if (widthType == SizeType.wrapContent) {
-            size.x = iconsAreaSize + textLeftMargin + iconGaps * 2;
+            if (!icons.empty) {
+                size.x = iconsAreaSize + textLeftMargin + iconGaps * 2;
+            } else {
+                size.x = textLeftMargin;
+            }
+
             textAlign = Align.right;
 
             if (getCaptionForMeasure().length != 0) {

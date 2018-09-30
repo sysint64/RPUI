@@ -49,8 +49,11 @@ final class TabButton : Button {
     }
 
     override void renderText() {
-        if (checked)
+        if (hideCaptionWhenUnchecked && checked) {
             super.renderText();
+        } else if (!hideCaptionWhenUnchecked) {
+            super.renderText();
+        }
     }
 
     override utf32string getCaptionForMeasure() {

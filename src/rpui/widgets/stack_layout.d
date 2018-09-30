@@ -24,6 +24,9 @@ class StackLayout : Widget {
 
         skipFocus = true;
         setDecorator();
+
+        widthType = SizeType.wrapContent;
+        heightType = SizeType.wrapContent;
     }
 
     this(Orientation orientation) {
@@ -88,10 +91,16 @@ class StackLayout : Widget {
     override void updateSize() {
         super.updateSize();
 
-        if (orientation == Orientation.vertical && widthType == SizeType.wrapContent) {
-            size.x = maxSize.x > parent.innerSize.x ? maxSize.x : parent.innerSize.x;
-        } else if (widthType == SizeType.wrapContent) {
-            size.y = maxSize.y > parent.innerSize.y ? maxSize.y : parent.innerSize.y;
+        if (orientation == Orientation.vertical) {
+            if (widthType == SizeType.wrapContent) {
+                size.x = maxSize.x > parent.innerSize.x ? maxSize.x : parent.innerSize.x;
+            }
+        }
+
+        if (orientation == Orientation.horizontal) {
+            if (heightType == SizeType.wrapContent) {
+                size.y = maxSize.y > innerSize.y ? maxSize.y : innerSize.y;
+            }
         }
     }
 }

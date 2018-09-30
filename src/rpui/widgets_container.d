@@ -79,6 +79,10 @@ package final class WidgetsContainer {
         return widgets.front;
     }
 
+    @property ref inout(Widget) back() inout {
+        return widgets.back;
+    }
+
     int opApply(int delegate(Widget) apply) {
         int result = 0;
         import std.stdio;

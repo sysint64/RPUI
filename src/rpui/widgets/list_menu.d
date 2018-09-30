@@ -30,6 +30,9 @@ class ListMenu : StackLayout {
 
     this(in string style = "ListMenu") {
         super(style);
+
+        widthType = SizeType.value;
+        heightType = SizeType.wrapContent;
     }
 
     override void progress() {

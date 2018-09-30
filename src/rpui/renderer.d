@@ -17,6 +17,7 @@ import basic_types;
 import application;
 import rpui.render_objects;
 import rpui.manager;
+import rpui.widget;
 import resources.icons;
 
 /// Renderer is responsible for render different objects such as quads, texts, chains etc.
@@ -133,7 +134,8 @@ final class Renderer {
      * See_also: `renderChain`, `renderVerticalChain`
      */
     void renderHorizontalChain(BaseRenderObject[string] renderObjects, in string state,
-                               in vec2 position, in vec2 size)
+                               in vec2 position, in vec2 size,
+                               in Widget.PartDraws partDraws = Widget.PartDraws.all)
     {
         const float leftWidth = renderObjects["left"].texCoordinates[state].size.x;
         const float rightWidth = renderObjects["right"].texCoordinates[state].size.x;
@@ -143,9 +145,28 @@ final class Renderer {
         const vec2 centerPos = leftPos + vec2(leftWidth, 0);
         const vec2 rightPos = centerPos + vec2(centerWidth, 0);
 
-        renderQuad(renderObjects["left"], state, leftPos, vec2(leftWidth, size.y));
-        renderQuad(renderObjects["center"], state, centerPos, vec2(centerWidth, size.y));
-        renderQuad(renderObjects["right"], state, rightPos, vec2(rightWidth, size.y));
+        switch (partDraws) {
+            case Widget.PartDraws.left:
+                renderQuad(renderObjects["left"], state, leftPos, vec2(leftWidth, size.y));
+                renderQuad(renderObjects["center"], state, centerPos,
+                           vec2(centerWidth + rightWidth, size.y));
+                break;
+
+            case Widget.PartDraws.center:
+                renderQuad(renderObjects["center"], state, leftPos,
+                           vec2(leftWidth + centerWidth + rightWidth, size.y));
+                break;
+
+            case Widget.PartDraws.right:
+                renderQuad(renderObjects["center"], state, leftPos, vec2(centerWidth + leftWidth, size.y));
+                renderQuad(renderObjects["right"], state, rightPos, vec2(rightWidth, size.y));
+                break;
+
+            default:
+                renderQuad(renderObjects["left"], state, leftPos, vec2(leftWidth, size.y));
+                renderQuad(renderObjects["center"], state, centerPos, vec2(centerWidth, size.y));
+                renderQuad(renderObjects["right"], state, rightPos, vec2(rightWidth, size.y));
+        }
     }
 
     /**

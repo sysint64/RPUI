@@ -138,13 +138,13 @@ class TextInput : Widget {
     }
 
     private void drawBackground() {
-        renderer.renderHorizontalChain(renderData.skinRenderObjects, state, absolutePosition, size);
+        renderer.renderHorizontalChain(renderData.skinRenderObjects, state, absolutePosition, size, partDraws);
 
         if (isFocused) {
             const focusPos = absolutePosition + renderData.focusOffsets;
             const focusSize = size + vec2(renderData.focusResize, renderData.focusResize);
 
-            renderer.renderHorizontalChain(renderData.skinFocusRenderObjects, "Focus", focusPos, focusSize);
+            renderer.renderHorizontalChain(renderData.skinFocusRenderObjects, "Focus", focusPos, focusSize, partDraws);
         }
     }
 

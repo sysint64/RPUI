@@ -111,6 +111,14 @@ class Widget : EventsListenerEmpty {
     @property float height() { return size.y; }
     @property void height(in float val) { size.y = val; }
 
+    @Field
+    @property float left() { return position.x; }
+    @property void left(in float val) { position.x = val; }
+
+    @Field
+    @property float top() { return position.y; }
+    @property void top(in float val) { position.y = val; }
+
     @property size_t id() { return p_id; }
     private size_t p_id;
 
@@ -172,7 +180,7 @@ protected:
      * for $(I button1) `PartDraws` will be $(B left), for $(I button2) and $(I button3) $(B center)
      * and for $(I button4) it will be $(B right).
      */
-    enum PartDraws {
+    package enum PartDraws {
         all,  /// Draw all parts - left, center and right.
         left,
         center,
@@ -180,7 +188,7 @@ protected:
     }
 
     package Application app;
-    PartDraws partDraws;
+    package PartDraws partDraws = PartDraws.all;
 
 package:
     Manager manager;
