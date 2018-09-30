@@ -24,6 +24,7 @@ class ChainLayout : Widget {
     this(in string style = "ChainLayout") {
         super(style);
 
+        skipFocus = true;
         stackLocator.attach(this);
         stackLocator.orientation = Orientation.horizontal;
     }
