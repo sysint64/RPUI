@@ -271,17 +271,27 @@ Panel
             name: "settingsTabPanel"
             userCanResize: true
             regionAlign: top
-            size: 300, 100
+            size: 300, 200
             padding: 10
             tabVisibleRule: "settingsTab"
 
             StackLayout
+                widthType: matchParent
                 Label caption: "Settings" size: 0, 21
+                Button caption: "" icons: "joins" widthType: matchParent
 
                 ChainLayout
-                    Button caption: "Hello world!"
-                    TextInput text: "Hello world!"
+                    widthType: matchParent
+                    Button caption: "Hello"
+                    TextInput text: "world!" width: 100
                     Button caption: "Grouped"
+
+                ChainLayout
+                    widthType: matchParent
+
+                    TextInput text: "X: 100 px" widthType: matchParent
+                    TextInput text: "Y: 100 px" widthType: matchParent
+                    Button caption: "" icons: "settings" widthType: value width: 23
 
                 StackLayout
                     orientation: horizontal

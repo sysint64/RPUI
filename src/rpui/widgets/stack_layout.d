@@ -6,6 +6,8 @@
 module rpui.widgets.stack_layout;
 
 import rpui.widget;
+import rpui.widgets.stack_locator;
+
 import gapi;
 import basic_types;
 import math.linalg;
@@ -15,34 +17,27 @@ import std.math;
  * Widget automatically placing children as in stack.
  */
 class StackLayout : Widget {
-    @Field Orientation orientation = Orientation.vertical;
+    @Field
+    @property Orientation orientation() { return stackLocator.orientation; }
+    @property void orientation(in Orientation val) { stackLocator.orientation = val; }
 
     private vec2 maxSize = vec2(0, 0);
+    private vec2 lastWidgetPosition = vec2(0, 0);
+    private Widget lastWidget = null;
+    private StackLocator stackLocator;
 
     this(in string style = "StackLayout") {
         super(style);
 
         skipFocus = true;
-        setDecorator();
-
-        widthType = SizeType.wrapContent;
-        heightType = SizeType.wrapContent;
+        stackLocator.attach(this);
     }
 
     this(Orientation orientation) {
         super();
         this.orientation = orientation;
         skipFocus = true;
-        setDecorator();
-    }
-
-    private void setDecorator() {
-        children.decorateWidgets(delegate(Widget widget) {
-            Widget cell = new Widget();
-            cell.associatedWidget = widget;
-            cell.skipFocus = true;
-            return cell;
-        });
+        stackLocator.attach(this);
     }
 
     override void progress() {
@@ -51,56 +46,13 @@ class StackLayout : Widget {
         locator.updateAbsolutePosition();
         locator.updateRegionAlign();
 
-        vec2 lastPosition = vec2(0, 0);
-        Widget widget = null;
-
-        // TODO: move to `updateResize`
-        foreach (Widget cell; children) {
-            widget = cell.firstWidget;
-
-            if (orientation == Orientation.vertical) {
-                cell.widthType = SizeType.matchParent;
-                cell.size.y = widget.outerSize.y;
-                cell.position.y = lastPosition.y;
-                cell.updateSize();
-            } else {
-                cell.size.x = widget.outerSize.x;
-                cell.heightType = SizeType.matchParent;
-                cell.position.x = lastPosition.x;
-                cell.updateSize();
-            }
-
-            lastPosition += widget.size + widget.outerOffsetEnd;
-            maxSize = vec2(
-                fmax(maxSize.x, widget.outerSize.x),
-                fmax(maxSize.y, widget.outerSize.y),
-            );
-
-            cell.locator.updateAbsolutePosition();  // TODO: Maybe it's deprecated
-        }
-
         updateSize();
-
-        if (orientation == Orientation.vertical) {
-            size.y = lastPosition.y + widget.outerOffset.bottom + innerOffsetSize.y;
-        } else {
-            size.x = lastPosition.x + widget.outerOffset.right + innerOffsetSize.x;
-        }
     }
 
     override void updateSize() {
         super.updateSize();
 
-        if (orientation == Orientation.vertical) {
-            if (widthType == SizeType.wrapContent) {
-                size.x = maxSize.x > parent.innerSize.x ? maxSize.x : parent.innerSize.x;
-            }
-        }
-
-        if (orientation == Orientation.horizontal) {
-            if (heightType == SizeType.wrapContent) {
-                size.y = maxSize.y > innerSize.y ? maxSize.y : innerSize.y;
-            }
-        }
+        stackLocator.updateWidgetsPosition();
+        stackLocator.updateSize();
     }
 }

@@ -12,10 +12,10 @@ import math.linalg;
 
 import rpui.widget;
 import rpui.render_objects;
-import rpui.widgets.stack_layout;
+import rpui.widgets.stack_locator;
 import rpui.widgets.list_menu_item;
 
-class ListMenu : StackLayout {
+class ListMenu : Widget {
     @Field bool transparent = false;
     @Field bool checkList = false;
     @Field bool isPopup = true;
@@ -27,9 +27,13 @@ class ListMenu : StackLayout {
     package vec2 downPopupOffset;
     package vec2 rightPopupOffset;
     package FrameRect extraMenuVisibleBorder;
+    private StackLocator stackLocator;
 
     this(in string style = "ListMenu") {
         super(style);
+
+        stackLocator.attach(this);
+        stackLocator.orientation = Orientation.vertical;
 
         widthType = SizeType.value;
         heightType = SizeType.wrapContent;
@@ -47,6 +51,13 @@ class ListMenu : StackLayout {
 
         if (isPopup)
             extraInnerOffset = popupExtraPadding;
+    }
+
+    override void updateSize() {
+        super.updateSize();
+
+        stackLocator.updateWidgetsPosition();
+        stackLocator.updateSize();
     }
 
     override void render(Camera camera) {

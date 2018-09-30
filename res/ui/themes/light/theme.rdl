@@ -382,4 +382,5 @@ TabButton(Button)
 
 ChainLayout
     split                   : 44, 35, 3, 21
-    splitOffset             : -2, 0
+    splitOffset             : -1, 0
+    background              : 0, 0, 0, 100

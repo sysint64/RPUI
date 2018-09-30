@@ -120,6 +120,10 @@ final class ListMenuItem : Button, MenuActions {
         }
     }
 
+    override void focus() {
+        /* Ignore */
+    }
+
     override void hideMenu() {
         if (dropMenuDelegate.isAttached()) {
             dropMenuDelegate.hideMenu();
