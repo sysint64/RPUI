@@ -28,11 +28,11 @@ package struct StackLocator {
 
     private void setDecorator() {
         holder.children.decorateWidgets(delegate(Widget widget) {
-                Widget cell = new Widget();
-                cell.associatedWidget = widget;
-                cell.skipFocus = true;
-                return cell;
-            });
+            Widget cell = new Widget();
+            cell.associatedWidget = widget;
+            cell.skipFocus = true;
+            return cell;
+        });
     }
 
     void updateWidgetsPosition() {

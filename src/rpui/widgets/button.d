@@ -59,9 +59,9 @@ class Button : Widget {
     }
 
     override void progress() {
-        locator.updateAbsolutePosition();
         locator.updateLocationAlign();
         locator.updateVerticalLocationAlign();
+        locator.updateAbsolutePosition();
         locator.updateRegionAlign();
         updateSize();
     }

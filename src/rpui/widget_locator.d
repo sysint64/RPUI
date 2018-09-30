@@ -35,19 +35,16 @@ package final class WidgetLocator {
         with (holder) {
             switch (locationAlign) {
                 case Align.left:
-                    absolutePosition.x = parent.absolutePosition.x + parent.innerOffset.left +
-                        outerOffset.left;
+                    position.x = 0;
                     break;
 
                 case Align.right:
-                    absolutePosition.x = parent.absolutePosition.x + parent.size.x -
-                        parent.innerOffset.right - outerOffset.right - size.x;
+                    position.x = parent.innerSize.x - size.x - outerOffsetSize.x;
                     break;
 
                 case Align.center:
-                    const halfSize = (parent.innerSize.x - size.x) / 2;
-                    absolutePosition.x = parent.absolutePosition.x + parent.innerOffset.left
-                        + floor(halfSize);
+                    const halfSize = (parent.innerSize.x - size.x - outerOffsetSize.x) / 2;
+                    position.x = round(halfSize);
                     break;
 
                 default:
@@ -60,19 +57,16 @@ package final class WidgetLocator {
         with (holder) {
             switch (verticalLocationAlign) {
                 case VerticalAlign.top:
-                    absolutePosition.y = parent.absolutePosition.y + parent.innerOffset.top +
-                        outerOffset.top;
+                    position.y = 0;
                     break;
 
                 case VerticalAlign.bottom:
-                    absolutePosition.y = parent.absolutePosition.y + parent.size.y -
-                        parent.innerOffset.bottom - outerOffset.bottom - size.y;
+                    position.y = parent.innerSize.y - size.y - outerOffsetSize.y;
                     break;
 
                 case VerticalAlign.middle:
-                    const halfSize = (parent.innerSize.y - size.y) / 2;
-                    absolutePosition.y = parent.absolutePosition.y + parent.innerOffset.top +
-                        floor(halfSize);
+                    const halfSize = (parent.innerSize.y - size.y - outerOffsetSize.y) / 2;
+                    position.y = round(halfSize);
                     break;
 
                 default:

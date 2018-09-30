@@ -41,8 +41,11 @@ class ChainLayout : Widget {
     override void progress() {
         super.progress();
 
-        locator.updateAbsolutePosition();
+        locator.updateLocationAlign();
+        locator.updateVerticalLocationAlign();
         locator.updateRegionAlign();
+        locator.updateAbsolutePosition();
+
         updateSize();
 
         foreach (Widget widget; children) {

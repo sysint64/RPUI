@@ -278,7 +278,7 @@ Panel
             StackLayout
                 widthType: matchParent
                 Label caption: "Settings" size: 0, 21
-                Button caption: "" icons: "joins" widthType: matchParent
+                Button caption: "" icons: "joins" locationAlign: right
 
                 ChainLayout
                     widthType: matchParent
@@ -304,12 +304,12 @@ Panel
                         Button caption: "S" width: 20 widthType: value
                         Button caption: "B" width: 20 widthType: value
 
-                    ChainLayout
-                        margin: 4
+                ChainLayout
+                    locationAlign: right
 
-                        Button caption: "R"
-                        Button caption: "G"
-                        Button caption: "B"
+                    Button caption: "R"
+                    Button caption: "G"
+                    Button caption: "B"
 
         Panel
             name: "triangleTabPanel"

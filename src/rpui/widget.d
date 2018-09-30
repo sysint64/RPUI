@@ -523,10 +523,10 @@ package:
 
     /// Recalculate size and position of widget and children widgets.
     void updateAll() {
-        locator.updateAbsolutePosition();
         locator.updateLocationAlign();
         locator.updateVerticalLocationAlign();
         locator.updateRegionAlign();
+        locator.updateAbsolutePosition();
         updateSize();
 
         foreach (Widget widget; children) {
