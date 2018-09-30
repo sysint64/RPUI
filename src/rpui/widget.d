@@ -527,6 +527,7 @@ package:
         locator.updateVerticalLocationAlign();
         locator.updateRegionAlign();
         locator.updateAbsolutePosition();
+        updateBoundary();
         updateSize();
 
         foreach (Widget widget; children) {

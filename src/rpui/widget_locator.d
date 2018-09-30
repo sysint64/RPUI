@@ -39,11 +39,11 @@ package final class WidgetLocator {
                     break;
 
                 case Align.right:
-                    position.x = parent.innerSize.x - size.x - outerOffsetSize.x;
+                    position.x = parent.innerBoundarySizeClamped.x - size.x - outerOffsetSize.x;
                     break;
 
                 case Align.center:
-                    const halfSize = (parent.innerSize.x - size.x - outerOffsetSize.x) / 2;
+                    const halfSize = (parent.innerBoundarySizeClamped.x - size.x - outerOffsetSize.x) / 2;
                     position.x = round(halfSize);
                     break;
 
@@ -61,11 +61,11 @@ package final class WidgetLocator {
                     break;
 
                 case VerticalAlign.bottom:
-                    position.y = parent.innerSize.y - size.y - outerOffsetSize.y;
+                    position.y = parent.innerBoundarySizeClamped.y - size.y - outerOffsetSize.y;
                     break;
 
                 case VerticalAlign.middle:
-                    const halfSize = (parent.innerSize.y - size.y - outerOffsetSize.y) / 2;
+                    const halfSize = (parent.innerBoundarySizeClamped.y - size.y - outerOffsetSize.y) / 2;
                     position.y = round(halfSize);
                     break;
 
