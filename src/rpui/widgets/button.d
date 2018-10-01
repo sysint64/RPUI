@@ -111,7 +111,7 @@ class Button : Widget {
 
         if (widthType == SizeType.wrapContent) {
             if (!icons.empty) {
-                size.x = iconsAreaSize + textLeftMargin + iconGaps * 2;
+                size.x = iconsAreaSize + iconGaps + iconOffsets.x * 2;
             } else {
                 size.x = textLeftMargin;
             }
@@ -120,7 +120,7 @@ class Button : Widget {
 
             if (getCaptionForMeasure().length != 0) {
                 size.x += textRenderObject.textWidth;
-                size.x += textRightMargin;
+                size.x += textLeftMargin;
             }
         }
     }
