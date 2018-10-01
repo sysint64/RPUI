@@ -330,6 +330,7 @@ class Panel : Widget, FocusScrollNavigation {
 
         size = lastSize;
         isOpen = true;
+        manager.rootWidget.updateAll();
     }
 
     final void close() {
@@ -339,6 +340,7 @@ class Panel : Widget, FocusScrollNavigation {
         lastSize = size;
         size.y = header.height;
         isOpen = false;
+        manager.rootWidget.updateAll();
 
         horizontalScrollButton.scrollController.setOffsetInPercent(0);
         verticalScrollButton.scrollController.setOffsetInPercent(0);
@@ -501,7 +503,7 @@ private:
         if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right)
             size.x = clamp(size.x, minSize, maxSize);
 
-        parent.updateAll();
         parent.events.notify(ResizeEvent());
+        manager.rootWidget.updateAll();
     }
 }

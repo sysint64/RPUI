@@ -201,7 +201,7 @@ struct EditComponent {
     }
 
     float getTextRegionSize(in int start, in int end)
-        in(start <= end)
+        // in(start <= end)
     {
         if (start == end)
             return 0.0f;

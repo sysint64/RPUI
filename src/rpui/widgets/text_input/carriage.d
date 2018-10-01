@@ -52,7 +52,7 @@ struct Carriage {
     }
 
     int navigateCarriage(in int direction)
-        in(direction == -1 || direction == 1)
+        // in(direction == -1 || direction == 1)
     {
         int i = pos + direction;
 

@@ -42,6 +42,7 @@ class Manager : EventsListenerEmpty {
     IconsRes iconsRes;  /// Icons resources.
     ShadersRes shadersRes;
     EventsObserver events;
+    package Array!Widget progressQueries;
 
     private Widget p_widgetUnderMouse = null;
     @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
@@ -83,23 +84,38 @@ class Manager : EventsListenerEmpty {
     /// Invokes all `onProgress` of all widgets and `poll` widgets.
     void onProgress() {
         cursor = Cursor.Icon.inherit;
-        rootWidget.progress();
-        poll();
-        blur();
 
-        // NOTE: If progress will lag or get incorrect data, we can just
-        // add additional foreach traverse, for resolve update due-to
-        // some other widget values dependenciec.
-        foreach_reverse (Widget widget; frontWidgets) {
+        progressQueries.clear();
+        rootWidget.collectProgressQueries();
+
+        foreach (Widget widget; frontWidgets) {
             if (!widget.visible && !widget.processPorgress())
                 continue;
 
+            widget.collectProgressQueries();
+        }
+
+        blur();
+
+        foreach (Widget widget; progressQueries) {
             widget.progress();
+        }
+
+        foreach_reverse (Widget widget; progressQueries) {
+            widget.progress();
+        }
+
+        poll();
+
+        foreach (Widget widget; frontWidgets) {
+            if (!widget.visible && !widget.processPorgress())
+                continue;
 
             if (widget.isOver)
                 cursor = Cursor.Icon.inherit;
         }
 
+        rootWidget.updateAll();
         app.setCursor(cursor);
     }
 

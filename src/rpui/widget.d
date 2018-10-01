@@ -398,6 +398,36 @@ public:
     void progress() {
         checkRules();
 
+        // if (!drawChildren)
+        //     return;
+
+        // foreach (Widget widget; children) {
+        //     if (!widget.visible && !widget.processPorgress())
+        //         continue;
+
+        //     widget.progress();
+        // }
+
+        updateBoundary();
+    }
+
+    void progressAllNodes() {
+        progress();
+
+        if (!drawChildren)
+            return;
+
+        foreach (Widget widget; children) {
+            // if (!widget.visible && !widget.processPorgress())
+                // continue;
+
+            widget.progress();
+        }
+    }
+
+    final void collectProgressQueries() {
+        manager.progressQueries.insert(this);
+
         if (!drawChildren)
             return;
 
@@ -405,10 +435,9 @@ public:
             if (!widget.visible && !widget.processPorgress())
                 continue;
 
-            widget.progress();
+            manager.progressQueries.insert(widget);
+            widget.collectProgressQueries();
         }
-
-        updateBoundary();
     }
 
     package bool processPorgress() {
@@ -531,11 +560,9 @@ package:
         updateSize();
 
         foreach (Widget widget; children) {
-            widget.updateAll();
+            if (widget.visible)
+                widget.updateAll();
         }
-
-        updateBoundary();
-        updateSize();
     }
 
     void freezeUI(bool isNestedFreeze = true) {

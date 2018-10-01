@@ -305,6 +305,8 @@ private:
 
             glFlush();
             sfWindow_display(window);
+
+            Thread.sleep(dur!("msecs")(10));
         }
     }
 
