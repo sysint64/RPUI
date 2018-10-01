@@ -44,6 +44,8 @@ import rpui.widgets.drop_list_menu;
 import rpui.widgets.tab_button;
 import rpui.widgets.tab_layout;
 import rpui.widgets.chain_layout;
+import rpui.widgets.check_button;
+import rpui.widgets.switch_button;
 
 /// Factory for construction view from rpdl layout data.
 final class RPDLWidgetFactory {
@@ -112,6 +114,12 @@ final class RPDLWidgetFactory {
 
             case "TabButton":
                 return createWidget!TabButton(widgetNode, parentWidget);
+
+            case "CheckButton":
+                return createWidget!CheckButton(widgetNode, parentWidget);
+
+            case "SwitchButton":
+                return createWidget!SwitchButton(widgetNode, parentWidget);
 
             case "TabLayout":
                 return createWidget!TabLayout(widgetNode, parentWidget);

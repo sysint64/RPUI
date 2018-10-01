@@ -21,3 +21,4 @@ Icons
     particles: 2, 4
     bounce: 5, 4
     tape: 6, 9
+    birds: 10, 10

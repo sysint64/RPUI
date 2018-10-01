@@ -15,7 +15,7 @@ import rpui.render_objects;
 import rpui.widgets.stack_locator;
 import rpui.widgets.list_menu_item;
 
-class ListMenu : Widget {
+final class ListMenu : Widget {
     @Field bool transparent = false;
     @Field bool checkList = false;
     @Field bool isPopup = true;

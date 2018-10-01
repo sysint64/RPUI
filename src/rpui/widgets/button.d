@@ -72,7 +72,7 @@ class Button : Widget {
         // Background
         renderer.renderHorizontalChain(skinRenderObjects, state, absolutePosition, size, partDraws);
 
-        if (isFocused) {
+        if (isFocused && focusable) {
             const focusPos = absolutePosition + focusOffsets;
             const focusSize = size + vec2(focusResize, focusResize);
 
@@ -103,6 +103,10 @@ class Button : Widget {
             textPosition.x -= textRightMargin;
         }
 
+        if (partDraws == PartDraws.left || partDraws == PartDraws.right) {
+            textPosition.x -= 1;
+        }
+
         renderer.renderText(textRenderObject, state, textPosition, textSize);
     }
 
@@ -113,14 +117,15 @@ class Button : Widget {
             if (!icons.empty) {
                 size.x = iconsAreaSize + iconGaps + iconOffsets.x * 2;
             } else {
-                size.x = textLeftMargin;
+                size.x = textLeftMargin + textRightMargin;
             }
-
-            textAlign = Align.right;
 
             if (getCaptionForMeasure().length != 0) {
                 size.x += textRenderObject.textWidth;
-                size.x += textLeftMargin;
+
+                if (!icons.empty) {
+                    size.x += textLeftMargin;
+                }
             }
         }
     }

@@ -54,6 +54,9 @@ class ChainLayout : Widget {
 
         updatePartDraws(children.front, PartDraws.left);
         updatePartDraws(children.back, PartDraws.right);
+
+        // little adjustment.
+        children.back.associatedWidget.margin.left = 1;
     }
 
     override void updateSize() {
@@ -102,7 +105,7 @@ class ChainLayout : Widget {
 
         // Adjustment because of partWidth rounding.
         if (lastNonFixedWidget !is null) {
-            lastNonFixedWidget.size.x += size.x - total;
+            lastNonFixedWidget.size.x += size.x - total - 1;
         }
     }
 

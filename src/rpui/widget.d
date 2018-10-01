@@ -397,31 +397,29 @@ public:
 
     void progress() {
         checkRules();
-
-        // if (!drawChildren)
-        //     return;
-
-        // foreach (Widget widget; children) {
-        //     if (!widget.visible && !widget.processPorgress())
-        //         continue;
-
-        //     widget.progress();
-        // }
-
         updateBoundary();
     }
 
-    void progressAllNodes() {
-        progress();
+    void reset() {
+        if (associatedWidget !is null)
+            associatedWidget.reset();
+    }
 
-        if (!drawChildren)
-            return;
+    final Widget getNonDecoratorParent() {
+        Widget currentParent = parent;
+        bool isDecorator = parent.associatedWidget !is null;
 
+        while (isDecorator) {
+            currentParent = currentParent.parent;
+            isDecorator = currentParent.associatedWidget !is null;
+        }
+
+        return currentParent;
+    }
+
+    void resetChildren() {
         foreach (Widget widget; children) {
-            // if (!widget.visible && !widget.processPorgress())
-                // continue;
-
-            widget.progress();
+            widget.reset();
         }
     }
 

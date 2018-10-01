@@ -43,9 +43,13 @@ final class TabButton : Button {
         if (!isEnter)
             return;
 
-        parentTabLayout.uncheckAllTabs();
+        parentTabLayout.resetChildren();
         checked = true;
         parentTabLayout.parent.updateAll();
+    }
+
+    override void reset() {
+        checked = false;
     }
 
     override void renderText() {
