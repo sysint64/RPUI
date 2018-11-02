@@ -46,6 +46,7 @@ import rpui.widgets.tab_layout;
 import rpui.widgets.chain_layout;
 import rpui.widgets.check_button;
 import rpui.widgets.switch_button;
+import rpui.widgets.dialog;
 
 /// Factory for construction view from rpdl layout data.
 final class RPDLWidgetFactory {
@@ -126,6 +127,9 @@ final class RPDLWidgetFactory {
 
             case "ChainLayout":
                 return createWidget!ChainLayout(widgetNode, parentWidget);
+
+            case "Dialog":
+                return createWidget!Dialog(widgetNode, parentWidget);
 
             default:
                 return null;

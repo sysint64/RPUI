@@ -342,3 +342,8 @@ Panel
 
             Label caption: "Material" size: 0, 21 widthType: matchParent
             Button caption: "Grouped"
+
+Dialog
+    size: 300, 150
+    locationAlign: center
+    verticalLocationAlign: middle

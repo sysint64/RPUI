@@ -280,7 +280,9 @@ final class Renderer {
      *     position = position of block.
      *     size = full size of block.
      */
-    void renderBlock(BaseRenderObject[string] renderObjects, in vec2 position, in vec2 size) {
+    void renderBlock(BaseRenderObject[string] renderObjects,
+                     in vec2 position, in vec2 size)
+    {
         const topYOffset = renderObjects["center"].texCoordinates["Top"].size.y;
         const bottomYOffset = renderObjects["center"].texCoordinates["Bottom"].size.y;
 

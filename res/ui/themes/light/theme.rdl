@@ -458,3 +458,23 @@ SwitchButton(Button)
         center              : 68, 105, 6, 25
         right               : 82, 105, 6, 25
         offsets             : [-2, -2], 4
+
+Dialog
+    textOffset              : 0,  0
+    textColor               : 255, 255, 255
+    headerHeight            : 20
+
+    Top
+        left                : 235, 9, 19, 33
+        center              : 273, 9, 19, 33
+        right               : 312, 9, 19, 33
+
+    Middle
+        left                : 235, 44, 19, 17
+        center              : 273, 44, 19, 17
+        right               : 312, 44, 19, 17
+
+    Bottom
+        left                : 235, 67, 19, 20
+        center              : 273, 67, 19, 20
+        right               : 312, 67, 19, 20

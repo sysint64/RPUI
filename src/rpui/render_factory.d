@@ -28,6 +28,36 @@ class RenderFactory {
     }
 
     /**
+     * TODO: doc
+     */
+    void createBlock(ref BaseRenderObject[string] renderObjects, in string style) {
+        const parts = ["left", "center", "right"];
+        createChain(renderObjects, style, ["Top", "Middle", "Bottom"], parts);
+    }
+
+    /**
+     * TODO: doc
+     */
+    void createChain(ref BaseRenderObject[string] renderObjects, in string style,
+                     in string[] states, in string[] parts)
+    {
+        foreach (string part; parts) {
+            createQuad(renderObjects, style, states, part);
+        }
+    }
+
+    /**
+     * TODO: doc
+     */
+    void createChain(ref BaseRenderObject[string] renderObjects, in string style,
+                     in string[] parts)
+    {
+        foreach (string part; parts) {
+            createQuad(renderObjects, style, ["default"], part);
+        }
+    }
+
+    /**
      * Create quad render object and extract texture coordinates from theme rpdl
      * data for all `states`.
      *

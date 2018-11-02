@@ -121,7 +121,7 @@ package struct ScrollButton {
         const string bgSizeSelector = scrollBgStyle ~ ".left.3";
 
         createScrollController(bgSizeSelector);
-        createChain(scrollButtonStyle, states, parts);
+        panel.renderFactory.createChain(buttonRenderObjects, scrollButtonStyle, states, parts);
     }
 
     void onCreateVertical() {
@@ -137,7 +137,7 @@ package struct ScrollButton {
         const string bgSizeSelector = scrollBgStyle ~ ".middle.2";
 
         createScrollController(bgSizeSelector);
-        createChain(scrollButtonStyle, states, parts);
+        panel.renderFactory.createChain(buttonRenderObjects, scrollButtonStyle, states, parts);
     }
 
     void createScrollController(in string bgSizeSelector) {
