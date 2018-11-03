@@ -97,7 +97,10 @@ Panel
             TextInput size: 100, 21 margin: 5 text: "Hello world!"
             TextInput size: 100, 21 margin: 5 text: "100" inputType: number
 
+            Button caption: "Open dialog" widthType: wrapContent name: "openDialogButton" margin: 5
+
             ListMenu
+                margin: 5
                 size: 200, 200
                 isPopup: true
 
@@ -269,9 +272,9 @@ Panel
 
         Panel
             name: "settingsTabPanel"
-            userCanResize: true
             regionAlign: top
-            size: 300, 200
+            heightType: wrapContent
+            userCanResize: false
             padding: 10
             tabVisibleRule: "settingsTab"
             finalFocus: true
@@ -344,10 +347,12 @@ Panel
             Button caption: "Grouped"
 
 Dialog
+    name: "testDialog"
     size: 300, 150
     locationAlign: center
     verticalLocationAlign: middle
     heightType: wrapContent
+    closeOnClickOutsideArea: true
 
     Panel
         regionAlign: top
@@ -360,4 +365,4 @@ Dialog
             Button caption: "Action 1" margin: 10
             Button caption: "Action 2" margin: 10
             Button caption: "Action 3" margin: 10
-            Button caption: "Action 4" margin: 10
+            Button caption: "Close dialog" margin: 10 name: "closeDialogButton"

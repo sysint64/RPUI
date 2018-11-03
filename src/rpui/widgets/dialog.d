@@ -12,10 +12,11 @@ import basic_rpdl_extensions;
 import rpui.render_objects;
 import rpui.widget;
 import rpui.widgets.panel;
+import rpui.events;
 
 final class Dialog : Widget {
-    @Field
-    utf32string caption = "Dialog";
+    @Field utf32string caption = "Dialog";
+    @Field bool closeOnClickOutsideArea = false;
 
     private BaseRenderObject[string] blockRenderObjects;
 
@@ -23,6 +24,8 @@ final class Dialog : Widget {
 
     this(in string style = "Dialog") {
         super(style);
+        skipFocus = true;
+        finalFocus = true;
     }
 
     override void render(Camera camera) {
@@ -32,6 +35,8 @@ final class Dialog : Widget {
 
     protected override void onCreate() {
         super.onCreate();
+
+        visible = false;
         renderFactory.createBlock(blockRenderObjects, style);
 
         with (manager.theme.tree) {
@@ -57,5 +62,24 @@ final class Dialog : Widget {
         if (widthType == SizeType.wrapContent) {
             size.x = innerBoundarySize.x;
         }
+    }
+
+    override void onMouseDown(in MouseDownEvent event) {
+        if (!isOver && closeOnClickOutsideArea && visible) {
+            close();
+        } else {
+            super.onMouseDown(event);
+        }
+    }
+
+    void open() {
+        visible = true;
+        freezeUI(false);
+        focusNavigator.focusPrimary();
+    }
+
+    void close() {
+        visible = false;
+        unfreezeUI();
     }
 }

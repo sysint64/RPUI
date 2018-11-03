@@ -23,6 +23,7 @@ import rpui.widgets.panel;
 import rpui.view;
 import rpui.view.attributes;
 import rpui.events;
+import rpui.widgets.dialog;
 
 import math.linalg;
 import std.stdio;
@@ -35,6 +36,7 @@ class MyView : View {
     @ViewWidget Button okButton;
     @ViewWidget Panel testPanel;
     @ViewWidget("cancelButton") Button myButton;
+    @ViewWidget Dialog testDialog;
     @GroupViewWidgets Button[3] buttons;
 
     int a = 0;
@@ -47,6 +49,16 @@ class MyView : View {
             import std.stdio;
             writeln("Hello world! ", event.key);
         });
+    }
+
+    @OnClickListener("openDialogButton")
+    void onOpenDialogButtonClick() {
+        testDialog.open();
+    }
+
+    @OnClickListener("closeDialogButton")
+    void onCloseDialogButtonClick() {
+        testDialog.close();
     }
 
     @OnClickListener("okButton")

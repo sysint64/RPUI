@@ -11,7 +11,7 @@ package final class FocusNavigator {
     }
 
     // NOTE: navFocusFront and navFocusBack are symmetrical
-    // focusNext and focusPrev too therefore potential code reduction reductuin
+    // focusNext and focusPrev too therefore potential code reduction.
     package void navFocusFront() {
         with (holder) {
             events.notify(FocusFrontEvent());
@@ -101,5 +101,13 @@ package final class FocusNavigator {
                 focusScrollNavigation.borderScrollToWidget(holder);
             }
         }
+    }
+
+    /**
+     * Focus primary element in view.
+     */
+    void focusPrimary() {
+        if (!holder.children.empty)
+            navFocusFront();
     }
 }
