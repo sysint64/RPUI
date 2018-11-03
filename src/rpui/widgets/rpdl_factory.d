@@ -191,13 +191,8 @@ final class RPDLWidgetFactory {
 
             if (dependWidget !is null) {
                 widget.visibleRules.insert(() => dependWidget.checked);
-                writeln("ADDED RULE");
-            } else {
-                import std.stdio;
-                writeln("NOT FOUND :/");
             }
         }
-        // tabVisibilityRule
     }
 
     // Tell the system how to interprete types of fields in widgets

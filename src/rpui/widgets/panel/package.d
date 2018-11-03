@@ -106,6 +106,7 @@ class Panel : Widget, FocusScrollNavigation {
         if (isOpen) {
             horizontalScrollButton.updateSize();
             verticalScrollButton.updateSize();
+            updatePanelSize();
         }
 
         split.calculate();
@@ -115,6 +116,16 @@ class Panel : Widget, FocusScrollNavigation {
 
         with (verticalScrollButton)
             contentOffset.y = visible ? scrollController.contentOffset : 0;
+    }
+
+    private void updatePanelSize() {
+        if (heightType == SizeType.wrapContent) {
+            size.y = innerBoundarySize.y;
+        }
+
+        if (widthType == SizeType.wrapContent) {
+            size.x = innerBoundarySize.x;
+        }
     }
 
     override void render(Camera camera) {

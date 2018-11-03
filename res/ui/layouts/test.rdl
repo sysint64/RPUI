@@ -347,3 +347,17 @@ Dialog
     size: 300, 150
     locationAlign: center
     verticalLocationAlign: middle
+    heightType: wrapContent
+
+    Panel
+        regionAlign: top
+        background: light
+        heightType: wrapContent
+        userCanResize: false
+        showSplit: false
+
+        StackLayout
+            Button caption: "Action 1" margin: 10
+            Button caption: "Action 2" margin: 10
+            Button caption: "Action 3" margin: 10
+            Button caption: "Action 4" margin: 10

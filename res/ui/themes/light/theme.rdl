@@ -463,6 +463,8 @@ Dialog
     textOffset              : 0,  0
     textColor               : 255, 255, 255
     headerHeight            : 20
+    extraInnerOffset        : 15, 13, 15, 16
+    gaps                    : 3, 0, 3, 3
 
     Top
         left                : 235, 9, 19, 33

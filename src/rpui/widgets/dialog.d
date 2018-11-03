@@ -7,9 +7,11 @@ module rpui.widgets.dialog;
 
 import basic_types;
 import gapi;
+import basic_rpdl_extensions;
 
 import rpui.render_objects;
 import rpui.widget;
+import rpui.widgets.panel;
 
 final class Dialog : Widget {
     @Field
@@ -24,12 +26,36 @@ final class Dialog : Widget {
     }
 
     override void render(Camera camera) {
-        super.render(camera);
         renderer.renderBlock(blockRenderObjects, absolutePosition, size);
+        super.render(camera);
     }
 
     protected override void onCreate() {
         super.onCreate();
         renderFactory.createBlock(blockRenderObjects, style);
+
+        with (manager.theme.tree) {
+            extraInnerOffset = data.getFrameRect(style ~ ".extraInnerOffset");
+            extraInnerOffset.top += data.getNumber(style ~ ".headerHeight.0");
+
+            const gaps = data.getFrameRect(style ~ ".gaps");
+
+            extraInnerOffset.left += gaps.left;
+            extraInnerOffset.top += gaps.top;
+            extraInnerOffset.right += gaps.right;
+            extraInnerOffset.bottom += gaps.bottom;
+        }
+    }
+
+    override void updateSize() {
+        super.updateSize();
+
+        if (heightType == SizeType.wrapContent) {
+            size.y = innerBoundarySize.y;
+        }
+
+        if (widthType == SizeType.wrapContent) {
+            size.x = innerBoundarySize.x;
+        }
     }
 }

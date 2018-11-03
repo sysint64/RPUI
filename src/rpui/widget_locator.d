@@ -87,8 +87,8 @@ package final class WidgetLocator {
             );
 
             const vec2 fullRegionSize = vec2(
-                parent.size.x - region.right  - region.left - outerOffsetSize.x,
-                parent.size.y - region.bottom - region.top  - outerOffsetSize.y
+                parent.size.x - region.right  - region.left - outerOffsetSize.x - parent.innerOffsetSize.x,
+                parent.size.y - region.bottom - region.top  - outerOffsetSize.y - parent.innerOffsetSize.y
             );
 
             outerBoundarySize = size;
