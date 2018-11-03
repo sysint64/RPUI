@@ -104,9 +104,10 @@ class Panel : Widget, FocusScrollNavigation {
 
     override void updateSize() {
         if (isOpen) {
+            updatePanelSize();
+
             horizontalScrollButton.updateSize();
             verticalScrollButton.updateSize();
-            updatePanelSize();
         }
 
         split.calculate();
