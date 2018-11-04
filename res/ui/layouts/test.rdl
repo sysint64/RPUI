@@ -112,7 +112,7 @@ Panel
                         isPoput: true
 
                         ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
-                        ListMenuItem caption: "Menu item 2"
+                        ListMenuItem caption: "Menu item 2" name: "testMenuItem2"
 
             DropListMenu
                 margin: 5
@@ -137,7 +137,7 @@ Panel
                                     isPoput: true
 
                                     ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
-                                    ListMenuItem caption: "Menu item 2"
+                                    ListMenuItem caption: "Menu item 2" name: "testMenuItem"
 
     Panel
         regionAlign: left

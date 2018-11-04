@@ -9,6 +9,5 @@ public import gapi.geometry_factory;
 public import gapi.material;
 public import gapi.shader;
 public import gapi.texture;
-public import gapi.utils;
 public import gapi.render_helper;
 public import gapi.rpdl_extensions;

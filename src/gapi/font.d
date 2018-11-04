@@ -8,7 +8,6 @@ import application;
 
 import gapi.text;
 import gapi.font_impl;
-import gapi.font_ftgl_impl;
 import gapi.font_sfml_impl;
 import gapi.texture;
 
@@ -18,10 +17,10 @@ class Font {
     AntiAliasing antiAliasing = AntiAliasing.stretchAA;
 
     this(in string fileName) {
-        version (FTGLFont) {
-            impl = new FontFTGLImpl();
-        } else version(SFMLFont) {
+        version(SFMLFont) {
             impl = new FontSFMLImpl();
+        } else {
+            throw new Error("Unspecified font implementation");
         }
 
         if (!impl.createFont(handles, fileName)) {

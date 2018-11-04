@@ -17,6 +17,8 @@ import rpui.events;
 final class Dialog : Widget {
     @Field utf32string caption = "Dialog";
     @Field bool closeOnClickOutsideArea = false;
+    @Field bool draggable = false;
+    @Field bool resizable = false;
 
     private BaseRenderObject[string] blockRenderObjects;
 

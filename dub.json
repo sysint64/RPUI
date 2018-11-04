@@ -6,8 +6,6 @@
     "description": "Simulator",
     "copyright": "Copyright © 2016 - 2018, Andrey Kabylin",
     "license": "MIT",
-    "libs-posix": ["ftgl", "glu"],
-    "libs-windows": ["ftgl", "glu32"],
     "versions": [
         "SFMLFont",
         "DerelictGL3_CustomFreeFuncs"
@@ -43,8 +41,6 @@
     },
     "-ddoxFilterArgs": [
         "--min-protection=Public",
-        "--ex=ftgl",
-        "--ex=glu",
         "--ex=x11_cursorfont",
         "--ex=editor",
         "--ex=ui.widgets.panel.split",

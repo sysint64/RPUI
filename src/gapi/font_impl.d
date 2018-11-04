@@ -1,18 +1,14 @@
 module gapi.font_impl;
 
-import ftgl;
 import derelict.sfml2.graphics;
 
 import gapi.font;
 import gapi.text;
 import gapi.texture;
 
-
 struct FontHandles {
     sfFont* sfmlHandle;
-    FTGLfont* ftglHandle;
 }
-
 
 interface FontImpl {
     bool createFont(ref FontHandles handles, in string fileName);

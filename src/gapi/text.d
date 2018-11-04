@@ -7,7 +7,6 @@ import gapi.geometry;
 import gapi.shader;
 import gapi.base_object;
 import gapi.text_impl;
-import gapi.text_ftgl_impl;
 import gapi.text_sfml_impl;
 
 import basic_types;
@@ -152,10 +151,10 @@ private:
     TextImpl impl;
 
     void createImpl() {
-        version (FTGLFont) {
-            impl = new TextFTGLImpl();
-        } else version(SFMLFont) {
+        version(SFMLFont) {
             impl = new TextSFMLImpl();
+        } else {
+            throw new Error("Unspecified font implementation");
         }
     }
 }

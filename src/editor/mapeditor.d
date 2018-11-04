@@ -51,6 +51,8 @@ class MyView : View {
         });
     }
 
+    @OnClickListener("testMenuItem")
+    @OnClickListener("testMenuItem2")
     @OnClickListener("openDialogButton")
     void onOpenDialogButtonClick() {
         testDialog.open();
