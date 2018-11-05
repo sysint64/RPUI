@@ -4,7 +4,6 @@ void initApp() {
     import application;
 
     import opengl;
-    import derelict.freetype.ft;
 
     import derelict.sfml2.system;
     import derelict.sfml2.window;
@@ -14,7 +13,6 @@ void initApp() {
     DerelictSFML2Window.load();
     DerelictSFML2Graphics.load();
 
-    DerelictFT.load();
     DerelictGL3.load();
 
     auto app = Application.getInstance();

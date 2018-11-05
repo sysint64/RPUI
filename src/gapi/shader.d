@@ -14,8 +14,7 @@ import math.linalg;
 import gapi.shader_uniform;
 import gapi.texture;
 
-
-class Shader {
+final class Shader {
     mixin ShaderUniform;
 
     static Shader createFromFile(in string relativeFileName) {
@@ -49,7 +48,12 @@ class Shader {
 private:
     Application app;
     File file;
-    enum ShaderSource {fragment, vertex};
+
+    enum ShaderSource {
+        fragment,
+        vertex
+    }
+
     string[ShaderSource.max + 1] shaderSources;
     ShaderSource currentSource = ShaderSource.fragment;
     GLuint program;
