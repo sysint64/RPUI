@@ -36,7 +36,7 @@
         "emsi_containers": "~>0.5.3",
         "accessors": "~>1.1.1",
         "d-unit": "~>0.8.1",
-        ":rpdl": "*"
+        "rpdl": "~master"
     },
     "-ddoxFilterArgs": [
         "--min-protection=Public",
@@ -50,8 +50,5 @@
         "--ex=math",
         "--ex=patterns",
         "--ex=test"
-    ],
-    "subPackages": [
-        "./rpdl/"
     ]
 }
