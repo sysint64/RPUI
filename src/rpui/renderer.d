@@ -19,6 +19,7 @@ import rpui.render_objects;
 import rpui.manager;
 import rpui.widget;
 import resources.icons;
+import optional;
 
 /// Renderer is responsible for render different objects such as quads, texts, chains etc.
 final class Renderer {
@@ -68,15 +69,19 @@ final class Renderer {
 
         with (renderObject.texCoordinates[state]) {
             texAtlasShader.setUniformMatrix("MVP", renderObject.lastMVPMatrix);
-            texAtlasShader.setUniformVec2f("texOffset", normOffset);
-            texAtlasShader.setUniformVec2f("texSize", normSize);
+            texAtlasShader.setUniformVec2f("texOffset", offset);
+            texAtlasShader.setUniformVec2f("texSize", renderObject.texCoordinates[state].size);
             texAtlasShader.setUniformFloat("alpha", 1.0f);
 
-            if (renderObject.texture !is null) {
-                texAtlasShader.setUniformTexture("texture", renderObject.texture);
-            } else {
-                texAtlasShader.setUniformTexture("texture", manager.theme.skin);
-            }
+            // if (renderObject.texture !is null) {
+            //     texAtlasShader.setUniformTexture("texture", renderObject.texture);
+            // } else {
+            //     texAtlasShader.setUniformTexture("texture", manager.theme.skin);
+            // }
+            renderObject.texture.match!(
+                (Texture2D texture) => texAtlasShader.setUniformTexture("texture", texture),
+                () => texAtlasShader.setUniformTexture("texture", manager.theme.skin)
+            );
         }
 
         renderObject.render(camera);

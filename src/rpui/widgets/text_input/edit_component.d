@@ -91,7 +91,7 @@ struct EditComponent {
                 }
                 break;
 
-            case KeyCode.Back:
+            case KeyCode.BackSpace:
                 if (selectRegion.textIsSelected()) {
                     removeSelectedRegion();
                 } else {

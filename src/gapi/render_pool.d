@@ -26,5 +26,4 @@ private:
 }
 
 alias RenderPool!Geometry GeometryPool;
-alias RenderPool!Texture TexturePool;
 alias RenderPool!Shader ShaderPool;

@@ -63,12 +63,12 @@ class Theme {
     @property RpdlTree tree() { return p_tree; }
 
     /// UI Elements texture
-    @property Texture skin() { return p_skin; }
+    @property Texture2D skin() { return p_skin; }
     @property ThemeFont regularFont() { return p_regularFont; }
 
 private:
     RpdlTree p_tree;
-    Texture p_skin;
+    Texture2D p_skin;
     ThemeFont p_regularFont;
     Application app;
 
@@ -120,7 +120,8 @@ private:
     bool loadSkin(in string theme, in bool critical = false) {
         // TODO: handle errors
         const path = buildPath(app.resourcesDirectory, "ui", "themes", theme, "controls.png");
-        p_skin = new gapi.Texture(path);
+        // p_skin = new gapi.Texture(path);
+        p_skin = createTexture2DFromFile(path);
         return true;
     }
 }

@@ -88,8 +88,8 @@ class RenderFactory {
             if (part != "")
                 path ~= "." ~ part;
 
-            Texture.Coord texCoord = manager.theme.tree.data.getTexCoord(path);
-            texCoord.normalize(manager.theme.skin);
+            Texture2DCoords texCoord = manager.theme.tree.data.getTexCoord(path);
+            texCoord = normilizeTexture2DCoords(texCoord, manager.theme.skin);
             object.addTexCoord(state, texCoord);
         }
 
@@ -230,7 +230,7 @@ class RenderFactory {
         BaseRenderObject object = new BaseRenderObject(quadGeometry);
 
         auto texCoord = manager.theme.tree.data.getTexCoord(path);
-        texCoord.normalize(manager.theme.skin);
+        texCoord = normilizeTexture2DCoords(texCoord, manager.theme.skin);
         object.setTexCoord(texCoord);
 
         return object;

@@ -1,13 +1,11 @@
 module gapi.font_impl;
 
-import derelict.sfml2.graphics;
-
 import gapi.font;
 import gapi.text;
 import gapi.texture;
 
 struct FontHandles {
-    sfFont* sfmlHandle;
+    // sfFont* sfmlHandle;
 }
 
 interface FontImpl {
@@ -17,7 +15,7 @@ interface FontImpl {
 
     void setTextSize(Font font, in uint textSize);
 
-    Texture getTexture(Font font);
+    Texture2D getTexture(Font font);
 
     void bind(ref FontHandles handles, Text text);
 

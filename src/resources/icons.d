@@ -19,7 +19,7 @@ import path;
 struct Icon {
     string group;
     string name;
-    Texture.Coord texCoord;
+    Texture2DCoords texCoord;
 }
 
 struct IconsConfig {
@@ -49,7 +49,7 @@ class IconsRes {
     }
 
     /// Get texture instance for particular group icons.
-    Texture getTextureForIcons(in string group) {
+    Texture2D getTextureForIcons(in string group) {
         const config = iconsConfig[group];
 
         if (config.themed) {
@@ -60,13 +60,13 @@ class IconsRes {
     }
 
     /// Get texture instance for particular icon.
-    Texture getTextureForIcons(in Icon icon) {
+    Texture2D getTextureForIcons(in Icon icon) {
         return getTextureForIcons(icon.group);
     }
 
     /// Retrieve icon information from group by icon name.
     Icon getIcon(in string group, in string name) {
-        auto texCoord = Texture.Coord();
+        auto texCoord = Texture2DCoords();
 
         const config = iconsConfig[group];
 
@@ -79,7 +79,7 @@ class IconsRes {
 
         texCoord.offset = config.start + offsetWithGaps;
         texCoord.size = config.size;
-        texCoord.normalize(getTextureForIcons(group));
+        texCoord = normilizeTexture2DCoords(texCoord, getTextureForIcons(group));
 
         return Icon(group, name, texCoord);
     }

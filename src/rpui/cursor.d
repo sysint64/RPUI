@@ -60,7 +60,8 @@ final class Cursor {
 
         version (linux) {
             cursor = XCreateFontCursor(display, cast(uint) icon);
-            XDefineCursor(display, app.windowHandle, cursor);
+            // TODO:
+            // XDefineCursor(display, app.windowHandle, cursor);
             XFlush(display);
         }
     }

@@ -221,7 +221,7 @@ final class RPDLWidgetFactory {
         ["vec3ui", "optVec3ui", ""],
         ["vec4ui", "optVec4ui", ""],
 
-        ["Texture.Coord", "optTexCoord", ""],
+        ["Texture2DCoords", "optTexCoord", ""],
         ["Rect", "optRect", ""],
         ["FrameRect", "optFrameRect", ""],
         ["IntRect", "optIntRect", ""],

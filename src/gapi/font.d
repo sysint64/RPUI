@@ -8,7 +8,7 @@ import application;
 
 import gapi.text;
 import gapi.font_impl;
-import gapi.font_sfml_impl;
+import gapi.font_sdl_impl;
 import gapi.texture;
 
 class Font {
@@ -17,11 +17,7 @@ class Font {
     AntiAliasing antiAliasing = AntiAliasing.stretchAA;
 
     this(in string fileName) {
-        version(SFMLFont) {
-            impl = new FontSFMLImpl();
-        } else {
-            throw new Error("Unspecified font implementation");
-        }
+        impl = new FontSDLImpl();
 
         if (!impl.createFont(handles, fileName)) {
             throw new Error("Can't load font '" ~ fileName ~ "'");
@@ -41,7 +37,7 @@ class Font {
         impl.destroyFont(handles);
     }
 
-    Texture getTexture(in uint characterSize) {
+    Texture2D getTexture(in uint characterSize) {
         return impl.getTexture(this);
     }
 

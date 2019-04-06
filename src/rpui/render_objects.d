@@ -10,10 +10,11 @@ module rpui.render_objects;
 import gapi;
 import math.linalg;
 import std.container;
+import optional;
 
 /// Base renderable objects with additional information for render UI elements.
 class BaseRenderObject : BaseObject {
-    Texture texture = null;
+    auto texture = no!Texture2D;
 
     /// Create with gerometry.
     this(Geometry geometry) {
@@ -21,23 +22,23 @@ class BaseRenderObject : BaseObject {
     }
 
     /// Attach texture `coord` of skin texture for `state`.
-    void addTexCoord(in string state, in Texture.Coord coord) {
+    void addTexCoord(in string state, in Texture2DCoords coord) {
         texCoordinates[state] = coord;
     }
 
     /// Attach normalized texture `coord` of skin texture for `state`.
-    void addTexCoord(in string state, in Texture.Coord coord, Texture texture) {
-        texCoordinates[state] = Texture.Coord.normalize(coord, texture);
+    void addTexCoord(in string state, in Texture2DCoords coord, Texture2D texture) {
+        texCoordinates[state] = normilizeTexture2DCoords(coord, texture);
     }
 
     /// Attach single texture `coord` of skin texture.
-    void setTexCoord(in Texture.Coord coord) {
+    void setTexCoord(in Texture2DCoords coord) {
         texCoordinates["default"] = coord;
     }
 
     /// Attach normalized single texture `coord` of skin texture.
-    void setTexCoord(in Texture.Coord coord, Texture texture) {
-        texCoordinates["default"] = Texture.Coord.normalize(coord, texture);
+    void setTexCoord(in Texture2DCoords coord, Texture2D texture) {
+        texCoordinates["default"] = normilizeTexture2DCoords(coord, texture);
     }
 
     vec2 getTextureSize(in string state) {
@@ -45,7 +46,7 @@ class BaseRenderObject : BaseObject {
     }
 
 package:
-    Texture.Coord[string] texCoordinates;
+    Texture2DCoords[string] texCoordinates;
 }
 
 /// Text renderable object with additional information for UI.

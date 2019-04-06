@@ -24,12 +24,12 @@ final class ImagesRes {
     /**
      * Method loads the texture from `fileName` relative to $(I res/images).
      */
-    Texture getTexture(in string fileName) {
+    Texture2D getTexture(in string fileName) {
         const key = "res:" ~ fileName;
 
         if (fileName !in textures) {
             const path = buildPath(pathes.resources, "images", fileName);
-            textures[key] = new Texture(path);
+            // textures[key] = new Texture(path);
         }
 
         return textures[key];
@@ -39,7 +39,7 @@ final class ImagesRes {
      * Method loads the texture from `fileName` for current UI theme
      * i.e. relative to $(I res/ui/themes/images/{theme name}/images).
      */
-    Texture getTextureForUiTheme(in string fileName) {
+    Texture2D getTextureForUiTheme(in string fileName) {
         debug assert(uiTheme != "");
         const key = "ui:" ~ fileName;
 
@@ -47,7 +47,7 @@ final class ImagesRes {
             const path = buildPath(pathes.resources, "ui", "themes",
                                    uiTheme, "images", fileName);
 
-            textures[key] = new Texture(path);
+            // textures[key] = new Texture(path);
         }
 
         return textures[key];
@@ -56,18 +56,18 @@ final class ImagesRes {
     /**
      * Method loads the texture from `fileName` which is absolute path.
      */
-    Texture getTextureFromAbsolutePath(in string fileName) {
+    Texture2D getTextureFromAbsolutePath(in string fileName) {
         const key = "absolute:" ~ fileName;
 
         if (fileName !in textures) {
-            textures[key] = new Texture(fileName);
+            // textures[key] = new Texture(fileName);
         }
 
         return textures[key];
     }
 
 private:
-    Texture[string] textures;
+    Texture2D[string] textures;
     string uiTheme;
 }
 

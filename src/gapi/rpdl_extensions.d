@@ -11,18 +11,18 @@ class NotTextureCoordException : RpdlException {
     this(in string details) { super(details); }
 }
 
-Texture.Coord getTexCoord(Node node, in string path) {
-    Texture.Coord texCoord;
+Texture2DCoords getTexCoord(Node node, in string path) {
+    Texture2DCoords texCoord;
     vec4 coord = node.getVec4f(path);
     texCoord.offset = vec2(coord.x, coord.y);
     texCoord.size = vec2(coord.z, coord.w);
     return texCoord;
 }
 
-Texture.Coord optTexCoord(Node node, in string path,
-    Texture.Coord defaultVal = Texture.Coord.init)
+Texture2DCoords optTexCoord(Node node, in string path,
+    Texture2DCoords defaultVal = Texture2DCoords.init)
 {
-    Texture.Coord texCoord;
+    Texture2DCoords texCoord;
 
     try {
         vec4 coord = node.getVec4f(path);

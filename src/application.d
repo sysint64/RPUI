@@ -7,9 +7,12 @@ import std.file : thisExePath;
 import std.concurrency;
 import core.thread;
 
-import derelict.sfml2.system;
-import derelict.sfml2.window;
-import opengl;
+import derelict.opengl.gl;
+import derelict.sdl2.image;
+import derelict.sdl2.sdl;
+import derelict.sdl2.ttf;
+
+import gapi.opengl;
 
 import basic_types: utf32char;
 import input;
@@ -33,6 +36,15 @@ abstract class Application {
     private bool isCursorVisible = true;
     Clipboard clipboard = null;
 
+    struct WindowData {
+        SDL_Window* window;
+        SDL_GLContext glContext;
+        int viewportWidth = 1024;
+        int viewportHeight = 768;
+    }
+
+    private WindowData windowData;
+
     this() {
         events = new EventsObserver();
         pathes = initPathes();
@@ -46,19 +58,70 @@ abstract class Application {
     final void run(in bool runLoop = true) {
         cursor = new Cursor();
 
-        initSFML();
+        DerelictGL3.load();
+
+        DerelictSDL2.load();
+        DerelictSDL2Image.load();
+        DerelictSDL2TTF.load();
+
+        initSDL();
         initGL();
-        log = new Log();
-        scope(exit) sfWindow_destroy(window);
 
         p_settings = Settings.getInstance();
         settings.load(binDirectory, "settings.rdl");
-
-        writeln(settings.theme);
         onCreate();
 
-        if (runLoop)
+        if (runLoop) {
             loop();
+        }
+
+        stopSDL();
+        // log = new Log();
+
+        // writeln(settings.theme);
+        // onCreate();
+    }
+
+    private void initSDL() {
+        if (SDL_Init(SDL_INIT_VIDEO) < 0)
+            throw new Error("Failed to init SDL");
+
+        if (TTF_Init() < 0)
+            throw new Error("Failed to init SDL TTF");
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetSwapInterval(2);
+
+        windowData.window = SDL_CreateWindow(
+            "Simple data oriented GAPI",
+            SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED,
+            windowData.viewportWidth,
+            windowData.viewportHeight,
+            SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+        );
+
+        if (windowData.window == null)
+            throw new Error("SDL Error: " ~ to!string(SDL_GetError()));
+
+        windowData.glContext = SDL_GL_CreateContext(windowData.window);
+
+        if (windowData.glContext == null)
+            throw new Error("SDL Error: " ~ to!string(SDL_GetError()));
+
+        SDL_GL_SwapWindow(windowData.window);
+
+        DerelictGL3.reload();
+    }
+
+    private void stopSDL() {
+        SDL_GL_DeleteContext(windowData.glContext);
+        SDL_DestroyWindow(windowData.window);
+        SDL_Quit();
+        TTF_Quit();
     }
 
     void render() {}
@@ -89,7 +152,8 @@ abstract class Application {
         if (!isCursorVisible)
             return;
 
-        sfWindow_setMouseCursorVisible(window, false);
+        // TODO:
+        // sfWindow_setMouseCursorVisible(window, false);
         isCursorVisible = false;
     }
 
@@ -97,12 +161,14 @@ abstract class Application {
         if (isCursorVisible)
             return;
 
-        sfWindow_setMouseCursorVisible(window, true);
+        // TODO:
+        // sfWindow_setMouseCursorVisible(window, true);
         isCursorVisible = true;
     }
 
     void setMousePositon(in int x, in int y) {
-        sfMouse_setPosition(sfVector2i(x, y), window);
+        // TODO:
+        // sfMouse_setPosition(sfVector2i(x, y), window);
     }
 
     // Events
@@ -188,11 +254,11 @@ abstract class Application {
             cursor.setIcon(val);
     }
 
-    @property sfWindowHandle windowHandle() { return p_windowHandle; }
+    // @property sfWindowHandle windowHandle() { return p_windowHandle; }
 
 private:
-    sfWindow* window;
-    sfWindowHandle p_windowHandle;
+    // sfWindow* window;
+    // sfWindowHandle p_windowHandle;
     Log log;
 
     Settings p_settings;
@@ -216,45 +282,13 @@ private:
     float p_deltaTime;
     float p_currentTime;
     float lastTime = 0;
-    sfClock* clock;
+    immutable partTime = 1_000.0 / 60.0;
+    // sfClock* clock;
 
     // DblClick
     const dblClickThreshold = 0.3f * 1000.0f;
     float dblClickTimer = 0;
     bool clicked = false;
-
-    void initSFML() {
-        sfVideoMode desktomVideoMode = sfVideoMode_getDesktopMode();
-        // TODO: uncomment, in my linux this return garbage
-        // p_screenWidth  = desktomVideoMode.width;
-        // p_screenHeight = desktomVideoMode.height;
-        p_screenWidth = 9999;
-        p_screenHeight = 9999;
-
-        p_windowWidth  = 1024;
-        p_windowHeight = 768;
-
-        sfContextSettings settings;
-
-        with (settings) {
-            depthBits = 24;
-            stencilBits = 8;
-            antialiasingLevel = 0;
-            majorVersion = 2;
-            minorVersion = 1;
-        }
-
-        sfVideoMode videoMode = {windowWidth, windowHeight, 24};
-
-        const(char)* title = "Simulator";
-        window = sfWindow_create(videoMode, title, sfDefaultStyle, &settings);
-        p_windowHandle = sfWindow_getSystemHandle(window);
-        sfWindow_setVerticalSyncEnabled(window, true);
-        sfWindow_setFramerateLimit(window, 60);
-
-        DerelictGL3.reload();
-        clock = sfClock_create();
-    }
 
     void initGL() {
         glDisable(GL_CULL_FACE);
@@ -266,124 +300,170 @@ private:
     }
 
     void calculateTime() {
-        const time = sfClock_getElapsedTime(clock);
-        p_currentTime = time.microseconds;
-        p_deltaTime = (p_currentTime - lastTime) * 0.001f;
-        lastTime = p_currentTime;
+        // TODO:
+        // const time = sfClock_getElapsedTime(clock);
+        // p_currentTime = time.microseconds;
+        // p_deltaTime = (p_currentTime - lastTime) * 0.001f;
+        // lastTime = p_currentTime;
     }
 
     void loop() {
-        sfWindow_setActive(window, true);
         bool running = true;
 
-        while (running) {
-            auto mousePos = sfMouse_getPosition(window);
-            p_mousePos = vec2i(mousePos.x, mousePos.y);
-            calculateTime();
-            sfEvent event;
+        void render() {
+            if (currentTime >= lastTime + partTime) {
+                p_deltaTime = (currentTime - lastTime) / 1000.0f;
+                // onProgress();
+                lastTime = currentTime;
+                glClear(GL_COLOR_BUFFER_BIT);
+                // this.render();
+                SDL_GL_SwapWindow(windowData.window);
+                // frames += 1;
+            }
+        }
 
-            while (sfWindow_pollEvent(window, &event)) {
-                if (event.type == sfEvtClosed) {
+        while (running) {
+            p_currentTime = SDL_GetTicks();
+            SDL_Event event;
+
+            while (SDL_PollEvent(&event)) {
+                if (event.type == SDL_QUIT) {
                     running = false;
-                } else {
-                    handleEvents(event);
+                }
+
+                if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                    const width = event.window.data1;
+                    const height = event.window.data2;
+
+                    // cameraTransform.viewportSize.x = width;
+                    // cameraTransform.viewportSize.y = height;
+                    p_windowWidth = width;
+                    p_windowHeight = height;
+
+                    glViewport(0, 0, width, height);
+                    SDL_GL_MakeCurrent(windowData.window, windowData.glContext);
+                    render();
+                    // SDL_GL_SwapWindow(windowData.window);
                 }
             }
 
-            glViewport(0, 0, viewportWidth, viewportHeight);
-            glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-            if (dblClickTimer > dblClickThreshold) {
-                clicked = false;
-                dblClickTimer = 0;
-            } else if (clicked) {
-                dblClickTimer += deltaTime;
-            }
-
-            onProgress();
             render();
 
-            glFlush();
-            sfWindow_display(window);
-
-            Thread.sleep(dur!("msecs")(10));
+            // if (currentTime >= frameTime + 1000.0) {
+            //     frameTime = currentTime;
+            //     fps = frames;
+            //     frames = 1;
+            // }
         }
+
+        // while (running) {
+        //     auto mousePos = sfMouse_getPosition(window);
+        //     p_mousePos = vec2i(mousePos.x, mousePos.y);
+        //     calculateTime();
+        //     sfEvent event;
+
+        //     while (sfWindow_pollEvent(window, &event)) {
+        //         if (event.type == sfEvtClosed) {
+        //             running = false;
+        //         } else {
+        //             handleEvents(event);
+        //         }
+        //     }
+
+        //     glViewport(0, 0, viewportWidth, viewportHeight);
+        //     glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        //     if (dblClickTimer > dblClickThreshold) {
+        //         clicked = false;
+        //         dblClickTimer = 0;
+        //     } else if (clicked) {
+        //         dblClickTimer += deltaTime;
+        //     }
+
+        //     onProgress();
+        //     render();
+
+        //     glFlush();
+        //     sfWindow_display(window);
+
+        //     Thread.sleep(dur!("msecs")(10));
+        // }
     }
 
-    void handleEvents(in sfEvent event) {
-        switch (event.type) {
-            case sfEvtResized:
-                onResize(event.size.width, event.size.height);
-                break;
+    // void handleEvents(in sfEvent event) {
+    //     switch (event.type) {
+    //         case sfEvtResized:
+    //             onResize(event.size.width, event.size.height);
+    //             break;
 
-            case sfEvtTextEntered:
-                onTextEntered(event.text.unicode);
-                break;
+    //         case sfEvtTextEntered:
+    //             onTextEntered(event.text.unicode);
+    //             break;
 
-            case sfEvtKeyPressed:
-                try {
-                    onKeyPressed(to!KeyCode(event.key.code));
-                } catch(ConvException) {}
+    //         case sfEvtKeyPressed:
+    //             try {
+    //                 onKeyPressed(to!KeyCode(event.key.code));
+    //             } catch(ConvException) {}
 
-                break;
+    //             break;
 
-            case sfEvtKeyReleased:
-                try {
-                    onKeyReleased(to!KeyCode(event.key.code));
-                } catch(ConvException) {}
+    //         case sfEvtKeyReleased:
+    //             try {
+    //                 onKeyReleased(to!KeyCode(event.key.code));
+    //             } catch(ConvException) {}
 
-                break;
+    //             break;
 
-            case sfEvtMouseButtonPressed:
-                p_mouseClickPos = p_mousePos;
+    //         case sfEvtMouseButtonPressed:
+    //             p_mouseClickPos = p_mousePos;
 
-                with (event.mouseButton)
-                    try {
-                        onMouseDown(x, y, to!MouseButton(button));
-                    } catch(ConvException) {}
+    //             with (event.mouseButton)
+    //                 try {
+    //                     onMouseDown(x, y, to!MouseButton(button));
+    //                 } catch(ConvException) {}
 
-                break;
+    //             break;
 
-            case sfEvtMouseButtonReleased:
-                with (event.mouseButton)
-                    try {
-                        onMouseUp(x, y, to!MouseButton(button));
+    //         case sfEvtMouseButtonReleased:
+    //             with (event.mouseButton)
+    //                 try {
+    //                     onMouseUp(x, y, to!MouseButton(button));
 
-                        if (clicked) {
-                            clicked = false;
-                            dblClickTimer = 0;
-                            onDblClick(x, y, to!MouseButton(button));
-                        } else {
-                            clicked = true;
-                        }
-                    } catch(ConvException) {}
+    //                     if (clicked) {
+    //                         clicked = false;
+    //                         dblClickTimer = 0;
+    //                         onDblClick(x, y, to!MouseButton(button));
+    //                     } else {
+    //                         clicked = true;
+    //                     }
+    //                 } catch(ConvException) {}
 
-                break;
+    //             break;
 
-            case sfEvtMouseMoved:
-                onMouseMove(event.mouseMove.x, event.mouseMove.y);
-                break;
+    //         case sfEvtMouseMoved:
+    //             onMouseMove(event.mouseMove.x, event.mouseMove.y);
+    //             break;
 
-            case sfEvtMouseWheelScrolled:
-                const int delta = to!int(event.mouseWheelScroll.delta);
+    //         case sfEvtMouseWheelScrolled:
+    //             const int delta = to!int(event.mouseWheelScroll.delta);
 
-                switch (event.mouseWheelScroll.wheel) {
-                    case sfMouseVerticalWheel:
-                        onMouseWheel(0, delta);
-                        break;
+    //             switch (event.mouseWheelScroll.wheel) {
+    //                 case sfMouseVerticalWheel:
+    //                     onMouseWheel(0, delta);
+    //                     break;
 
-                    case sfMouseHorizontalWheel:
-                        onMouseWheel(delta, 0);
-                        break;
+    //                 case sfMouseHorizontalWheel:
+    //                     onMouseWheel(delta, 0);
+    //                     break;
 
-                    default:
-                        break;
-                }
+    //                 default:
+    //                     break;
+    //             }
 
-                break;
+    //             break;
 
-            default:
-                break;
-        }
-    }
+    //         default:
+    //             break;
+    //     }
+    // }
 }

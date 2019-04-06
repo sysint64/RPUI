@@ -29,9 +29,6 @@ import math.linalg;
 import std.stdio;
 import std.container;
 
-import derelict.sfml2.graphics;
-import derelict.opengl.gl;
-
 class MyView : View {
     @ViewWidget Button okButton;
     @ViewWidget Panel testPanel;
@@ -119,16 +116,16 @@ final class MapEditor: Application {
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        shader.bind();
-        shader.setUniformMatrix("MVP", sprite.lastMVPMatrix);
-        shader.setUniformTexture("texture", texture);
-
-        sprite.render(camera);
+        // shader.bind();
+        // shader.setUniformMatrix("MVP", sprite.lastMVPMatrix);
         // shader.setUniformTexture("texture", texture);
 
-        sprite.rotate(0.01f);
+        // sprite.render(camera);
+        // shader.setUniformTexture("texture", texture);
+
+        // sprite.rotate(0.01f);
         // sprite.move(0.0f, 1.0f);
-        sprite.render(camera);
+        // sprite.render(camera);
 
         // shader.setUniformMatrix("MVP", text.lastMVPMatrix);
         // shader.setUniformTexture("texture", font.getTexture(text.textSize));
@@ -142,43 +139,25 @@ final class MapEditor: Application {
     }
 
     Camera camera;
-    Geometry spriteGeometry;
-    BaseObject sprite;
-    Shader shader;
-    Texture texture;
     Manager uiManager;
-    Button testButton;
     MyView view;
 
     override void onCreate() {
         camera = new Camera(viewportWidth, viewportHeight);
 
-        spriteGeometry = GeometryFactory.createSprite(false, true);
-        sprite = new BaseObject(spriteGeometry);
-        shader = new Shader(resourcesDirectory ~ "/shaders/GL2/transform.glsl");
-        texture = new Texture(resourcesDirectory ~ "/test.jpg");
-
         camera.position = vec2(0.0f, 0.0f);
         camera.zoom = 1.0f;
 
-        sprite.position = vec2(200.0f, 100.0f);
-        sprite.scaling = vec2(200.0f, 200.0f);
-        sprite.rotation = 0.5f;
-
-        // shader.bind();
-        // texture.bind();
-        // spriteGeometry.bind();
-
         uiManager = new Manager(settings.theme);
-        uiManager.stringsRes = StringsRes.createForLanguage(pathes, settings.language);
-        uiManager.stringsRes.addStrings("test_view.rdl");
-        uiManager.iconsRes.addIcons("icons", "icons.rdl");
-        uiManager.iconsRes.addIcons("main toolbar icons", "main_toolbar_icons.rdl");
+        // uiManager.stringsRes = StringsRes.createForLanguage(pathes, settings.language);
+        // uiManager.stringsRes.addStrings("test_view.rdl");
+        // uiManager.iconsRes.addIcons("icons", "icons.rdl");
+        // uiManager.iconsRes.addIcons("main toolbar icons", "main_toolbar_icons.rdl");
 
-        events.join(uiManager.events);
-        events.subscribe(uiManager);
+        // events.join(uiManager.events);
+        // events.subscribe(uiManager);
 
-        view = View.createFromFile!MyView(uiManager, "test.rdl");
+        // view = View.createFromFile!MyView(uiManager, "test.rdl");
     }
 
     override void onKeyReleased(in KeyCode key) {
