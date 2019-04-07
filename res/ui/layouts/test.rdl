@@ -1,3 +1,13 @@
+Button
+    position: 100, 5
+    size: 200, 21
+    caption: "String: @TestView.helloWorld"
+    name: "okButton"
+    locationAlign: center
+    verticalLocationAlign: middle
+    margin: 5
+    icons: "info", "folder", "check"
+
 Panel
     userCanResize: true
     regionAlign: right

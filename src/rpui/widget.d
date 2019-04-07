@@ -1,34 +1,20 @@
-/**
- * Copyright: © 2017 Andrey Kabylin
- * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
- */
-
 module rpui.widget;
 
-import std.container;
-import std.conv;
+import std.container.array;
 import std.math;
-import std.functional;
-import std.algorithm;
 
-import input;
-import gapi;
-import application;
-import math.linalg;
-import basic_types;
-
-import rpui.manager;
-import rpui.render_factory;
-import rpui.render_objects;
+import rpui.basic_types;
+import rpui.view;
 import rpui.cursor;
-import rpui.renderer;
-import rpui.scroll;
-import rpui.widget_events;
-import rpui.widget_locator;
-import rpui.focus_navigator;
 import rpui.widgets_container;
-import rpui.widget_resolver;
 import rpui.events;
+import rpui.widget_events;
+import rpui.math;
+import rpui.focus_navigator;
+import rpui.widget_locator;
+import rpui.widget_resolver;
+
+import gapi.vec;
 
 /// Interface for scrollable widgets.
 interface Scrollable {
@@ -58,64 +44,62 @@ class Widget : EventsListenerEmpty {
      * Field attribute need to tell RPDL which fields are fill
      * when reading layout file.
      */
-    struct Field {
+    struct field {
         string name = "";  /// Override name of variable.
     }
 
-// Properties --------------------------------------------------------------------------------------
-
-    @Field bool visible = true;
-    @Field bool enabled = true;
-    @Field bool focusable = true;
+    @field bool visible = true;
+    @field bool enabled = true;
+    @field bool focusable = true;
 
     /// If true, then focus navigation by children will be limited inside this widget.
-    @Field bool finalFocus = false;
+    @field bool finalFocus = false;
 
     /// Specifies the type of cursor to be displayed when pointing on an element.
-    @Field Cursor.Icon cursor = Cursor.Icon.normal;
+    @field Cursor.Icon cursor = Cursor.Icon.normal;
 
-    @Field string name = "";
+    @field string name = "";
 
     /// Some help information about widget, need to display tooltip.
-    @Field utf32string hint = "";
+    @field utf32string hint = "";
 
     /// How to place a widget horizontally.
-    @Field Align locationAlign = Align.none;
+    @field Align locationAlign = Align.none;
 
     /// How to place a widget vertically.
-    @Field VerticalAlign verticalLocationAlign = VerticalAlign.none;
+    @field VerticalAlign verticalLocationAlign = VerticalAlign.none;
 
     /**
      * If set this option then widget will be pinned to one of the side
      * declared in the `basic_types.RegionAlign`.
      */
-    @Field RegionAlign regionAlign = RegionAlign.none;
+    @field RegionAlign regionAlign = RegionAlign.none;
 
     /// Used to create space around elements, outside of any defined borders.
-    @Field FrameRect margin = FrameRect(0, 0, 0, 0);
+    @field FrameRect margin = FrameRect(0, 0, 0, 0);
 
     /// Used to generate space around an element's content, inside of any defined borders.
-    @Field FrameRect padding = FrameRect(0, 0, 0, 0);
+    @field FrameRect padding = FrameRect(0, 0, 0, 0);
 
-    @Field vec2 position = vec2(0, 0);
-    @Field vec2 size = vec2(0, 0);
+    @field vec2 position = vec2(0, 0);
+    @field vec2 size = vec2(0, 0);
 
-    @Field SizeType widthType;  /// Determine how to set width for widget.
-    @Field SizeType heightType;  /// Determine how to set height for widget.
+    @field SizeType widthType;  /// Determine how to set width for widget.
+    @field SizeType heightType;  /// Determine how to set height for widget.
 
-    @Field
+    @field
     @property float width() { return size.x; }
     @property void width(in float val) { size.x = val; }
 
-    @Field
+    @field
     @property float height() { return size.y; }
     @property void height(in float val) { size.y = val; }
 
-    @Field
+    @field
     @property float left() { return position.x; }
     @property void left(in float val) { position.x = val; }
 
-    @Field
+    @field
     @property float top() { return position.y; }
     @property void top(in float val) { position.y = val; }
 
@@ -131,6 +115,7 @@ class Widget : EventsListenerEmpty {
     package Widget owner;
 
     @property bool isFocused() { return p_isFocused; }
+    package bool p_isFocused;
 
     /// Next widget in `parent` children after this.
     @property Widget nextWidget() { return p_nextWidget; }
@@ -148,6 +133,7 @@ class Widget : EventsListenerEmpty {
     @property Widget firstWidget() { return p_firstWidget; }
     package Widget p_firstWidget = null;
 
+    // TODO:
     @property ref WidgetsContainer children() { return p_children; }
     private WidgetsContainer p_children;
 
@@ -169,7 +155,6 @@ class Widget : EventsListenerEmpty {
     /// Additional rules appart from `enabled` to set widget enabled or not.
     Array!(bool delegate()) enableRules;
 
-protected:
     /**
      * Which part of widget need to render, e.g. if it is a button
      * then `PartDraws.left` tell that only left side and center will be
@@ -187,12 +172,10 @@ protected:
         right
     }
 
-    package Application app;
     package PartDraws partDraws = PartDraws.all;
 
 package:
-    Manager manager;
-    bool p_isFocused;
+    View view;
     bool skipFocus = false;  /// Don't focus this element.
     bool drawChildren = true;
     FrameRect extraInnerOffset = FrameRect(0, 0, 0, 0);  /// Extra inner offset besides padding.
@@ -226,8 +209,9 @@ package:
 
     Widget associatedWidget = null;
 
-    @property Renderer renderer() { return manager.renderer; }
-    @property RenderFactory renderFactory() { return manager.renderFactory; }
+    // TODO:
+    // @property Renderer renderer() { return view.renderer; }
+    // @property RenderFactory renderFactory() { return view.renderFactory; }
 
     /**
      * Returns string of state declared in theme.
@@ -323,22 +307,19 @@ package:
 public:
     /// Default constructor with default `style`.
     this() {
-        this.app = Application.getInstance();
         this.style = "";
         createComponents();
     }
 
     /// Construct with custom `style`.
     this(in string style) {
-        this.app = Application.getInstance();
         this.style = style;
         createComponents();
     }
 
-    package this(Manager manager) {
-        this.app = Application.getInstance();
+    package this(View view) {
         this.style = "";
-        this.manager = manager;
+        this.view = view;
         createComponents();
     }
 
@@ -351,6 +332,11 @@ public:
 
         this.p_events.subscribe!BlurEvent(&onBlur);
         this.p_events.subscribe!FocusEvent(&onFocus);
+    }
+
+    void onProgress(in ProgressEvent event) {
+        checkRules();
+        updateBoundary();
     }
 
     /// Update widget inner bounary and clamped boundary.
@@ -395,12 +381,25 @@ public:
         innerBoundarySizeClamped.y = fmax(innerBoundarySize.y, innerSize.y);
     }
 
-    void progress() {
-        checkRules();
-        updateBoundary();
+    void checkRules() {
+        if (!visibleRules.empty) {
+            visible = true;
+
+            foreach (bool delegate() rule; visibleRules) {
+                visible = visible && rule();
+            }
+        }
+
+        if (!enableRules.empty) {
+            enabled = true;
+
+            foreach (bool delegate() rule; enableRules) {
+                enabled = enabled && rule();
+            }
+        }
     }
 
-    void reset() {
+    package void reset() {
         if (associatedWidget !is null)
             associatedWidget.reset();
     }
@@ -423,8 +422,8 @@ public:
         }
     }
 
-    final void collectProgressQueries() {
-        manager.progressQueries.insert(this);
+    package final void collectOnProgressQueries() {
+        view.onProgressQueries.insert(this);
 
         if (!drawChildren)
             return;
@@ -433,8 +432,8 @@ public:
             if (!widget.visible && !widget.processPorgress())
                 continue;
 
-            manager.progressQueries.insert(widget);
-            widget.collectProgressQueries();
+            view.onProgressQueries.insert(widget);
+            widget.collectOnProgressQueries();
         }
     }
 
@@ -442,26 +441,8 @@ public:
         return !visibleRules.empty || !enableRules.empty;
     }
 
-    void checkRules() {
-        if (!visibleRules.empty) {
-            visible = true;
-
-            foreach (bool delegate() rule; visibleRules) {
-                visible = visible && rule();
-            }
-        }
-
-        if (!enableRules.empty) {
-            enabled = true;
-
-            foreach (bool delegate() rule; enableRules) {
-                enabled = enabled && rule();
-            }
-        }
-    }
-
     /// Render widget in camera view.
-    void render(Camera camera) {
+    void onRender(in RenderEvent event) {
         if (!drawChildren)
             return;
 
@@ -469,24 +450,18 @@ public:
             if (!widget.visible)
                 continue;
 
-            widget.render(camera);
+            widget.onRender(event);
         }
-    }
-
-    /// Determine if `point` is inside widget area.
-    bool pointIsEnter(in vec2i point) {
-        const Rect rect = Rect(absolutePosition.x, absolutePosition.y, size.x, size.y);
-        return pointInRect(point, rect);
     }
 
     /// Make focus for widget, and clear focus from focused widget.
     void focus() {
         events.notify(FocusEvent());
 
-        if (manager.focusedWidget != this && manager.focusedWidget !is null)
-            manager.focusedWidget.blur();
+        if (view.focusedWidget != this && view.focusedWidget !is null)
+            view.focusedWidget.blur();
 
-        manager.focusedWidget = this;
+        view.focusedWidget = this;
         p_isFocused = true;
 
         if (!this.skipFocus)
@@ -497,7 +472,7 @@ public:
     void blur() {
         isClick = false;
         p_isFocused = false;
-        manager.unfocusedWidgets.insert(this);
+        view.unfocusedWidgets.insert(this);
     }
 
     void onCreate() {
@@ -532,9 +507,14 @@ public:
     void onClickActionInvoked() {
     }
 
-package:
+    /// Determine if `point` is inside widget area.
+    final bool pointIsEnter(in vec2i point) {
+        const Rect rect = Rect(absolutePosition.x, absolutePosition.y, size.x, size.y);
+        return pointInRect(point, rect);
+    }
+
     /// This method invokes when widget size is updated.
-    public void updateSize() {
+    void updateSize() {
         if (widthType == SizeType.matchParent) {
             locationAlign = Align.none;
             size.x = parent.innerSize.x - outerOffsetSize.x;
@@ -564,18 +544,18 @@ package:
     }
 
     void freezeUI(bool isNestedFreeze = true) {
-        manager.freezeUI(this, isNestedFreeze);
+        view.freezeUI(this, isNestedFreeze);
     }
 
     void unfreezeUI() {
-        manager.unfreezeUI(this);
+        view.unfreezeUI(this);
     }
 
     bool isFrozen() {
-        return manager.isWidgetFrozen(this);
+        return view.isWidgetFrozen(this);
     }
 
     bool isFreezingSource() {
-        return manager.isWidgetFreezingSource(this);
+        return view.isWidgetFreezingSource(this);
     }
 }

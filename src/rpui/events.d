@@ -1,7 +1,17 @@
 module rpui.events;
 
-import input;
-import basic_types;
+import rpui.input;
+import rpui.basic_types;
+
+struct ProgressEvent {
+    float deltaTime;
+}
+
+struct CreateEvent {
+}
+
+struct RenderEvent {
+}
 
 struct KeyPressedEvent {
     KeyCode key;

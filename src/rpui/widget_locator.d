@@ -2,8 +2,8 @@ module rpui.widget_locator;
 
 import std.math;
 
-import basic_types;
-import math.linalg;
+import rpui.basic_types;
+import gapi.vec;
 
 import rpui.widget;
 

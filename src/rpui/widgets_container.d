@@ -1,9 +1,8 @@
 module rpui.widgets_container;
 
 import std.container.array;
-import rpui.events;
 import rpui.widget;
-import rpui.widget_events;
+import rpui.events;
 
 package final class WidgetsContainer {
     Widget rootWidget;
@@ -39,8 +38,7 @@ package final class WidgetsContainer {
     }
 
     void addWidgetWithoutDecorator(Widget widget) {
-        const index = rootWidget.manager.getNextIndex();
-        widget.manager = rootWidget.manager;
+        widget.view = rootWidget.view;
 
         widget.events.subscribeWidget(widget);
         rootWidget.events.join(widget.events, windowEvents);
@@ -63,8 +61,9 @@ package final class WidgetsContainer {
 
         // Insert
         widgets.insert(widget);
-        rootWidget.manager.widgetOrdering.insert(widget);
-        widget.onCreate();
+        rootWidget.view.widgetOrdering.insert(widget);
+        // TODO:
+        // widget.onCreate(CreateEvent());
     }
 
     @property size_t length() const {
@@ -85,7 +84,6 @@ package final class WidgetsContainer {
 
     int opApply(int delegate(Widget) apply) {
         int result = 0;
-        import std.stdio;
 
         foreach (widget; widgets) {
             result = apply(widget);

@@ -1,9 +1,8 @@
-module basic_types;
+module rpui.basic_types;
 
-import math.linalg;
+import gapi.vec;
 import std.conv : to;
 import std.math;
-
 
 alias utf32char = dchar;
 alias utf32string = dstring;

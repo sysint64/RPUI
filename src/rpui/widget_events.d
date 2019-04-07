@@ -2,9 +2,8 @@ module rpui.widget_events;
 
 import std.container.array;
 
-import input;
-import basic_types;
-
+import rpui.input;
+import rpui.basic_types;
 import rpui.widget;
 import rpui.events;
 import rpui.events_observer;

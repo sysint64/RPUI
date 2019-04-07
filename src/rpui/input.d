@@ -1,4 +1,4 @@
-module input;
+module rpui.input;
 
 import derelict.sdl2.sdl;
 import std.string;
@@ -11,7 +11,7 @@ enum MouseButton {
     mouseMiddle = SDL_BUTTON_MIDDLE,
 }
 
-/// break the dependence on SFML Keyboard
+/// break the dependence on SDL Keyboard
 enum KeyCode {
     A = SDLK_a,
     B = SDLK_b,

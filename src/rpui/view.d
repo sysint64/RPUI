@@ -1,108 +1,82 @@
-/**
- * Manager of all UI elements.
- *
- * Copyright: © 2017 Andrey Kabylin
- * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
- */
+module rpui.view;
 
-module rpui.manager;
-
-import std.container;
 import std.container.array;
+import std.container.slist;
 
-import input;
-import application;
-import math.linalg;
-import basic_types;
+import gapi.vec;
+import gapi.opengl;
 
-import resources.strings;
-import resources.images;
-import resources.icons;
-import resources.shaders;
-
-import opengl;
-import gapi.camera;
-
-import rpui.theme;
-import rpui.scroll;
-import rpui.widget;
+import rpui.input;
 import rpui.cursor;
-import rpui.render_factory;
-import rpui.renderer;
-import rpui.events;
+import rpui.widget;
 import rpui.events_observer;
+import rpui.events;
 import rpui.widget_events;
+import rpui.basic_types;
+import rpui.math;
 
-/**
- * Manager of all widgets.
- */
-class Manager : EventsListenerEmpty {
-    StringsRes stringsRes;  /// String resources for internationalization.
-    ImagesRes imagesRes;  /// Image resources.
-    IconsRes iconsRes;  /// Icons resources.
-    ShadersRes shadersRes;
+final class View : EventsListenerEmpty {
     EventsObserver events;
-    package Array!Widget progressQueries;
+    package Array!Widget onProgressQueries;
 
     private Widget p_widgetUnderMouse = null;
     @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
 
+    private Subscriber rootWidgetSubscriber;
+
+    private uint lastIndex = 0;
+    package Widget rootWidget;
+    package Array!Widget frontWidgets;  // This widgets are drawn last.
+    package Array!Widget frontWidgetsOrdering;  // This widgets are process firstly.
+    package Widget focusedWidget = null;
+    package Array!Widget widgetOrdering;
+    package Array!Widget unfocusedWidgets;
+
+    package SList!Widget freezeSources;
+    package SList!bool isNestedFreezeStack;
+
+    public Cursor.Icon cursor = Cursor.Icon.inherit;
+    private vec2i mousePos;
+    private Array!Rect scissorStack;
+    private uint viewportHeight;
+
     private this() {
-        app = Application.getInstance();
-        unfocusedWidgets.reserve(20);
         events = new EventsObserver();
     }
 
-    private Subscriber rootWidgetSubscriber;
-
     /// Creating manager with particular theme.
     this(in string themeName) {
-        app = Application.getInstance();
-
         with (rootWidget = new Widget(this)) {
             isOver = true;
             finalFocus = true;
-            size.x = this.app.windowWidth;
-            size.y = this.app.windowHeight;
         }
 
         events = new EventsObserver();
         events.join(rootWidget.events);
-        // rootWidgetSubscriber = rootWidget.events.subscribe(rootWidget);
-
-        this.imagesRes = new ImagesRes(app.pathes, themeName);
-        this.iconsRes = new IconsRes(app.pathes, this.imagesRes);
-        this.shadersRes = new ShadersRes();
-
-        this.theme = new Theme(themeName);
-        this.renderFactory = new RenderFactory(this);
-        this.renderer = new Renderer(this);
-
-        unfocusedWidgets.reserve(20);
     }
 
     /// Invokes all `onProgress` of all widgets and `poll` widgets.
-    void onProgress() {
+    void onProgress(in ProgressEvent event) {
         cursor = Cursor.Icon.inherit;
 
-        progressQueries.clear();
-        rootWidget.collectProgressQueries();
+        onProgressQueries.clear();
+        rootWidget.collectOnProgressQueries();
 
         foreach (Widget widget; frontWidgets) {
             if (!widget.visible && !widget.processPorgress())
                 continue;
 
-            widget.collectProgressQueries();
+            widget.collectOnProgressQueries();
         }
 
         blur();
 
-        foreach (Widget widget; progressQueries) {
-            widget.progress();
+        foreach (Widget widget; onProgressQueries) {
+            widget.onProgress(event);
         }
 
-        foreach_reverse (Widget widget; progressQueries) {
-            widget.progress();
+        foreach_reverse (Widget widget; onProgressQueries) {
+            widget.onProgress(event);
         }
 
         poll();
@@ -116,20 +90,15 @@ class Manager : EventsListenerEmpty {
         }
 
         rootWidget.updateAll();
-        app.setCursor(cursor);
     }
 
     /// Renders all widgets inside `camera` view.
-    void render(Camera camera) {
-        rootWidget.size.x = app.windowWidth;
-        rootWidget.size.y = app.windowHeight;
-
-        renderer.camera = camera;
-        rootWidget.render(camera);
+    void onRender(in RenderEvent event) {
+        rootWidget.onRender(event);
 
         foreach (Widget widget; frontWidgets) {
             if (widget.visible)
-                widget.render(camera);
+                widget.onRender(event);
         }
     }
 
@@ -171,7 +140,7 @@ class Manager : EventsListenerEmpty {
                 rect = widget.overlayRect;
             }
 
-            widget.isOver = widget.parent.isOver && pointInRect(app.mousePos, rect);
+            widget.isOver = widget.parent.isOver && pointInRect(mousePos, rect);
         }
 
         p_widgetUnderMouse = null;
@@ -192,7 +161,7 @@ class Manager : EventsListenerEmpty {
                 found.isClick = false;
             }
 
-            if (widget.pointIsEnter(app.mousePos)) {
+            if (widget.pointIsEnter(mousePos)) {
                 widget.isEnter = true;
                 p_widgetUnderMouse = widget;
                 found = widget;
@@ -262,7 +231,7 @@ class Manager : EventsListenerEmpty {
         }
 
         auto screenScissor = IntRect(currentScissor);
-        screenScissor.top = app.windowHeight - screenScissor.top - screenScissor.height;
+        screenScissor.top = viewportHeight - screenScissor.top - screenScissor.height;
         glScissor(screenScissor.left, screenScissor.top, screenScissor.width, screenScissor.height);
 
         return Rect(currentScissor);
@@ -362,19 +331,16 @@ class Manager : EventsListenerEmpty {
             scrollable.onMouseWheelHandle(horizontalDelta, verticalDelta);
     }
 
-public:
-    Theme theme;
-    RenderFactory renderFactory;
-    Renderer renderer;
+    override void onMouseMove(in MouseMoveEvent event) {
+        mousePos.x = event.x;
+        mousePos.y = event.y;
+    }
 
-    Cursor.Icon cursor = Cursor.Icon.inherit;
+    override void onWindowResize(in WindowResizeEvent event) {
+        viewportHeight = event.height;
+    }
 
-private:
-    Application app;
-    Array!Rect scissorStack;
-
-    // blur widgets which are in unfocusedWidgets
-    void blur() {
+    private void blur() {
         foreach (Widget widget; unfocusedWidgets) {
             widget.p_isFocused = false;
             widget.events.notify(BlurEvent());
@@ -382,18 +348,6 @@ private:
 
         unfocusedWidgets.clear();
     }
-
-package:
-    uint lastIndex = 0;
-    Widget rootWidget;
-    Array!Widget frontWidgets;  // This widgets are drawn last.
-    Array!Widget frontWidgetsOrdering;  // This widgets are process firstly.
-    Widget focusedWidget = null;
-    Array!Widget widgetOrdering;
-    Array!Widget unfocusedWidgets;
-
-    SList!Widget freezeSources;
-    SList!bool isNestedFreezeStack;
 
     void moveWidgetToFront(Widget widget) {
 
@@ -480,33 +434,5 @@ package:
 
     bool isWidgetFreezingSource(Widget widget) {
         return !freezeSources.empty && freezeSources.front == widget;
-    }
-}
-
-unittest {
-    import test.core : initApp;
-
-    initApp();
-    auto manager = new Manager();
-
-    auto scissor1 = Rect(vec2(10, 10), vec2(100, 200));
-    auto scissor2 = Rect(vec2(12, 12), vec2(94, 100));
-    auto scissor3 = Rect(vec2(50, 150), vec2(94, 100));
-
-    with (manager) {
-        pushScissor(scissor1);
-        pushScissor(scissor2);
-        pushScissor(scissor3);
-
-        const resScissor = applyScissor();
-
-        assert(resScissor.left == scissor3.left);
-        assert(resScissor.top == scissor3.top);
-        assert(resScissor.width == scissor2.left + scissor3.width - resScissor.left);
-        assert(resScissor.height == scissor1.height - resScissor.top - scissor2.top);
-
-        popScissor();
-        popScissor();
-        popScissor();
     }
 }

@@ -13,8 +13,6 @@ module rpui.cursor;
 import x11.Xlib;
 import x11_cursorfont;
 
-import application;
-
 /// System cursor.
 final class Cursor {
     enum Icon {
@@ -38,8 +36,6 @@ final class Cursor {
     }
 
     this() {
-        app = Application.getInstance();
-
         version (linux) {
             display = XOpenDisplay(null);
         }
@@ -67,8 +63,6 @@ final class Cursor {
     }
 
 private:
-    Application app;
-
     version (linux) {
         Display *display;
         ulong cursor;
