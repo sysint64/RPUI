@@ -6,6 +6,9 @@ import std.file;
 
 import rpui.application;
 import rpui.events;
+import rpui.view;
+import rpui.view_component;
+import rpui.widget;
 
 import gapi.vec;
 import gapi.camera;
@@ -20,6 +23,20 @@ import gapi.opengl;
 void main() {
     auto app = new TestApplication();
     app.run();
+}
+
+final class MyViewComponent : ViewComponent {
+    @bindWidget Widget okButton;
+
+    this(View view, in string laytoutFileName, in string shortcutsFileName) {
+        super(view, laytoutFileName, shortcutsFileName);
+    }
+
+    void onCreate() {
+        okButton.events.subscribe!KeyPressedEvent(delegate(in event) {
+            writeln("Handle OkButton Key Pressed Event", event.key);
+        });
+    }
 }
 
 final class TestApplication : Application {
@@ -44,6 +61,7 @@ final class TestApplication : Application {
     private Transform2D spriteTransform;
     private mat4 spriteModelMatrix;
     private mat4 spriteMVPMatrix;
+    private View rootView;
 
     override void onProgress(in ProgressEvent event) {
         spriteTransform.position = vec2(
@@ -72,6 +90,12 @@ final class TestApplication : Application {
         createSprite();
         createTexture();
         createShaders();
+
+        rootView = new View("light");
+        events.join(rootView.events);
+        events.subscribe(rootView);
+
+        ViewComponent.createFromFile!(MyViewComponent)(rootView, "test.rdl");
     }
 
     override void onDestroy() {

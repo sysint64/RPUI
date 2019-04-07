@@ -14,8 +14,10 @@ import rpui.events;
 import rpui.widget_events;
 import rpui.basic_types;
 import rpui.math;
+import rpui.theme;
 
 final class View : EventsListenerEmpty {
+    Theme theme;
     EventsObserver events;
     package Array!Widget onProgressQueries;
 
@@ -53,6 +55,8 @@ final class View : EventsListenerEmpty {
 
         events = new EventsObserver();
         events.join(rootWidget.events);
+
+        theme = createThemeByName(themeName);
     }
 
     /// Invokes all `onProgress` of all widgets and `poll` widgets.

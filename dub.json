@@ -30,10 +30,6 @@
     "dependencies": {
         "gl3n": "~>1.3.1",
         "x11": "~>1.0.20",
-        "emsi_containers": "~>0.5.3",
-        "accessors": "~>1.1.1",
-        "optional": "~>0.12.0",
-        "d-unit": "~>0.8.1",
         "rpdl": "~>0.1.0-alpha.1",
         "gapi": "~>0.0.1-alpha.1"
     },

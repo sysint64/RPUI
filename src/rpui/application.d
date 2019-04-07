@@ -8,8 +8,11 @@ import derelict.sdl2.ttf;
 
 import gapi.opengl;
 import rpui.events;
+import rpui.events_observer;
 
 abstract class Application {
+    EventsObserver events = new EventsObserver();
+
     struct WindowData {
         SDL_Window* window;
         SDL_GLContext glContext;
@@ -146,6 +149,7 @@ abstract class Application {
                     windowData.viewportHeight = height;
 
                     onWindowResize(WindowResizeEvent(width, height));
+                    events.notify(WindowResizeEvent(width, height));
 
                     glViewport(0, 0, width, height);
                     SDL_GL_MakeCurrent(windowData.window, windowData.glContext);
