@@ -11,6 +11,7 @@ import rpui.view;
 import rpui.widget;
 import rpui.traits;
 import rpui.paths;
+import rpui.rpdl_widget_factory;
 
 /**
  * ViewComponent is a container for widgets with additional attributes processing
@@ -23,7 +24,7 @@ abstract class ViewComponent {
 
     private View view;
     private Widget rootWidget;
-    // RPDLWidgetFactory widgetFactory;
+    RpdlWidgetFactory widgetFactory;
 
     @shortcut("General.focusNext")
     void focusNext() {
@@ -43,10 +44,10 @@ abstract class ViewComponent {
         assert(view !is null);
         this.view = view;
 
-        // widgetFactory = new RPDLWidgetFactory(uiManager, layoutFileName);
-        // widgetFactory.createWidgets();
-        // rootWidget = widgetFactory.rootWidget;
-        // assert(rootWidget !is null);
+        widgetFactory = new RpdlWidgetFactory(view, layoutFileName);
+        widgetFactory.createWidgets();
+        rootWidget = widgetFactory.rootWidget;
+        assert(rootWidget !is null);
 
         shortcuts_ = Shortcuts.createFromFile(shortcutsFileName);
         readAttributes!T();
@@ -151,7 +152,12 @@ abstract class ViewComponent {
     /// Find widget in relative view root widget.
     Widget findWidgetByName(in string name) {
         assert(rootWidget !is null);
-        return rootWidget.resolver.findWidgetByName(name);
+
+        if (rootWidget.name == name) {
+            return rootWidget;
+        } else {
+            return rootWidget.resolver.findWidgetByName(name);
+        }
     }
 
     /**
