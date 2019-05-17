@@ -22,6 +22,8 @@ import gapi.opengl;
 
 void main() {
     auto app = new TestApplication();
+    const a = 10;
+    writeln("hello world! a = ", a);
     app.run();
 }
 
@@ -74,9 +76,11 @@ final class TestApplication : Application {
         spriteModelMatrix = create2DModelMatrix(spriteTransform);
         cameraMatrices = createOrthoCameraMatrices(cameraTransform);
         spriteMVPMatrix = cameraMatrices.mvpMatrix * spriteModelMatrix;
+
+        rootView.onProgress(event);
     }
 
-    override void onRender(in RenderEvent event) {
+    override void onRender() {
         bindShaderProgram(transformShader);
         setShaderProgramUniformMatrix(transformShader, "MVP", spriteMVPMatrix);
         setShaderProgramUniformTexture(transformShader, "texture", spriteTexture, 0);
@@ -84,6 +88,7 @@ final class TestApplication : Application {
         bindVAO(sprite.vao);
         bindIndices(sprite.indicesBuffer);
         renderIndexedGeometry(cast(uint) quadIndices.length, GL_TRIANGLE_STRIP);
+        rootView.onRender(RenderEvent(windowData.viewportWidth, windowData.viewportHeight, cameraMatrices.mvpMatrix));
     }
 
     override void onCreate(in CreateEvent event) {

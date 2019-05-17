@@ -27,7 +27,7 @@ abstract class Application {
         immutable part = 1_000.0 / 60.0;
     }
 
-    private WindowData windowData;
+    protected WindowData windowData;
     private Times times;
     private bool isSDLInit = false;
 
@@ -40,11 +40,12 @@ abstract class Application {
     }
 
     ~this() {
-        if (isSDLInit)
+        if (isSDLInit) {
             stopSDL();
+        }
     }
 
-    void onRender(in RenderEvent event) {
+    void onRender() {
     }
 
     void onCreate(in CreateEvent event) {
@@ -127,7 +128,7 @@ abstract class Application {
                 onProgress(ProgressEvent(times.delta));
                 times.last = times.current;
                 glClear(GL_COLOR_BUFFER_BIT);
-                onRender(RenderEvent());
+                onRender();
                 SDL_GL_SwapWindow(windowData.window);
             }
         }

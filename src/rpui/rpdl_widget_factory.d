@@ -83,6 +83,15 @@ final class RpdlWidgetFactory {
             view.addWidget(widget);
         }
 
+        // Create children widgets
+        foreach (Node childNode; widgetNode.children) {
+            if (auto objectNode = cast(ObjectNode) childNode) {
+                Widget newWidget = createWidgetFromNode(objectNode, widget);
+                readVisibleRules(newWidget, objectNode);
+                newWidget.onPostCreate();
+            }
+        }
+
         return widget;
     }
 
@@ -160,5 +169,18 @@ final class RpdlWidgetFactory {
                 break;
             }
         }
+    }
+
+    private void readVisibleRules(Widget widget, ObjectNode widgetNode) {
+        const rule = widgetNode.optString("tabVisibleRule.0", null);
+
+        // TODO:
+        // if (rule !is null ) {
+        //     auto dependWidget = cast(TabButton) rootWidget.resolver.findWidgetByName(rule);
+
+        //     if (dependWidget !is null) {
+        //         widget.visibleRules.insert(() => dependWidget.checked);
+        //     }
+        // }
     }
 }

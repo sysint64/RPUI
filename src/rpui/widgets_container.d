@@ -62,8 +62,7 @@ package final class WidgetsContainer {
         // Insert
         widgets.insert(widget);
         rootWidget.view.widgetOrdering.insert(widget);
-        // TODO:
-        // widget.onCreate(CreateEvent());
+        widget.onCreate();
     }
 
     @property size_t length() const {

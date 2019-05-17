@@ -1,10 +1,13 @@
 module rpui.view;
 
+import std.path;
+import std.file;
 import std.container.array;
 import std.container.slist;
 
 import gapi.vec;
 import gapi.opengl;
+import gapi.shader;
 
 import rpui.input;
 import rpui.cursor;
@@ -15,6 +18,21 @@ import rpui.widget_events;
 import rpui.basic_types;
 import rpui.math;
 import rpui.theme;
+
+struct ViewShaders {
+    ShaderProgram textureAtlasShader;
+}
+
+ViewShaders createViewShaders() {
+    const vertexSource = readText(buildPath("res", "shaders", "transform_vertex.glsl"));
+    const vertexShader = createShader("transform vertex shader", ShaderType.vertex, vertexSource);
+
+    const texAtalsFragmentSource = readText(buildPath("res", "shaders", "texture_atlas_fragment.glsl"));
+    const texAtlasFragmentShader = createShader("texture atlas fragment shader", ShaderType.fragment, texAtalsFragmentSource);
+    auto texAtlasShader = createShaderProgram("texture atlas program", [vertexShader, texAtlasFragmentShader]);
+
+    return ViewShaders(texAtlasShader);
+}
 
 final class View : EventsListenerEmpty {
     Theme theme;

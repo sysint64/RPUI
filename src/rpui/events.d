@@ -1,5 +1,6 @@
 module rpui.events;
 
+import rpui.math;
 import rpui.input;
 import rpui.basic_types;
 
@@ -11,6 +12,9 @@ struct CreateEvent {
 }
 
 struct RenderEvent {
+    float viewportWidth;
+    float viewportHeight;
+    mat4 camertMVPMatrix;
 }
 
 struct KeyPressedEvent {
