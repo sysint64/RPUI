@@ -9,6 +9,7 @@ import derelict.sdl2.ttf;
 import gapi.opengl;
 import rpui.events;
 import rpui.events_observer;
+import rpui.input;
 
 abstract class Application {
     EventsObserver events = new EventsObserver();
@@ -155,6 +156,10 @@ abstract class Application {
                     glViewport(0, 0, width, height);
                     SDL_GL_MakeCurrent(windowData.window, windowData.glContext);
                     render();
+                }
+
+                if (event.type == SDL_MOUSEMOTION) {
+                    events.notify(MouseMoveEvent(event.motion.x, event.motion.y, MouseButton.mouseNone));
                 }
             }
 

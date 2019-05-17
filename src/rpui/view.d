@@ -18,6 +18,7 @@ import rpui.widget_events;
 import rpui.basic_types;
 import rpui.math;
 import rpui.theme;
+import rpui.render_objects : CameraView;
 
 struct ViewShaders {
     ShaderProgram textureAtlasShader;
@@ -59,6 +60,8 @@ final class View : EventsListenerEmpty {
     private vec2i mousePos;
     private Array!Rect scissorStack;
     private uint viewportHeight;
+
+    package CameraView cameraView;
 
     private this() {
         events = new EventsObserver();
@@ -116,11 +119,16 @@ final class View : EventsListenerEmpty {
 
     /// Renders all widgets inside `camera` view.
     void onRender(in RenderEvent event) {
+        cameraView.mvpMatrix = event.camertMVPMatrix;
+        cameraView.viewportWidth = event.viewportWidth;
+        cameraView.viewportHeight = event.viewportHeight;
+
         rootWidget.onRender(event);
 
         foreach (Widget widget; frontWidgets) {
-            if (widget.visible)
+            if (widget.visible) {
                 widget.onRender(event);
+            }
         }
     }
 
@@ -144,8 +152,9 @@ final class View : EventsListenerEmpty {
                 continue;
             }
 
-            if (!isWidgetFrozen(widget))
+            if (!isWidgetFrozen(widget)) {
                 widget.onCursor();
+            }
 
             widget.isEnter = false;
 

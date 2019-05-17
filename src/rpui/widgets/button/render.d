@@ -22,10 +22,7 @@ struct RenderData {
 }
 
 struct RenderDataMeasure {
-    vec2 backgroundPosition;
-    vec2 backgroundSize;
-    vec2 focusGlowPosition;
-    vec2 focusGlowSize;
+    StatefulTextureHorizontalChainMeasure background;
 }
 
 RenderData readRenderData(Theme theme, in string style) {
@@ -39,26 +36,27 @@ RenderData readRenderData(Theme theme, in string style) {
     return renderData;
 }
 
-void onProgress() {
-}
-
-void render(in RenderEvent event, in Theme theme, RenderData renderData) {
+void render(Button widget, in Theme theme, in RenderData renderData) {
     renderStatefulTextureHorizontalChain(
         theme,
-        event,
         renderData.background,
-        renderData.measure.backgroundPosition,
-        renderData.measure.backgroundSize,
-        State.leave,
-        Widget.PartDraws.center
+        renderData.measure.background,
+        widget.state,
+        widget.partDraws
     );
 }
 
 RenderDataMeasure updateRenderDataMeasure(Button widget) {
     RenderDataMeasure measure;
 
-    measure.backgroundPosition = widget.absolutePosition;
-    measure.backgroundSize = widget.size;
+    measure.background = measureStatefulTextureHorizontalChain(
+        widget.renderData.background,
+        widget.view.cameraView,
+        widget.absolutePosition,
+        widget.size,
+        widget.state,
+        widget.partDraws
+    );
 
     return measure;
 }

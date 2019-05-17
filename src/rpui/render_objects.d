@@ -21,22 +21,24 @@ struct Geometry {
     VAO vao;
 }
 
-struct StatefulTextureQuad {
-    Geometry geometry;
+struct QuadMeasure {
     Transform2D transform;
     mat4 modelMatrix;
     mat4 mvpMatrix;
+}
+
+struct StatefulTextureQuad {
+    Geometry geometry;
     Texture2D texture;
     Texture2DCoords[State] texCoords;
+    Texture2DCoords[State] normilizedTexCoords;
 }
 
 struct TextureQuad {
     Geometry geometry;
-    Transform2D transform;
-    mat4 modelMatrix;
-    mat4 mvpMatrix;
     Texture2D texture;
     Texture2DCoords texCoords;
+    Texture2DCoords normilizedTexCoords;
 }
 
 enum State {

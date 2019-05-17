@@ -17,17 +17,11 @@ import rpui.widget;
 import rpui.render_objects;
 
 struct StatefulTextureHorizontalChainMeasure {
-    StatefulTextureQuad[ChainPart] parts;
-    float leftWidth;
-    float rightWidth;
-    float centerWidth;
-    vec2 leftPos;
-    vec2 centerPos;
-    vec2 rightPos;
+    QuadMeasure[ChainPart] measureParts;
 }
 
 StatefulTextureHorizontalChainMeasure measureStatefulTextureHorizontalChain(
-    StatefulTextureQuad[ChainPart] parts,
+    in StatefulTextureQuad[ChainPart] parts,
     in CameraView cameraView,
     in vec2 position,
     in vec2 size,
@@ -36,46 +30,6 @@ StatefulTextureHorizontalChainMeasure measureStatefulTextureHorizontalChain(
 ) {
     StatefulTextureHorizontalChainMeasure measure;
 
-    measure.leftWidth = parts[ChainPart.left].texCoords[state].size.x;
-    measure.rightWidth = parts[ChainPart.right].texCoords[state].size.x;
-    measure.centerWidth = size.x - measure.leftWidth - measure.rightWidth;
-
-    measure.leftPos = position;
-    measure.centerPos = measure.leftPos + vec2(measure.leftWidth, 0);
-    measure.rightPos = measure.centerPos + vec2(measure.centerWidth, 0);
-
-    switch (partDraws) {
-        case Widget.PartDraws.left:
-            break;
-
-        case Widget.PartDraws.center:
-            parts[ChainPart.center] = measureStatefulTextureQuad(
-                parts[ChainPart.center],
-                cameraView,
-                position,
-                size
-            );
-            break;
-
-        case Widget.PartDraws.right:
-            break;
-
-        default:
-            break;
-    }
-
-    return measure;
-}
-
-void renderStatefulTextureHorizontalChain(
-    in Theme theme,
-    in RenderEvent event,
-    StatefulTextureQuad[ChainPart] parts,
-    in vec2 position,
-    in vec2 size,
-    in State state,
-    in Widget.PartDraws partDraws
-) {
     const leftWidth = parts[ChainPart.left].texCoords[state].size.x;
     const rightWidth = parts[ChainPart.right].texCoords[state].size.x;
     const centerWidth = size.x - leftWidth - rightWidth;
@@ -86,59 +40,120 @@ void renderStatefulTextureHorizontalChain(
 
     switch (partDraws) {
         case Widget.PartDraws.left:
+            measure.measureParts[ChainPart.left] = measureStatefulTextureQuad(
+                cameraView,
+                leftPos,
+                vec2(leftWidth, size.y)
+            );
+            measure.measureParts[ChainPart.center] = measureStatefulTextureQuad(
+                cameraView,
+                centerPos,
+                vec2(centerWidth + rightWidth, size.y)
+            );
             break;
 
         case Widget.PartDraws.center:
-            renderStatefulTextureQuad(
-                event,
-                parts[ChainPart.center],
-                theme.shaders.textureAtlasShader,
-                leftPos,
-                vec2(leftWidth + centerWidth + rightWidth, size.y),
-                state
+            measure.measureParts[ChainPart.center] = measureStatefulTextureQuad(
+                cameraView,
+                position,
+                size
             );
             break;
 
         case Widget.PartDraws.right:
+            measure.measureParts[ChainPart.center] = measureStatefulTextureQuad(
+                cameraView,
+                leftPos,
+                vec2(centerWidth + leftWidth, size.y)
+            );
+            measure.measureParts[ChainPart.right] = measureStatefulTextureQuad(
+                cameraView,
+                rightPos,
+                vec2(rightWidth, size.y)
+            );
             break;
 
         default:
+            measure.measureParts[ChainPart.left] = measureStatefulTextureQuad(
+                cameraView,
+                leftPos,
+                vec2(leftWidth, size.y)
+            );
+            measure.measureParts[ChainPart.center] = measureStatefulTextureQuad(
+                cameraView,
+                centerPos,
+                vec2(centerWidth, size.y)
+            );
+            measure.measureParts[ChainPart.right] = measureStatefulTextureQuad(
+                cameraView,
+                rightPos,
+                vec2(rightWidth, size.y)
+            );
             break;
     }
+
+    return measure;
 }
 
-StatefulTextureQuad measureStatefulTextureQuad(
-    StatefulTextureQuad quad,
+void renderStatefulTextureHorizontalChain(
+    in Theme theme,
+    in StatefulTextureQuad[ChainPart] parts,
+    in StatefulTextureHorizontalChainMeasure measure,
+    in State state,
+    in Widget.PartDraws partDraws
+) {
+    if (partDraws == Widget.PartDraws.left || partDraws == Widget.PartDraws.all) {
+        renderStatefulTextureQuad(
+            parts[ChainPart.left],
+            measure.measureParts[ChainPart.left],
+            theme.shaders.textureAtlasShader,
+            state
+        );
+    }
+
+    if (partDraws == Widget.PartDraws.right || partDraws == Widget.PartDraws.all) {
+        renderStatefulTextureQuad(
+            parts[ChainPart.right],
+            measure.measureParts[ChainPart.right],
+            theme.shaders.textureAtlasShader,
+            state
+        );
+    }
+
+    renderStatefulTextureQuad(
+        parts[ChainPart.center],
+        measure.measureParts[ChainPart.center],
+        theme.shaders.textureAtlasShader,
+        state
+    );
+}
+
+QuadMeasure measureStatefulTextureQuad(
     in CameraView cameraView,
     in vec2 position,
     in vec2 size
 ) {
-    quad.transform.position = toScreenPosition(cameraView.viewportHeight, position, size);
-    quad.transform.scaling = size;
-    quad.modelMatrix = create2DModelMatrix(quad.transform);
-    quad.mvpMatrix = cameraView.mvpMatrix * quad.modelMatrix;
+    QuadMeasure measure;
 
-    return quad;
+    measure.transform.position = toScreenPosition(cameraView.viewportHeight, position, size);
+    measure.transform.scaling = size;
+    measure.modelMatrix = create2DModelMatrix(measure.transform);
+    measure.mvpMatrix = cameraView.mvpMatrix * measure.modelMatrix;
+
+    return measure;
 }
 
 void renderStatefulTextureQuad(
-    in RenderEvent event,
-    StatefulTextureQuad quad,
+    in StatefulTextureQuad quad,
+    in QuadMeasure measure,
     in ShaderProgram shader,
-    vec2 position,
-    vec2 size,
-    State state
+    in State state
 ) {
-    quad.transform.position = toScreenPosition(event.viewportHeight, position, size);
-    quad.transform.scaling = size;
-    quad.modelMatrix = create2DModelMatrix(quad.transform);
-    quad.mvpMatrix = event.camertMVPMatrix * quad.modelMatrix;
-
     bindShaderProgram(shader);
 
-    const texCoord = quad.texCoords[state];
+    const texCoord = quad.normilizedTexCoords[state];
 
-    setShaderProgramUniformMatrix(shader, "MVP", quad.mvpMatrix);
+    setShaderProgramUniformMatrix(shader, "MVP", measure.mvpMatrix);
     setShaderProgramUniformTexture(shader, "texture", quad.texture, 0);
     setShaderProgramUniformVec2f(shader,"texOffset", texCoord.offset);
     setShaderProgramUniformVec2f(shader,"texSize", texCoord.size);

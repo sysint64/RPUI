@@ -21,7 +21,9 @@ StatefulTextureQuad createStatefulChainPartFromRdpl(Theme theme, in string style
     foreach (immutable state; [EnumMembers!State]) {
         const path = style ~ "." ~ getStateRdplName(state) ~ "." ~ getChainPartRdplName(part);
         const textCoord = theme.tree.data.getTexCoord(path);
-        quad.texCoords[state] = normilizeTexture2DCoords(textCoord, theme.skin);
+
+        quad.texCoords[state] = textCoord;
+        quad.normilizedTexCoords[state] = normilizeTexture2DCoords(textCoord, theme.skin);
     }
 
     return quad;
@@ -43,7 +45,7 @@ Geometry createGeometry() {
     Geometry geometry;
 
     geometry.indicesBuffer = createIndicesBuffer(quadIndices);
-    geometry.verticesBuffer = createVector2fBuffer(centeredQuadVertices);
+    geometry.verticesBuffer = createVector2fBuffer(quadVertices);
     geometry.texCoordsBuffer = createVector2fBuffer(quadTexCoords);
 
     geometry.vao = createVAO();

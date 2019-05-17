@@ -13,6 +13,7 @@ import rpui.math;
 import rpui.focus_navigator;
 import rpui.widget_locator;
 import rpui.widget_resolver;
+import rpui.render_objects : State;
 
 import gapi.vec;
 
@@ -216,13 +217,13 @@ package:
     /**
      * Returns string of state declared in theme.
      */
-    @property inout(string) state() inout {
+    @property inout(State) state() inout {
         if (isClick) {
-            return "Click";
+            return State.click;
         } else if (isEnter || overrideIsEnter) {
-            return "Enter";
+            return State.enter;
         } else {
-            return "Leave";
+            return State.leave;
         }
     }
 

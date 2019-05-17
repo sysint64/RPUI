@@ -19,7 +19,7 @@ class Button : Widget {
 
     private string iconsGroup;
     private Measure measure;
-    private RenderData renderData;
+    package RenderData renderData;
 
     this(in string style = "Button", in string iconsGroup = "icons") {
         super(style);
@@ -38,31 +38,32 @@ class Button : Widget {
         locator.updateAbsolutePosition();
         locator.updateRegionAlign();
         updateSize();
+
         renderData.measure = updateRenderDataMeasure(this);
     }
 
     override void onRender(in RenderEvent event) {
-        render(event, view.theme, renderData);
+        render(this, view.theme, renderData);
     }
 
     override void updateSize() {
         super.updateSize();
 
-         if (widthType == SizeType.wrapContent) {
-            if (!icons.empty) {
-                size.x = measure.iconsAreaSize + measure.iconGaps + measure.iconOffsets.x * 2;
-            } else {
-                size.x = measure.textLeftMargin + measure.textRightMargin;
-            }
+        // if (widthType == SizeType.wrapContent) {
+        //     if (!icons.empty) {
+        //         size.x = measure.iconsAreaSize + measure.iconGaps + measure.iconOffsets.x * 2;
+        //     } else {
+        //         size.x = measure.textLeftMargin + measure.textRightMargin;
+        //     }
 
-            if (measure.textWidth != 0f) {
-                size.x += measure.textWidth;
+        //     if (measure.textWidth != 0f) {
+        //         size.x += measure.textWidth;
 
-                if (!icons.empty) {
-                    size.x += measure.textLeftMargin;
-                }
-            }
-        }
+        //         if (!icons.empty) {
+        //             size.x += measure.textLeftMargin;
+        //         }
+        //     }
+        // }
     }
 
     protected override void onCreate() {
