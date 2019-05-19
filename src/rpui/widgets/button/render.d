@@ -22,6 +22,7 @@ struct RenderData {
     TextureQuad[ChainPart] focusGlow;
     UiText captionText;
     RenderDataMeasure measure;
+    UiTextAttributes[State] captionTextAttrs;
 }
 
 struct RenderDataMeasure {
@@ -38,6 +39,11 @@ RenderData readRenderData(Theme theme, in string style) {
     }
 
     renderData.captionText = createUiText();
+
+    foreach (immutable state; [EnumMembers!State]) {
+        renderData.captionTextAttrs[state] = createTextAttributesFromRdpl(theme, style ~ getStateRdplName(state));
+    }
+
     return renderData;
 }
 
@@ -50,7 +56,12 @@ void render(Button widget, in Theme theme, in RenderData renderData) {
         widget.partDraws
     );
 
-    renderUiText(renderData.captionText, renderData.measure.captionText, theme);
+    renderUiText(
+        theme,
+        renderData.captionText,
+        renderData.captionTextAttrs[widget.state],
+        renderData.measure.captionText,
+    );
 }
 
 RenderDataMeasure updateRenderDataMeasure(Button widget, RenderData* renderData, Theme* theme) {
@@ -65,9 +76,8 @@ RenderDataMeasure updateRenderDataMeasure(Button widget, RenderData* renderData,
         widget.partDraws
     );
 
-    const textSize = widget.size - vec2(widget.measure.iconsAreaSize, 0);
+    const textBoxSize = widget.size - vec2(widget.measure.iconsAreaSize, 0);
     auto textPosition = vec2(widget.measure.iconsAreaSize, 0) + widget.absolutePosition;
-    // textPosition += widget.measure.text
 
     if (widget.textAlign == Align.left) {
         textPosition.x += widget.measure.textLeftMargin;
@@ -80,16 +90,20 @@ RenderDataMeasure updateRenderDataMeasure(Button widget, RenderData* renderData,
         textPosition.x -= 1;
     }
 
+    with (renderData.captionTextAttrs[widget.state]) {
+        fontSize = theme.regularFontSize;
+        caption = widget.caption;
+        textAlign = widget.textAlign;
+        textVerticalAlign = widget.textVerticalAlign;
+    }
+
     measure.captionText = measureUiTextFixedSize(
         &renderData.captionText,
         &theme.regularFont,
-        theme.regularFontSize,
-        widget.caption,
+        renderData.captionTextAttrs[widget.state],
         widget.view.cameraView,
         textPosition,
-        textSize,
-        widget.textAlign,
-        widget.textVerticalAlign
+        textBoxSize
     );
 
     widget.measure.textWidth = measure.captionText.size.x;

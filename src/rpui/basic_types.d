@@ -3,34 +3,12 @@ module rpui.basic_types;
 import gapi.vec;
 import std.conv : to;
 import std.math;
+public import rpui.alignment;
 
 alias utf32char = dchar;
 alias utf32string = dstring;
 
 enum Orientation {horizontal, vertical}
-
-enum RegionAlign {
-    none,
-    left,
-    right,
-    top,
-    bottom,
-    client,
-}
-
-enum Align {
-    none,
-    left,
-    center,
-    right,
-}
-
-enum VerticalAlign {
-    none,
-    top,
-    middle,
-    bottom,
-}
 
 struct FrameRect {
     float left = 0;

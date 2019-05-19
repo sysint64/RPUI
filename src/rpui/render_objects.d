@@ -8,6 +8,8 @@ import gapi.vec;
 import gapi.transform;
 import gapi.text;
 
+import rpui.basic_types;
+
 struct CameraView {
     mat4 mvpMatrix;
     float viewportWidth;
@@ -35,6 +37,11 @@ struct StatefulTextureQuad {
     Texture2DCoords[State] normilizedTexCoords;
 }
 
+struct QuadTextureCoords {
+    Texture2DCoords texCoords;
+    Texture2DCoords normilizedTexCoords;
+}
+
 struct TextureQuad {
     Geometry geometry;
     Texture2D texture;
@@ -46,13 +53,15 @@ struct UiText {
     Geometry geometry;
     Text text;
     Texture2D texture;
-    vec4 color = vec4(0, 0, 0, 1);
-    vec2 offset = vec2(0, 0);
 }
 
-struct UiStatefulText {
-    vec4[State] color;
-    vec2[State] offset;
+struct UiTextAttributes {
+    vec4 color;
+    vec2 offset;
+    int fontSize;
+    dstring caption;
+    Align textAlign = Align.center;
+    VerticalAlign textVerticalAlign = VerticalAlign.middle;
 }
 
 struct UiTextMeasure {

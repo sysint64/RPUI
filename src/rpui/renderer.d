@@ -140,10 +140,10 @@ vec2 toScreenPosition(in float windowHeight, in vec2 position, in float height) 
     return vec2(floor(position.x), floor(windowHeight - height - position.y));
 }
 
-void renderUiText(in UiText text, in UiTextMeasure measure, in Theme theme) {
+void renderUiText(in Theme theme, in UiText text, in UiTextAttributes attrs, in UiTextMeasure measure) {
     bindShaderProgram(theme.shaders.textShader);
 
-    setShaderProgramUniformVec4f(theme.shaders.textShader, "color", text.color);
+    setShaderProgramUniformVec4f(theme.shaders.textShader, "color", attrs.color);
     setShaderProgramUniformTexture(theme.shaders.textShader, "texture", text.texture, 0);
     setShaderProgramUniformMatrix(theme.shaders.textShader, "MVP", measure.mvpMatrix);
 
@@ -156,56 +156,28 @@ void renderUiText(in UiText text, in UiTextMeasure measure, in Theme theme) {
 UiTextMeasure measureUiTextFixedSize(
     UiText* uiText,
     Font* font,
-    in int fontSize,
-    in dstring caption,
+    in UiTextAttributes attrs,
     in CameraView cameraView,
     in vec2 position,
-    in vec2 size,
-    in Align textAlign = Align.center,
-    in VerticalAlign textVerticalAlign = VerticalAlign.middle
+    in vec2 size
 ) {
     UiTextMeasure measure;
 
     UpdateTextInput updateTextInput = {
-        textSize: fontSize,
+        textSize: attrs.fontSize,
         font: font,
-        text: caption
+        text: attrs.caption
     };
 
     const textUpdateResult = updateTextureText(&uiText.text, updateTextInput);
-    vec2 textPosition = position + uiText.offset;
 
     uiText.texture = textUpdateResult.texture;
     measure.size = textUpdateResult.surfaceSize;
 
-    const textSize = measure.size;
-
-    // TODO: Move to separate function
-    switch (textAlign) {
-        case Align.center:
-            textPosition.x += round((size.x - textSize.x) * 0.5);
-            break;
-
-        case Align.right:
-            textPosition.x += size.x - textSize.x;
-            break;
-
-        default:
-            break;
-    }
-
-    switch (textVerticalAlign) {
-        case VerticalAlign.bottom:
-            textPosition.y += size.y - textSize.y;
-            break;
-
-        case VerticalAlign.middle:
-            textPosition.y += round((size.y - textSize.y) * 0.5);
-            break;
-
-        default:
-            break;
-    }
+    const textPosition = vec2(
+        position.x + alignBox(attrs.textAlign, measure.size.x, size.x),
+        position.y + verticalAlignBox(attrs.textVerticalAlign, measure.size.y, size.y)
+    );
 
     const Transform2D textTransform = {
         position: toScreenPosition(cameraView.viewportHeight, textPosition, textUpdateResult.surfaceSize.y),
@@ -213,24 +185,22 @@ UiTextMeasure measureUiTextFixedSize(
     };
 
     measure.mvpMatrix = cameraView.mvpMatrix * create2DModelMatrix(textTransform);
-
     return measure;
 }
 
 UiTextMeasure measureUiText(
     UiText* uiText,
     Font* font,
-    in int fontSize,
-    in dstring caption,
+    in UiTextAttributes attrs,
     in CameraView cameraView,
     in vec2 position
 ) {
     UiTextMeasure measure;
 
     UpdateTextInput updateTextInput = {
-        textSize: fontSize,
+        textSize: attrs.fontSize,
         font: font,
-        text: caption
+        text: attrs.caption
     };
 
     const textUpdateResult = updateTextureText(&uiText.text, updateTextInput);
