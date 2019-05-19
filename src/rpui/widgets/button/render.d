@@ -22,10 +22,9 @@ struct RenderData {
     StatefulHorizontalChain background;
     HorizontalChain focusGlow;
     StatefulUiText captionText;
-    RenderDataTransforms transforms;
 }
 
-struct RenderDataTransforms {
+struct RenderTransforms {
     HorizontalChainTransforms background;
     UiTextTransforms captionText;
 }
@@ -40,12 +39,17 @@ RenderData readRenderData(Theme theme, in string style) {
     return renderData;
 }
 
-void render(Button widget, in Theme theme, in RenderData renderData) {
+void render(
+    in Button widget,
+    in Theme theme,
+    in RenderData renderData,
+    in RenderTransforms transforms
+) {
     renderHorizontalChain(
         theme,
         renderData.background.parts,
         renderData.background.texCoords[widget.state],
-        renderData.transforms.background,
+        transforms.background,
         widget.partDraws
     );
 
@@ -53,13 +57,16 @@ void render(Button widget, in Theme theme, in RenderData renderData) {
         theme,
         renderData.captionText.render,
         renderData.captionText.attrs[widget.state],
-        renderData.transforms.captionText,
+        transforms.captionText,
     );
 }
 
-RenderDataTransforms updateRenderDataTransforms(Button widget, RenderData* renderData, Theme* theme) {
-    RenderDataTransforms transforms;
-
+void updateRenderTransforms(
+    Button widget,
+    RenderTransforms* transforms,
+    RenderData* renderData,
+    Theme* theme
+) {
     transforms.background = updateHorizontalChainTransforms(
         renderData.background.widths,
         widget.view.cameraView,
@@ -83,7 +90,6 @@ RenderDataTransforms updateRenderDataTransforms(Button widget, RenderData* rende
     }
 
     with (renderData.captionText.attrs[widget.state]) {
-        fontSize = theme.regularFontSize;
         caption = widget.caption;
         textAlign = widget.textAlign;
         textVerticalAlign = widget.textVerticalAlign;
@@ -92,6 +98,7 @@ RenderDataTransforms updateRenderDataTransforms(Button widget, RenderData* rende
     transforms.captionText = updateUiTextTransforms(
         &renderData.captionText.render,
         &theme.regularFont,
+        transforms.captionText,
         renderData.captionText.attrs[widget.state],
         widget.view.cameraView,
         textPosition,
@@ -99,5 +106,4 @@ RenderDataTransforms updateRenderDataTransforms(Button widget, RenderData* rende
     );
 
     widget.measure.textWidth = transforms.captionText.size.x;
-    return transforms;
 }

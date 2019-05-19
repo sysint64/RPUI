@@ -84,6 +84,7 @@ struct UiTextAttributes {
 struct UiTextTransforms {
     vec2 size;
     mat4 mvpMatrix;
+    dstring cachedString = "";
 }
 
 enum State {

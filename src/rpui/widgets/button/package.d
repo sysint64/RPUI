@@ -19,7 +19,8 @@ class Button : Widget {
 
     private string iconsGroup;
     package Measure measure;
-    package RenderData renderData;
+    private RenderData renderData;
+    private RenderTransforms renderTransforms;
 
     this(in string style = "Button", in string iconsGroup = "icons") {
         super(style);
@@ -39,11 +40,11 @@ class Button : Widget {
         locator.updateRegionAlign();
         updateSize();
 
-        renderData.transforms = updateRenderDataTransforms(this, &renderData, &view.theme);
+        updateRenderTransforms(this, &renderTransforms, &renderData, &view.theme);
     }
 
     override void onRender(in RenderEvent event) {
-        render(this, view.theme, renderData);
+        render(this, view.theme, renderData, renderTransforms);
     }
 
     override void updateSize() {

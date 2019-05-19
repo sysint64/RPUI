@@ -84,11 +84,17 @@ StatefulUiText createStatefulUiText(Theme theme, in string style) {
     return text;
 }
 
-UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style) {
+UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style, in string prefix = "text") {
     UiTextAttributes attrs;
 
-    attrs.color = vec4(0, 0, 0, 1);
-    attrs.offset = vec2(0, -1);
+    attrs.color = theme.tree.data.getNormColor(style ~ "." ~ prefix ~ "Color");
+    attrs.offset = theme.tree.data.optVec2f(style ~ "." ~ prefix ~ "Offset", vec2(0, 0));
+    attrs.fontSize = theme.tree.data.optInteger(style ~ "." ~ prefix ~ "FontSize.0", theme.regularFontSize);
+    // attrs.caption = theme.;
+    // attrs.textAlign = theme.;
+    // attrs.textVerticalAlign = theme.;
+    // attrs.color = vec4(0, 0, 0, 1);
+    // attrs.offset = vec2(0, -1);
 
     return attrs;
 }

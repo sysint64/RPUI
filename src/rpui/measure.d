@@ -81,6 +81,7 @@ HorizontalChainTransforms updateHorizontalChainTransforms(
 UiTextTransforms updateUiTextTransforms(
     UiTextRender* uiText,
     Font* font,
+    in UiTextTransforms oldTransforms,
     in UiTextAttributes attrs,
     in CameraView cameraView,
     in vec2 position,
@@ -88,18 +89,23 @@ UiTextTransforms updateUiTextTransforms(
 ) {
     UiTextTransforms measure;
 
-    UpdateTextInput updateTextInput = {
-        textSize: attrs.fontSize,
-        font: font,
-        text: attrs.caption
-    };
+    if (oldTransforms.cachedString != attrs.caption) {
+        UpdateTextInput updateTextInput = {
+            textSize: attrs.fontSize,
+            font: font,
+            text: attrs.caption
+        };
 
-    const textUpdateResult = updateTextureText(&uiText.text, updateTextInput);
+        const textUpdateResult = updateTextureText(&uiText.text, updateTextInput);
 
-    uiText.texture = textUpdateResult.texture;
-    measure.size = textUpdateResult.surfaceSize;
+        uiText.texture = textUpdateResult.texture;
+        measure.size = textUpdateResult.surfaceSize;
+    } else {
+        measure.size = oldTransforms.size;
+    }
 
-    vec2 textPosition = position;
+    measure.cachedString = attrs.caption;
+    vec2 textPosition = position + attrs.offset;
 
     if (size != vec2(0, 0)) {
         textPosition.x += alignBox(attrs.textAlign, measure.size.x, size.x);
@@ -107,8 +113,8 @@ UiTextTransforms updateUiTextTransforms(
     }
 
     const Transform2D textTransform = {
-        position: toScreenPosition(cameraView.viewportHeight, textPosition, textUpdateResult.surfaceSize.y),
-        scaling: textUpdateResult.surfaceSize
+        position: toScreenPosition(cameraView.viewportHeight, textPosition, measure.size.y),
+        scaling: measure.size
     };
 
     measure.mvpMatrix = cameraView.mvpMatrix * create2DModelMatrix(textTransform);
