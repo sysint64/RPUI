@@ -8,6 +8,7 @@ import gapi.texture;
 import gapi.geometry;
 import gapi.geometry_quad;
 import gapi.shader;
+import gapi.text;
 
 import rpui.render_objects;
 import rpui.gapi_rpdl_exts;
@@ -39,6 +40,10 @@ TextureQuad createChainPartFromRdpl(Theme theme, in string style, in ChainPart p
     quad.texCoords = normilizeTexture2DCoords(textCoord, theme.skin);
 
     return quad;
+}
+
+UiText createUiText() {
+    return UiText(createGeometry(), createText());
 }
 
 Geometry createGeometry() {

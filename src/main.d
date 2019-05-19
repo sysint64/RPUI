@@ -96,7 +96,11 @@ final class TestApplication : Application {
         createTexture();
         createShaders();
 
-        rootView = new View("light");
+        auto viewResources = createViewResources();
+        viewResources.strings.setLocale("en");
+        viewResources.strings.addStrings("test_view.rdl");
+
+        rootView = new View("light", viewResources);
         events.join(rootView.events);
         events.subscribe(rootView);
 

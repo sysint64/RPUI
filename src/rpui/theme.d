@@ -14,12 +14,15 @@ import rpui.paths;
 struct Theme {
     RpdlTree tree;
     const Texture2D skin;
-    const Font regularFont;
+    Font regularFont;
+    const int regularFontSize;
     ThemeShaders shaders;
 }
 
 struct ThemeShaders {
     ShaderProgram textureAtlasShader;
+    ShaderProgram textShader;
+    ShaderProgram transformShader;
 }
 
 Theme createThemeByName(in string theme) {
@@ -33,9 +36,10 @@ Theme createThemeByName(in string theme) {
     const skin = createTexture2DFromFile(skinPath);
 
     const regularFontFileName = tree.data.getString("General.regularFont.0");
-    const font = createFontFromFile(regularFontFileName);
+    const regularFontSize = tree.data.getInteger("General.regularFont.1");
+    Font font = createFontFromFile(buildPath(paths.resources, "fonts", regularFontFileName));
 
-    return Theme(tree, skin, font, createThemeShaders());
+    return Theme(tree, skin, font, regularFontSize, createThemeShaders());
 }
 
 private ThemeShaders createThemeShaders() {
@@ -46,5 +50,15 @@ private ThemeShaders createThemeShaders() {
     const texAtlasFragmentShader = createShader("texture atlas fragment shader", ShaderType.fragment, texAtalsFragmentSource);
     auto texAtlasShader = createShaderProgram("texture atlas program", [vertexShader, texAtlasFragmentShader]);
 
-    return ThemeShaders(texAtlasShader);
+    const fragmentColorSource = readText(buildPath("res", "shaders", "color_fragment.glsl"));
+    const fragmentColorShader = createShader("color fragment shader", ShaderType.fragment, fragmentColorSource);
+
+    auto textShader = createShaderProgram("text program", [vertexShader, fragmentColorShader]);
+
+    const textureFragmentSource = readText(buildPath("res", "shaders", "texture_fragment.glsl"));
+    const textureFragmentShader = createShader("texture fragment shader", ShaderType.fragment, textureFragmentSource);
+
+    auto transformShader = createShaderProgram("transform program", [vertexShader, textureFragmentShader]);
+
+    return ThemeShaders(texAtlasShader, textShader, transformShader);
 }

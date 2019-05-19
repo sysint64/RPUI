@@ -18,7 +18,7 @@ class Button : Widget {
     @field utf32string caption = "Button";
 
     private string iconsGroup;
-    private Measure measure;
+    package Measure measure;
     package RenderData renderData;
 
     this(in string style = "Button", in string iconsGroup = "icons") {
@@ -39,7 +39,7 @@ class Button : Widget {
         locator.updateRegionAlign();
         updateSize();
 
-        renderData.measure = updateRenderDataMeasure(this);
+        renderData.measure = updateRenderDataMeasure(this, &renderData, &view.theme);
     }
 
     override void onRender(in RenderEvent event) {
@@ -49,21 +49,21 @@ class Button : Widget {
     override void updateSize() {
         super.updateSize();
 
-        // if (widthType == SizeType.wrapContent) {
-        //     if (!icons.empty) {
-        //         size.x = measure.iconsAreaSize + measure.iconGaps + measure.iconOffsets.x * 2;
-        //     } else {
-        //         size.x = measure.textLeftMargin + measure.textRightMargin;
-        //     }
+        if (widthType == SizeType.wrapContent) {
+            if (!icons.empty) {
+                size.x = measure.iconsAreaSize + measure.iconGaps + measure.iconOffsets.x * 2;
+            } else {
+                size.x = measure.textLeftMargin + measure.textRightMargin;
+            }
 
-        //     if (measure.textWidth != 0f) {
-        //         size.x += measure.textWidth;
+            if (measure.textWidth != 0f) {
+                size.x += measure.textWidth;
 
-        //         if (!icons.empty) {
-        //             size.x += measure.textLeftMargin;
-        //         }
-        //     }
-        // }
+                if (!icons.empty) {
+                    size.x += measure.textLeftMargin;
+                }
+            }
+        }
     }
 
     protected override void onCreate() {

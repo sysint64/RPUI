@@ -3,6 +3,7 @@ Button
     size: 200, 21
     caption: "String: @TestView.helloWorld"
     name: "okButton"
+    textAlign: right
     locationAlign: center
     verticalLocationAlign: middle
     margin: 5

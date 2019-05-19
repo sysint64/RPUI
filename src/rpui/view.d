@@ -19,6 +19,7 @@ import rpui.basic_types;
 import rpui.math;
 import rpui.theme;
 import rpui.render_objects : CameraView;
+import rpui.resources.strings;
 
 struct ViewShaders {
     ShaderProgram textureAtlasShader;
@@ -33,6 +34,16 @@ ViewShaders createViewShaders() {
     auto texAtlasShader = createShaderProgram("texture atlas program", [vertexShader, texAtlasFragmentShader]);
 
     return ViewShaders(texAtlasShader);
+}
+
+struct ViewResources {
+    StringsRes strings;
+}
+
+ViewResources createViewResources() {
+    return ViewResources(
+        new StringsRes()
+    );
 }
 
 final class View : EventsListenerEmpty {
@@ -62,12 +73,25 @@ final class View : EventsListenerEmpty {
     private uint viewportHeight;
 
     package CameraView cameraView;
+    package ViewResources resources;
 
     private this() {
         events = new EventsObserver();
     }
 
-    /// Creating manager with particular theme.
+    this(in string themeName, ViewResources resources) {
+        with (rootWidget = new Widget(this)) {
+            isOver = true;
+            finalFocus = true;
+        }
+
+        events = new EventsObserver();
+        events.join(rootWidget.events);
+
+        theme = createThemeByName(themeName);
+        this.resources = resources;
+    }
+
     this(in string themeName) {
         with (rootWidget = new Widget(this)) {
             isOver = true;
@@ -78,6 +102,7 @@ final class View : EventsListenerEmpty {
         events.join(rootWidget.events);
 
         theme = createThemeByName(themeName);
+        this.resources = createViewResources();
     }
 
     /// Invokes all `onProgress` of all widgets and `poll` widgets.

@@ -158,13 +158,12 @@ final class RpdlWidgetFactory {
                 enum call = "widgetNode." ~ type[accessor] ~ "(fullSymbolPath, defaultValue)";
                 const value = mixin(call);
 
-                // assign value to widget field
-                // TODO:
-                // static if (type[name] == "dstring") {
-                    // mixin("widget." ~ symbolName ~ " = uiManager.stringsRes.parseString(value);");
-                // } else {
+                static if (type[name] == "dstring") {
+                    assert(view.resources.strings !is null);
+                    mixin("widget." ~ symbolName ~ " = view.resources.strings.parseString(value);");
+                } else {
                     mixin("widget." ~ symbolName ~ " = value;");
-                // }
+                }
 
                 break;
             }
