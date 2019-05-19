@@ -40,14 +40,36 @@ struct TextureQuad {
 }
 
 struct OriginalWithNormilizedTextureCoords {
-    Texture2DCoords texCoords;
+    Texture2DCoords originalTexCoords;
     Texture2DCoords normilizedTexCoords;
 }
 
-struct UiText {
+struct StatefulHorizontalChain {
+    TextureQuad[ChainPart] parts;
+    float[ChainPart] widths;
+    Texture2DCoords[ChainPart][State] texCoords;
+}
+
+struct HorizontalChain {
+    TextureQuad[ChainPart] parts;
+    float[ChainPart] widths;
+    Texture2DCoords[ChainPart] texCoords;
+}
+
+struct UiTextRender {
     Geometry geometry;
     Text text;
     Texture2D texture;
+}
+
+struct StatefulUiText {
+    UiTextRender render;
+    UiTextAttributes[State] attrs;
+}
+
+struct UiText {
+    UiTextRender render;
+    UiTextAttributes attrs;
 }
 
 struct UiTextAttributes {

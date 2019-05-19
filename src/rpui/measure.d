@@ -79,7 +79,7 @@ HorizontalChainTransforms updateHorizontalChainTransforms(
 }
 
 UiTextTransforms updateUiTextTransforms(
-    UiText* uiText,
+    UiTextRender* uiText,
     Font* font,
     in UiTextAttributes attrs,
     in CameraView cameraView,

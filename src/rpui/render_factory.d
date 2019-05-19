@@ -15,7 +15,44 @@ import rpui.render_objects;
 import rpui.gapi_rpdl_exts;
 import rpui.theme;
 
-TextureQuad createChainPartFromRdpl(in Theme theme) {
+StatefulHorizontalChain createStatefulHorizontalChainFromRdpl(Theme theme, in string style) {
+    StatefulHorizontalChain chain;
+
+    foreach (immutable part; [EnumMembers!ChainPart]) {
+        chain.parts[part] = createChainPart(theme);
+
+        foreach (immutable state; [EnumMembers!State]) {
+            const texCoords = createOriginalWithNormilizedTextureCoordsFromRdpl(
+                theme,
+                style ~ "." ~ getStateRdplName(state) ~ "." ~ getChainPartRdplName(part)
+            );
+            chain.texCoords[state][part] = texCoords.normilizedTexCoords;
+            chain.widths[part] = texCoords.originalTexCoords.size.x;
+        }
+    }
+
+    return chain;
+}
+
+HorizontalChain createHorizontalChainFromRdpl(Theme theme, in string style) {
+    HorizontalChain chain;
+
+    foreach (immutable part; [EnumMembers!ChainPart]) {
+        chain.parts[part] = createChainPart(theme);
+
+        const texCoords = createOriginalWithNormilizedTextureCoordsFromRdpl(
+            theme,
+            style ~ "." ~ getChainPartRdplName(part)
+        );
+
+        chain.texCoords[part] = texCoords.normilizedTexCoords;
+        chain.widths[part] = texCoords.originalTexCoords.size.x;
+    }
+
+    return chain;
+}
+
+TextureQuad createChainPart(in Theme theme) {
     TextureQuad quad;
     quad.geometry = createGeometry();
     quad.texture = theme.skin;
@@ -33,6 +70,20 @@ OriginalWithNormilizedTextureCoords createOriginalWithNormilizedTextureCoordsFro
     return OriginalWithNormilizedTextureCoords(textCoord, normilized);
 }
 
+StatefulUiText createStatefulUiText(Theme theme, in string style) {
+    StatefulUiText text;
+    text.render = createUiTextRenderObjec();
+
+    foreach (immutable state; [EnumMembers!State]) {
+        text.attrs[state] = createTextAttributesFromRdpl(
+            theme,
+            style ~ "." ~ getStateRdplName(state)
+        );
+    }
+
+    return text;
+}
+
 UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style) {
     UiTextAttributes attrs;
 
@@ -42,8 +93,8 @@ UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style) {
     return attrs;
 }
 
-UiText createUiText() {
-    return UiText(createGeometry(), createText());
+UiTextRender createUiTextRenderObjec() {
+    return UiTextRender(createGeometry(), createText());
 }
 
 Geometry createGeometry() {

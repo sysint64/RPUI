@@ -74,7 +74,7 @@ void renderHorizontalChain(
 
 void renderUiText(
     in Theme theme,
-    in UiText text,
+    in UiTextRender text,
     in UiTextAttributes attrs,
     in UiTextTransforms transforms
 ) {
