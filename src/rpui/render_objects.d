@@ -24,27 +24,22 @@ struct Geometry {
     VAO vao;
 }
 
-struct QuadMeasure {
+struct QuadTransforms {
     Transform2D transform;
     mat4 modelMatrix;
     mat4 mvpMatrix;
 }
 
-struct StatefulTextureQuad {
-    Geometry geometry;
-    Texture2D texture;
-    Texture2DCoords[State] texCoords;
-    Texture2DCoords[State] normilizedTexCoords;
-}
-
-struct QuadTextureCoords {
-    Texture2DCoords texCoords;
-    Texture2DCoords normilizedTexCoords;
+struct HorizontalChainTransforms {
+    QuadTransforms[ChainPart] quadTransforms;
 }
 
 struct TextureQuad {
     Geometry geometry;
     Texture2D texture;
+}
+
+struct OriginalWithNormilizedTextureCoords {
     Texture2DCoords texCoords;
     Texture2DCoords normilizedTexCoords;
 }
@@ -64,7 +59,7 @@ struct UiTextAttributes {
     VerticalAlign textVerticalAlign = VerticalAlign.middle;
 }
 
-struct UiTextMeasure {
+struct UiTextTransforms {
     vec2 size;
     mat4 mvpMatrix;
 }

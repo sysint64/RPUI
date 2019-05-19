@@ -14,45 +14,66 @@ import rpui.widget;
 import rpui.render_objects;
 import rpui.render_factory;
 import rpui.renderer;
+import rpui.measure;
 import rpui.theme;
 import rpui.basic_types;
 
 struct RenderData {
-    StatefulTextureQuad[ChainPart] background;
+    TextureQuad[ChainPart] background;
     TextureQuad[ChainPart] focusGlow;
+    float[ChainPart] backgroundWidths;
+    OriginalWithNormilizedTextureCoords focusGlowTextureCoords;
+    OriginalWithNormilizedTextureCoords[ChainPart][State] backgroundTextureCoords;
     UiText captionText;
-    RenderDataMeasure measure;
     UiTextAttributes[State] captionTextAttrs;
+
+    RenderDataTransforms transforms;
 }
 
-struct RenderDataMeasure {
-    StatefulTextureHorizontalChainMeasure background;
-    UiTextMeasure captionText;
+struct RenderDataTransforms {
+    HorizontalChainTransforms background;
+    UiTextTransforms captionText;
 }
 
 RenderData readRenderData(Theme theme, in string style) {
     RenderData renderData;
 
     foreach (immutable part; [EnumMembers!ChainPart]) {
-        renderData.background[part] = createStatefulChainPartFromRdpl(theme, style, part);
-        renderData.focusGlow[part] = createChainPartFromRdpl(theme, style ~ ".Focus", part);
+        renderData.background[part] = createChainPartFromRdpl(theme);
+        renderData.focusGlow[part] = createChainPartFromRdpl(theme);
+        renderData.focusGlowTextureCoords = createOriginalWithNormilizedTextureCoordsFromRdpl(
+            theme, style ~ ".Focus." ~ getChainPartRdplName(part)
+        );
+
+        foreach (immutable state; [EnumMembers!State]) {
+            renderData.backgroundTextureCoords[state][part] = createOriginalWithNormilizedTextureCoordsFromRdpl(
+                theme, style ~ "." ~ getStateRdplName(state) ~ "." ~ getChainPartRdplName(part)
+            );
+            renderData.backgroundWidths[part] = renderData.backgroundTextureCoords[state][part].texCoords.size.x;
+        }
     }
 
     renderData.captionText = createUiText();
 
     foreach (immutable state; [EnumMembers!State]) {
-        renderData.captionTextAttrs[state] = createTextAttributesFromRdpl(theme, style ~ getStateRdplName(state));
+        renderData.captionTextAttrs[state] = createTextAttributesFromRdpl(theme, style ~ "." ~ getStateRdplName(state));
     }
 
     return renderData;
 }
 
 void render(Button widget, in Theme theme, in RenderData renderData) {
-    renderStatefulTextureHorizontalChain(
+    const texCoords = [
+        ChainPart.left: renderData.backgroundTextureCoords[widget.state][ChainPart.left].normilizedTexCoords,
+        ChainPart.center: renderData.backgroundTextureCoords[widget.state][ChainPart.center].normilizedTexCoords,
+        ChainPart.right: renderData.backgroundTextureCoords[widget.state][ChainPart.right].normilizedTexCoords
+    ];
+
+    renderHorizontalChain(
         theme,
         renderData.background,
-        renderData.measure.background,
-        widget.state,
+        texCoords,
+        renderData.transforms.background,
         widget.partDraws
     );
 
@@ -60,19 +81,18 @@ void render(Button widget, in Theme theme, in RenderData renderData) {
         theme,
         renderData.captionText,
         renderData.captionTextAttrs[widget.state],
-        renderData.measure.captionText,
+        renderData.transforms.captionText,
     );
 }
 
-RenderDataMeasure updateRenderDataMeasure(Button widget, RenderData* renderData, Theme* theme) {
-    RenderDataMeasure measure;
+RenderDataTransforms updateRenderDataTransforms(Button widget, RenderData* renderData, Theme* theme) {
+    RenderDataTransforms transforms;
 
-    measure.background = measureStatefulTextureHorizontalChain(
-        widget.renderData.background,
+    transforms.background = updateHorizontalChainTransforms(
+        renderData.backgroundWidths,
         widget.view.cameraView,
         widget.absolutePosition,
         widget.size,
-        widget.state,
         widget.partDraws
     );
 
@@ -97,7 +117,7 @@ RenderDataMeasure updateRenderDataMeasure(Button widget, RenderData* renderData,
         textVerticalAlign = widget.textVerticalAlign;
     }
 
-    measure.captionText = measureUiTextFixedSize(
+    transforms.captionText = updateUiTextTransforms(
         &renderData.captionText,
         &theme.regularFont,
         renderData.captionTextAttrs[widget.state],
@@ -106,6 +126,6 @@ RenderDataMeasure updateRenderDataMeasure(Button widget, RenderData* renderData,
         textBoxSize
     );
 
-    widget.measure.textWidth = measure.captionText.size.x;
-    return measure;
+    widget.measure.textWidth = transforms.captionText.size.x;
+    return transforms;
 }

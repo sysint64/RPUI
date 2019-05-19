@@ -15,32 +15,22 @@ import rpui.render_objects;
 import rpui.gapi_rpdl_exts;
 import rpui.theme;
 
-StatefulTextureQuad createStatefulChainPartFromRdpl(Theme theme, in string style, in ChainPart part) {
-    StatefulTextureQuad quad;
-    quad.geometry = createGeometry();
-    quad.texture = theme.skin;
-
-    foreach (immutable state; [EnumMembers!State]) {
-        const path = style ~ "." ~ getStateRdplName(state) ~ "." ~ getChainPartRdplName(part);
-        const textCoord = theme.tree.data.getTexCoord(path);
-
-        quad.texCoords[state] = textCoord;
-        quad.normilizedTexCoords[state] = normilizeTexture2DCoords(textCoord, theme.skin);
-    }
-
-    return quad;
-}
-
-TextureQuad createChainPartFromRdpl(Theme theme, in string style, in ChainPart part) {
+TextureQuad createChainPartFromRdpl(in Theme theme) {
     TextureQuad quad;
     quad.geometry = createGeometry();
     quad.texture = theme.skin;
 
-    const path = style ~ "." ~ getChainPartRdplName(part);
-    const textCoord = theme.tree.data.getTexCoord(path);
-    quad.texCoords = normilizeTexture2DCoords(textCoord, theme.skin);
-
     return quad;
+}
+
+OriginalWithNormilizedTextureCoords createOriginalWithNormilizedTextureCoordsFromRdpl(
+    Theme theme,
+    in string style,
+) {
+    const textCoord = theme.tree.data.getTexCoord(style);
+    const normilized = normilizeTexture2DCoords(textCoord, theme.skin);
+
+    return OriginalWithNormilizedTextureCoords(textCoord, normilized);
 }
 
 UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style) {

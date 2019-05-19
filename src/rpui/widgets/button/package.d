@@ -39,7 +39,7 @@ class Button : Widget {
         locator.updateRegionAlign();
         updateSize();
 
-        renderData.measure = updateRenderDataMeasure(this, &renderData, &view.theme);
+        renderData.transforms = updateRenderDataTransforms(this, &renderData, &view.theme);
     }
 
     override void onRender(in RenderEvent event) {
