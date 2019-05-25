@@ -26,6 +26,7 @@ struct RenderData {
 
 struct RenderTransforms {
     HorizontalChainTransforms background;
+    HorizontalChainTransforms focusGlow;
     UiTextTransforms captionText;
 }
 
@@ -59,6 +60,16 @@ void render(
         renderData.captionText.attrs[widget.state],
         transforms.captionText,
     );
+
+    if (widget.focusable && widget.isFocused) {
+        renderHorizontalChain(
+            theme,
+            renderData.focusGlow.parts,
+            renderData.focusGlow.texCoords,
+            transforms.focusGlow,
+            widget.partDraws
+        );
+    }
 }
 
 void updateRenderTransforms(
@@ -74,6 +85,16 @@ void updateRenderTransforms(
         widget.size,
         widget.partDraws
     );
+
+    if (widget.focusable && widget.isFocused) {
+        transforms.focusGlow = updateHorizontalChainTransforms(
+            renderData.background.widths,
+            widget.view.cameraView,
+            widget.absolutePosition + widget.measure.focusOffsets,
+            widget.size + vec2(widget.measure.focusResize),
+            widget.partDraws
+        );
+    }
 
     const textBoxSize = widget.size - vec2(widget.measure.iconsAreaSize, 0);
     auto textPosition = vec2(widget.measure.iconsAreaSize, 0) + widget.absolutePosition;

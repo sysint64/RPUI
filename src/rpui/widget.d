@@ -115,7 +115,7 @@ class Widget : EventsListenerEmpty {
 
     package Widget owner;
 
-    @property bool isFocused() { return p_isFocused; }
+    @property inout(bool) isFocused() inout { return p_isFocused; }
     package bool p_isFocused;
 
     /// Next widget in `parent` children after this.

@@ -159,7 +159,17 @@ abstract class Application {
                 }
 
                 if (event.type == SDL_MOUSEMOTION) {
-                    events.notify(MouseMoveEvent(event.motion.x, event.motion.y, MouseButton.mouseNone));
+                    events.notify(MouseMoveEvent(event.motion.x, event.motion.y));
+                }
+
+                if (event.type == SDL_MOUSEBUTTONDOWN) {
+                    const button = createMouseButtonFromSdlEvent(event);
+                    events.notify(MouseDownEvent(event.button.x, event.button.y, button));
+                }
+
+                if (event.type == SDL_MOUSEBUTTONUP) {
+                    const button = createMouseButtonFromSdlEvent(event);
+                    events.notify(MouseUpEvent(event.button.x, event.button.y, button));
                 }
             }
 

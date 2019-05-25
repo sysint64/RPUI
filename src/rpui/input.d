@@ -11,6 +11,22 @@ enum MouseButton {
     mouseMiddle = SDL_BUTTON_MIDDLE,
 }
 
+MouseButton createMouseButtonFromSdlEvent(in SDL_Event event) {
+    switch (event.button.button) {
+        case SDL_BUTTON_LEFT:
+            return MouseButton.mouseLeft;
+
+        case SDL_BUTTON_RIGHT:
+            return MouseButton.mouseRight;
+
+        case SDL_BUTTON_MIDDLE:
+            return MouseButton.mouseMiddle;
+
+        default:
+            return MouseButton.mouseNone;
+    }
+}
+
 /// break the dependence on SDL Keyboard
 enum KeyCode {
     A = SDLK_a,
