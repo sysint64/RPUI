@@ -80,11 +80,11 @@ Panel
         thickness           : 1
 
         Light
-            borderColor     : 0, 0, 0, 20
+            outerColor     : 0, 0, 0, 20
             innerColor      : 255, 255, 255, 30
 
         Dark
-            borderColor     : 0, 0, 0, 100
+            outerColor     : 0, 0, 0, 100
             innerColor      : 0, 0, 0, 0
 
     Header

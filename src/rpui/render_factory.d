@@ -72,7 +72,7 @@ OriginalWithNormilizedTextureCoords createOriginalWithNormilizedTextureCoordsFro
 
 StatefulUiText createStatefulUiText(Theme theme, in string style) {
     StatefulUiText text;
-    text.render = createUiTextRenderObjec();
+    text.render = createUiTextRenderObject();
 
     foreach (immutable state; [EnumMembers!State]) {
         text.attrs[state] = createTextAttributesFromRdpl(
@@ -90,6 +90,7 @@ UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style, in s
     attrs.color = theme.tree.data.getNormColor(style ~ "." ~ prefix ~ "Color");
     attrs.offset = theme.tree.data.optVec2f(style ~ "." ~ prefix ~ "Offset", vec2(0, 0));
     attrs.fontSize = theme.tree.data.optInteger(style ~ "." ~ prefix ~ "FontSize.0", theme.regularFontSize);
+
     // attrs.caption = theme.;
     // attrs.textAlign = theme.;
     // attrs.textVerticalAlign = theme.;
@@ -99,7 +100,7 @@ UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style, in s
     return attrs;
 }
 
-UiTextRender createUiTextRenderObjec() {
+UiTextRender createUiTextRenderObject() {
     return UiTextRender(createGeometry(), createText());
 }
 

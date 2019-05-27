@@ -23,6 +23,7 @@ struct ThemeShaders {
     ShaderProgram textureAtlasShader;
     ShaderProgram textShader;
     ShaderProgram transformShader;
+    ShaderProgram colorShader;
 }
 
 Theme createThemeByName(in string theme) {
@@ -43,22 +44,20 @@ Theme createThemeByName(in string theme) {
 }
 
 private ThemeShaders createThemeShaders() {
-    const vertexSource = readText(buildPath("res", "shaders", "transform_vertex.glsl"));
-    const vertexShader = createShader("transform vertex shader", ShaderType.vertex, vertexSource);
+    return ThemeShaders(
+        createSimpleShader("tex atlas", "transform_vertex.glsl", "texture_atlas_fragment.glsl"),
+        createSimpleShader("text", "transform_vertex.glsl", "text_fragment.glsl"),
+        createSimpleShader("transform", "transform_vertex.glsl", "texture_fragment.glsl"),
+        createSimpleShader("color", "transform_vertex.glsl", "color_fragment.glsl"),
+    );
+}
 
-    const texAtalsFragmentSource = readText(buildPath("res", "shaders", "texture_atlas_fragment.glsl"));
-    const texAtlasFragmentShader = createShader("texture atlas fragment shader", ShaderType.fragment, texAtalsFragmentSource);
-    auto texAtlasShader = createShaderProgram("texture atlas program", [vertexShader, texAtlasFragmentShader]);
+private ShaderProgram createSimpleShader(in string name, in string vertex, in string fragment) {
+    const vertexSource = readText(buildPath("res", "shaders", vertex));
+    const vertexShader = createShader(vertex, ShaderType.vertex, vertexSource);
 
-    const fragmentColorSource = readText(buildPath("res", "shaders", "color_fragment.glsl"));
-    const fragmentColorShader = createShader("color fragment shader", ShaderType.fragment, fragmentColorSource);
+    const fragmentSource = readText(buildPath("res", "shaders", fragment));
+    const fragmentShader = createShader(fragment, ShaderType.fragment, fragmentSource);
 
-    auto textShader = createShaderProgram("text program", [vertexShader, fragmentColorShader]);
-
-    const textureFragmentSource = readText(buildPath("res", "shaders", "texture_fragment.glsl"));
-    const textureFragmentShader = createShader("texture fragment shader", ShaderType.fragment, textureFragmentSource);
-
-    auto transformShader = createShaderProgram("transform program", [vertexShader, textureFragmentShader]);
-
-    return ThemeShaders(texAtlasShader, textShader, transformShader);
+    return createShaderProgram(name ~ " shader program", [vertexShader, fragmentShader]);
 }

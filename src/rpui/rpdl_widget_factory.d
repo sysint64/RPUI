@@ -19,6 +19,7 @@ import rpui.widget;
 import rpui.view;
 
 import rpui.widgets.button;
+import rpui.widgets.panel;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -62,6 +63,9 @@ final class RpdlWidgetFactory {
         switch (widgetNode.name) {
             case "Button":
                 return createWidget!Button(widgetNode, parentWidget);
+
+            case "Panel":
+                return createWidget!Panel(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);
@@ -137,6 +141,14 @@ final class RpdlWidgetFactory {
             alias SymbolType = typeof(defaultValue);
 
             static if (is(SymbolType == Array!CT, CT)) {
+                auto array = widgetNode.getNode(symbolName);
+
+                if (array is null)
+                    continue;
+
+                foreach (node; array.children) {
+                    readArrayField!(T, CT, symbolName)(widget, widgetNode, node.name);
+                }
             }
             else {
                 readField!(T, SymbolType, symbolName)(widget, widgetNode, defaultValue);
@@ -168,6 +180,56 @@ final class RpdlWidgetFactory {
                 break;
             }
         }
+
+        if (!foundType) {
+            static if (is(SymbolType == enum)) {
+                const value = widgetNode.optEnum!(SymbolType)(symbolName ~ ".0", defaultValue);
+                mixin("widget." ~ symbolName ~ " = value;");
+            } else
+
+            // Check if unsupported type is array
+            static if (is(SymbolType == CT[], CT)) {
+                auto array = widgetNode.getNode(symbolName);
+
+                if (array is null)
+                    return;
+
+                foreach (node; array.children) {
+                    readArrayField!(T, Unqual!CT, symbolName)(widget, widgetNode, node.name);
+                }
+            } else {
+                assert(false, "type " ~ SymbolType.stringof ~ " doesn't allow");
+            }
+        }
+    }
+
+        private void readArrayField(T : Widget, SymbolType, string symbolName)
+        (T widget, Node widgetNode, string nodeName)
+    {
+        const defaultValue = SymbolType.init;
+        bool foundType = false;
+
+        foreach (type; typesMap) {
+            mixin("alias RawType = " ~ type[name] ~ ";");
+
+            static if (is(SymbolType == RawType)) {
+                foundType = true;
+                const fullSymbolPath = symbolName ~ "." ~ nodeName;// ~ type[selector];
+                enum call = "widgetNode." ~ type[accessor] ~ "(fullSymbolPath, defaultValue)";
+                const value = mixin(call);
+
+                // assign value to widget field
+                static if (type[name] == "dstring") {
+                    mixin("widget." ~ symbolName ~ " ~= uiManager.stringsRes.parseString(value);");
+                } else {
+                    mixin("widget." ~ symbolName ~ " ~= value;");
+                }
+
+                break;
+            }
+        }
+
+        assert(foundType, "type " ~ SymbolType.stringof ~ " doesn't allow");
     }
 
     private void readVisibleRules(Widget widget, ObjectNode widgetNode) {

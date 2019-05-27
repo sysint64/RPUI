@@ -43,7 +43,7 @@ class Button : Widget {
         updateRenderTransforms(this, &renderTransforms, &renderData, &view.theme);
     }
 
-    override void onRender(in RenderEvent event) {
+    override void onRender() {
         render(this, view.theme, renderData, renderTransforms);
     }
 

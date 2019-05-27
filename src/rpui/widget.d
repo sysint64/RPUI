@@ -443,7 +443,7 @@ public:
     }
 
     /// Render widget in camera view.
-    void onRender(in RenderEvent event) {
+    void onRender() {
         if (!drawChildren)
             return;
 
@@ -451,7 +451,7 @@ public:
             if (!widget.visible)
                 continue;
 
-            widget.onRender(event);
+            widget.onRender();
         }
     }
 

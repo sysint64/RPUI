@@ -69,6 +69,7 @@ final class View : EventsListenerEmpty {
 
     public Cursor.Icon cursor = Cursor.Icon.inherit;
     private vec2i mousePos;
+    private vec2i mouseClickPos;
     private Array!Rect scissorStack;
     private uint viewportHeight;
 
@@ -148,11 +149,14 @@ final class View : EventsListenerEmpty {
         cameraView.viewportWidth = event.viewportWidth;
         cameraView.viewportHeight = event.viewportHeight;
 
-        rootWidget.onRender(event);
+        rootWidget.size.x = event.viewportWidth;
+        rootWidget.size.y = event.viewportHeight;
+
+        rootWidget.onRender();
 
         foreach (Widget widget; frontWidgets) {
             if (widget.visible) {
-                widget.onRender(event);
+                widget.onRender();
             }
         }
     }

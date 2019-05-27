@@ -39,6 +39,23 @@ void renderTexAtlasQuad(
     renderIndexedGeometry(cast(uint) quadIndices.length, GL_TRIANGLE_STRIP);
 }
 
+void renderColorQuad(
+    in Theme theme,
+    in Geometry geometry,
+    in vec4 color,
+    in QuadTransforms transforms
+) {
+    const shader = theme.shaders.colorShader;
+    bindShaderProgram(shader);
+
+    setShaderProgramUniformMatrix(shader, "MVP", transforms.mvpMatrix);
+    setShaderProgramUniformVec4f(shader, "color", color);
+
+    bindVAO(geometry.vao);
+    bindIndices(geometry.indicesBuffer);
+    renderIndexedGeometry(cast(uint) quadIndices.length, GL_TRIANGLE_STRIP);
+}
+
 void renderHorizontalChain(
     in Theme theme,
     in TextureQuad[ChainPart] parts,
