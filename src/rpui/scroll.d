@@ -13,19 +13,42 @@ import rpui.math;
  * offsets and scroll button size and offset depending of the `contentSize` and
  * and `visibleSize`. See how to use this controller in `rpui.widgets.panel.Panel`.
  */
-class ScrollController {
+struct ScrollController {
+    float buttonMaxOffset = 0;
+    float buttonMinSize = 20;
+    float buttonMaxSize;
+    bool  buttonClick = false;  /// If true, then user clicked button and hold it.
+    float contentMaxOffset = 0;
+    float contentSize = 0;  /// Full content size.
+    float visibleSize = 0;  /// Visible area size.
+
+    /// Calculated button size.
+    @property float buttonSize() { return ceil(buttonSize_); }
+    private float buttonSize_ = 0;
+
+    /// Calculated button offset.
+    @property float buttonOffset() { return ceil(buttonOffset_); }
+    private float buttonOffset_ = 0;
+
+    /// Calculated content offset.
+    @property float contentOffset() { return ceil(contentOffset_); }
+    private float contentOffset_ = 0;
+
+    private Orientation orientation;
+    private float buttonClickOffset;
+
     /// Create controller with orientation - vertical or horizontal.
     this(in Orientation orientation) {
         this.orientation = orientation;
     }
 
     /// Calculates `buttonSize`, `buttonOffset` and `contentOffset`.
-    void pollButton(in vec2i mousePos, vec2i mouseClickPos) {
+    void pollButton(in vec2i mousePos, in vec2i mouseClickPos) {
         const float buttonRatio = visibleSize / contentSize;
-        p_buttonSize = buttonMaxSize * buttonRatio;
+        buttonSize_ = buttonMaxSize * buttonRatio;
 
-        if (p_buttonSize < buttonMinSize)
-            p_buttonSize = buttonMinSize;
+        if (buttonSize_ < buttonMinSize)
+            buttonSize_ = buttonMinSize;
 
         if (!buttonClick) {
             clampValues();
@@ -40,43 +63,43 @@ class ScrollController {
         if (orientation == Orientation.vertical)
             delta = mousePos.y - mouseClickPos.y;
 
-        p_buttonOffset = buttonClickOffset + delta;
+        buttonOffset_ = buttonClickOffset + delta;
         clampValues();
-        const float contentRatio = p_buttonOffset / (buttonMaxSize - p_buttonSize);
-        p_contentOffset = contentMaxOffset * contentRatio;
+        const float contentRatio = buttonOffset_ / (buttonMaxSize - buttonSize_);
+        contentOffset_ = contentMaxOffset * contentRatio;
     }
 
     /// Update parameters when widget update size.
     void onResize() {
         if (contentMaxOffset == 0) {
-            p_buttonOffset = 0;
+            buttonOffset_ = 0;
         } else {
-            const float ratio = p_contentOffset / contentMaxOffset;
-            p_buttonOffset = (buttonMaxSize - p_buttonSize) * ratio;
+            const float ratio = contentOffset_ / contentMaxOffset;
+            buttonOffset_ = (buttonMaxSize - buttonSize_) * ratio;
         }
 
         clampValues();
     }
 
     void onMouseDown(in MouseDownEvent event) {
-        buttonClickOffset = p_buttonOffset;
+        buttonClickOffset = buttonOffset_;
     }
 
     bool addOffsetInPx(in float delta) {
         if (visibleSize >= contentSize)
             return false;
 
-        const float lastScrollOffset = p_contentOffset;
-        p_contentOffset += delta;
+        const float lastScrollOffset = contentOffset_;
+        contentOffset_ += delta;
         onResize();
-        return lastScrollOffset != p_contentOffset;
+        return lastScrollOffset != contentOffset_;
     }
 
     bool setOffsetInPx(in float pixels) {
-        const float lastScrollOffset = p_contentOffset;
-        p_contentOffset = pixels;
+        const float lastScrollOffset = contentOffset_;
+        contentOffset_ = pixels;
         onResize();
-        return lastScrollOffset != p_contentOffset;
+        return lastScrollOffset != contentOffset_;
     }
 
     /// Set content offset in `percent`, value should be in 0..1 range.
@@ -85,39 +108,12 @@ class ScrollController {
         assert(percent <= 1.0f, "percent should be in range 0..1");
     }
     body {
-        p_contentOffset = contentMaxOffset * percent;
+        contentOffset_ = contentMaxOffset * percent;
         onResize();
     }
 
-// Properties --------------------------------------------------------------------------------------
-
-    float buttonMaxOffset = 0;
-    float buttonMinSize = 20;
-    float buttonMaxSize;
-    bool  buttonClick = false;  /// If true, then user clicked button and hold it.
-    float contentMaxOffset = 0;
-    float contentSize = 0;  /// Full content size.
-    float visibleSize = 0;  /// Visible area size.
-
-    /// Calculated button size.
-    @property float buttonSize() { return ceil(p_buttonSize); }
-
-    /// Calculated button offset.
-    @property float buttonOffset() { return ceil(p_buttonOffset); }
-
-    /// Calculated content offset.
-    @property float contentOffset() { return ceil(p_contentOffset); }
-
-private:
-    float p_buttonOffset = 0;
-    float p_buttonSize = 0;
-    float p_contentOffset = 0;
-
-    Orientation orientation;
-    float buttonClickOffset;
-
-    void clampValues() {
-        p_buttonOffset = unsafeClamp(p_buttonOffset, 0, buttonMaxOffset - p_buttonSize);
-        p_contentOffset = unsafeClamp(p_contentOffset, 0, contentMaxOffset);
+    private void clampValues() {
+        buttonOffset_ = unsafeClamp(buttonOffset_, 0, buttonMaxOffset - buttonSize_);
+        contentOffset_ = unsafeClamp(contentOffset_, 0, contentMaxOffset);
     }
 }

@@ -57,7 +57,7 @@ class Widget : EventsListenerEmpty {
     @field bool finalFocus = false;
 
     /// Specifies the type of cursor to be displayed when pointing on an element.
-    @field Cursor.Icon cursor = Cursor.Icon.normal;
+    @field CursorIcon cursor = CursorIcon.normal;
 
     @field string name = "";
 

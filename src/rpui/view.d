@@ -67,20 +67,21 @@ final class View : EventsListenerEmpty {
     package SList!Widget freezeSources;
     package SList!bool isNestedFreezeStack;
 
-    public Cursor.Icon cursor = Cursor.Icon.inherit;
-    private vec2i mousePos;
-    private vec2i mouseClickPos;
+    public CursorIcon cursor = CursorIcon.inherit;
+    package vec2i mousePos;
+    package vec2i mouseClickPos;
     private Array!Rect scissorStack;
     private uint viewportHeight;
 
     package CameraView cameraView;
     package ViewResources resources;
+    private CursorManager cursorManager;
 
     private this() {
         events = new EventsObserver();
     }
 
-    this(in string themeName, ViewResources resources) {
+    this(in string themeName, CursorManager cursorManager, ViewResources resources) {
         with (rootWidget = new Widget(this)) {
             isOver = true;
             finalFocus = true;
@@ -91,6 +92,7 @@ final class View : EventsListenerEmpty {
 
         theme = createThemeByName(themeName);
         this.resources = resources;
+        this.cursorManager = cursorManager;
     }
 
     this(in string themeName) {
@@ -108,7 +110,7 @@ final class View : EventsListenerEmpty {
 
     /// Invokes all `onProgress` of all widgets and `poll` widgets.
     void onProgress(in ProgressEvent event) {
-        cursor = Cursor.Icon.inherit;
+        cursor = CursorIcon.inherit;
 
         onProgressQueries.clear();
         rootWidget.collectOnProgressQueries();
@@ -137,10 +139,11 @@ final class View : EventsListenerEmpty {
                 continue;
 
             if (widget.isOver)
-                cursor = Cursor.Icon.inherit;
+                cursor = CursorIcon.inherit;
         }
 
         rootWidget.updateAll();
+        cursorManager.setIcon(cursor);
     }
 
     /// Renders all widgets inside `camera` view.
@@ -226,7 +229,7 @@ final class View : EventsListenerEmpty {
                 p_widgetUnderMouse = widget;
                 found = widget;
 
-                if (cursor == Cursor.Icon.inherit) {
+                if (cursor == CursorIcon.inherit) {
                     cursor = widget.cursor;
                 }
 
@@ -337,6 +340,9 @@ final class View : EventsListenerEmpty {
     }
 
     override void onMouseDown(in MouseDownEvent event) {
+        mouseClickPos.x = event.x;
+        mouseClickPos.y = event.y;
+
         foreach_reverse (Widget widget; widgetOrdering) {
             if (widget is null || isWidgetFrozen(widget))
                 continue;

@@ -100,7 +100,7 @@ final class TestApplication : Application {
         viewResources.strings.setLocale("en");
         viewResources.strings.addStrings("test_view.rdl");
 
-        rootView = new View("light", viewResources);
+        rootView = new View("light", cursorManager, viewResources);
         events.join(rootView.events);
         events.subscribe(rootView);
 

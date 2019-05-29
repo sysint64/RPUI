@@ -1,9 +1,5 @@
 /**
  * System cursor.
- *
- * Copyright: © 2017 Andrey Kabylin
- * License: Subject to the terms of the MIT license, as written in the included LICENSE.txt file.
- *
  * Macros:
  *     CURSOR_IMG = <img src="https://tronche.com/gui/x/xlib/appendix/b/$1" style="max-width: 16px; max-height: 16px; display: block; margin: auto">
  */
@@ -13,58 +9,58 @@ module rpui.cursor;
 import x11.Xlib;
 import x11_cursorfont;
 
-/// System cursor.
-final class Cursor {
-    enum Icon {
-        none = -1,
-        inherit = -2,
-        hand = XC_hand1,  /// $(CURSOR_IMG 58.gif)
-        normal = XC_left_ptr,  /// $(CURSOR_IMG 68.gif)
-        iBeam = XC_xterm,  /// $(CURSOR_IMG 152.gif)
-        vDoubleArrow = XC_sb_v_double_arrow,  /// $(CURSOR_IMG 116.gif)
-        hDoubleArrow  = XC_sb_h_double_arrow,  /// $(CURSOR_IMG 108.gif)
-        crossHair = XC_crosshair,  /// $(CURSOR_IMG 34.gif)
-        drag = XC_fleur,  /// $(CURSOR_IMG 52.gif)
-        topSide = XC_top_side,  /// $(CURSOR_IMG 138.gif)
-        bottomSide = XC_bottom_side,  /// $(CURSOR_IMG 16.gif)
-        leftSide = XC_left_side,  /// $(CURSOR_IMG 70.gif)
-        rightSide = XC_right_side,  /// $(CURSOR_IMG 96.gif)
-        topLeftCorner = XC_top_left_corner,  /// $(CURSOR_IMG 134.gif)
-        topRightCorner = XC_top_right_corner,  /// $(CURSOR_IMG 136.gif)
-        bottomLeftCorner = XC_bottom_left_corner,  /// $(CURSOR_IMG 12.gif)
-        bottomRightCorner = XC_bottom_right_corner  /// $(CURSOR_IMG 14.gif)
-    }
+import derelict.sdl2.sdl;
 
-    this() {
-        version (linux) {
-            display = XOpenDisplay(null);
+enum CursorIcon {
+    none = -1,
+    inherit = -2,
+    hand = SDL_SYSTEM_CURSOR_HAND,  /// $(CURSOR_IMG 58.gif)
+    normal = SDL_SYSTEM_CURSOR_ARROW,  /// $(CURSOR_IMG 68.gif)
+    iBeam = SDL_SYSTEM_CURSOR_IBEAM,  /// $(CURSOR_IMG 152.gif)
+    vDoubleArrow = SDL_SYSTEM_CURSOR_SIZENS,  /// $(CURSOR_IMG 116.gif)
+    hDoubleArrow  = SDL_SYSTEM_CURSOR_SIZEWE,  /// $(CURSOR_IMG 108.gif)
+    crossHair = SDL_SYSTEM_CURSOR_CROSSHAIR,  /// $(CURSOR_IMG 34.gif)
+    // drag = XC_fleur,  /// $(CURSOR_IMG 52.gif)
+    // topSide = XC_top_side,  /// $(CURSOR_IMG 138.gif)
+    // bottomSide = XC_bottom_side,  /// $(CURSOR_IMG 16.gif)
+    // leftSide = XC_left_side,  /// $(CURSOR_IMG 70.gif)
+    // rightSide = XC_right_side,  /// $(CURSOR_IMG 96.gif)
+    // topLeftCorner = XC_top_left_corner,  /// $(CURSOR_IMG 134.gif)
+    // topRightCorner = XC_top_right_corner,  /// $(CURSOR_IMG 136.gif)
+    // bottomLeftCorner = XC_bottom_left_corner,  /// $(CURSOR_IMG 12.gif)
+    // bottomRightCorner = XC_bottom_right_corner  /// $(CURSOR_IMG 14.gif)
+}
+
+/// System cursor.
+final class CursorManager {
+    private SDL_Cursor* cursor = null;
+
+    ~this() {
+        if (cursor !is null) {
+            SDL_FreeCursor(cursor);
         }
     }
 
-    private Icon icon = Icon.normal;
+    private CursorIcon icon = CursorIcon.normal;
 
-    void setIcon(in Icon newIcon) {
-        if (icon == newIcon || newIcon == Icon.none)
+    void setIcon(in CursorIcon newIcon) {
+        if (icon == newIcon || newIcon == CursorIcon.none)
             return;
 
-        if (newIcon == Icon.inherit) {
-            icon = Icon.normal;
-        }
-        else {
-            icon = newIcon;
+        icon = newIcon;
+        CursorIcon sdlIcon;
+
+        if (newIcon == CursorIcon.inherit) {
+            sdlIcon = CursorIcon.normal;
+        } else {
+            sdlIcon = newIcon;
         }
 
-        version (linux) {
-            cursor = XCreateFontCursor(display, cast(uint) icon);
-            // TODO:
-            // XDefineCursor(display, app.windowHandle, cursor);
-            XFlush(display);
+        if (cursor !is null) {
+            SDL_FreeCursor(cursor);
         }
-    }
 
-private:
-    version (linux) {
-        Display *display;
-        ulong cursor;
+        cursor = SDL_CreateSystemCursor(cast(SDL_SystemCursor) sdlIcon);
+        SDL_SetCursor(cursor);
     }
 }

@@ -6,17 +6,35 @@ Panel
     size: 300, 300
     position: 100, 0
     finalFocusRegion: true
-    blackSplit: true
+    darkSplit: true
     finalFocus: true
     background: action
 
-    Button
-        position: 5, 5
-        size: 200, 21
-        caption: "String: @TestView.helloWorld"
-        name: "okButton"
-        textAlign: right
-        locationAlign: center
-        verticalLocationAlign: middle
-        margin: 5
-        icons: "info", "folder", "check"
+    Panel
+        name: "testPanel"
+        caption: "@TestView.mainPanelCaption"
+        userCanHide: true
+        userCanResize: true
+        regionAlign: top
+        background: light
+        position: 0, 0
+        size: 0, 100
+        padding: 5
+
+        Button
+            position: 100, 5
+            size: 200, 21
+            caption: "String: @TestView.helloWorld"
+            name: "okButton"
+            locationAlign: center
+            verticalLocationAlign: middle
+            margin: 5
+            icons: "info", "folder", "check"
+
+        Panel
+            size: 150, 50
+            position: 5, 31
+            background: dark
+            margin: 10
+            Button position: 0, 0 size: 100, 21 caption: "Cancel" name: "cancelButton"
+            Button position: 5, 57 size: 100, 21 caption: "Close" name: "closeButton"

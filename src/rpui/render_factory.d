@@ -14,11 +14,16 @@ import gapi.vec;
 import rpui.render_objects;
 import rpui.gapi_rpdl_exts;
 import rpui.theme;
+import rpui.basic_types;
 
-StatefulHorizontalChain createStatefulHorizontalChainFromRdpl(Theme theme, in string style) {
-    StatefulHorizontalChain chain;
+StatefulChain createStatefulChainFromRdpl(Theme theme, in Orientation orientation, in string style) {
+    StatefulChain chain;
 
-    foreach (immutable part; [EnumMembers!ChainPart]) {
+    immutable chainParts = orientation == Orientation.horizontal
+        ? horizontalChainParts
+        : verticalChainParts;
+
+    foreach (immutable part; chainParts) {
         chain.parts[part] = createChainPart(theme);
 
         foreach (immutable state; [EnumMembers!State]) {
@@ -34,10 +39,14 @@ StatefulHorizontalChain createStatefulHorizontalChainFromRdpl(Theme theme, in st
     return chain;
 }
 
-HorizontalChain createHorizontalChainFromRdpl(Theme theme, in string style) {
-    HorizontalChain chain;
+Chain createChainFromRdpl(Theme theme, in Orientation orientation, in string style) {
+    Chain chain;
 
-    foreach (immutable part; [EnumMembers!ChainPart]) {
+    immutable chainParts = orientation == Orientation.horizontal
+        ? horizontalChainParts
+        : verticalChainParts;
+
+    foreach (immutable part; chainParts) {
         chain.parts[part] = createChainPart(theme);
 
         const texCoords = createOriginalWithNormilizedTextureCoordsFromRdpl(

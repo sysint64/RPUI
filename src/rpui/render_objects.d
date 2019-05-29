@@ -44,13 +44,13 @@ struct OriginalWithNormilizedTextureCoords {
     Texture2DCoords normilizedTexCoords;
 }
 
-struct StatefulHorizontalChain {
+struct StatefulChain {
     TextureQuad[ChainPart] parts;
     float[ChainPart] widths;
     Texture2DCoords[ChainPart][State] texCoords;
 }
 
-struct HorizontalChain {
+struct Chain {
     TextureQuad[ChainPart] parts;
     float[ChainPart] widths;
     Texture2DCoords[ChainPart] texCoords;
@@ -97,7 +97,22 @@ enum ChainPart {
     left,
     center,
     right,
+    top,
+    middle,
+    bottom,
 }
+
+immutable horizontalChainParts = [
+    ChainPart.left,
+    ChainPart.center,
+    ChainPart.right,
+];
+
+immutable verticalChainParts = [
+    ChainPart.top,
+    ChainPart.middle,
+    ChainPart.bottom,
+];
 
 string getStateRdplName(in State state) {
     switch (state) {
@@ -125,6 +140,15 @@ string getChainPartRdplName(in ChainPart part) {
 
         case ChainPart.right:
             return "right";
+
+        case ChainPart.top:
+            return "top";
+
+        case ChainPart.middle:
+            return "middle";
+
+        case ChainPart.bottom:
+            return "bottom";
 
         default:
             throw new Error("Unknown part");

@@ -19,8 +19,8 @@ import rpui.theme;
 import rpui.basic_types;
 
 struct RenderData {
-    StatefulHorizontalChain background;
-    HorizontalChain focusGlow;
+    StatefulChain background;
+    Chain focusGlow;
     StatefulUiText captionText;
 }
 
@@ -33,8 +33,8 @@ struct RenderTransforms {
 RenderData readRenderData(Theme theme, in string style) {
     RenderData renderData;
 
-    renderData.background = createStatefulHorizontalChainFromRdpl(theme, style);
-    renderData.focusGlow = createHorizontalChainFromRdpl(theme, style ~ ".Focus");
+    renderData.background = createStatefulChainFromRdpl(theme, Orientation.horizontal, style);
+    renderData.focusGlow = createChainFromRdpl(theme, Orientation.horizontal, style ~ ".Focus");
     renderData.captionText = createStatefulUiText(theme, style);
 
     return renderData;

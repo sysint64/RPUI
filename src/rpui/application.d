@@ -10,9 +10,11 @@ import gapi.opengl;
 import rpui.events;
 import rpui.events_observer;
 import rpui.input;
+import rpui.cursor;
 
 abstract class Application {
     EventsObserver events = new EventsObserver();
+    CursorManager cursorManager = new CursorManager();
 
     struct WindowData {
         SDL_Window* window;
@@ -128,7 +130,7 @@ abstract class Application {
                 times.delta = (times.current - times.last) / 1000.0f;
                 onProgress(ProgressEvent(times.delta));
                 times.last = times.current;
-                glClear(GL_COLOR_BUFFER_BIT);
+                glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 onRender();
                 SDL_GL_SwapWindow(windowData.window);
             }
@@ -147,15 +149,16 @@ abstract class Application {
                     const width = event.window.data1;
                     const height = event.window.data2;
 
+                    glViewport(0, 0, width, height);
+
                     windowData.viewportWidth = width;
                     windowData.viewportHeight = height;
 
                     onWindowResize(WindowResizeEvent(width, height));
                     events.notify(WindowResizeEvent(width, height));
 
-                    glViewport(0, 0, width, height);
-                    SDL_GL_MakeCurrent(windowData.window, windowData.glContext);
-                    render();
+                    // SDL_GL_MakeCurrent(windowData.window, windowData.glContext);
+                    // render();
                 }
 
                 if (event.type == SDL_MOUSEMOTION) {
