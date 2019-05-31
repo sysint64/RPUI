@@ -89,6 +89,34 @@ void renderHorizontalChain(
     );
 }
 
+void renderVerticalChain(
+    in Theme theme,
+    in TextureQuad[ChainPart] parts,
+    in Texture2DCoords[ChainPart] texCoords,
+    in HorizontalChainTransforms transforms
+) {
+    renderTexAtlasQuad(
+        theme,
+        parts[ChainPart.top],
+        texCoords[ChainPart.top],
+        transforms.quadTransforms[ChainPart.top]
+    );
+
+    renderTexAtlasQuad(
+        theme,
+        parts[ChainPart.bottom],
+        texCoords[ChainPart.bottom],
+        transforms.quadTransforms[ChainPart.bottom]
+    );
+
+    renderTexAtlasQuad(
+        theme,
+        parts[ChainPart.middle],
+        texCoords[ChainPart.middle],
+        transforms.quadTransforms[ChainPart.middle]
+    );
+}
+
 void renderUiText(
     in Theme theme,
     in UiTextRender text,

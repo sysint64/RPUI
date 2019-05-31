@@ -174,6 +174,10 @@ abstract class Application {
                     const button = createMouseButtonFromSdlEvent(event);
                     events.notify(MouseUpEvent(event.button.x, event.button.y, button));
                 }
+
+                if (event.type == SDL_MOUSEWHEEL) {
+                    events.notify(MouseWheelEvent(event.wheel.x, event.wheel.y));
+                }
             }
 
             render();

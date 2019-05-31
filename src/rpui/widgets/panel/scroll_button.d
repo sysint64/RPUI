@@ -4,6 +4,7 @@ import rpui.scroll;
 import rpui.math;
 import rpui.widgets.panel;
 import rpui.basic_types;
+import rpui.render_objects;
 
 struct ScrollButton {
     Orientation orientation;
@@ -14,38 +15,105 @@ struct ScrollButton {
     bool visible = false;
     vec2 buttonOffset;
     float buttonSize;
+    Panel panel;
+    float width;
+
+    @property inout(State) state() inout {
+        if (isClick) {
+            return State.click;
+        } else if (isEnter) {
+            return State.enter;
+        } else {
+            return State.leave;
+        }
+    }
 
     this(in Orientation orientation) {
         this.orientation = orientation;
-    }
-}
-
-ScrollController updateController(Panel panel, in ScrollButton scrollButton) {
-    ScrollController scrollController;
-
-    const float[Orientation] widgetRegionSizes = [
-        Orientation.horizontal: panel.extraInnerOffset.left + panel.extraInnerOffset.right,
-        Orientation.vertical: panel.extraInnerOffset.top + panel.extraInnerOffset.bottom
-    ];
-
-    float getVectorComponent(in vec2 vector) {
-        return scrollButton.orientation == Orientation.horizontal ? vector.x : vector.y;
+        this.scrollController = ScrollController(orientation);
     }
 
-    const widgetSize = getVectorComponent(panel.size);
-    const widgetRegionSize = widgetRegionSizes[scrollButton.orientation];
-    const innerBoundarySize = getVectorComponent(panel.innerBoundarySize);
-    const innerBoundarySizeClamped = getVectorComponent(panel.innerBoundarySizeClamped);
+    void updateController() {
+        const float[Orientation] widgetRegionSizes = [
+            Orientation.horizontal: panel.extraInnerOffset.left + panel.extraInnerOffset.right,
+            Orientation.vertical: panel.extraInnerOffset.top + panel.extraInnerOffset.bottom
+        ];
 
-    with (scrollController) {
-        buttonMaxOffset = widgetSize - widgetRegionSize;
-        buttonMaxSize = widgetSize - widgetRegionSize;
-        buttonClick = scrollButton.isClick;
+        float getVectorComponent(in vec2 vector) {
+            return orientation == Orientation.horizontal ? vector.x : vector.y;
+        }
 
-        visibleSize = widgetSize;
-        contentSize = innerBoundarySize;
-        contentMaxOffset = innerBoundarySizeClamped - widgetSize;
+        const widgetSize = getVectorComponent(panel.size);
+        const widgetRegionSize = widgetRegionSizes[orientation];
+        const innerBoundarySize = getVectorComponent(panel.innerBoundarySize);
+        const innerBoundarySizeClamped = getVectorComponent(panel.innerBoundarySizeClamped);
+
+        with (scrollController) {
+            buttonMaxOffset = widgetSize - widgetRegionSize;
+            buttonMaxSize = widgetSize - widgetRegionSize;
+            buttonClick = isClick;
+
+            visibleSize = widgetSize;
+            contentSize = innerBoundarySize;
+            contentMaxOffset = innerBoundarySizeClamped - widgetSize;
+        }
     }
 
-    return scrollController;
+    void attach(Panel panel, in Orientation orientation) {
+        this.panel = panel;
+        this.scrollController.buttonMinSize = panel.measure.scrollButtonMinSize;
+
+        if (orientation == Orientation.horizontal) {
+            this.width = panel.measure.horizontalScrollRegionWidth;
+        }
+        else if (orientation == Orientation.vertical) {
+            this.width = panel.measure.verticalScrollRegionWidth;
+        }
+    }
+
+    void updateSize() {
+        updateController();
+        visible = scrollController.contentSize > scrollController.visibleSize;
+
+        if (orientation == Orientation.horizontal) {
+            buttonSize = scrollController.buttonSize;
+            buttonOffset = vec2(
+                scrollController.buttonOffset,
+                panel.size.y - width
+            );
+        }
+        else if (orientation == Orientation.vertical) {
+            buttonSize = scrollController.buttonSize;
+            buttonOffset = vec2(
+                panel.size.x - width,
+                scrollController.buttonOffset + panel.extraInnerOffset.top
+            );
+        }
+
+        if (!visible) {
+            scrollController.setOffsetInPercent(0);
+            return;
+        }
+
+        scrollController.pollButton(panel.view.mousePos, panel.view.mouseClickPos);
+    }
+
+    void onProgress() {
+        Rect rect;
+
+        if (orientation == Orientation.horizontal) {
+            rect = Rect(
+                panel.absolutePosition + buttonOffset,
+                vec2(buttonSize, panel.extraInnerOffset.bottom)
+            );
+        }
+        else if (orientation == Orientation.vertical) {
+            rect = Rect(
+                panel.absolutePosition + buttonOffset,
+                vec2(panel.extraInnerOffset.right, buttonSize)
+            );
+        }
+
+        isEnter = pointInRect(panel.view.mousePos, rect);
+    }
 }

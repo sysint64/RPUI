@@ -110,6 +110,7 @@ Panel
         buttonMinSize       : 20
 
         Horizontal
+            regionWidth     : 10
             left            : 0, 0, 0, 10
             center          : 0, 0, 0, 10
             right           : 0, 0, 0, 10
@@ -131,6 +132,7 @@ Panel
                     right   : 262, 148, 8, 10
 
         Vertical
+            regionWidth     : 10
             top             : 0, 0, 10, 0
             middle          : 0, 0, 10, 0
             bottom          : 0, 0, 10, 0

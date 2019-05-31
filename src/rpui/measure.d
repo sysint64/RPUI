@@ -38,7 +38,7 @@ HorizontalChainTransforms updateHorizontalChainTransforms(
     in CameraView cameraView,
     in vec2 position,
     in vec2 size,
-    in Widget.PartDraws partDraws
+    in Widget.PartDraws partDraws = Widget.partDraws.all
 ) {
     HorizontalChainTransforms transforms;
 
@@ -73,6 +73,31 @@ HorizontalChainTransforms updateHorizontalChainTransforms(
         quadTransforms[ChainPart.left] = updateQuadTransforms(cameraView, leftPos, leftSize);
         quadTransforms[ChainPart.center] = updateQuadTransforms(cameraView, centerPos, centerSize);
         quadTransforms[ChainPart.right] = updateQuadTransforms(cameraView, rightPos, rightSize);
+    }
+
+    return transforms;
+}
+
+HorizontalChainTransforms updateVerticalChainTransforms(
+    in float[ChainPart] partWidths,
+    in CameraView cameraView,
+    in vec2 position,
+    in vec2 size
+) {
+    HorizontalChainTransforms transforms;
+
+    const topSize = vec2(size.x, partWidths[ChainPart.top]);
+    const bottomSize = vec2(size.x, partWidths[ChainPart.bottom]);
+    const middleSize = vec2(size.x, size.y - topSize.y - bottomSize.y);
+
+    const topPos = position;
+    const middlePos = topPos + vec2(0, topSize.y);
+    const bottomPos = middlePos + vec2(0, middleSize.y);
+
+    with (transforms) {
+        quadTransforms[ChainPart.top] = updateQuadTransforms(cameraView, topPos, topSize);
+        quadTransforms[ChainPart.middle] = updateQuadTransforms(cameraView, middlePos, middleSize);
+        quadTransforms[ChainPart.bottom] = updateQuadTransforms(cameraView, bottomPos, bottomSize);
     }
 
     return transforms;

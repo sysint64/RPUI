@@ -210,10 +210,6 @@ package:
 
     Widget associatedWidget = null;
 
-    // TODO:
-    // @property Renderer renderer() { return view.renderer; }
-    // @property RenderFactory renderFactory() { return view.renderFactory; }
-
     /**
      * Returns string of state declared in theme.
      */

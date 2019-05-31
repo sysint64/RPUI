@@ -32,7 +32,9 @@ StatefulChain createStatefulChainFromRdpl(Theme theme, in Orientation orientatio
                 style ~ "." ~ getStateRdplName(state) ~ "." ~ getChainPartRdplName(part)
             );
             chain.texCoords[state][part] = texCoords.normilizedTexCoords;
-            chain.widths[part] = texCoords.originalTexCoords.size.x;
+            chain.widths[part] = orientation == Orientation.horizontal
+                ? texCoords.originalTexCoords.size.x
+                : texCoords.originalTexCoords.size.y;
         }
     }
 

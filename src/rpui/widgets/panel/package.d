@@ -58,8 +58,8 @@ class Panel : Widget, FocusScrollNavigation {
     private vec2 lastSize = 0;
 
     package Split split;
-    package ScrollButton horizontalScrollButton;
-    package ScrollButton verticalScrollButton;
+    package ScrollButton horizontalScrollButton = ScrollButton(Orientation.horizontal);
+    package ScrollButton verticalScrollButton = ScrollButton(Orientation.vertical);
 
     this(in string style = "Panel") {
         super(style);
@@ -74,6 +74,8 @@ class Panel : Widget, FocusScrollNavigation {
         super.onCreate();
         measure = readMeasure(view.theme.tree.data, style);
         renderData = readRenderData(view.theme, style);
+        horizontalScrollButton.attach(this, Orientation.horizontal);
+        verticalScrollButton.attach(this, Orientation.vertical);
     }
 
     override void onProgress(in ProgressEvent event) {
@@ -88,7 +90,7 @@ class Panel : Widget, FocusScrollNavigation {
         locator.updateRegionAlign();
         locator.updateAbsolutePosition();
 
-        // updateInnerOffset();
+        updateInnerOffset();
         updateSize();
 
         with (horizontalScrollButton)
@@ -99,30 +101,28 @@ class Panel : Widget, FocusScrollNavigation {
 
         updateRenderTransforms(this, &renderTransforms, &renderData, &view.theme);
 
-        // if (!isFreezingSource() && !isFrozen()) {
-        //     horizontalScrollButton.progress();
-        //     verticalScrollButton.progress();
-        // } else {
-        //     horizontalScrollButton.isEnter = false;
-        //     verticalScrollButton.isEnter = false;
-        // }
+        if (!isFreezingSource() && !isFrozen()) {
+            horizontalScrollButton.onProgress();
+            verticalScrollButton.onProgress();
+        } else {
+            horizontalScrollButton.isEnter = false;
+            verticalScrollButton.isEnter = false;
+        }
     }
 
     override void updateSize() {
         if (isOpen) {
             updatePanelSize();
 
-            // horizontalScrollButton.updateSize();
-            // verticalScrollButton.updateSize();
+            horizontalScrollButton.updateSize();
+            verticalScrollButton.updateSize();
         }
 
-        // split.calculate();
+        with (horizontalScrollButton)
+            contentOffset.x = visible ? scrollController.contentOffset : 0;
 
-        // with (horizontalScrollButton)
-            // contentOffset.x = visible ? scrollController.contentOffset : 0;
-
-        // with (verticalScrollButton)
-            // contentOffset.y = visible ? scrollController.contentOffset : 0;
+        with (verticalScrollButton)
+            contentOffset.y = visible ? scrollController.contentOffset : 0;
     }
 
     private void updatePanelSize() {
@@ -132,6 +132,55 @@ class Panel : Widget, FocusScrollNavigation {
 
         if (widthType == SizeType.wrapContent) {
             size.x = innerBoundarySize.x;
+        }
+    }
+
+    /// Add extra inner offset depends of which elements are visible.
+    protected void updateInnerOffset() {
+        extraInnerOffset.left = 0;
+
+        if (verticalScrollButton.visible) {
+            extraInnerOffset.right = verticalScrollButton.width;
+        } else {
+            extraInnerOffset.right = 0;
+        }
+
+        if (horizontalScrollButton.visible) {
+            extraInnerOffset.bottom = horizontalScrollButton.width;
+        } else {
+            extraInnerOffset.bottom = 0;
+        }
+
+        // if (userCanHide) {
+        //     extraInnerOffset.top = header.height;
+        // } else {
+        //     extraInnerOffset.top = 0;
+        // }
+
+        // Split extra inner offset
+        if (userCanResize || showSplit) {
+            const thickness = 1;
+
+            switch (regionAlign) {
+                case RegionAlign.top:
+                    extraInnerOffset.bottom += thickness;
+                    break;
+
+                case RegionAlign.bottom:
+                    extraInnerOffset.top += thickness;
+                    break;
+
+                case RegionAlign.right:
+                    extraInnerOffset.left += thickness;
+                    break;
+
+                case RegionAlign.left:
+                    extraInnerOffset.right += thickness;
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 
@@ -187,7 +236,7 @@ class Panel : Widget, FocusScrollNavigation {
             if (pointInRect(view.mousePos, rect) || split.isClick) {
                 view.cursor = CursorIcon.vDoubleArrow;
                 split.isEnter = true;
-                // horizontalScrollButton.isEnter = false;
+                horizontalScrollButton.isEnter = false;
             }
         }
         else if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right) {
@@ -201,17 +250,16 @@ class Panel : Widget, FocusScrollNavigation {
             if (pointInRect(view.mousePos, rect) || split.isClick) {
                 view.cursor = CursorIcon.hDoubleArrow;
                 split.isEnter = true;
-                // verticalScrollButton.isEnter = false;
+                verticalScrollButton.isEnter = false;
             }
         }
     }
 
     private bool scrollButtonIsClicked() {
-        // return verticalScrollButton.isClick || horizontalScrollButton.isClick;
-        return false;
+        return verticalScrollButton.isClick || horizontalScrollButton.isClick;
     }
 
-        override void scrollToWidget(Widget widget) {
+    override void scrollToWidget(Widget widget) {
         const vec2 relativePosition = widget.absolutePosition -
             (absolutePosition + extraInnerOffsetStart);
 
@@ -249,11 +297,29 @@ class Panel : Widget, FocusScrollNavigation {
         }
     }
 
+    /// Set scroll value in px.
+    void scrollToPx(in float x, in float y) {
+        verticalScrollButton.scrollController.setOffsetInPx(x);
+        horizontalScrollButton.scrollController.setOffsetInPx(y);
+    }
+
+    /// Add value to scroll in px.
+    void scrollByPx(in float dx, in float dy) {
+        verticalScrollButton.scrollController.addOffsetInPx(dx);
+        horizontalScrollButton.scrollController.addOffsetInPx(dy);
+    }
+
+    /// Set scroll value in percent.
+    void scrollToPercent(in float x, in float y) {
+        verticalScrollButton.scrollController.setOffsetInPercent(x);
+        horizontalScrollButton.scrollController.setOffsetInPercent(y);
+    }
+
 // Events ------------------------------------------------------------------------------------------
 
     override void onMouseUp(in MouseUpEvent event) {
-        // verticalScrollButton.isClick = false;
-        // horizontalScrollButton.isClick = false;
+        verticalScrollButton.isClick = false;
+        horizontalScrollButton.isClick = false;
 
         if (split.isClick) {
             split.isClick = false;

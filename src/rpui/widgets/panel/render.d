@@ -32,6 +32,8 @@ struct RenderTransforms {
     QuadTransforms background;
     QuadTransforms splitInner;
     QuadTransforms splitOuter;
+    HorizontalChainTransforms horizontalScrollButton;
+    HorizontalChainTransforms verticalScrollButton;
 }
 
 struct SplitTransforms {
@@ -106,6 +108,30 @@ void updateRenderTransforms(
             splitTransforms.size
         );
     }
+
+    if (widget.horizontalScrollButton.visible) {
+        transforms.horizontalScrollButton = updateHorizontalChainTransforms(
+            renderData.horizontalScrollButton.widths,
+            widget.view.cameraView,
+            widget.absolutePosition + widget.horizontalScrollButton.buttonOffset,
+            vec2(
+                widget.horizontalScrollButton.buttonSize,
+                widget.measure.horizontalScrollRegionWidth
+            )
+        );
+    }
+
+    if (widget.verticalScrollButton.visible) {
+        transforms.verticalScrollButton = updateVerticalChainTransforms(
+            renderData.verticalScrollButton.widths,
+            widget.view.cameraView,
+            widget.absolutePosition + widget.verticalScrollButton.buttonOffset,
+            vec2(
+                widget.measure.verticalScrollRegionWidth,
+                widget.verticalScrollButton.buttonSize
+            )
+        );
+    }
 }
 
 private SplitTransforms getSplitTransforms(Panel panel, in RenderData renderData) {
@@ -178,6 +204,7 @@ void render(
 
     widget.view.popScissor();
     renderSplit(widget, theme, renderData, transforms);
+    renderScrollButtons(widget, theme, renderData, transforms);
 }
 
 private Rect getScissor(Panel widget, in RenderData renderData) {
@@ -187,6 +214,8 @@ private Rect getScissor(Panel widget, in RenderData renderData) {
     with (widget) {
         scissor.point = absolutePosition + extraInnerOffsetStart;
         scissor.size = size;
+        import std.stdio;
+        writeln(extraInnerOffsetStart);
 
         if (userCanHide) {
             // scissor.size = scissor.size - vec2(0, header.height);
@@ -263,4 +292,30 @@ private void renderHeader(
     in RenderData renderData,
     in RenderTransforms transforms
 ) {
+}
+
+private void renderScrollButtons(
+    in Panel widget,
+    in Theme theme,
+    in RenderData renderData,
+    in RenderTransforms transforms
+) {
+    if (widget.horizontalScrollButton.visible) {
+        renderHorizontalChain(
+            theme,
+            renderData.horizontalScrollButton.parts,
+            renderData.horizontalScrollButton.texCoords[widget.horizontalScrollButton.state],
+            transforms.horizontalScrollButton,
+            widget.partDraws
+        );
+    }
+
+    if (widget.verticalScrollButton.visible) {
+        renderVerticalChain(
+            theme,
+            renderData.verticalScrollButton.parts,
+            renderData.verticalScrollButton.texCoords[widget.verticalScrollButton.state],
+            transforms.verticalScrollButton
+        );
+    }
 }
