@@ -66,6 +66,9 @@ final class TestApplication : Application {
     private View rootView;
 
     override void onProgress(in ProgressEvent event) {
+        cameraTransform.viewportSize.x = windowData.viewportWidth;
+        cameraTransform.viewportSize.y = windowData.viewportHeight;
+
         spriteTransform.position = vec2(
             cameraTransform.viewportSize.x / 2,
             cameraTransform.viewportSize.y / 2

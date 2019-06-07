@@ -10,6 +10,8 @@ import rpui.measure;
 import rpui.renderer;
 import rpui.basic_types;
 
+import gapi.texture;
+
 enum SplitColor {
     darkInner,
     darkOuter,
@@ -26,6 +28,13 @@ struct RenderData {
     Geometry splitOuter;
     StatefulChain horizontalScrollButton;
     StatefulChain verticalScrollButton;
+    StatefulTexAtlasTextureQuad headerBackground;
+    TextureQuad headerMark;
+    Texture2DCoords headerOpenMarkTexCoords;
+    Texture2DCoords headerCloseMarkTexCoords;
+    StatefulUiText headerText;
+    vec2 headerMarkSize;
+    vec2 headerMarkPosition;
 }
 
 struct RenderTransforms {
@@ -34,12 +43,23 @@ struct RenderTransforms {
     QuadTransforms splitOuter;
     HorizontalChainTransforms horizontalScrollButton;
     HorizontalChainTransforms verticalScrollButton;
+    QuadTransforms headerBackground;
+    QuadTransforms headerMark;
+    UiTextTransforms headerText;
 }
 
 struct SplitTransforms {
     vec2 size;
     vec2 innerPosition;
     vec2 outerPosition;
+}
+
+class PanelRenderer : Renderer {
+    override void onRender() {
+    }
+
+    override void onProgress() {
+    }
 }
 
 RenderData readRenderData(Theme theme, in string style) {
@@ -60,6 +80,27 @@ RenderData readRenderData(Theme theme, in string style) {
             background: createGeometry(),
             splitInner: createGeometry(),
             splitOuter: createGeometry(),
+            headerBackground: createStatefulTexAtlasTextureQuadFromRdpl(
+                theme,
+                style ~ ".Header", "background",
+                [State.leave, State.enter]
+            ),
+            headerText: createStatefulUiText(
+                theme,
+                style ~ ".Header", "Text",
+                [State.leave, State.enter]
+            ),
+            headerMarkSize: data.getVec2f(style ~ ".Header.Mark.size"),
+            headerMarkPosition: data.getVec2f(style ~ ".Header.Mark.position"),
+            headerMark: createUiSkinTextureQuad(theme),
+            headerOpenMarkTexCoords: createNormilizedTextureCoordsFromRdpl(
+                theme,
+                style ~ ".Header.Mark.open"
+            ),
+            headerCloseMarkTexCoords: createNormilizedTextureCoordsFromRdpl(
+                theme,
+                style ~ ".Header.Mark.close"
+            ),
             horizontalScrollButton: createStatefulChainFromRdpl(
                 theme,
                 Orientation.horizontal,
@@ -82,11 +123,42 @@ void updateRenderTransforms(
     RenderData* renderData,
     Theme* theme
 ) {
+    widget.header.height = widget.measure.headerHeight;
     transforms.background = updateQuadTransforms(
         widget.view.cameraView,
         widget.absolutePosition,
         widget.size
     );
+
+    if (widget.userCanHide) {
+        const headerSize = vec2(widget.size.x, widget.measure.headerHeight);
+
+        transforms.headerBackground = updateQuadTransforms(
+            widget.view.cameraView,
+            widget.absolutePosition,
+            headerSize
+        );
+
+        transforms.headerMark = updateQuadTransforms(
+            widget.view.cameraView,
+            renderData.headerMarkPosition,
+            renderData.headerMarkSize
+        );
+
+        const textPosition = widget.absolutePosition +
+            vec2(renderData.headerMarkPosition.x + renderData.headerMarkSize.x, 0);
+
+        renderData.headerText.attrs[widget.header.state].caption = widget.caption;
+        transforms.headerText = updateUiTextTransforms(
+            &renderData.headerText.render,
+            &theme.regularFont,
+            transforms.headerText,
+            renderData.headerText.attrs[widget.header.state],
+            widget.view.cameraView,
+            textPosition,
+            headerSize
+        );
+    }
 
     if (widget.userCanResize || widget.showSplit) {
         const splitTransforms = getSplitTransforms(widget, *renderData);
@@ -214,14 +286,12 @@ private Rect getScissor(Panel widget, in RenderData renderData) {
     with (widget) {
         scissor.point = absolutePosition + extraInnerOffsetStart;
         scissor.size = size;
-        import std.stdio;
-        writeln(extraInnerOffsetStart);
 
         if (userCanHide) {
-            // scissor.size = scissor.size - vec2(0, header.height);
+            scissor.size = scissor.size - vec2(0, header.height);
         }
 
-        if (userCanResize && darkSplit) {
+        if (userCanResize || showSplit) {
             if (regionAlign == RegionAlign.top || regionAlign == RegionAlign.bottom) {
                 // Horizontal orientation
                 scissor.size = scissor.size - vec2(0, thickness);
@@ -292,6 +362,39 @@ private void renderHeader(
     in RenderData renderData,
     in RenderTransforms transforms
 ) {
+    if (!widget.userCanHide)
+        return;
+
+    renderTexAtlasQuad(
+        theme,
+        renderData.headerBackground.geometry,
+        renderData.headerBackground.texture,
+        renderData.headerBackground.texCoords[widget.header.state].normilizedTexCoords,
+        transforms.headerBackground
+    );
+
+    Texture2DCoords markTexCoords;
+
+    if (widget.isOpen) {
+        markTexCoords = renderData.headerOpenMarkTexCoords;
+    } else {
+        markTexCoords = renderData.headerCloseMarkTexCoords;
+    }
+
+    renderTexAtlasQuad(
+        theme,
+        renderData.headerMark.geometry,
+        renderData.headerMark.texture,
+        markTexCoords,
+        transforms.headerMark
+    );
+
+    renderUiText(
+        theme,
+        renderData.headerText.render,
+        renderData.headerText.attrs[widget.header.state],
+        transforms.headerText,
+    );
 }
 
 private void renderScrollButtons(

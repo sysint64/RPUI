@@ -69,12 +69,14 @@ Label
         textColor           : 0, 0, 0
 
 Panel
-    headerLeave             : 242, 85, 11, 20
-    headerEnter             : 257, 85, 11, 20
-
     backgroundLight         : 114, 114, 114, 100
     backgroundDark          : 70, 70, 70, 100
     backgroundAction        : 95, 95, 95, 100
+
+    Header
+        leave               : 242, 85, 11, 20
+        enter               : 257, 85, 11, 20
+        click               : 257, 85, 11, 20
 
     Split
         thickness           : 1

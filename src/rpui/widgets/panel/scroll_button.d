@@ -59,7 +59,7 @@ struct ScrollButton {
         }
     }
 
-    void attach(Panel panel, in Orientation orientation) {
+    void attach(Panel panel) {
         this.panel = panel;
         this.scrollController.buttonMinSize = panel.measure.scrollButtonMinSize;
 

@@ -20,7 +20,7 @@ import rpui.math;
 import rpui.widgets.panel.measure;
 import rpui.widgets.panel.render;
 import rpui.widgets.panel.split;
-// import rpui.widgets.panel.header;
+import rpui.widgets.panel.header;
 import rpui.widgets.panel.scroll_button;
 
 /**
@@ -58,6 +58,7 @@ class Panel : Widget, FocusScrollNavigation {
     private vec2 lastSize = 0;
 
     package Split split;
+    package Header header;
     package ScrollButton horizontalScrollButton = ScrollButton(Orientation.horizontal);
     package ScrollButton verticalScrollButton = ScrollButton(Orientation.vertical);
 
@@ -72,10 +73,12 @@ class Panel : Widget, FocusScrollNavigation {
 
     protected override void onCreate() {
         super.onCreate();
+
         measure = readMeasure(view.theme.tree.data, style);
         renderData = readRenderData(view.theme, style);
-        horizontalScrollButton.attach(this, Orientation.horizontal);
-        verticalScrollButton.attach(this, Orientation.vertical);
+        header.attach(this);
+        horizontalScrollButton.attach(this);
+        verticalScrollButton.attach(this);
     }
 
     override void onProgress(in ProgressEvent event) {
@@ -84,7 +87,7 @@ class Panel : Widget, FocusScrollNavigation {
         split.isEnter = false;
 
         handleResize();
-        // header.onProgress();
+        header.onProgress();
 
         // Update render elements position and sizes
         locator.updateRegionAlign();
@@ -151,11 +154,11 @@ class Panel : Widget, FocusScrollNavigation {
             extraInnerOffset.bottom = 0;
         }
 
-        // if (userCanHide) {
-        //     extraInnerOffset.top = header.height;
-        // } else {
-        //     extraInnerOffset.top = 0;
-        // }
+        if (userCanHide) {
+            extraInnerOffset.top = header.height;
+        } else {
+            extraInnerOffset.top = 0;
+        }
 
         // Split extra inner offset
         if (userCanResize || showSplit) {
@@ -315,6 +318,37 @@ class Panel : Widget, FocusScrollNavigation {
         horizontalScrollButton.scrollController.setOffsetInPercent(y);
     }
 
+    final void open() {
+        if (isOpen)
+            return;
+
+        size = lastSize;
+        isOpen = true;
+        view.rootWidget.updateAll();
+    }
+
+    final void close() {
+        if (!isOpen)
+            return;
+
+        lastSize = size;
+        size.y = header.height;
+        isOpen = false;
+        view.rootWidget.updateAll();
+
+        horizontalScrollButton.scrollController.setOffsetInPercent(0);
+        verticalScrollButton.scrollController.setOffsetInPercent(0);
+    }
+
+    /// Toggle visibility of panel. If `isOpen` then method will close panel else open.
+    final void toggle() {
+        if (isOpen) {
+            close();
+        } else {
+            open();
+        }
+    }
+
 // Events ------------------------------------------------------------------------------------------
 
     override void onMouseUp(in MouseUpEvent event) {
@@ -348,8 +382,15 @@ class Panel : Widget, FocusScrollNavigation {
             horizontalScrollButton.scrollController.onMouseDown(event);
         }
 
-        // onHeaderMouseDown();
+        onHeaderMouseDown();
         super.onMouseDown(event);
+    }
+
+    private void onHeaderMouseDown() {
+        if (!header.isEnter || !userCanHide)
+            return;
+
+        toggle();
     }
 
     override void onResize() {

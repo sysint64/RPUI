@@ -1,6 +1,7 @@
 module rpui.render_factory;
 
 import std.traits;
+import std.string;
 
 import rpdl;
 
@@ -16,7 +17,12 @@ import rpui.gapi_rpdl_exts;
 import rpui.theme;
 import rpui.basic_types;
 
-StatefulChain createStatefulChainFromRdpl(Theme theme, in Orientation orientation, in string style) {
+StatefulChain createStatefulChainFromRdpl(
+    Theme theme,
+    in Orientation orientation,
+    in string style,
+    immutable State[] states = [EnumMembers!State]
+) {
     StatefulChain chain;
 
     immutable chainParts = orientation == Orientation.horizontal
@@ -24,9 +30,9 @@ StatefulChain createStatefulChainFromRdpl(Theme theme, in Orientation orientatio
         : verticalChainParts;
 
     foreach (immutable part; chainParts) {
-        chain.parts[part] = createChainPart(theme);
+        chain.parts[part] = createUiSkinTextureQuad(theme);
 
-        foreach (immutable state; [EnumMembers!State]) {
+        foreach (immutable state; states) {
             const texCoords = createOriginalWithNormilizedTextureCoordsFromRdpl(
                 theme,
                 style ~ "." ~ getStateRdplName(state) ~ "." ~ getChainPartRdplName(part)
@@ -49,7 +55,7 @@ Chain createChainFromRdpl(Theme theme, in Orientation orientation, in string sty
         : verticalChainParts;
 
     foreach (immutable part; chainParts) {
-        chain.parts[part] = createChainPart(theme);
+        chain.parts[part] = createUiSkinTextureQuad(theme);
 
         const texCoords = createOriginalWithNormilizedTextureCoordsFromRdpl(
             theme,
@@ -63,10 +69,32 @@ Chain createChainFromRdpl(Theme theme, in Orientation orientation, in string sty
     return chain;
 }
 
-TextureQuad createChainPart(in Theme theme) {
+TextureQuad createUiSkinTextureQuad(in Theme theme) {
     TextureQuad quad;
     quad.geometry = createGeometry();
     quad.texture = theme.skin;
+
+    return quad;
+}
+
+StatefulTexAtlasTextureQuad createStatefulTexAtlasTextureQuadFromRdpl(
+    Theme theme,
+    in string style,
+    in string name,
+    immutable State[] states = [EnumMembers!State]
+) {
+    StatefulTexAtlasTextureQuad quad;
+
+    quad.geometry = createGeometry();
+    quad.texture = theme.skin;
+
+    foreach (immutable state; states) {
+        const texCoords = createOriginalWithNormilizedTextureCoordsFromRdpl(
+            theme,
+            style ~ "." ~ getStateRdplName(state) ~ "." ~ name
+        );
+        quad.texCoords[state] = texCoords;
+    }
 
     return quad;
 }
@@ -81,26 +109,40 @@ OriginalWithNormilizedTextureCoords createOriginalWithNormilizedTextureCoordsFro
     return OriginalWithNormilizedTextureCoords(textCoord, normilized);
 }
 
-StatefulUiText createStatefulUiText(Theme theme, in string style) {
+Texture2DCoords createNormilizedTextureCoordsFromRdpl(
+    Theme theme,
+    in string style,
+) {
+    const textCoord = theme.tree.data.getTexCoord(style);
+    return normilizeTexture2DCoords(textCoord, theme.skin);
+}
+
+StatefulUiText createStatefulUiText(
+    Theme theme,
+    in string style,
+    in string name,
+    immutable State[] states = [EnumMembers!State]
+) {
     StatefulUiText text;
     text.render = createUiTextRenderObject();
 
-    foreach (immutable state; [EnumMembers!State]) {
+    foreach (immutable state; states) {
         text.attrs[state] = createTextAttributesFromRdpl(
             theme,
-            style ~ "." ~ getStateRdplName(state)
+            style ~ "." ~ getStateRdplName(state) ~ "." ~ name
         );
     }
 
     return text;
 }
 
-UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style, in string prefix = "text") {
+UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style) {
     UiTextAttributes attrs;
 
-    attrs.color = theme.tree.data.getNormColor(style ~ "." ~ prefix ~ "Color");
-    attrs.offset = theme.tree.data.optVec2f(style ~ "." ~ prefix ~ "Offset", vec2(0, 0));
-    attrs.fontSize = theme.tree.data.optInteger(style ~ "." ~ prefix ~ "FontSize.0", theme.regularFontSize);
+    attrs.color = theme.tree.data.getNormColor(style ~ ".color");
+    attrs.offset = theme.tree.data.optVec2f(style ~ ".offset", vec2(0, 0));
+    attrs.fontSize = theme.tree.data.optInteger(style ~ ".fontSize.0", theme.regularFontSize);
+    attrs.textAlign = theme.tree.data.optEnum(style ~ ".textAlign.0", Align.center);
 
     // attrs.caption = theme.;
     // attrs.textAlign = theme.;

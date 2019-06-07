@@ -68,8 +68,8 @@ final class View : EventsListenerEmpty {
     package SList!bool isNestedFreezeStack;
 
     public CursorIcon cursor = CursorIcon.inherit;
-    package vec2i mousePos;
-    package vec2i mouseClickPos;
+    package vec2i mousePos = vec2i(-1, -1);
+    package vec2i mouseClickPos = vec2i(-1, -1);
     private Array!Rect scissorStack;
     private uint viewportHeight;
 

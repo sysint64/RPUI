@@ -35,7 +35,7 @@ RenderData readRenderData(Theme theme, in string style) {
 
     renderData.background = createStatefulChainFromRdpl(theme, Orientation.horizontal, style);
     renderData.focusGlow = createChainFromRdpl(theme, Orientation.horizontal, style ~ ".Focus");
-    renderData.captionText = createStatefulUiText(theme, style);
+    renderData.captionText = createStatefulUiText(theme, style, "Text");
 
     return renderData;
 }

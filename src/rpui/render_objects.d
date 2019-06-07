@@ -39,6 +39,18 @@ struct TextureQuad {
     Texture2D texture;
 }
 
+struct TexAtlasTextureQuad {
+    Geometry geometry;
+    Texture2D texture;
+    Texture2DCoords texCoords;
+}
+
+struct StatefulTexAtlasTextureQuad {
+    Geometry geometry;
+    Texture2D texture;
+    OriginalWithNormilizedTextureCoords[State] texCoords;
+}
+
 struct OriginalWithNormilizedTextureCoords {
     Texture2DCoords originalTexCoords;
     Texture2DCoords normilizedTexCoords;
