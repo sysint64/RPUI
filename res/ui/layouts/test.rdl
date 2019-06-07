@@ -1,6 +1,6 @@
 Panel
     userCanResize: true
-    regionAlign: left
+    regionAlign: right
     align: center
     locationAlign: center
     size: 300, 300

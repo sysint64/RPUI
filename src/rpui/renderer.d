@@ -20,6 +20,8 @@ import rpui.render_objects;
 import rpui.basic_types;
 
 interface Renderer {
+    void onCreate(Widget widget);
+
     void onRender();
 
     void onProgress();

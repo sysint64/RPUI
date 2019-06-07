@@ -7,4 +7,5 @@ struct Split {
     bool isEnter;
     float cursorRangeSize = 8;
     Rect cursorRangeRect;
+    float thickness;
 }

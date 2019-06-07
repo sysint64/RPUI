@@ -53,8 +53,8 @@ class Panel : Widget, FocusScrollNavigation {
     @field utf32string caption = "";
 
     package Measure measure;
-    private RenderData renderData;
-    private RenderTransforms renderTransforms;
+    private PanelRenderer renderer;
+
     private vec2 lastSize = 0;
 
     package Split split;
@@ -68,15 +68,39 @@ class Panel : Widget, FocusScrollNavigation {
     }
 
     override void onRender() {
-        render(this, view.theme, renderData, renderTransforms);
+        renderer.onRender();
+    }
+
+    package void renderChildren() {
+        const scissor = getScissor();
+        view.pushScissor(scissor);
+
+        foreach (Widget child; children) {
+            if (!child.visible)
+                continue;
+
+            if (!pointInRect(view.mousePos, scissor)) {
+                child.isEnter = false;
+                child.isClick = false;
+            }
+
+            child.onRender();
+        }
+
+        view.popScissor();
     }
 
     protected override void onCreate() {
         super.onCreate();
 
         measure = readMeasure(view.theme.tree.data, style);
-        renderData = readRenderData(view.theme, style);
+        renderer = new PanelRenderer();
+        renderer.onCreate(this);
+
         header.attach(this);
+        header.height = measure.headerHeight;
+        split.thickness = measure.splitThickness;
+
         horizontalScrollButton.attach(this);
         verticalScrollButton.attach(this);
     }
@@ -102,7 +126,7 @@ class Panel : Widget, FocusScrollNavigation {
         with (verticalScrollButton)
             contentOffset.y = visible ? scrollController.contentOffset : 0;
 
-        updateRenderTransforms(this, &renderTransforms, &renderData, &view.theme);
+        renderer.onProgress();
 
         if (!isFreezingSource() && !isFrozen()) {
             horizontalScrollButton.onProgress();
@@ -221,6 +245,31 @@ class Panel : Widget, FocusScrollNavigation {
 
         parent.events.notify(ResizeEvent());
         view.rootWidget.updateAll();
+    }
+
+    private Rect getScissor() {
+        Rect scissor;
+        const thickness = split.thickness;
+
+        scissor.point = absolutePosition + extraInnerOffsetStart;
+        scissor.size = size;
+
+        if (userCanHide) {
+            scissor.size = scissor.size - vec2(0, header.height);
+        }
+
+        if (userCanResize || showSplit) {
+            if (regionAlign == RegionAlign.top || regionAlign == RegionAlign.bottom) {
+                // Horizontal orientation
+                scissor.size = scissor.size - vec2(0, thickness);
+            }
+            else if (regionAlign == RegionAlign.left || regionAlign == RegionAlign.right) {
+                // Vertical orientation
+                scissor.size = scissor.size - vec2(thickness, 0);
+            }
+        }
+
+        return scissor;
     }
 
     /// Change system cursor when mouse entering split.
