@@ -38,3 +38,23 @@ Panel
             margin: 10
             Button position: 0, 0 size: 100, 21 caption: "Cancel" name: "cancelButton"
             Button position: 5, 57 size: 100, 21 caption: "Close" name: "closeButton"
+
+    Panel
+        regionAlign: top
+        background: light
+        position: 0, 0
+        size: 0, 300
+        caption: "Panel 2"
+        userCanResize: true
+        userCanHide: true
+        padding: 0, 100, 0, 0
+        userCanResize: true
+
+        StackLayout
+            # padding: 0, 100, 0, 0
+            name: "buttons"
+            widthType: matchParent
+
+            Button size: 100, 21 margin: 5 caption: "Button 1"
+            Button size: 100, 21 margin: 5 caption: "Button 2" locationAlign: right
+            Button size: 100, 21 margin: 5 caption: "Button 3"

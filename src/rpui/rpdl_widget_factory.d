@@ -20,6 +20,7 @@ import rpui.view;
 
 import rpui.widgets.button;
 import rpui.widgets.panel;
+import rpui.widgets.stack_layout;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -66,6 +67,9 @@ final class RpdlWidgetFactory {
 
             case "Panel":
                 return createWidget!Panel(widgetNode, parentWidget);
+
+            case "StackLayout":
+                return createWidget!StackLayout(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);
