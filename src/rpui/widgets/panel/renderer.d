@@ -1,5 +1,6 @@
-module rpui.widgets.panel.render;
+module rpui.widgets.panel.renderer;
 
+import rpui.events;
 import rpui.theme;
 import rpui.math;
 import rpui.widget;
@@ -22,7 +23,7 @@ final class PanelRenderer : Renderer {
     RenderTransforms transforms;
     string style;
 
-    TransformSystem transformSystem;
+    TransformsSystem transformsSystem;
     RenderSystem renderSystem;
 
     override void onCreate(Widget widget) {
@@ -30,13 +31,16 @@ final class PanelRenderer : Renderer {
         this.theme = widget.view.theme;
         this.style = widget.style;
         this.renderData = this.widget.themeLoader.loadRenderData(theme, style);
+
+        renderSystem = new PanelRenderSystem(this.widget, &renderData, &transforms);
+        transformsSystem = new PanelTransformsSystem(this.widget, &renderData, &transforms);
     }
 
     override void onRender() {
-        renderSystem.onRender(widget, &renderData, &transforms);
+        renderSystem.onRender();
     }
 
-    override void onProgress() {
-        transforms = transformSystem.onProgress(widget, &renderData);
+    override void onProgress(in ProgressEvent event) {
+        transformsSystem.onProgress(event);
     }
 }

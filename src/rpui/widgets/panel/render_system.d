@@ -36,18 +36,20 @@ struct RenderData {
     StatefulUiText headerText;
 }
 
-struct RenderSystem {
-    Panel widget;
-    Theme theme;
-    RenderTransforms* transforms;
-    RenderData* renderData;
+final class PanelRenderSystem : RenderSystem {
+    private Panel widget;
+    private Theme theme;
+    private RenderTransforms* transforms;
+    private RenderData* renderData;
 
-    void onRender(Panel widget, RenderData* renderData, RenderTransforms* transforms) {
+    this(Panel widget, RenderData* renderData, RenderTransforms* transforms) {
         this.widget = widget;
         this.theme = widget.view.theme;
         this.transforms = transforms;
         this.renderData = renderData;
+    }
 
+    override void onRender() {
         renderBackground();
         renderHeader();
 

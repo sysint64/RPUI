@@ -8,9 +8,14 @@ import gapi.text;
 import gapi.transform;
 import gapi.texture;
 
+import rpui.events;
 import rpui.widget;
 import rpui.render_objects;
 import rpui.alignment;
+
+interface TransformsSystem {
+    void onProgress(in ProgressEvent event);
+}
 
 private vec2 toScreenPosition(in float windowHeight, in vec2 position, in float height) {
     return vec2(floor(position.x), floor(windowHeight - height - position.y));

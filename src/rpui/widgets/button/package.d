@@ -7,8 +7,9 @@ import rpui.basic_types;
 import rpui.widget;
 import rpui.view;
 import rpui.events;
-import rpui.widgets.button.measure;
-import rpui.widgets.button.render;
+import rpui.renderer;
+import rpui.widgets.button.renderer;
+import rpui.widgets.button.theme_loader;
 
 class Button : Widget {
     @field bool allowCheck = false;
@@ -17,10 +18,21 @@ class Button : Widget {
     @field Array!string icons;
     @field utf32string caption = "Button";
 
+    struct Measure {
+        float textWidth = 0;
+        vec2 focusOffsets;
+        float focusResize;
+        float textLeftMargin;
+        float textRightMargin;
+        float iconGaps;
+        vec2 iconOffsets;
+        float iconsAreaSize = 0;
+    }
+
     private string iconsGroup;
     package Measure measure;
-    private RenderData renderData;
-    private RenderTransforms renderTransforms;
+    private Renderer renderer;
+    package ButtonThemeLoader themeLoader;
 
     this(in string style = "Button", in string iconsGroup = "icons") {
         super(style);
@@ -39,12 +51,11 @@ class Button : Widget {
         locator.updateAbsolutePosition();
         locator.updateRegionAlign();
         updateSize();
-
-        updateRenderTransforms(this, &renderTransforms, &renderData, &view.theme);
+        renderer.onProgress(event);
     }
 
     override void onRender() {
-        render(this, view.theme, renderData, renderTransforms);
+        renderer.onRender();
     }
 
     override void updateSize() {
@@ -69,7 +80,9 @@ class Button : Widget {
 
     protected override void onCreate() {
         super.onCreate();
-        measure = readMeasure(view.theme.tree.data, style);
-        renderData = readRenderData(view.theme, style);
+
+        renderer = new ButtonRenderer();
+        renderer.onCreate(this);
+        measure = themeLoader.readMeasure(view.theme.tree.data, style);
     }
 }

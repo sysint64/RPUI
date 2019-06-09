@@ -1,5 +1,6 @@
 module rpui.widgets.panel.transforms_system;
 
+import rpui.events;
 import rpui.theme;
 import rpui.basic_types;
 import rpui.widgets.panel;
@@ -27,23 +28,24 @@ struct SplitTransforms {
     vec2 outerPosition;
 }
 
-struct TransformSystem {
-    private RenderTransforms transforms;
+final class PanelTransformsSystem : TransformsSystem {
+    private RenderTransforms* transforms;
     private Panel widget;
     private RenderData* renderData;
     private Theme theme;
 
-    RenderTransforms onProgress(Panel widget, RenderData* renderData) {
+    this(Panel widget, RenderData* renderData, RenderTransforms* transforms) {
         this.renderData = renderData;
+        this.transforms = transforms;
         this.theme = widget.view.theme;
         this.widget = widget;
+    }
 
+    override void onProgress(in ProgressEvent event) {
         updateBackgroundTransforms();
         updateHeaderTransforms();
         updateSplitTransforms();
         updateScrollButtonsTransforms();
-
-        return transforms;
     }
 
     private void updateBackgroundTransforms() {

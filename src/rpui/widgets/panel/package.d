@@ -18,7 +18,7 @@ import rpui.widget_events;
 import rpui.math;
 import rpui.renderer;
 
-import rpui.widgets.panel.render;
+import rpui.widgets.panel.renderer;
 import rpui.widgets.panel.scroll_button;
 import rpui.widgets.panel.theme_loader;
 
@@ -154,7 +154,7 @@ class Panel : Widget, FocusScrollNavigation {
         with (verticalScrollButton)
             contentOffset.y = visible ? scrollController.contentOffset : 0;
 
-        renderer.onProgress();
+        renderer.onProgress(event);
 
         if (!isFreezingSource() && !isFrozen()) {
             horizontalScrollButton.onProgress();
@@ -169,9 +169,9 @@ class Panel : Widget, FocusScrollNavigation {
         if (!userCanHide)
             return;
 
-        const vec2 size = vec2(size.x, height);
-        Rect rect = Rect(absolutePosition, size);
-        isEnter = pointInRect(view.mousePos, rect);
+        const vec2 headerSize = vec2(size.x, header.height);
+        const Rect rect = Rect(absolutePosition, headerSize);
+        header.isEnter = pointInRect(view.mousePos, rect);
     }
 
     override void updateSize() {

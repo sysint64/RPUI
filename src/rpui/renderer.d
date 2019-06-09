@@ -24,7 +24,11 @@ interface Renderer {
 
     void onRender();
 
-    void onProgress();
+    void onProgress(in ProgressEvent event);
+}
+
+interface RenderSystem {
+    void onRender();
 }
 
 void renderTexAtlasQuad(
