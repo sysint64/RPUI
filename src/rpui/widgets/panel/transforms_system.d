@@ -75,7 +75,7 @@ struct TransformSystem {
         const textPosition = widget.absolutePosition +
             vec2(renderData.headerMarkPosition.x + renderData.headerMarkSize.x, 0);
 
-        with (renderData.headerText.attrs[widget.header.state]) {
+        with (renderData.headerText.attrs[widget.headerState]) {
             caption = widget.caption;
         }
 
@@ -83,7 +83,7 @@ struct TransformSystem {
             &renderData.headerText.render,
             &theme.regularFont,
             transforms.headerText,
-            renderData.headerText.attrs[widget.header.state],
+            renderData.headerText.attrs[widget.headerState],
             widget.view.cameraView,
             textPosition,
             headerSize

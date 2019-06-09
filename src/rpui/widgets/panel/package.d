@@ -16,12 +16,11 @@ import rpui.render_objects;
 import rpui.events;
 import rpui.widget_events;
 import rpui.math;
+import rpui.renderer;
 
-import rpui.widgets.panel.measure;
 import rpui.widgets.panel.render;
-import rpui.widgets.panel.split;
-import rpui.widgets.panel.header;
 import rpui.widgets.panel.scroll_button;
+import rpui.widgets.panel.theme_loader;
 
 /**
  * Panel widget is the container for other widgets with scrolling,
@@ -52,8 +51,30 @@ class Panel : Widget, FocusScrollNavigation {
 
     @field utf32string caption = "";
 
+    struct Measure {
+        float headerHeight;
+        float scrollButtonMinSize;
+        float horizontalScrollRegionWidth;
+        float verticalScrollRegionWidth;
+        float splitThickness;
+    }
+
+    struct Split {
+        bool isClick;
+        bool isEnter;
+        float cursorRangeSize = 8;
+        Rect cursorRangeRect;
+        float thickness;
+    }
+
+    struct Header {
+        float height = 0;
+        bool isEnter = false;
+    }
+
     package Measure measure;
-    private PanelRenderer renderer;
+    private Renderer renderer;
+    package PanelThemeLoader themeLoader;
 
     private vec2 lastSize = 0;
 
@@ -61,6 +82,14 @@ class Panel : Widget, FocusScrollNavigation {
     package Header header;
     package ScrollButton horizontalScrollButton = ScrollButton(Orientation.horizontal);
     package ScrollButton verticalScrollButton = ScrollButton(Orientation.vertical);
+
+    package @property inout(State) headerState() inout {
+        if (isEnter) {
+            return State.enter;
+        } else {
+            return State.leave;
+        }
+    }
 
     this(in string style = "Panel") {
         super(style);
@@ -93,11 +122,10 @@ class Panel : Widget, FocusScrollNavigation {
     protected override void onCreate() {
         super.onCreate();
 
-        measure = readMeasure(view.theme.tree.data, style);
+        measure = themeLoader.createMeasureFromRpdl(view.theme.tree.data, style);
         renderer = new PanelRenderer();
         renderer.onCreate(this);
 
-        header.attach(this);
         header.height = measure.headerHeight;
         split.thickness = measure.splitThickness;
 
@@ -111,7 +139,7 @@ class Panel : Widget, FocusScrollNavigation {
         split.isEnter = false;
 
         handleResize();
-        header.onProgress();
+        headerOnProgress();
 
         // Update render elements position and sizes
         locator.updateRegionAlign();
@@ -135,6 +163,15 @@ class Panel : Widget, FocusScrollNavigation {
             horizontalScrollButton.isEnter = false;
             verticalScrollButton.isEnter = false;
         }
+    }
+
+    void headerOnProgress() {
+        if (!userCanHide)
+            return;
+
+        const vec2 size = vec2(size.x, height);
+        Rect rect = Rect(absolutePosition, size);
+        isEnter = pointInRect(view.mousePos, rect);
     }
 
     override void updateSize() {

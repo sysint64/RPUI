@@ -70,7 +70,7 @@ void renderHorizontalChain(
     in TextureQuad[ChainPart] parts,
     in Texture2DCoords[ChainPart] texCoords,
     in HorizontalChainTransforms transforms,
-    in Widget.PartDraws partDraws
+    in Widget.PartDraws partDraws = Widget.PartDraws.all
 ) {
     if (partDraws == Widget.PartDraws.left || partDraws == Widget.PartDraws.all) {
         renderTexAtlasQuad(

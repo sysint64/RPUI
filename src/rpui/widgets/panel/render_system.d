@@ -80,8 +80,7 @@ struct RenderSystem {
                 theme,
                 renderData.horizontalScrollButton.parts,
                 renderData.horizontalScrollButton.texCoords[widget.horizontalScrollButton.state],
-                transforms.horizontalScrollButton,
-                widget.partDraws
+                transforms.horizontalScrollButton
             );
         }
 
@@ -130,7 +129,7 @@ struct RenderSystem {
             theme,
             renderData.headerBackground.geometry,
             renderData.headerBackground.texture,
-            renderData.headerBackground.texCoords[widget.header.state].normilizedTexCoords,
+            renderData.headerBackground.texCoords[widget.headerState].normilizedTexCoords,
             transforms.headerBackground
         );
 
@@ -153,7 +152,7 @@ struct RenderSystem {
         renderUiText(
             theme,
             renderData.headerText.render,
-            renderData.headerText.attrs[widget.header.state],
+            renderData.headerText.attrs[widget.headerState],
             transforms.headerText,
         );
     }
