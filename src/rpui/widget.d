@@ -13,6 +13,7 @@ import rpui.math;
 import rpui.focus_navigator;
 import rpui.widget_locator;
 import rpui.widget_resolver;
+import rpui.render.renderer;
 import rpui.render.components : State;
 
 import gapi.vec;
@@ -192,6 +193,7 @@ package:
     bool isMouseDown = false;
 
     WidgetLocator locator;
+    Renderer renderer;
 
     /**
      * When in rect of element but if another element over this
@@ -326,6 +328,7 @@ public:
         this.p_children = new WidgetsContainer(this);
         this.p_resolver = new WidgetResolver(this);
         this.p_events = new WidgetEventsObserver();
+        this.renderer = new DummyRenderer();
 
         this.p_events.subscribe!BlurEvent(&onBlur);
         this.p_events.subscribe!FocusEvent(&onFocus);
@@ -334,6 +337,7 @@ public:
     void onProgress(in ProgressEvent event) {
         checkRules();
         updateBoundary();
+        renderer.onProgress(event);
     }
 
     /// Update widget inner bounary and clamped boundary.
@@ -440,6 +444,8 @@ public:
 
     /// Render widget in camera view.
     void onRender() {
+        renderer.onRender();
+
         if (!drawChildren)
             return;
 
@@ -473,6 +479,7 @@ public:
     }
 
     void onCreate() {
+        renderer.onCreate(this);
     }
 
     void onPostCreate() {

@@ -73,7 +73,6 @@ class Panel : Widget, FocusScrollNavigation {
     }
 
     package Measure measure;
-    private Renderer renderer;
     package PanelThemeLoader themeLoader;
 
     private vec2 lastSize = 0;
@@ -94,13 +93,13 @@ class Panel : Widget, FocusScrollNavigation {
     this(in string style = "Panel") {
         super(style);
         skipFocus = true;
-    }
-
-    override void onRender() {
-        renderer.onRender();
+        renderer = new PanelRenderer();
     }
 
     package void renderChildren() {
+        if (!drawChildren)
+            return;
+
         const scissor = getScissor();
         view.pushScissor(scissor);
 
@@ -123,14 +122,16 @@ class Panel : Widget, FocusScrollNavigation {
         super.onCreate();
 
         measure = themeLoader.createMeasureFromRpdl(view.theme.tree.data, style);
-        renderer = new PanelRenderer();
-        renderer.onCreate(this);
 
         header.height = measure.headerHeight;
         split.thickness = measure.splitThickness;
 
         horizontalScrollButton.attach(this);
         verticalScrollButton.attach(this);
+    }
+
+    override void onRender() {
+        renderer.onRender();
     }
 
     override void onProgress(in ProgressEvent event) {
@@ -153,8 +154,6 @@ class Panel : Widget, FocusScrollNavigation {
 
         with (verticalScrollButton)
             contentOffset.y = visible ? scrollController.contentOffset : 0;
-
-        renderer.onProgress(event);
 
         if (!isFreezingSource() && !isFrozen()) {
             horizontalScrollButton.onProgress();

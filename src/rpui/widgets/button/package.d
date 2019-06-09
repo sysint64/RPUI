@@ -31,7 +31,6 @@ class Button : Widget {
 
     private string iconsGroup;
     package Measure measure;
-    private Renderer renderer;
     package ButtonThemeLoader themeLoader;
 
     this(in string style = "Button", in string iconsGroup = "icons") {
@@ -43,6 +42,7 @@ class Button : Widget {
         // TODO: rm hardcode
         size = vec2(50, 21);
         widthType = SizeType.wrapContent;
+        renderer = new ButtonRenderer();
     }
 
     override void onProgress(in ProgressEvent event) {
@@ -52,10 +52,6 @@ class Button : Widget {
         locator.updateRegionAlign();
         updateSize();
         renderer.onProgress(event);
-    }
-
-    override void onRender() {
-        renderer.onRender();
     }
 
     override void updateSize() {
@@ -80,9 +76,6 @@ class Button : Widget {
 
     protected override void onCreate() {
         super.onCreate();
-
-        renderer = new ButtonRenderer();
-        renderer.onCreate(this);
         measure = themeLoader.readMeasure(view.theme.tree.data, style);
     }
 }

@@ -27,6 +27,17 @@ interface Renderer {
     void onProgress(in ProgressEvent event);
 }
 
+class DummyRenderer : Renderer {
+    override void onCreate(Widget widget) {
+    }
+
+    override void onRender() {
+    }
+
+    override void onProgress(in ProgressEvent event) {
+    }
+}
+
 interface RenderSystem {
     void onRender();
 }

@@ -156,28 +156,24 @@ final class PanelTransformsSystem : TransformsSystem {
     }
 
     private void updateScrollButtonsTransforms() {
-        if (widget.horizontalScrollButton.visible) {
-            transforms.horizontalScrollButton = updateHorizontalChainTransforms(
-                renderData.horizontalScrollButton.widths,
-                widget.view.cameraView,
-                widget.absolutePosition + widget.horizontalScrollButton.buttonOffset,
-                vec2(
-                    widget.horizontalScrollButton.buttonSize,
-                    widget.measure.horizontalScrollRegionWidth
-                )
-            );
-        }
+        transforms.horizontalScrollButton = updateHorizontalChainTransforms(
+            renderData.horizontalScrollButton.widths,
+            widget.view.cameraView,
+            widget.absolutePosition + widget.horizontalScrollButton.buttonOffset,
+            vec2(
+                widget.horizontalScrollButton.buttonSize,
+                widget.measure.horizontalScrollRegionWidth
+            )
+        );
 
-        if (widget.verticalScrollButton.visible) {
-            transforms.verticalScrollButton = updateVerticalChainTransforms(
-                renderData.verticalScrollButton.widths,
-                widget.view.cameraView,
-                widget.absolutePosition + widget.verticalScrollButton.buttonOffset,
-                vec2(
-                    widget.measure.verticalScrollRegionWidth,
-                    widget.verticalScrollButton.buttonSize
-                )
-            );
-        }
+        transforms.verticalScrollButton = updateVerticalChainTransforms(
+            renderData.verticalScrollButton.widths,
+            widget.view.cameraView,
+            widget.absolutePosition + widget.verticalScrollButton.buttonOffset,
+            vec2(
+                widget.measure.verticalScrollRegionWidth,
+                widget.verticalScrollButton.buttonSize
+            )
+        );
     }
 }
