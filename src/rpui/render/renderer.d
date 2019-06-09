@@ -1,4 +1,4 @@
-module rpui.renderer;
+module rpui.render.renderer;
 
 import std.math;
 
@@ -16,8 +16,8 @@ import gapi.text;
 import rpui.events;
 import rpui.theme;
 import rpui.widget;
-import rpui.render_objects;
-import rpui.basic_types;
+import rpui.render.components;
+import rpui.primitives;
 
 interface Renderer {
     void onCreate(Widget widget);

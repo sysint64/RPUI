@@ -3,7 +3,7 @@ module rpui.widgets.stack_layout;
 import rpui.events;
 import rpui.widget;
 import rpui.widgets.stack_locator;
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.math;
 
 class StackLayout : Widget {

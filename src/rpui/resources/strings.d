@@ -6,7 +6,7 @@ import std.algorithm: canFind;
 import std.ascii;
 import std.conv;
 
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.paths;
 
 import rpdl.tree;

@@ -6,17 +6,17 @@ import std.stdio;
 
 import rpdl;
 
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.widget;
 import rpui.scroll;
 import rpui.input;
 import rpui.view;
 import rpui.cursor;
-import rpui.render_objects;
 import rpui.events;
 import rpui.widget_events;
 import rpui.math;
-import rpui.renderer;
+import rpui.render.renderer;
+import rpui.render.components : State;
 
 import rpui.widgets.panel.renderer;
 import rpui.widgets.panel.scroll_button;

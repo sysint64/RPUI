@@ -1,4 +1,4 @@
-module rpui.render_objects;
+module rpui.render.components;
 
 import gapi.geometry;
 import gapi.geometry_quad;
@@ -8,7 +8,7 @@ import gapi.vec;
 import gapi.transform;
 import gapi.text;
 
-import rpui.basic_types;
+import rpui.primitives;
 
 struct CameraView {
     mat4 mvpMatrix;

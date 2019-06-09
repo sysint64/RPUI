@@ -13,7 +13,7 @@ import rpui.gapi_rpdl_exts;
 import gapi.texture;
 
 import rpui.math;
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.traits;
 import rpui.widget;
 import rpui.view;

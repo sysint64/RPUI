@@ -3,9 +3,9 @@ module rpui.widgets.panel.theme_loader;
 import rpdl;
 
 import rpui.theme;
-import rpui.basic_types;
-import rpui.render_objects;
-import rpui.render_factory;
+import rpui.primitives;
+import rpui.render.components;
+import rpui.render.components_factory;
 import rpui.widgets.panel;
 import rpui.widgets.panel.render_system;
 

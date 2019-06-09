@@ -7,9 +7,9 @@ import rpui.widgets.panel.transforms_system;
 import gapi.texture;
 import gapi.vec;
 import gapi.geometry;
-import rpui.render_objects;
-import rpui.render_factory;
-import rpui.renderer;
+import rpui.render.components;
+import rpui.render.components_factory;
+import rpui.render.renderer;
 
 enum SplitColor {
     darkInner,

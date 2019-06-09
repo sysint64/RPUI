@@ -7,7 +7,6 @@
 module rpui.cursor;
 
 import x11.Xlib;
-import x11_cursorfont;
 
 import derelict.sdl2.sdl;
 

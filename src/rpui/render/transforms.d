@@ -1,4 +1,4 @@
-module rpui.measure;
+module rpui.render.transforms;
 
 import std.math;
 
@@ -10,7 +10,7 @@ import gapi.texture;
 
 import rpui.events;
 import rpui.widget;
-import rpui.render_objects;
+import rpui.render.components;
 import rpui.alignment;
 
 interface TransformsSystem {

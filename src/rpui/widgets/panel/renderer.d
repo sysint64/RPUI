@@ -5,11 +5,11 @@ import rpui.theme;
 import rpui.math;
 import rpui.widget;
 import rpui.widgets.panel;
-import rpui.render_objects;
-import rpui.render_factory;
-import rpui.measure;
-import rpui.renderer;
-import rpui.basic_types;
+import rpui.render.components;
+import rpui.render.components_factory;
+import rpui.render.transforms;
+import rpui.render.renderer;
+import rpui.primitives;
 
 import rpui.widgets.panel.transforms_system;
 import rpui.widgets.panel.render_system;

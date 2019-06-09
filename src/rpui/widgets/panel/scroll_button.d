@@ -3,8 +3,8 @@ module rpui.widgets.panel.scroll_button;
 import rpui.scroll;
 import rpui.math;
 import rpui.widgets.panel;
-import rpui.basic_types;
-import rpui.render_objects;
+import rpui.primitives;
+import rpui.render.components : State;
 
 struct ScrollButton {
     Orientation orientation;

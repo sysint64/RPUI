@@ -2,7 +2,7 @@ module rpui.widget_locator;
 
 import std.math;
 
-import rpui.basic_types;
+import rpui.primitives;
 import gapi.vec;
 
 import rpui.widget;

@@ -3,7 +3,7 @@ module rpui.widget_events;
 import std.container.array;
 
 import rpui.input;
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.widget;
 import rpui.events;
 import rpui.events_observer;

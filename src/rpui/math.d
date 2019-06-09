@@ -1,6 +1,6 @@
 module rpui.math;
 
-import rpui.basic_types;
+import rpui.primitives;
 public import gapi.vec;
 
 bool pointInRect(in vec2i point, in vec4 vec) {

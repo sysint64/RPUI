@@ -15,10 +15,10 @@ import rpui.widget;
 import rpui.events_observer;
 import rpui.events;
 import rpui.widget_events;
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.math;
 import rpui.theme;
-import rpui.render_objects : CameraView;
+import rpui.render.components : CameraView;
 import rpui.resources.strings;
 
 struct ViewShaders {

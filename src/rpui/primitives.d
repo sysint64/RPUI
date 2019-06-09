@@ -1,4 +1,4 @@
-module rpui.basic_types;
+module rpui.primitives;
 
 import gapi.vec;
 import std.conv : to;

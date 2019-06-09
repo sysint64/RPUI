@@ -1,6 +1,6 @@
 module rpui.basic_rpdl_exts;
 
-import rpui.basic_types;
+import rpui.primitives;
 import rpdl.accessors;
 import rpdl.exception;
 import rpdl.node;

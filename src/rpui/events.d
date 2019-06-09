@@ -2,7 +2,7 @@ module rpui.events;
 
 import rpui.math;
 import rpui.input;
-import rpui.basic_types;
+import rpui.primitives;
 
 struct ProgressEvent {
     float deltaTime;

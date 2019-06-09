@@ -3,11 +3,11 @@ module rpui.widgets.button;
 import std.container.array;
 
 import rpui.math;
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.widget;
 import rpui.view;
 import rpui.events;
-import rpui.renderer;
+import rpui.render.renderer;
 import rpui.widgets.button.renderer;
 import rpui.widgets.button.theme_loader;
 

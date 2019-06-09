@@ -3,7 +3,7 @@ module rpui.scroll;
 import std.math;
 import std.conv : to;
 
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.input;
 import rpui.events;
 import rpui.math;

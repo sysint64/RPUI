@@ -2,9 +2,9 @@ module rpui.widgets.button.render_system;
 
 import rpui.widgets.button;
 import rpui.widgets.button.transforms_system;
-import rpui.render_factory;
-import rpui.render_objects;
-import rpui.renderer;
+import rpui.render.components_factory;
+import rpui.render.components;
+import rpui.render.renderer;
 import rpui.theme;
 
 struct RenderData {

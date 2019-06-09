@@ -3,7 +3,7 @@ module rpui.widget;
 import std.container.array;
 import std.math;
 
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.view;
 import rpui.cursor;
 import rpui.widgets_container;
@@ -13,7 +13,7 @@ import rpui.math;
 import rpui.focus_navigator;
 import rpui.widget_locator;
 import rpui.widget_resolver;
-import rpui.render_objects : State;
+import rpui.render.components : State;
 
 import gapi.vec;
 

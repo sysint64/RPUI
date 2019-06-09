@@ -2,11 +2,11 @@ module rpui.widgets.panel.transforms_system;
 
 import rpui.events;
 import rpui.theme;
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.widgets.panel;
 import rpui.widgets.panel.render_system;
-import rpui.measure;
-import rpui.render_objects;
+import rpui.render.transforms;
+import rpui.render.components;
 
 import gapi.transform;
 import gapi.vec;

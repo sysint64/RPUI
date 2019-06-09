@@ -1,4 +1,4 @@
-module rpui.render_factory;
+module rpui.render.components_factory;
 
 import std.traits;
 import std.string;
@@ -12,10 +12,10 @@ import gapi.shader;
 import gapi.text;
 import gapi.vec;
 
-import rpui.render_objects;
+import rpui.render.components;
 import rpui.gapi_rpdl_exts;
 import rpui.theme;
-import rpui.basic_types;
+import rpui.primitives;
 
 StatefulChain createStatefulChainFromRdpl(
     Theme theme,
@@ -143,12 +143,7 @@ UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style) {
     attrs.offset = theme.tree.data.optVec2f(style ~ ".offset", vec2(0, 0));
     attrs.fontSize = theme.tree.data.optInteger(style ~ ".fontSize.0", theme.regularFontSize);
     attrs.textAlign = theme.tree.data.optEnum(style ~ ".textAlign.0", Align.center);
-
-    // attrs.caption = theme.;
-    // attrs.textAlign = theme.;
-    // attrs.textVerticalAlign = theme.;
-    // attrs.color = vec4(0, 0, 0, 1);
-    // attrs.offset = vec2(0, -1);
+    attrs.textVerticalAlign = theme.tree.data.optEnum(style ~ ".textVerticalAlign.0", VerticalAlign.middle);
 
     return attrs;
 }

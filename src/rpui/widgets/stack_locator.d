@@ -3,7 +3,7 @@ module rpui.widgets.stack_locator;
 import std.math;
 
 import rpui.widget;
-import rpui.basic_types;
+import rpui.primitives;
 import rpui.math;
 
 package struct StackLocator {
