@@ -20,6 +20,8 @@ import rpui.math;
 import rpui.theme;
 import rpui.render.components : CameraView;
 import rpui.resources.strings;
+import rpui.resources.images;
+import rpui.resources.icons;
 
 struct ViewShaders {
     ShaderProgram textureAtlasShader;
@@ -38,11 +40,20 @@ ViewShaders createViewShaders() {
 
 struct ViewResources {
     StringsRes strings;
+    ImagesRes images;
+    IconsRes icons;
 }
 
-ViewResources createViewResources() {
+ViewResources createViewResources(in string theme) {
+    auto images = new ImagesRes(theme);
+    auto icons = new IconsRes(images);
+
+    icons.addIcons("icons", "icons.rdl");
+
     return ViewResources(
-        new StringsRes()
+        new StringsRes(),
+        images,
+        icons
     );
 }
 
@@ -105,7 +116,7 @@ final class View : EventsListenerEmpty {
         events.join(rootWidget.events);
 
         theme = createThemeByName(themeName);
-        this.resources = createViewResources();
+        this.resources = createViewResources(themeName);
     }
 
     /// Invokes all `onProgress` of all widgets and `poll` widgets.

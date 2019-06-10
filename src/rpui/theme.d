@@ -12,6 +12,7 @@ import gapi.shader;
 import rpui.paths;
 
 struct Theme {
+    const string name;
     RpdlTree tree;
     const Texture2D skin;
     Font regularFont;
@@ -40,7 +41,7 @@ Theme createThemeByName(in string theme) {
     const regularFontSize = tree.data.getInteger("General.regularFont.1");
     Font font = createFontFromFile(buildPath(paths.resources, "fonts", regularFontFileName));
 
-    return Theme(tree, skin, font, regularFontSize, createThemeShaders());
+    return Theme(theme, tree, skin, font, regularFontSize, createThemeShaders());
 }
 
 private ThemeShaders createThemeShaders() {

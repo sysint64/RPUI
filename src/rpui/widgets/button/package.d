@@ -29,7 +29,7 @@ class Button : Widget {
         float iconsAreaSize = 0;
     }
 
-    private string iconsGroup;
+    package string iconsGroup;
     package Measure measure;
     package ButtonThemeLoader themeLoader;
 

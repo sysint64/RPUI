@@ -99,7 +99,7 @@ final class TestApplication : Application {
         createTexture();
         createShaders();
 
-        auto viewResources = createViewResources();
+        auto viewResources = createViewResources("light");
         viewResources.strings.setLocale("en");
         viewResources.strings.addStrings("test_view.rdl");
 

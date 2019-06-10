@@ -1,16 +1,22 @@
 module rpui.widgets.button.render_system;
 
+import std.container.array;
+
 import rpui.widgets.button;
 import rpui.widgets.button.transforms_system;
 import rpui.render.components_factory;
 import rpui.render.components;
 import rpui.render.renderer;
 import rpui.theme;
+import rpui.math;
+
+import gapi.texture;
 
 struct RenderData {
     StatefulChain background;
     Chain focusGlow;
     StatefulUiText captionText;
+    Array!TexAtlasTextureQuad icons;
 }
 
 final class ButtonRenderSystem : RenderSystem {
@@ -49,6 +55,23 @@ final class ButtonRenderSystem : RenderSystem {
                 renderData.focusGlow.texCoords,
                 transforms.focusGlow,
                 widget.partDraws
+            );
+        }
+
+        renderIcons();
+    }
+
+    private void renderIcons() {
+        for (int i = 0; i < widget.icons.length; ++i) {
+            const iconTransforms = transforms.icons[i];
+            const iconQuad = renderData.icons[i];
+
+            renderTexAtlasQuad(
+                theme,
+                iconQuad.geometry,
+                iconQuad.texture,
+                iconQuad.texCoords,
+                iconTransforms
             );
         }
     }

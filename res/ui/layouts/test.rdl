@@ -18,7 +18,7 @@ Panel
         regionAlign: top
         background: light
         position: 0, 0
-        size: 0, 100
+        size: 0, 250
         padding: 5
 
         Button
@@ -36,7 +36,8 @@ Panel
             position: 5, 31
             background: dark
             margin: 10
-            Button position: 0, 0 size: 100, 21 caption: "Cancel" name: "cancelButton"
+            regionAlign: bottom
+            Button position: 5, 5 size: 100, 21 caption: "Cancel" name: "cancelButton"
             Button position: 5, 57 size: 100, 21 caption: "Close" name: "closeButton"
 
     Panel

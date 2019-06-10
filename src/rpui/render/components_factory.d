@@ -99,6 +99,17 @@ StatefulTexAtlasTextureQuad createStatefulTexAtlasTextureQuadFromRdpl(
     return quad;
 }
 
+TexAtlasTextureQuad createTexAtlasTextureQuad(
+    Texture2D texture,
+    Texture2DCoords texCoords
+) {
+    return TexAtlasTextureQuad(
+        createGeometry(),
+        texture,
+        texCoords
+    );
+}
+
 OriginalWithNormilizedTextureCoords createOriginalWithNormilizedTextureCoordsFromRdpl(
     Theme theme,
     in string style,

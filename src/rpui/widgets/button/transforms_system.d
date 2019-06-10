@@ -1,5 +1,8 @@
 module rpui.widgets.button.transforms_system;
 
+import std.container.array;
+import std.math;
+
 import rpui.events;
 import rpui.widgets.button;
 import rpui.render.components_factory;
@@ -15,6 +18,7 @@ struct RenderTransforms {
     HorizontalChainTransforms background;
     HorizontalChainTransforms focusGlow;
     UiTextTransforms captionText;
+    Array!QuadTransforms icons;
 }
 
 final class ButtonTransformsSystem : TransformsSystem {
@@ -33,6 +37,7 @@ final class ButtonTransformsSystem : TransformsSystem {
     override void onProgress(in ProgressEvent event) {
         updateBackground();
         updateText();
+        updateIcons();
     }
 
     private void updateBackground() {
@@ -87,5 +92,35 @@ final class ButtonTransformsSystem : TransformsSystem {
         );
 
         widget.measure.textWidth = transforms.captionText.size.x;
+    }
+
+    private void updateIcons() {
+        with (widget) {
+            measure.iconsAreaSize = 0;
+
+            const iconSize = view.resources.icons.getIconsConfig(iconsGroup).size;
+            const iconVerticalOffset = round((size.y - iconSize.y) / 2.0f);
+            float iconLastOffset = 0;
+            int counter = 0;
+
+            for (int i = 0; i < widget.icons.length; ++i) {
+                const iconOffset = iconLastOffset;
+
+                iconLastOffset = iconOffset + iconSize.x + measure.iconGaps;
+                counter++;
+                const offset = measure.iconOffsets + vec2(iconOffset, iconVerticalOffset);
+
+                const transform = updateQuadTransforms(
+                    view.cameraView,
+                    absolutePosition + offset,
+                    iconSize
+                );
+                transforms.icons[i] = transform;
+            }
+
+            if (icons.length > 0) {
+                measure.iconsAreaSize += iconLastOffset - measure.iconGaps * 2;
+            }
+        }
     }
 }
