@@ -51,14 +51,6 @@ protected:
         }
 
         if (widthType == SizeType.wrapContent) {
-            // float maxLineWidth = 0;
-
-            // foreach (renderObject; textRenderObjects) {
-            //     if (maxLineWidth < renderObject.textWidth) {
-            //         maxLineWidth = renderObject.textWidth;
-            //     }
-            // }
-
             size.x = measure.maxLineWidth + innerOffsetSize.x;
         }
     }
