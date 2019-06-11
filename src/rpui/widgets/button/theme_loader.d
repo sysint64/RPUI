@@ -31,7 +31,7 @@ struct ButtonThemeLoader {
 
         renderData.background = createStatefulChainFromRdpl(theme, Orientation.horizontal, style);
         renderData.focusGlow = createChainFromRdpl(theme, Orientation.horizontal, style ~ ".Focus");
-        renderData.captionText = createStatefulUiText(theme, style, "Text");
+        renderData.captionText = createStatefulUiTextFromRdpl(theme, style, "Text");
 
         return renderData;
     }

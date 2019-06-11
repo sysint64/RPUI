@@ -21,6 +21,8 @@ import rpui.view;
 import rpui.widgets.button;
 import rpui.widgets.panel;
 import rpui.widgets.stack_layout;
+import rpui.widgets.label;
+import rpui.widgets.multiline_label;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -70,6 +72,12 @@ final class RpdlWidgetFactory {
 
             case "StackLayout":
                 return createWidget!StackLayout(widgetNode, parentWidget);
+
+            case "Label":
+                return createWidget!Label(widgetNode, parentWidget);
+
+            case "MultilineLabel":
+                return createWidget!MultilineLabel(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);
@@ -207,7 +215,7 @@ final class RpdlWidgetFactory {
         }
     }
 
-        private void readArrayField(T : Widget, SymbolType, string symbolName)
+    private void readArrayField(T : Widget, SymbolType, string symbolName)
         (T widget, Node widgetNode, string nodeName)
     {
         const defaultValue = SymbolType.init;

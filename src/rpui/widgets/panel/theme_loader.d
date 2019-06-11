@@ -47,7 +47,7 @@ struct PanelThemeLoader {
                 style ~ ".Header", "background",
                 [State.leave, State.enter]
             );
-            headerText = createStatefulUiText(
+            headerText = createStatefulUiTextFromRdpl(
                 theme,
                 style ~ ".Header", "Text",
                 [State.leave, State.enter]

@@ -48,14 +48,44 @@ Panel
         caption: "Panel 2"
         userCanResize: true
         userCanHide: true
-        padding: 0, 100, 0, 0
         userCanResize: true
 
         StackLayout
-            # padding: 0, 100, 0, 0
             name: "buttons"
             widthType: matchParent
 
-            Button size: 100, 21 margin: 5 caption: "Button 1"
-            Button size: 100, 21 margin: 5 caption: "Button 2" locationAlign: right
-            Button size: 100, 21 margin: 5 caption: "Button 3"
+            StackLayout
+                name: "buttons"
+                widthType: matchParent
+
+                Button size: 100, 21 margin: 5 caption: "Button 1"
+                Button size: 100, 21 margin: 5 caption: "Button 2" locationAlign: right
+                Button size: 100, 21 margin: 5 caption: "Button 3"
+
+            Label size: 100, 16 margin: 5 caption: "Hello world!"
+            Button width: 100 margin: 5 caption: "Button 1"
+            Button width: 100 margin: 5 caption: "Button 2" locationAlign: right
+            Button widthType: matchParent margin: 5 caption: "Button 3" icons: "info"
+            # Checkbox size: 100, 16 margin: 5 caption: "Checkbox 1" checked: true
+            # Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
+            # Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
+            MultilineLabel
+                size: 0, 200
+                lineHeightFactor: 1
+                margin: 5
+                padding: 0, 10
+                caption: "Hello world!\nblablabla\nLol!\u30D4"
+                textAlign: left
+                textVerticalAlign: bottom
+                widthType: wrapContent
+                heightType: wrapContent
+
+            # Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
+            # TextInput size: 100, 21 margin: 5 text: "Hello world!"
+            # TextInput size: 100, 21 margin: 5 text: "100" inputType: number
+
+            Button
+                caption: "Open dialog"
+                widthType: wrapContent
+                name: "openDialogButton"
+                margin: 5

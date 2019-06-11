@@ -128,7 +128,20 @@ Texture2DCoords createNormilizedTextureCoordsFromRdpl(
     return normilizeTexture2DCoords(textCoord, theme.skin);
 }
 
-StatefulUiText createStatefulUiText(
+UiText createUiTextFromRdpl(
+    Theme theme,
+    in string style,
+    in string name
+) {
+    UiText text;
+
+    text.render = createUiTextRenderObject();
+    text.attrs = createTextAttributesFromRdpl(theme, style ~ "." ~ name);
+
+    return text;
+}
+
+StatefulUiText createStatefulUiTextFromRdpl(
     Theme theme,
     in string style,
     in string name,

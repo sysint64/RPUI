@@ -71,8 +71,7 @@ Checkbox
 
 Label
     Regular
-        textOffset          : 0, 0
-        textColor           : 0, 0, 0
+        color               : 0, 0, 0, 100
 
 Panel
     backgroundLight         : 213, 213, 213, 100
