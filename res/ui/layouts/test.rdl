@@ -66,9 +66,9 @@ Panel
             Button width: 100 margin: 5 caption: "Button 1"
             Button width: 100 margin: 5 caption: "Button 2" locationAlign: right
             Button widthType: matchParent margin: 5 caption: "Button 3" icons: "info"
-            # Checkbox size: 100, 16 margin: 5 caption: "Checkbox 1" checked: true
-            # Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
-            # Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
+            Checkbox size: 100, 16 margin: 5 caption: "Checkbox 1" checked: true
+            Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
+            Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
             MultilineLabel
                 size: 0, 200
                 lineHeightFactor: 1
@@ -80,7 +80,7 @@ Panel
                 widthType: wrapContent
                 heightType: wrapContent
 
-            # Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
+            Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
             # TextInput size: 100, 21 margin: 5 text: "Hello world!"
             # TextInput size: 100, 21 margin: 5 text: "100" inputType: number
 

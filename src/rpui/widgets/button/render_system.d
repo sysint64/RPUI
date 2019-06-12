@@ -70,7 +70,7 @@ final class ButtonRenderSystem : RenderSystem {
                 theme,
                 iconQuad.geometry,
                 iconQuad.texture,
-                iconQuad.texCoords,
+                iconQuad.texCoords.normilizedTexCoords,
                 iconTransforms
             );
         }

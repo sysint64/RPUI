@@ -99,6 +99,23 @@ StatefulTexAtlasTextureQuad createStatefulTexAtlasTextureQuadFromRdpl(
     return quad;
 }
 
+TexAtlasTextureQuad createTexAtlasTextureQuadFromRdpl(
+    Theme theme,
+    in string style,
+    in string name
+) {
+    TexAtlasTextureQuad quad;
+
+    quad.geometry = createGeometry();
+    quad.texture = theme.skin;
+    quad.texCoords = createOriginalWithNormilizedTextureCoordsFromRdpl(
+        theme,
+        style ~ "." ~ name
+    );
+
+    return quad;
+}
+
 TexAtlasTextureQuad createTexAtlasTextureQuad(
     Texture2D texture,
     Texture2DCoords texCoords
@@ -106,7 +123,7 @@ TexAtlasTextureQuad createTexAtlasTextureQuad(
     return TexAtlasTextureQuad(
         createGeometry(),
         texture,
-        texCoords
+        OriginalWithNormilizedTextureCoords(texCoords, texCoords)
     );
 }
 

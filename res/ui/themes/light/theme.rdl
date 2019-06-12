@@ -43,30 +43,24 @@ Button
         offsets             : [-2, -2], 4
 
 Checkbox
-    Checked
-        Leave
-            element         : 55, 3, 16, 16
-            textColor       : 0, 0, 0
-            textOffset      : 21, 0
+    Leave
+        uncheckedBox        : 4, 3, 16, 16
+        checkedBox          : 55, 3, 16, 16
 
-        Enter
-            element         : 72, 3, 16, 16
-            textColor       : 0, 0, 0
-            textOffset      : 21, 0
+        Text
+            color           : 0, 0, 0
+            offset          : 21, 0
 
-    Unchecked
-        Leave
-            element         : 4, 3, 16, 16
-            textColor       : 0, 0, 0
-            textOffset      : 21, 0
+    Enter
+        uncheckedBox        : 21, 3, 16, 16
+        checkedBox          : 72, 3, 16, 16
 
-        Enter
-            element         : 21, 3, 16, 16
-            textColor       : 0, 0, 0
-            textOffset      : 21, 0
+        Text
+            color           : 100, 0, 0
+            offset          : 21, 0
 
     Focus
-        element             : 37, 3, 16, 16
+        glow                : 37, 3, 16, 16
         offsets             : -1, 0
 
 Label

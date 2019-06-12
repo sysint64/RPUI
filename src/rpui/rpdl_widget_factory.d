@@ -23,6 +23,7 @@ import rpui.widgets.panel;
 import rpui.widgets.stack_layout;
 import rpui.widgets.label;
 import rpui.widgets.multiline_label;
+import rpui.widgets.checkbox;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -78,6 +79,9 @@ final class RpdlWidgetFactory {
 
             case "MultilineLabel":
                 return createWidget!MultilineLabel(widgetNode, parentWidget);
+
+            case "Checkbox":
+                return createWidget!Checkbox(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);
