@@ -6,8 +6,6 @@
 
 module rpui.cursor;
 
-import x11.Xlib;
-
 import derelict.sdl2.sdl;
 
 enum CursorIcon {

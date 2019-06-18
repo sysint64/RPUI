@@ -33,26 +33,22 @@ final class ButtonRenderSystem : RenderSystem {
     }
 
     override void onRender() {
+        renderData.background.state = widget.state;
+        renderData.captionText.state = widget.state;
+
         renderHorizontalChain(
             theme,
-            renderData.background.parts,
-            renderData.background.texCoords[widget.state],
+            renderData.background,
             transforms.background,
             widget.partDraws
         );
 
-        renderUiText(
-            theme,
-            renderData.captionText.render,
-            renderData.captionText.attrs[widget.state],
-            transforms.captionText,
-        );
+        renderUiText(theme, renderData.captionText, transforms.captionText);
 
         if (widget.focusable && widget.isFocused) {
             renderHorizontalChain(
                 theme,
-                renderData.focusGlow.parts,
-                renderData.focusGlow.texCoords,
+                renderData.focusGlow,
                 transforms.focusGlow,
                 widget.partDraws
             );
@@ -66,13 +62,7 @@ final class ButtonRenderSystem : RenderSystem {
             const iconTransforms = transforms.icons[i];
             const iconQuad = renderData.icons[i];
 
-            renderTexAtlasQuad(
-                theme,
-                iconQuad.geometry,
-                iconQuad.texture,
-                iconQuad.texCoords.normilizedTexCoords,
-                iconTransforms
-            );
+            renderTexAtlasQuad(theme, iconQuad, iconTransforms);
         }
     }
 }

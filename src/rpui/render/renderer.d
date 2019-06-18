@@ -44,6 +44,34 @@ interface RenderSystem {
 
 void renderTexAtlasQuad(
     in Theme theme,
+    in StatefulTexAtlasTextureQuad quad,
+    in QuadTransforms transforms
+) {
+    renderTexAtlasQuad(
+        theme,
+        quad.geometry,
+        quad.texture,
+        quad.texCoords[quad.state].normilizedTexCoords,
+        transforms
+    );
+}
+
+void renderTexAtlasQuad(
+    in Theme theme,
+    in TexAtlasTextureQuad quad,
+    in QuadTransforms transforms
+) {
+    renderTexAtlasQuad(
+        theme,
+        quad.geometry,
+        quad.texture,
+        quad.texCoords.normilizedTexCoords,
+        transforms
+    );
+}
+
+void renderTexAtlasQuad(
+    in Theme theme,
     in Geometry geometry,
     in Texture2D texture,
     in Texture2DCoords texCoord,
@@ -78,6 +106,36 @@ void renderColorQuad(
     bindVAO(geometry.vao);
     bindIndices(geometry.indicesBuffer);
     renderIndexedGeometry(cast(uint) quadIndices.length, GL_TRIANGLE_STRIP);
+}
+
+void renderHorizontalChain(
+    in Theme theme,
+    in StatefulChain chain,
+    in HorizontalChainTransforms transforms,
+    in Widget.PartDraws partDraws = Widget.PartDraws.all
+) {
+    renderHorizontalChain(
+        theme,
+        chain.parts,
+        chain.texCoords[chain.state],
+        transforms,
+        partDraws
+    );
+}
+
+void renderHorizontalChain(
+    in Theme theme,
+    in Chain chain,
+    in HorizontalChainTransforms transforms,
+    in Widget.PartDraws partDraws = Widget.PartDraws.all
+) {
+    renderHorizontalChain(
+        theme,
+        chain.parts,
+        chain.texCoords,
+        transforms,
+        partDraws
+    );
 }
 
 void renderHorizontalChain(
@@ -144,6 +202,19 @@ void renderVerticalChain(
         parts[ChainPart.middle].texture,
         texCoords[ChainPart.middle],
         transforms.quadTransforms[ChainPart.middle]
+    );
+}
+
+void renderUiText(
+    in Theme theme,
+    in StatefulUiText text,
+    in UiTextTransforms transforms
+) {
+    renderUiText(
+        theme,
+        text.render,
+        text.attrs[text.state],
+        transforms
     );
 }
 

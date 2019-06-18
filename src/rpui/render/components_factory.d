@@ -185,6 +185,8 @@ UiTextAttributes createTextAttributesFromRdpl(Theme theme, in string style) {
     attrs.fontSize = theme.tree.data.optInteger(style ~ ".fontSize.0", theme.regularFontSize);
     attrs.textAlign = theme.tree.data.optEnum(style ~ ".textAlign.0", Align.center);
     attrs.textVerticalAlign = theme.tree.data.optEnum(style ~ ".textVerticalAlign.0", VerticalAlign.middle);
+    // TODO: read from rdpl
+    attrs.font = theme.regularFont;
 
     return attrs;
 }

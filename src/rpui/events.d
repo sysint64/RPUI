@@ -53,6 +53,7 @@ struct DblClickEvent {
 struct MouseMoveEvent {
     int x;
     int y;
+    MouseButton button;
 }
 
 struct MouseWheelEvent {

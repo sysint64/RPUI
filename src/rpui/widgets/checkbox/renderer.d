@@ -26,6 +26,12 @@ final class CheckboxRenderer : Renderer {
         return widget.isEnter ? State.enter : State.leave;
     }
 
+    private void updateState() {
+        text.state = getTextState();
+        checkedBox.state = getTextState();
+        uncheckedBox.state = getTextState();
+    }
+
     override void onCreate(Widget widget) {
         this.theme = widget.view.theme;
         this.widget = cast(Checkbox) widget;
@@ -61,37 +67,17 @@ final class CheckboxRenderer : Renderer {
     }
 
     override void onRender() {
-        renderUiText(
-            theme,
-            text.render,
-            text.attrs[getTextState()],
-            textTransforms,
-        );
-
-        const(StatefulTexAtlasTextureQuad)* box;
+        updateState();
+        renderUiText(theme, text, textTransforms);
 
         if (widget.checked) {
-            box = &checkedBox;
+            renderTexAtlasQuad(theme, checkedBox, boxTransforms);
         } else {
-            box = &uncheckedBox;
+            renderTexAtlasQuad(theme, uncheckedBox, boxTransforms);
         }
 
-        renderTexAtlasQuad(
-            theme,
-            box.geometry,
-            box.texture,
-            box.texCoords[getTextState()].normilizedTexCoords,
-            boxTransforms
-        );
-
         if (widget.isFocused) {
-            renderTexAtlasQuad(
-                theme,
-                focusGlow.geometry,
-                focusGlow.texture,
-                focusGlow.texCoords.normilizedTexCoords,
-                focusGlowTransforms
-            );
+            renderTexAtlasQuad(theme, focusGlow, focusGlowTransforms);
         }
     }
 
@@ -101,7 +87,9 @@ final class CheckboxRenderer : Renderer {
     }
 
     private void updateText() {
-        with (text.attrs[getTextState()]) {
+        UiTextAttributes* textAttrs = &text.attrs[getTextState()];
+
+        with (textAttrs) {
             caption = widget.caption;
             textAlign = widget.textAlign;
             textVerticalAlign = widget.textVerticalAlign;
@@ -111,14 +99,14 @@ final class CheckboxRenderer : Renderer {
             &text.render,
             &theme.regularFont,
             textTransforms,
-            text.attrs[getTextState()],
+            *textAttrs,
             widget.view.cameraView,
             widget.absolutePosition + widget.innerOffsetStart,
             widget.size
         );
 
-        widget.measure.textWidth = textTransforms.size.x + text.attrs[getTextState()].offset.x;
-        widget.measure.lineHeight = textTransforms.size.y + text.attrs[getTextState()].offset.y;
+        widget.measure.textWidth = textTransforms.size.x + textAttrs.offset.x;
+        widget.measure.lineHeight = textTransforms.size.y + textAttrs.offset.y;
     }
 
     private void updateBox() {

@@ -12,11 +12,11 @@ import gapi.shader;
 import rpui.paths;
 
 struct Theme {
-    const string name;
+    string name;
     RpdlTree tree;
-    const Texture2D skin;
+    Texture2D skin;
     Font regularFont;
-    const int regularFontSize;
+    int regularFontSize;
     ThemeShaders shaders;
 }
 

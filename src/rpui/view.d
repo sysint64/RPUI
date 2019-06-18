@@ -23,21 +23,6 @@ import rpui.resources.strings;
 import rpui.resources.images;
 import rpui.resources.icons;
 
-struct ViewShaders {
-    ShaderProgram textureAtlasShader;
-}
-
-ViewShaders createViewShaders() {
-    const vertexSource = readText(buildPath("res", "shaders", "transform_vertex.glsl"));
-    const vertexShader = createShader("transform vertex shader", ShaderType.vertex, vertexSource);
-
-    const texAtalsFragmentSource = readText(buildPath("res", "shaders", "texture_atlas_fragment.glsl"));
-    const texAtlasFragmentShader = createShader("texture atlas fragment shader", ShaderType.fragment, texAtalsFragmentSource);
-    auto texAtlasShader = createShaderProgram("texture atlas program", [vertexShader, texAtlasFragmentShader]);
-
-    return ViewShaders(texAtlasShader);
-}
-
 struct ViewResources {
     StringsRes strings;
     ImagesRes images;
@@ -511,5 +496,11 @@ final class View : EventsListenerEmpty {
 
     bool isWidgetFreezingSource(Widget widget) {
         return !freezeSources.empty && freezeSources.front == widget;
+    }
+
+    void showCursor() {
+    }
+
+    void hideCursor() {
     }
 }

@@ -7,6 +7,7 @@ import gapi.shader;
 import gapi.vec;
 import gapi.transform;
 import gapi.text;
+import gapi.font;
 
 import rpui.primitives;
 
@@ -49,6 +50,7 @@ struct StatefulTexAtlasTextureQuad {
     Geometry geometry;
     Texture2D texture;
     OriginalWithNormilizedTextureCoords[State] texCoords;
+    State state;
 }
 
 struct OriginalWithNormilizedTextureCoords {
@@ -60,6 +62,7 @@ struct StatefulChain {
     TextureQuad[ChainPart] parts;
     float[ChainPart] widths;
     Texture2DCoords[ChainPart][State] texCoords;
+    State state;
 }
 
 struct Chain {
@@ -77,6 +80,7 @@ struct UiTextRender {
 struct StatefulUiText {
     UiTextRender render;
     UiTextAttributes[State] attrs;
+    State state;
 }
 
 struct UiText {
@@ -91,10 +95,12 @@ struct UiTextAttributes {
     dstring caption;
     Align textAlign = Align.center;
     VerticalAlign textVerticalAlign = VerticalAlign.middle;
+    Font font;
 }
 
 struct UiTextTransforms {
     vec2 size;
+    vec2 relativePosition;
     mat4 mvpMatrix;
     dstring cachedString = "";
 }

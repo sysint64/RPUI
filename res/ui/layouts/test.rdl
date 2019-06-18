@@ -44,7 +44,7 @@ Panel
         regionAlign: top
         background: light
         position: 0, 0
-        size: 0, 300
+        size: 0, 500
         caption: "Panel 2"
         userCanResize: true
         userCanHide: true
@@ -62,6 +62,8 @@ Panel
                 Button size: 100, 21 margin: 5 caption: "Button 2" locationAlign: right
                 Button size: 100, 21 margin: 5 caption: "Button 3"
 
+            TextInput size: 100, 21 margin: 5 text: "Hello world!"
+            TextInput size: 100, 21 margin: 5 text: "100" inputType: number
             Label size: 100, 16 margin: 5 caption: "Hello world!"
             Button width: 100 margin: 5 caption: "Button 1"
             Button width: 100 margin: 5 caption: "Button 2" locationAlign: right
@@ -81,8 +83,6 @@ Panel
                 heightType: wrapContent
 
             Checkbox size: 100, 16 margin: 5 caption: "Checkbox 2" checked: false
-            # TextInput size: 100, 21 margin: 5 text: "Hello world!"
-            # TextInput size: 100, 21 margin: 5 text: "100" inputType: number
 
             Button
                 caption: "Open dialog"

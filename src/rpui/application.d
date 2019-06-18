@@ -1,6 +1,8 @@
 module rpui.application;
 
 import std.conv;
+import std.array;
+import std.string;
 
 import derelict.sdl2.image;
 import derelict.sdl2.sdl;
@@ -11,6 +13,7 @@ import rpui.events;
 import rpui.events_observer;
 import rpui.input;
 import rpui.cursor;
+import rpui.primitives;
 
 abstract class Application {
     EventsObserver events = new EventsObserver();
@@ -162,21 +165,45 @@ abstract class Application {
                 }
 
                 if (event.type == SDL_MOUSEMOTION) {
-                    events.notify(MouseMoveEvent(event.motion.x, event.motion.y));
+                    const button = createMouseButtonFromSdlState(event.motion.state);
+                    events.notify(MouseMoveEvent(event.motion.x, event.motion.y, button));
                 }
 
                 if (event.type == SDL_MOUSEBUTTONDOWN) {
-                    const button = createMouseButtonFromSdlEvent(event);
+                    const button = createMouseButtonFromButtonSdlEvent(event);
                     events.notify(MouseDownEvent(event.button.x, event.button.y, button));
                 }
 
                 if (event.type == SDL_MOUSEBUTTONUP) {
-                    const button = createMouseButtonFromSdlEvent(event);
+                    const button = createMouseButtonFromButtonSdlEvent(event);
                     events.notify(MouseUpEvent(event.button.x, event.button.y, button));
                 }
 
                 if (event.type == SDL_MOUSEWHEEL) {
                     events.notify(MouseWheelEvent(event.wheel.x, event.wheel.y));
+                }
+
+                if (event.type == SDL_TEXTINPUT) {
+                    const ch = fromStringz(dtext(event.text.text[0..4]).ptr)[0];
+                    events.notify(TextEnteredEvent(ch));
+                }
+
+                if (event.type == SDL_KEYDOWN) {
+                    try {
+                        const key = to!(KeyCode)(to!(int)(event.key.keysym.sym));
+                        setKeyPressed(key, true);
+                        events.notify(KeyPressedEvent(key));
+                    } catch (Exception e) {
+                    }
+                }
+
+                if (event.type == SDL_KEYUP) {
+                    try {
+                        const key = to!(KeyCode)(to!(int)(event.key.keysym.sym));
+                        setKeyPressed(key, false);
+                        events.notify(KeyReleasedEvent(key));
+                    } catch (Exception e) {
+                    }
                 }
             }
 

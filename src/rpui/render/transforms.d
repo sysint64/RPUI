@@ -148,5 +148,21 @@ UiTextTransforms updateUiTextTransforms(
     };
 
     measure.mvpMatrix = cameraView.mvpMatrix * create2DModelMatrix(textTransform);
+    measure.relativePosition = textPosition - position;
+
     return measure;
+}
+
+vec2 getUiTextBounds(
+    UiTextRender* uiText,
+    Font* font,
+    in UiTextAttributes attrs
+) {
+    UpdateTextInput updateTextInput = {
+        textSize: attrs.fontSize,
+        font: font,
+        text: attrs.caption
+    };
+
+    return getTextBounds(&uiText.text, updateTextInput);
 }
