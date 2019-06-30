@@ -32,6 +32,7 @@ import rpui.widgets.tab_layout.widget;
 import rpui.widgets.tab_button.widget;
 import rpui.widgets.chain_layout.widget;
 import rpui.widgets.check_button.widget;
+import rpui.widgets.switch_button.widget;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -114,6 +115,9 @@ final class RpdlWidgetFactory {
 
             case "CheckButton":
                 return createWidget!CheckButton(widgetNode, parentWidget);
+
+            case "SwitchButton":
+                return createWidget!SwitchButton(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);

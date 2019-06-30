@@ -261,9 +261,9 @@ Panel
                     Button caption: "G"
                     Button caption: "B"
 
-            # SwitchButton
-            #     caption: "Switch me"
-            #     icons: "birds"
+            SwitchButton
+                caption: "Switch me"
+                icons: "birds"
 
     Panel
         name: "triangleTabPanel"
