@@ -237,4 +237,9 @@ class TextInput : Widget {
         if (isEnter)
             editComponent.onDblClick(event);
     }
+
+    override void onTripleClick(in TripleClickEvent event) {
+        if (isEnter)
+            editComponent.onTripleClick(event);
+    }
 }

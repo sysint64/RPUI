@@ -48,6 +48,7 @@ class EventsSubscriber(T) : Subscriber {
             "MouseDown",
             "MouseUp",
             "DblClick",
+            "TripleClick",
             "MouseMove",
             "MouseWheel",
             "WindowResize"

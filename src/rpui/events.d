@@ -50,6 +50,12 @@ struct DblClickEvent {
     MouseButton button;
 }
 
+struct TripleClickEvent {
+    uint x;
+    uint y;
+    MouseButton button;
+}
+
 struct MouseMoveEvent {
     int x;
     int y;
@@ -73,6 +79,7 @@ const windowEvents = [
     typeid(MouseDownEvent),
     typeid(MouseUpEvent),
     typeid(DblClickEvent),
+    typeid(TripleClickEvent),
     typeid(MouseMoveEvent),
     typeid(MouseWheelEvent),
     typeid(WindowResizeEvent)
@@ -85,6 +92,7 @@ interface EventsListener {
     void onMouseDown(in MouseDownEvent event);
     void onMouseUp(in MouseUpEvent event);
     void onDblClick(in DblClickEvent event);
+    void onTripleClick(in TripleClickEvent event);
     void onMouseMove(in MouseMoveEvent event);
     void onMouseWheel(in MouseWheelEvent event);
     void onWindowResize(in WindowResizeEvent event);
@@ -97,6 +105,7 @@ abstract class EventsListenerEmpty : EventsListener {
     void onMouseDown(in MouseDownEvent event) {}
     void onMouseUp(in MouseUpEvent event) {}
     void onDblClick(in DblClickEvent event) {}
+    void onTripleClick(in TripleClickEvent event) {}
     void onMouseMove(in MouseMoveEvent event) {}
     void onMouseWheel(in MouseWheelEvent event) {}
     void onWindowResize(in WindowResizeEvent event) {}

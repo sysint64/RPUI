@@ -193,6 +193,10 @@ struct EditComponent {
         carriage.pos = right;
     }
 
+    void onTripleClick(in TripleClickEvent event) {
+        selectAll();
+    }
+
     float getTextWidth() {
         return textInput.measure.textWidth;
     }
