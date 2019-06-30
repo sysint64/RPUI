@@ -4,7 +4,7 @@ import rpui.events;
 import rpui.theme;
 import rpui.math;
 import rpui.widget;
-import rpui.widgets.panel;
+import rpui.widgets.panel.widget;
 import rpui.render.components;
 import rpui.render.components_factory;
 import rpui.render.transforms;

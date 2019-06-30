@@ -6,7 +6,7 @@ import rpui.primitives;
 import rpui.theme;
 import rpui.events;
 import rpui.widget;
-import rpui.widgets.text_input;
+import rpui.widgets.text_input.widget;
 import rpui.widgets.text_input.render_system;
 import rpui.widgets.text_input.transforms_system;
 import rpui.render.components;

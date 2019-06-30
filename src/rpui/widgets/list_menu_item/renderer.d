@@ -5,7 +5,7 @@ import rpui.events;
 import rpui.widget;
 import rpui.math;
 import rpui.widgets.button.renderer;
-import rpui.widgets.list_menu_item;
+import rpui.widgets.list_menu_item.widget;
 import rpui.render.components;
 import rpui.render.components_factory;
 import rpui.render.renderer;

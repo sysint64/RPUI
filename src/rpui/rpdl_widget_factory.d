@@ -18,16 +18,16 @@ import rpui.traits;
 import rpui.widget;
 import rpui.view;
 
-import rpui.widgets.button;
-import rpui.widgets.panel;
-import rpui.widgets.stack_layout;
-import rpui.widgets.label;
-import rpui.widgets.multiline_label;
-import rpui.widgets.checkbox;
-import rpui.widgets.text_input;
-import rpui.widgets.list_menu;
-import rpui.widgets.list_menu_item;
-import rpui.widgets.drop_list_menu;
+import rpui.widgets.button.widget;
+import rpui.widgets.panel.widget;
+import rpui.widgets.stack_layout.widget;
+import rpui.widgets.label.widget;
+import rpui.widgets.multiline_label.widget;
+import rpui.widgets.checkbox.widget;
+import rpui.widgets.text_input.widget;
+import rpui.widgets.list_menu.widget;
+import rpui.widgets.list_menu_item.widget;
+import rpui.widgets.drop_list_menu.widget;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {

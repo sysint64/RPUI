@@ -3,7 +3,7 @@ module rpui.widgets.label.renderer;
 import rpui.theme;
 import rpui.events;
 import rpui.widget;
-import rpui.widgets.label;
+import rpui.widgets.label.widget;
 import rpui.render.components;
 import rpui.render.components_factory;
 import rpui.render.renderer;

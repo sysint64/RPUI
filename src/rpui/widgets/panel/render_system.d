@@ -1,7 +1,7 @@
 module rpui.widgets.panel.render_system;
 
 import rpui.theme;
-import rpui.widgets.panel;
+import rpui.widgets.panel.widget;
 import rpui.widgets.panel.transforms_system;
 
 import gapi.texture;

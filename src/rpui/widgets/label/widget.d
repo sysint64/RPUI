@@ -1,4 +1,4 @@
-module rpui.widgets.label;
+module rpui.widgets.label.widget;
 
 import rpui.events;
 import rpui.input;

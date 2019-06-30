@@ -1,4 +1,4 @@
-module rpui.widgets.list_menu;
+module rpui.widgets.list_menu.widget;
 
 import rpui.basic_rpdl_exts;
 import rpui.events;
@@ -6,7 +6,7 @@ import rpui.input;
 import rpui.math;
 import rpui.primitives;
 import rpui.widget;
-import rpui.widgets.list_menu_item;
+import rpui.widgets.list_menu_item.widget;
 import rpui.widgets.list_menu.renderer;
 import rpui.widgets.stack_layout.stack_locator;
 

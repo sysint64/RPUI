@@ -2,7 +2,7 @@ module rpui.widgets.text_input.render_system;
 
 import std.container.array;
 
-import rpui.widgets.text_input;
+import rpui.widgets.text_input.widget;
 import rpui.widgets.text_input.transforms_system;
 import rpui.render.components_factory;
 import rpui.render.components;

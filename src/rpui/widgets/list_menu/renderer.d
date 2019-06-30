@@ -3,7 +3,7 @@ module rpui.widgets.list_menu.renderer;
 import rpui.theme;
 import rpui.events;
 import rpui.widget;
-import rpui.widgets.list_menu;
+import rpui.widgets.list_menu.widget;
 import rpui.render.components;
 import rpui.render.components_factory;
 import rpui.render.renderer;

@@ -4,7 +4,7 @@ import std.container.array;
 import std.math;
 
 import rpui.events;
-import rpui.widgets.text_input;
+import rpui.widgets.text_input.widget;
 import rpui.render.components_factory;
 import rpui.render.components;
 import rpui.render.transforms;

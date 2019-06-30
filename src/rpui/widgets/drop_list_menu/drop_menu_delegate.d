@@ -3,7 +3,7 @@ module rpui.widgets.drop_list_menu.drop_menu_delegate;
 import rpui.primitives;
 import rpui.math;
 import rpui.widget;
-import rpui.widgets.list_menu;
+import rpui.widgets.list_menu.widget;
 
 struct DropMenuDelegate {
     private ListMenu menu;

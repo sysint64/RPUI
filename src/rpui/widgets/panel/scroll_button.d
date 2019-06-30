@@ -2,7 +2,7 @@ module rpui.widgets.panel.scroll_button;
 
 import rpui.scroll;
 import rpui.math;
-import rpui.widgets.panel;
+import rpui.widgets.panel.widget;
 import rpui.primitives;
 import rpui.render.components : State;
 

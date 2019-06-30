@@ -10,7 +10,7 @@ import rpui.primitives;
 import rpui.theme;
 import rpui.events;
 import rpui.widget;
-import rpui.widgets.multiline_label;
+import rpui.widgets.multiline_label.widget;
 import rpui.render.components;
 import rpui.render.components_factory;
 import rpui.render.renderer;

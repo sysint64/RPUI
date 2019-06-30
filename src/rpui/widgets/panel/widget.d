@@ -1,4 +1,4 @@
-module rpui.widgets.panel;
+module rpui.widgets.panel.widget;
 
 import std.container;
 import std.algorithm.comparison;

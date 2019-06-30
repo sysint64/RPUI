@@ -1,4 +1,4 @@
-module rpui.widgets.drop_list_menu;
+module rpui.widgets.drop_list_menu.widget;
 
 import rpui.events;
 import rpui.widget_events;
@@ -6,9 +6,9 @@ import rpui.input;
 import rpui.math;
 import rpui.primitives;
 import rpui.widget;
-import rpui.widgets.list_menu;
-import rpui.widgets.list_menu_item;
-import rpui.widgets.button;
+import rpui.widgets.list_menu.widget;
+import rpui.widgets.list_menu_item.widget;
+import rpui.widgets.button.widget;
 import rpui.widgets.drop_list_menu.drop_menu_delegate;
 
 class DropListMenu : Button, MenuActions {

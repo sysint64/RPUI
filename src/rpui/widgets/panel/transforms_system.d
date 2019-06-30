@@ -3,7 +3,7 @@ module rpui.widgets.panel.transforms_system;
 import rpui.events;
 import rpui.theme;
 import rpui.primitives;
-import rpui.widgets.panel;
+import rpui.widgets.panel.widget;
 import rpui.widgets.panel.render_system;
 import rpui.render.transforms;
 import rpui.render.components;

@@ -1,4 +1,4 @@
-module rpui.widgets.checkbox;
+module rpui.widgets.checkbox.widget;
 
 import rpui.events;
 import rpui.input;

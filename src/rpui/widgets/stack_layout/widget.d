@@ -1,4 +1,4 @@
-module rpui.widgets.stack_layout;
+module rpui.widgets.stack_layout.widget;
 
 import rpui.events;
 import rpui.widget;

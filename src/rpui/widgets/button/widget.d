@@ -1,4 +1,4 @@
-module rpui.widgets.button;
+module rpui.widgets.button.widget;
 
 import std.container.array;
 

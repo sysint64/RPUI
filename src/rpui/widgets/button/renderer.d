@@ -5,7 +5,7 @@ import rpui.theme;
 import rpui.widget;
 import rpui.render.transforms;
 import rpui.render.renderer;
-import rpui.widgets.button;
+import rpui.widgets.button.widget;
 import rpui.widgets.button.transforms_system;
 import rpui.widgets.button.render_system;
 import rpui.render.components;

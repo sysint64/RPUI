@@ -9,7 +9,7 @@ import std.conv;
 import rpui.input;
 import rpui.primitives;
 import rpui.math;
-import rpui.widgets.text_input;
+import rpui.widgets.text_input.widget;
 import rpui.widgets.text_input.select_component;
 import rpui.widgets.text_input.carriage;
 import rpui.widgets.text_input.transforms_system;

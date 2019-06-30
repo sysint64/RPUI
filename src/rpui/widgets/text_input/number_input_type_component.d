@@ -6,7 +6,7 @@ import std.math;
 import rpui.math;
 import rpui.primitives;
 import rpui.events;
-import rpui.widgets.text_input;
+import rpui.widgets.text_input.widget;
 import rpui.render.components;
 
 struct NumberInputTypeComponent {

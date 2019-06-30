@@ -3,7 +3,7 @@ module rpui.widgets.text_input.select_component;
 import std.algorithm.comparison;
 import rpui.math;
 import rpui.theme;
-import rpui.widgets.text_input;
+import rpui.widgets.text_input.widget;
 import rpui.widgets.text_input.edit_component;
 import rpui.primitives;
 

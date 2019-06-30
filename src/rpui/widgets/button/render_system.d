@@ -2,7 +2,7 @@ module rpui.widgets.button.render_system;
 
 import std.container.array;
 
-import rpui.widgets.button;
+import rpui.widgets.button.widget;
 import rpui.widgets.button.transforms_system;
 import rpui.render.components_factory;
 import rpui.render.components;

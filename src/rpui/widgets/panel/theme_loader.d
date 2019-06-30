@@ -6,7 +6,7 @@ import rpui.theme;
 import rpui.primitives;
 import rpui.render.components;
 import rpui.render.components_factory;
-import rpui.widgets.panel;
+import rpui.widgets.panel.widget;
 import rpui.widgets.panel.render_system;
 
 import gapi.geometry;

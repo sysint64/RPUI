@@ -1,4 +1,4 @@
-module rpui.widgets.text_input;
+module rpui.widgets.text_input.widget;
 
 import rpui.cursor;
 import rpui.events;

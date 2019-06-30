@@ -1,4 +1,4 @@
-module rpui.widgets.multiline_label;
+module rpui.widgets.multiline_label.widget;
 
 import rpui.events;
 import rpui.input;
