@@ -241,25 +241,25 @@ Panel
                 TextInput text: "Y: 100 px" widthType: matchParent
                 Button caption: "" icons: "settings"
 
-            # StackLayout
-            #     orientation: horizontal
-            #     widthType: matchParent
-            #     margin: 0, -4
+            StackLayout
+                orientation: horizontal
+                widthType: matchParent
+                margin: 0, -4
 
-            #     ChainLayout
-            #         margin: 4
+                ChainLayout
+                    margin: 4
 
-            #         CheckButton caption: "H" width: 20 widthType: value checked: true
-            #         CheckButton caption: "S" width: 20 widthType: value
-            #         CheckButton caption: "B" width: 20 widthType: value
+                    CheckButton caption: "H" width: 20 widthType: value checked: true
+                    CheckButton caption: "S" width: 20 widthType: value
+                    CheckButton caption: "B" width: 20 widthType: value
 
-            #     ChainLayout
-            #         margin: 4
-            #         locationAlign: right
+                ChainLayout
+                    margin: 4
+                    locationAlign: right
 
-            #         Button caption: "R"
-            #         Button caption: "G"
-            #         Button caption: "B"
+                    Button caption: "R"
+                    Button caption: "G"
+                    Button caption: "B"
 
             # SwitchButton
             #     caption: "Switch me"

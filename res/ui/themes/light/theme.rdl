@@ -424,25 +424,31 @@ CheckButton(Button)
         left                : 89 , 35, 5 , 21
         center              : 102, 35, 5 , 21
         right               : 115, 35, 5 , 21
-        textOffset          : 1,  0
-        textColor           : 20, 20, 20
         dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 1,  -1
+            color           : 20, 20, 20
 
     Enter
         left                : 89 , 59, 5, 21
         center              : 102, 59, 5, 21
         right               : 115, 59, 5, 21
-        textOffset          : 1,  0
-        textColor           : 40, 40, 40
         dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 1,  -1
+            color           : 40, 40, 40
 
     Click
         left                : 89 , 107, 5, 21
         center              : 102, 107, 5, 21
         right               : 115, 107, 5, 21
-        textOffset          : 1, 0
-        textColor           : 0, 0, 0
         dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 1, -1
+            color           : 0, 0, 0
 
     Focus
         left                : 53, 105, 6, 25
