@@ -34,17 +34,20 @@ struct ScrollButton {
     }
 
     void updateController() {
-        const float[Orientation] widgetRegionSizes = [
-            Orientation.horizontal: panel.extraInnerOffset.left + panel.extraInnerOffset.right,
-            Orientation.vertical: panel.extraInnerOffset.top + panel.extraInnerOffset.bottom
-        ];
+        float widgetRegionSizes(in Orientation orientation) {
+            if (orientation == Orientation.horizontal) {
+                return panel.extraInnerOffset.left + panel.extraInnerOffset.right;
+            } else {
+                return panel.extraInnerOffset.top + panel.extraInnerOffset.bottom;
+            }
+        }
 
         float getVectorComponent(in vec2 vector) {
             return orientation == Orientation.horizontal ? vector.x : vector.y;
         }
 
         const widgetSize = getVectorComponent(panel.size);
-        const widgetRegionSize = widgetRegionSizes[orientation];
+        const widgetRegionSize = widgetRegionSizes(orientation);
         const innerBoundarySize = getVectorComponent(panel.innerBoundarySize);
         const innerBoundarySizeClamped = getVectorComponent(panel.innerBoundarySizeClamped);
 

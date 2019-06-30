@@ -13,7 +13,7 @@ package final class WidgetResolver {
      * Find the first element that satisfying the `predicate`
      * traversing up through its ancestors.
      */
-    final Widget closest(bool delegate(Widget) predicate) {
+    Widget closest(bool function(Widget) predicate) {
         Widget widget = cursor.parent;
 
         while (widget !is null) {
@@ -30,7 +30,7 @@ package final class WidgetResolver {
      * Find the first element that satisfying the `predicate`
      * traversing down through its ancestors.
      */
-    final Widget find(bool delegate(Widget) predicate) {
+    Widget find(bool function(Widget) predicate) {
         foreach (Widget widget; cursor.children) {
             if (predicate(widget))
                 return widget;
@@ -44,7 +44,7 @@ package final class WidgetResolver {
         return null;
     }
 
-    final Widget findWidgetByName(in string name) {
+    Widget findWidgetByName(alias name)() {
         return find(widget => widget.name == name);
     }
 }

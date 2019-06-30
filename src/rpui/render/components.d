@@ -51,6 +51,10 @@ struct StatefulTexAtlasTextureQuad {
     Texture2D texture;
     OriginalWithNormilizedTextureCoords[State] texCoords;
     State state;
+
+    @property inout(OriginalWithNormilizedTextureCoords) currentTexCoords() inout {
+        return texCoords[state];
+    }
 }
 
 struct OriginalWithNormilizedTextureCoords {

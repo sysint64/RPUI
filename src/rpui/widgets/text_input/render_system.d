@@ -17,6 +17,8 @@ struct RenderData {
     StatefulChain background;
     Chain focusGlow;
     TexAtlasTextureQuad carriage;
+    StatefulTexAtlasTextureQuad leftArrow;
+    StatefulTexAtlasTextureQuad rightArrow;
     StatefulUiText text;
     Geometry selectRegion;
     vec4 selectRegionColor;
@@ -44,12 +46,7 @@ final class TextInputRenderSystem : RenderSystem {
         renderSelectRegion();
         renderSelectedText();
         widget.view.popScissor();
-
-        // if (isNumberMode()) {
-            // textAlign = Align.center;
-            // drawArrows();
-        // }
-
+        renderArrows();
         renderCarriage();
     }
 
@@ -71,6 +68,23 @@ final class TextInputRenderSystem : RenderSystem {
                 widget.partDraws
             );
         }
+    }
+
+    private void renderArrows() {
+        if (!widget.isNumberMode())
+            return;
+
+        renderTexAtlasQuad(
+            theme,
+            renderData.leftArrow,
+            transforms.leftArrow
+        );
+
+        renderTexAtlasQuad(
+            theme,
+            renderData.rightArrow,
+            transforms.rightArrow
+        );
     }
 
     private void renderCarriage() {

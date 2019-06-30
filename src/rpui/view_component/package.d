@@ -138,7 +138,7 @@ abstract class ViewComponent {
             foreach (uda; getUDAs!(symbol, bindWidget)) {
                 enum widgetName = getNameFromAttribute!uda(symbolName);
 
-                Widget widget = findWidgetByName(widgetName);
+                Widget widget = findWidgetByName!(widgetName);
                 assert(widget !is null, widgetName ~ " not found");
 
                 // alias WidgetType = typeof(view.cancelButton);
@@ -150,13 +150,13 @@ abstract class ViewComponent {
     }
 
     /// Find widget in relative view root widget.
-    Widget findWidgetByName(in string name) {
+    Widget findWidgetByName(alias name)() {
         assert(rootWidget !is null);
 
         if (rootWidget.name == name) {
             return rootWidget;
         } else {
-            return rootWidget.resolver.findWidgetByName(name);
+            return rootWidget.resolver.findWidgetByName!(name);
         }
     }
 

@@ -13,3 +13,6 @@ __test__library__
 *.rdl.bin
 build
 *.iml
+trace.def
+trace.log
+profilegc.log

@@ -78,7 +78,7 @@ struct NumberInputTypeComponent {
         }
 
         if (abs(delta) >= 1) {
-            // textInput.app.setMousePositon(startX, startY);
+            textInput.view.setMousePositon(startX, startY);
             avoidFocusing = true;
             delta = 0;
         }
@@ -108,5 +108,27 @@ struct NumberInputTypeComponent {
 
         value = textInput.text.to!(float) + sign * textInput.numberStep;
         textInput.text = value.to!(dstring);
+    }
+
+    void updateArrowStates() {
+        const areaSize = vec2(textInput.measure.arrowsAreaWidth, textInput.size.y);
+
+        leftArrow.area = Rect(
+            textInput.absolutePosition,
+            areaSize
+        );
+
+        rightArrow.area = Rect(
+            textInput.absolutePosition + vec2(textInput.size.x - areaSize.x, 0),
+            areaSize
+        );
+
+        if (isClick) {
+            leftArrow.isEnter = false;
+            rightArrow.isEnter = false;
+        } else {
+            leftArrow.isEnter = pointInRect(textInput.view.mousePos, leftArrow.area);
+            rightArrow.isEnter = pointInRect(textInput.view.mousePos, rightArrow.area);
+        }
     }
 }

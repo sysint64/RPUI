@@ -9,6 +9,7 @@ import gapi.vec;
 import gapi.opengl;
 import gapi.shader;
 
+import rpui.platform;
 import rpui.input;
 import rpui.cursor;
 import rpui.widget;
@@ -73,11 +74,13 @@ final class View : EventsListenerEmpty {
     package ViewResources resources;
     private CursorManager cursorManager;
 
+    private void* window;
+
     private this() {
         events = new EventsObserver();
     }
 
-    this(in string themeName, CursorManager cursorManager, ViewResources resources) {
+    this(void* window, in string themeName, CursorManager cursorManager, ViewResources resources) {
         with (rootWidget = new Widget(this)) {
             isOver = true;
             finalFocus = true;
@@ -89,9 +92,10 @@ final class View : EventsListenerEmpty {
         theme = createThemeByName(themeName);
         this.resources = resources;
         this.cursorManager = cursorManager;
+        this.window = window;
     }
 
-    this(in string themeName) {
+    this(void* window, in string themeName) {
         with (rootWidget = new Widget(this)) {
             isOver = true;
             finalFocus = true;
@@ -102,6 +106,7 @@ final class View : EventsListenerEmpty {
 
         theme = createThemeByName(themeName);
         this.resources = createViewResources(themeName);
+        this.window = window;
     }
 
     /// Invokes all `onProgress` of all widgets and `poll` widgets.
@@ -486,7 +491,7 @@ final class View : EventsListenerEmpty {
 
         if (!isNestedFreeze) {
             auto freezeSourceParent = widget.resolver.closest(
-                (Widget parent) => freezeSources.front == parent
+                (Widget parent) => parent.view.freezeSources.front == parent
             );
             return freezeSourceParent is null;
         } else {
@@ -499,8 +504,14 @@ final class View : EventsListenerEmpty {
     }
 
     void showCursor() {
+        platformShowSystemCursor();
     }
 
     void hideCursor() {
+        platformHideSystemCursor();
+    }
+
+    void setMousePositon(in int x, in int y) {
+        platformSetMousePosition(window, x, y);
     }
 }

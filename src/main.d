@@ -3,6 +3,7 @@ module main;
 import std.stdio;
 import std.path;
 import std.file;
+import core.memory;
 
 import rpui.application;
 import rpui.events;
@@ -24,7 +25,9 @@ void main() {
     auto app = new TestApplication();
     const a = 10;
     writeln("hello world! a = ", a);
+    GC.disable();
     app.run();
+    GC.collect();
 }
 
 final class MyViewComponent : ViewComponent {
@@ -103,7 +106,7 @@ final class TestApplication : Application {
         viewResources.strings.setLocale("en");
         viewResources.strings.addStrings("test_view.rdl");
 
-        rootView = new View("light", cursorManager, viewResources);
+        rootView = new View(windowData.window, "light", cursorManager, viewResources);
         events.join(rootView.events);
         events.subscribe(rootView);
 

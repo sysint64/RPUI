@@ -19,12 +19,15 @@ struct RenderTransforms {
     float focusResize;
     float selectRegionHeight;
     vec2 selectRegionOffset;
+    vec2 arrowOffsets;
 
     HorizontalChainTransforms background;
     HorizontalChainTransforms focusGlow;
     QuadTransforms carriage;
     UiTextTransforms text;
     QuadTransforms selectRegion;
+    QuadTransforms leftArrow;
+    QuadTransforms rightArrow;
 }
 
 final class TextInputTransformsSystem : TransformsSystem {
@@ -45,6 +48,7 @@ final class TextInputTransformsSystem : TransformsSystem {
         updateCarriage();
         updateText();
         updateSelectRegion();
+        updateArrows();
     }
 
     private void updateBackground() {
@@ -73,6 +77,39 @@ final class TextInputTransformsSystem : TransformsSystem {
             widget.editComponent.carriage.absolutePosition,
             renderData.carriage.texCoords.originalTexCoords.size
         );
+    }
+
+    private void updateArrows() {
+        renderData.leftArrow.state = widget.numberInputTypeComponent.leftArrow.state;
+        renderData.rightArrow.state = widget.numberInputTypeComponent.rightArrow.state;
+
+        updateArrowAbsolutePositions();
+
+        transforms.leftArrow = updateQuadTransforms(
+            widget.view.cameraView,
+            widget.numberInputTypeComponent.leftArrow.absolutePosition,
+            renderData.leftArrow.currentTexCoords.originalTexCoords.size
+        );
+
+        transforms.rightArrow = updateQuadTransforms(
+            widget.view.cameraView,
+            widget.numberInputTypeComponent.rightArrow.absolutePosition,
+            renderData.rightArrow.currentTexCoords.originalTexCoords.size
+        );
+    }
+
+    private void updateArrowAbsolutePositions() {
+        with (widget.numberInputTypeComponent) {
+            leftArrow.absolutePosition = widget.absolutePosition + transforms.arrowOffsets;
+
+            const rightArrowWidth = renderData.rightArrow.currentTexCoords.originalTexCoords.size.x;
+            const rightArrowOffsets = vec2(
+                widget.size.x - rightArrowWidth - transforms.arrowOffsets.x,
+                transforms.arrowOffsets.y
+            );
+
+            rightArrow.absolutePosition = widget.absolutePosition + rightArrowOffsets;
+        }
     }
 
     private void updateText() {

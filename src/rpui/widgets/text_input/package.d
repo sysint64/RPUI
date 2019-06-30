@@ -50,11 +50,12 @@ class TextInput : Widget {
         float textRightMargin;
         float carriageBoundary;
         vec2 textRelativePosition = vec2(0);
+        float arrowsAreaWidth = 0;
     }
 
     package Measure measure;
     package EditComponent editComponent;
-    private NumberInputTypeComponent numberInputTypeComponent;
+    package NumberInputTypeComponent numberInputTypeComponent;
 
     this(in string style = "TextInput") {
         super(style);
@@ -70,10 +71,10 @@ class TextInput : Widget {
         updateCarriagePostion();
         updateScroll();
 
-        // if (isNumberMode()) {
+        if (isNumberMode()) {
         //     updateArrowAbsolutePositions();
-        //     updateArrowStates();
-        // }
+            numberInputTypeComponent.updateArrowStates();
+        }
 
         locator.updateAbsolutePosition();
         locator.updateLocationAlign();
@@ -89,6 +90,10 @@ class TextInput : Widget {
         loadMeasure();
         editComponent.carriage.attach(&editComponent);
         numberInputTypeComponent.attach(this);
+
+        if (isNumberMode()) {
+            textAlign = Align.center;
+        }
     }
 
     private void loadMeasure() {
@@ -97,6 +102,7 @@ class TextInput : Widget {
             measure.textRightMargin = data.getNumber(style ~ ".textRightMargin.0");
             measure.textTopMargin = data.getNumber(style ~ ".textTopMargin.0");
             measure.carriageBoundary = data.getNumber(style ~ ".carriageBoundary.0");
+            measure.arrowsAreaWidth = data.getNumber(style ~ ".arrowsAreaWidth.0");
         }
     }
 
@@ -104,10 +110,10 @@ class TextInput : Widget {
         super.updateSize();
         updateCarriagePostion();
 
-        // if (isNumberMode()) {
+        if (isNumberMode()) {
             // updateArrowAbsolutePositions();
-            // updateArrowStates();
-        // }
+            numberInputTypeComponent.updateArrowStates();
+        }
     }
 
     override void onBlur(in BlurEvent event) {

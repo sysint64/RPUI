@@ -41,6 +41,8 @@ final class TextInputRenderer : Renderer {
         renderData.background = createStatefulChainFromRdpl(theme, Orientation.horizontal, style);
         renderData.focusGlow = createChainFromRdpl(theme, Orientation.horizontal, style ~ ".Focus");
         renderData.carriage = createTexAtlasTextureQuadFromRdpl(theme, style, "carriage");
+        renderData.leftArrow = createStatefulTexAtlasTextureQuadFromRdpl(theme, style, "Arrow.left");
+        renderData.rightArrow = createStatefulTexAtlasTextureQuadFromRdpl(theme, style, "Arrow.right");
         renderData.text = createStatefulUiTextFromRdpl(theme, style, "Text");
         renderData.selectRegion = createGeometry();
         renderData.selectRegionColor = data.getNormColor(style ~ ".selectColor");
@@ -50,6 +52,7 @@ final class TextInputRenderer : Renderer {
         transforms.focusResize = data.getNumber(style ~ ".Focus.offsets.1");
         transforms.selectRegionHeight = data.getNumber(style ~ ".selectRegionHeight.0");
         transforms.selectRegionOffset = data.getVec2f(style ~ ".selectRegionOffset");
+        transforms.arrowOffsets = data.getVec2f(style ~ ".arrowOffsets");
     }
 
     override void onRender() {
