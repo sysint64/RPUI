@@ -25,6 +25,8 @@ final class ListMenuItemRenderer : ButtonRenderer {
         this.theme = widget.view.theme;
         this.widget = cast(ListMenuItem) widget;
 
+        const style = widget.style;
+
         arrow = createStatefulTexAtlasTextureQuadFromRdpl(theme, style, "submenuArrow");
         submenuArrowOffset = theme.tree.data.getVec2f(style ~ ".submenuArrowOffset");
     }

@@ -30,7 +30,7 @@ class Button : Widget {
     }
 
     package string iconsGroup;
-    package Measure measure;
+    public Measure measure;
     package ButtonThemeLoader themeLoader;
 
     this(in string style = "Button", in string iconsGroup = "icons") {

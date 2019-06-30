@@ -129,3 +129,84 @@ Panel
 
                                     ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
                                     ListMenuItem caption: "Menu item 2" name: "testMenuItem"
+
+Panel
+    regionAlign: left
+    blackSplit: true
+    size: 300, 300
+    userCanResize: true
+    background: action
+    finalFocus: true
+
+    TabLayout
+        orientation: horizontal
+        height: 21
+        regionAlign: top
+        margin: 5
+
+        TabButton
+            checked: true
+            caption: "Tab 1"
+            width: 100
+
+        TabButton
+            caption: "Tab 2"
+            width: 100
+
+    Panel
+        userCanResize: true
+        regionAlign: top
+        size: 300, 100
+
+        Button margin: 5
+
+    TabLayout
+        orientation: horizontal
+        height: 21
+        regionAlign: top
+        margin: 5
+
+        TabButton name: "settingsTab"
+            checked: true
+            caption: "Settings"
+            widthType: wrapContent
+            icons: "settings"
+            hideCaptionWhenUnchecked: true
+
+        TabButton
+            name: "triangleTab"
+            caption: "Boundaries"
+            icons: "triangle"
+            widthType: wrapContent
+            hideCaptionWhenUnchecked: true
+
+        TabButton
+            name: "materialTab"
+            caption: "Materials"
+            icons: "material"
+            widthType: wrapContent
+            hideCaptionWhenUnchecked: true
+
+        TabButton
+            caption: "Joins"
+            icons: "joins"
+            widthType: wrapContent
+            hideCaptionWhenUnchecked: true
+
+        TabButton
+            caption: "Particles"
+            icons: "particles"
+            widthType: wrapContent
+            hideCaptionWhenUnchecked: true
+
+        TabButton
+            caption: "Physics"
+            icons: "bounce"
+            widthType: wrapContent
+            hideCaptionWhenUnchecked: true
+
+        TabButton
+            caption: "Animations"
+            icons: "tape"
+            widthType: wrapContent
+            hideCaptionWhenUnchecked: true

@@ -28,6 +28,8 @@ import rpui.widgets.text_input.widget;
 import rpui.widgets.list_menu.widget;
 import rpui.widgets.list_menu_item.widget;
 import rpui.widgets.drop_list_menu.widget;
+import rpui.widgets.tab_layout.widget;
+import rpui.widgets.tab_button.widget;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -98,6 +100,12 @@ final class RpdlWidgetFactory {
 
             case "DropListMenu":
                 return createWidget!DropListMenu(widgetNode, parentWidget);
+
+            case "TabLayout":
+                return createWidget!TabLayout(widgetNode, parentWidget);
+
+            case "TabButton":
+                return createWidget!TabButton(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);

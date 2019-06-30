@@ -17,6 +17,7 @@ struct RenderData {
     Chain focusGlow;
     StatefulUiText captionText;
     Array!TexAtlasTextureQuad icons;
+    bool textVisible = true;
 }
 
 final class ButtonRenderSystem : RenderSystem {
@@ -43,7 +44,9 @@ final class ButtonRenderSystem : RenderSystem {
             widget.partDraws
         );
 
-        renderUiText(theme, renderData.captionText, transforms.captionText);
+        if (renderData.textVisible) {
+            renderUiText(theme, renderData.captionText, transforms.captionText);
+        }
 
         if (widget.focusable && widget.isFocused) {
             renderHorizontalChain(

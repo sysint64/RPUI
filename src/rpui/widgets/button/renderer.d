@@ -12,14 +12,14 @@ import rpui.render.components;
 import rpui.render.components_factory;
 
 class ButtonRenderer : Renderer {
-    Button widget;
-    Theme theme;
-    RenderData renderData;
-    RenderTransforms transforms;
-    string style;
+    private Button widget;
+    private Theme theme;
+    protected RenderData renderData;
+    private RenderTransforms transforms;
+    private string style;
 
-    TransformsSystem transformSystem;
-    RenderSystem renderSystem;
+    private TransformsSystem transformSystem;
+    private RenderSystem renderSystem;
 
     override void onCreate(Widget widget) {
         this.widget = cast(Button) widget;

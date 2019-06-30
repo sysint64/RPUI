@@ -403,7 +403,7 @@ public:
         }
     }
 
-    package void reset() {
+    protected void reset() {
         if (associatedWidget !is null)
             associatedWidget.reset();
     }
@@ -549,6 +549,7 @@ public:
         locator.updateAbsolutePosition();
         updateBoundary();
         updateSize();
+        renderer.onProgress(ProgressEvent(0));
 
         foreach (Widget widget; children) {
             if (widget.visible)

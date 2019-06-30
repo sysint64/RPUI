@@ -379,22 +379,28 @@ TabButton(Button)
         left                : 289, 226, 6, 21
         center              : 308, 226, 6, 21
         right               : 327, 226, 6, 21
-        textOffset          : 0, 2
-        textColor           : 20, 20, 20
+
+        Text
+            offset          : 0, 1
+            color           : 20, 20, 20
 
     Enter
         left                : 338, 226, 6, 21
         center              : 357, 226, 6, 21
         right               : 376, 226, 6, 21
-        textOffset          : 0, 2
-        textColor           : 20, 20, 20
+
+        Text
+            offset          : 0, 1
+            color           : 20, 20, 20
 
     Click
         left                : 240, 226, 6, 21
         center              : 259, 226, 6, 21
         right               : 278, 226, 6, 21
-        textOffset          : 0, 2
-        textColor           : 20, 20, 20
+
+        Text
+            offset          : 0, 1
+            color           : 20, 20, 20
 
     Focus
         left                : 0, 0, 0, 0
