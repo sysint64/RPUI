@@ -1,4 +1,4 @@
-module rpui.widgets.stack_locator;
+module rpui.widgets.stack_layout.stack_locator;
 
 import std.math;
 
@@ -6,7 +6,7 @@ import rpui.widget;
 import rpui.primitives;
 import rpui.math;
 
-package struct StackLocator {
+struct StackLocator {
     Widget holder;
     Orientation orientation = Orientation.vertical;
 

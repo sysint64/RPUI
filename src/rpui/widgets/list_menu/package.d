@@ -8,7 +8,7 @@ import rpui.primitives;
 import rpui.widget;
 import rpui.widgets.list_menu_item;
 import rpui.widgets.list_menu.renderer;
-import rpui.widgets.stack_locator;
+import rpui.widgets.stack_layout.stack_locator;
 
 class ListMenu : Widget {
     @field bool transparent = false;

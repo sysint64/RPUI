@@ -2,7 +2,7 @@ module rpui.widgets.stack_layout;
 
 import rpui.events;
 import rpui.widget;
-import rpui.widgets.stack_locator;
+import rpui.widgets.stack_layout.stack_locator;
 import rpui.primitives;
 import rpui.math;
 
