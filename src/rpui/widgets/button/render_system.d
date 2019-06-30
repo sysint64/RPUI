@@ -44,7 +44,7 @@ final class ButtonRenderSystem : RenderSystem {
             widget.partDraws
         );
 
-        if (renderData.textVisible) {
+        if (renderData.textVisible && widget.caption != "") {
             renderUiText(theme, renderData.captionText, transforms.captionText);
         }
 

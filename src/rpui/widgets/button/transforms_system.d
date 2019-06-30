@@ -61,6 +61,11 @@ final class ButtonTransformsSystem : TransformsSystem {
     }
 
     private void updateText() {
+        if (widget.caption == "") {
+            widget.measure.textWidth = 0;
+            return;
+        }
+
         const textBoxSize = widget.size - vec2(widget.measure.iconsAreaSize, 0);
         auto textPosition = vec2(widget.measure.iconsAreaSize, 0) + widget.absolutePosition;
 

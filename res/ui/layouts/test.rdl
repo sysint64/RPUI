@@ -210,3 +210,79 @@ Panel
             icons: "tape"
             widthType: wrapContent
             hideCaptionWhenUnchecked: true
+
+    Panel
+        name: "settingsTabPanel"
+        regionAlign: top
+        heightType: wrapContent
+        userCanResize: false
+        padding: 10
+        tabVisibleRule: "settingsTab"
+        finalFocus: true
+
+        StackLayout
+            widthType: matchParent
+
+            Label caption: "Settings" size: 0, 21
+
+            ChainLayout
+                widthType: matchParent
+                margin: 4, 0
+
+                Button caption: "Hello"
+                TextInput text: "world!" width: 100
+                Button caption: "Grouped"
+
+            ChainLayout
+                widthType: matchParent
+                margin: 4, 0
+
+                TextInput text: "X: 100 px" widthType: matchParent
+                TextInput text: "Y: 100 px" widthType: matchParent
+                Button caption: "" icons: "settings"
+
+            # StackLayout
+            #     orientation: horizontal
+            #     widthType: matchParent
+            #     margin: 0, -4
+
+            #     ChainLayout
+            #         margin: 4
+
+            #         CheckButton caption: "H" width: 20 widthType: value checked: true
+            #         CheckButton caption: "S" width: 20 widthType: value
+            #         CheckButton caption: "B" width: 20 widthType: value
+
+            #     ChainLayout
+            #         margin: 4
+            #         locationAlign: right
+
+            #         Button caption: "R"
+            #         Button caption: "G"
+            #         Button caption: "B"
+
+            # SwitchButton
+            #     caption: "Switch me"
+            #     icons: "birds"
+
+    Panel
+        name: "triangleTabPanel"
+        userCanResize: true
+        regionAlign: top
+        size: 300, 45
+        padding: 10
+        tabVisibleRule: "triangleTab"
+
+        Label caption: "Triangle" size: 0, 21 widthType: matchParent
+        Button caption: "Grouped"
+
+    Panel
+        name: "materialTabPanel"
+        userCanResize: true
+        regionAlign: top
+        size: 300, 45
+        padding: 10
+        tabVisibleRule: "materialTab"
+
+        Label caption: "Material" size: 0, 21 widthType: matchParent
+        Button caption: "Grouped"

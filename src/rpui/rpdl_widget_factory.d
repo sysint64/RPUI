@@ -30,6 +30,7 @@ import rpui.widgets.list_menu_item.widget;
 import rpui.widgets.drop_list_menu.widget;
 import rpui.widgets.tab_layout.widget;
 import rpui.widgets.tab_button.widget;
+import rpui.widgets.chain_layout.widget;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -106,6 +107,9 @@ final class RpdlWidgetFactory {
 
             case "TabButton":
                 return createWidget!TabButton(widgetNode, parentWidget);
+
+            case "ChainLayout":
+                return createWidget!ChainLayout(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);
