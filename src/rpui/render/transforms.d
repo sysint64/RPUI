@@ -38,6 +38,47 @@ QuadTransforms updateQuadTransforms(
     return transforms;
 }
 
+BlockTransforms updateBlockTransforms(
+    in float[ChainPart][BlockRow] partWidths,
+    in float[BlockRow] partHeights,
+    in CameraView cameraView,
+    in vec2 position,
+    in vec2 size,
+) {
+    BlockTransforms transforms;
+
+    const topSize = vec2(size.x, partHeights[BlockRow.top]);
+    const bottomSize = vec2(size.x, partHeights[BlockRow.bottom]);
+    const middleSize = vec2(size.x, size.y - topSize.y - bottomSize.y);
+
+    const topPosition = position;
+    const middlePosition = topPosition + vec2(0, topSize.y);
+    const bottomPosition = middlePosition + vec2(0, middleSize.y);
+
+    transforms.topChain = updateHorizontalChainTransforms(
+        partWidths[BlockRow.top],
+        cameraView,
+        topPosition,
+        topSize
+    );
+
+    transforms.middleChain = updateHorizontalChainTransforms(
+        partWidths[BlockRow.middle],
+        cameraView,
+        middlePosition,
+        middleSize
+    );
+
+    transforms.bottomChain = updateHorizontalChainTransforms(
+        partWidths[BlockRow.bottom],
+        cameraView,
+        bottomPosition,
+        bottomSize
+    );
+
+    return transforms;
+}
+
 HorizontalChainTransforms updateHorizontalChainTransforms(
     in float[ChainPart] partWidths,
     in CameraView cameraView,

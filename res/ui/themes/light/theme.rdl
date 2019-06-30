@@ -256,7 +256,7 @@ TextInput
         right               : 30, 83, 5, 21
         offsets             : [0, 0], 0
 
-ListItem(Button) # TODO: implement inheritance
+ListMenuItem(Button) # TODO: implement inheritance
     split                   : 44, 35, 3, 21
     iconOffsets             : 2, -1
     iconGaps                : 2
@@ -269,24 +269,30 @@ ListItem(Button) # TODO: implement inheritance
         center              : 68 , 180, 5, 21
         right               : 81 , 180, 5, 21
         submenuArrow        : 162, 131, 15, 21
-        textOffset          : 0,  0
-        textColor           : 200, 200, 200
+
+        Text
+            offset          : 0,  -2
+            color           : 200, 200, 200
 
     Enter
         left                : 129, 107, 5, 21
         center              : 129, 107, 5, 21
         right               : 129, 107, 5, 21
         submenuArrow        : 178, 131, 15, 21
-        textOffset          : 0,  0
-        textColor           : 40, 40, 40
+
+        Text
+            offset          : 0,  -2
+            color           : 40, 40, 40
 
     Click
         left                : 129, 107, 5, 21
         center              : 129, 107, 5, 21
         right               : 129, 107, 5, 21
         submenuArrow        : 178, 131, 15, 21
-        textOffset          : 0,  0
-        textColor           : 40, 40, 40
+
+        Text
+            offset          : 0,  -2
+            color           : 40, 40, 40
 
     Focus
         left                : 55, 180, 5, 21

@@ -11,7 +11,7 @@ import rpui.widgets.button.render_system;
 import rpui.render.components;
 import rpui.render.components_factory;
 
-final class ButtonRenderer : Renderer {
+class ButtonRenderer : Renderer {
     Button widget;
     Theme theme;
     RenderData renderData;

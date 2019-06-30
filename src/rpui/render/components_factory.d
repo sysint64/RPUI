@@ -64,9 +64,28 @@ Chain createChainFromRdpl(Theme theme, in Orientation orientation, in string sty
 
         chain.texCoords[part] = texCoords.normilizedTexCoords;
         chain.widths[part] = texCoords.originalTexCoords.size.x;
+        chain.height = texCoords.originalTexCoords.size.y;
     }
 
     return chain;
+}
+
+Block createBlockFromRdpl(Theme theme, in string style) {
+    Block block;
+
+    block.topChain = createChainFromRdpl(theme, Orientation.horizontal, style ~ ".Top");
+    block.middleChain = createChainFromRdpl(theme, Orientation.horizontal, style ~ ".Middle");
+    block.bottomChain = createChainFromRdpl(theme, Orientation.horizontal, style ~ ".Bottom");
+
+    block.widths[BlockRow.top] = block.topChain.widths;
+    block.widths[BlockRow.middle] = block.topChain.widths;
+    block.widths[BlockRow.bottom] = block.topChain.widths;
+
+    block.heights[BlockRow.top] = block.topChain.height;
+    block.heights[BlockRow.middle] = block.topChain.height;
+    block.heights[BlockRow.bottom] = block.topChain.height;
+
+    return block;
 }
 
 TextureQuad createUiSkinTextureQuad(in Theme theme) {

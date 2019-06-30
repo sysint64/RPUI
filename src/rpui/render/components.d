@@ -31,6 +31,7 @@ struct QuadTransforms {
     mat4 mvpMatrix;
 }
 
+// TODO(Andrey): Rename to ChainTransforms
 struct HorizontalChainTransforms {
     QuadTransforms[ChainPart] quadTransforms;
 }
@@ -72,7 +73,23 @@ struct StatefulChain {
 struct Chain {
     TextureQuad[ChainPart] parts;
     float[ChainPart] widths;
+    float height;
     Texture2DCoords[ChainPart] texCoords;
+}
+
+struct Block {
+    float[ChainPart][BlockRow] widths;
+    float[BlockRow] heights;
+
+    Chain topChain;
+    Chain middleChain;
+    Chain bottomChain;
+}
+
+struct BlockTransforms {
+    HorizontalChainTransforms topChain;
+    HorizontalChainTransforms middleChain;
+    HorizontalChainTransforms bottomChain;
 }
 
 struct UiTextRender {
@@ -119,6 +136,12 @@ enum ChainPart {
     left,
     center,
     right,
+    top,
+    middle,
+    bottom,
+}
+
+enum BlockRow {
     top,
     middle,
     bottom,

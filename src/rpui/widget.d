@@ -114,7 +114,8 @@ class Widget : EventsListenerEmpty {
     @property Widget parent() { return p_parent; }
     package Widget p_parent;
 
-    package Widget owner;
+    // TODO(Andrey): package not working for the some reasons
+    public Widget owner;
 
     @property inout(bool) isFocused() inout { return p_isFocused; }
     package bool p_isFocused;
@@ -446,14 +447,20 @@ public:
     void onRender() {
         renderer.onRender();
 
+        if (drawChildren) {
+            renderChildren();
+        }
+    }
+
+    void renderChildren() {
         if (!drawChildren)
             return;
 
-        foreach (Widget widget; children) {
-            if (!widget.visible)
+        foreach (Widget child; children) {
+            if (!child.visible)
                 continue;
 
-            widget.onRender();
+            child.onRender();
         }
     }
 

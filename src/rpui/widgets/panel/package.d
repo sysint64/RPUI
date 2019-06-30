@@ -96,7 +96,7 @@ class Panel : Widget, FocusScrollNavigation {
         renderer = new PanelRenderer();
     }
 
-    package void renderChildren() {
+    override void renderChildren() {
         if (!drawChildren)
             return;
 

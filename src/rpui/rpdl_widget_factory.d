@@ -25,6 +25,8 @@ import rpui.widgets.label;
 import rpui.widgets.multiline_label;
 import rpui.widgets.checkbox;
 import rpui.widgets.text_input;
+import rpui.widgets.list_menu;
+import rpui.widgets.list_menu_item;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -86,6 +88,12 @@ final class RpdlWidgetFactory {
 
             case "TextInput":
                 return createWidget!TextInput(widgetNode, parentWidget);
+
+            case "ListMenu":
+                return createWidget!ListMenu(widgetNode, parentWidget);
+
+            case "ListMenuItem":
+                return createWidget!ListMenuItem(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);

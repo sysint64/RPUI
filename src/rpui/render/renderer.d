@@ -108,6 +108,12 @@ void renderColorQuad(
     renderIndexedGeometry(cast(uint) quadIndices.length, GL_TRIANGLE_STRIP);
 }
 
+void renderBlock(in Theme theme, in Block block, in BlockTransforms transforms) {
+    renderHorizontalChain(theme, block.topChain, transforms.topChain);
+    renderHorizontalChain(theme, block.bottomChain, transforms.bottomChain);
+    renderHorizontalChain(theme, block.middleChain, transforms.middleChain);
+}
+
 void renderHorizontalChain(
     in Theme theme,
     in StatefulChain chain,
