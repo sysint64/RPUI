@@ -9,6 +9,7 @@ import rpui.widget;
 import rpui.widgets.button;
 import rpui.widgets.list_menu;
 import rpui.widgets.list_menu_item.renderer;
+import rpui.widgets.drop_list_menu.drop_menu_delegate;
 
 interface MenuActions {
     void hideMenu();
@@ -20,7 +21,8 @@ class ListMenuItem : Button, MenuActions {
     @field string shortcut = "";
 
     private ListMenu parentMenu = null;
-    private ListMenu menu = null;
+    package ListMenu menu = null;
+    private DropMenuDelegate dropMenuDelegate;
 
     this(in string style = "ListMenuItem") {
         super(style);
@@ -55,12 +57,12 @@ class ListMenuItem : Button, MenuActions {
         menu.focusable = false;
         view.moveWidgetToFront(menu);
 
-        // dropMenuDelegate.attach(menu, this);
+        dropMenuDelegate.attach(menu, this);
 
         // submenuDisplayTimeout = createTimeout(menu.displayDelay, delegate() {
-        //     if (isEnter) {
-        //         dropMenuDelegate.dropMenu(vec2(size.x, 0) + menu.rightPopupOffset);
-        //     }
+            if (isEnter) {
+                dropMenuDelegate.dropMenu(vec2(size.x, 0) + menu.measure.rightPopupOffset);
+            }
         // });
     }
 
@@ -77,19 +79,19 @@ class ListMenuItem : Button, MenuActions {
             // submenuDisplayTimeout.start();
         // }
 
-        // if (dropMenuDelegate.isAttached()) {
-            // dropMenuDelegate.progress(vec2(size.x, 0) + menu.rightPopupOffset);
-            // overrideIsEnter = dropMenuDelegate.isInVisibilityArea && menu.visible;
-        // }
+        if (dropMenuDelegate.isAttached()) {
+            dropMenuDelegate.onProgress(vec2(size.x, 0) + menu.measure.rightPopupOffset);
+            overrideIsEnter = dropMenuDelegate.isInVisibilityArea && menu.visible;
+        }
     }
 
     private void onClick() {
         if (menu is null)
             hideRootMenu();
 
-        // if (dropMenuDelegate.isAttached()) {
-            // dropMenuDelegate.dropMenu(vec2(size.x, 0) + menu.rightPopupOffset);
-        // }
+        if (dropMenuDelegate.isAttached()) {
+            dropMenuDelegate.dropMenu(vec2(size.x, 0) + menu.measure.rightPopupOffset);
+        }
     }
 
     override void focus() {
@@ -97,9 +99,9 @@ class ListMenuItem : Button, MenuActions {
     }
 
     override void hideMenu() {
-        // if (dropMenuDelegate.isAttached()) {
-            // dropMenuDelegate.hideMenu();
-        // }
+        if (dropMenuDelegate.isAttached()) {
+            dropMenuDelegate.hideMenu();
+        }
     }
 
     private void hideRootMenu() {

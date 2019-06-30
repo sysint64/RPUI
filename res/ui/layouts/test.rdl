@@ -104,3 +104,28 @@ Panel
 
                         ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
                         ListMenuItem caption: "Menu item 2" name: "testMenuItem2"
+
+            DropListMenu
+                margin: 5
+
+                ListMenu
+                    size: 200, 200
+                    isPopup: true
+
+                    ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
+                    ListMenuItem caption: "Menu item 2"
+                    ListMenuItem
+                        caption: "Menu item 3"
+
+                        ListMenu
+                            size: 200, 200
+                            isPoput: true
+
+                            ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
+                            ListMenuItem caption: "Menu item 2"
+                                ListMenu
+                                    size: 200, 200
+                                    isPoput: true
+
+                                    ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
+                                    ListMenuItem caption: "Menu item 2" name: "testMenuItem"

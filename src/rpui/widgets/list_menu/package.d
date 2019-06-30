@@ -26,7 +26,7 @@ class ListMenu : Widget {
         FrameRect extraMenuVisibleBorder;
     }
 
-    package Measure measure;
+    Measure measure;
 
     this(in string style = "ListMenu") {
         super(style);

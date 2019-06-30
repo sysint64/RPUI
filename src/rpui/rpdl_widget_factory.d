@@ -27,6 +27,7 @@ import rpui.widgets.checkbox;
 import rpui.widgets.text_input;
 import rpui.widgets.list_menu;
 import rpui.widgets.list_menu_item;
+import rpui.widgets.drop_list_menu;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -94,6 +95,9 @@ final class RpdlWidgetFactory {
 
             case "ListMenuItem":
                 return createWidget!ListMenuItem(widgetNode, parentWidget);
+
+            case "DropListMenu":
+                return createWidget!DropListMenu(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);
