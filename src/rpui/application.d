@@ -148,6 +148,7 @@ abstract class Application {
                     running = false;
                 }
 
+                // TODO: switch/case should be better
                 if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                     const width = event.window.data1;
                     const height = event.window.data2;
@@ -213,8 +214,8 @@ abstract class Application {
                 if (event.type == SDL_KEYUP) {
                     try {
                         const key = to!(KeyCode)(to!(int)(event.key.keysym.sym));
-                        setKeyPressed(key, false);
                         events.notify(KeyReleasedEvent(key));
+                        setKeyPressed(key, false);
                     } catch (Exception e) {
                     }
                 }

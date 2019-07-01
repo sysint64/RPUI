@@ -14,6 +14,7 @@ import rpui.widget;
 import rpui.traits;
 import rpui.paths;
 import rpui.rpdl_widget_factory;
+import rpui.events_observer;
 
 /**
  * ViewComponent is a container for widgets with additional attributes processing
@@ -27,6 +28,7 @@ abstract class ViewComponent {
     private View view;
     private Widget rootWidget;
     RpdlWidgetFactory widgetFactory;
+    private Subscriber shortcutsSubscriber;
 
     @shortcut("General.focusNext")
     void focusNext() {
@@ -53,6 +55,14 @@ abstract class ViewComponent {
 
         shortcuts_ = Shortcuts.createFromFile(shortcutsFileName);
         readAttributes!T();
+
+        shortcutsSubscriber = view.events.subscribe!KeyReleasedEvent(
+            event => shortcuts.onKeyReleased(event.key)
+        );
+    }
+
+    ~this() {
+        view.events.unsubscribe(shortcutsSubscriber);
     }
 
     /**
