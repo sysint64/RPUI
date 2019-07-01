@@ -51,7 +51,6 @@ Panel
         userCanResize: true
 
         StackLayout
-            name: "buttons"
             widthType: matchParent
 
             StackLayout
@@ -286,3 +285,24 @@ Panel
 
         Label caption: "Material" size: 0, 21 widthType: matchParent
         Button caption: "Grouped"
+
+Dialog
+    name: "testDialog"
+    size: 300, 0
+    locationAlign: center
+    verticalLocationAlign: middle
+    heightType: wrapContent
+    closeOnClickOutsideArea: true
+
+    Panel
+        regionAlign: client
+        background: light
+        heightType: wrapContent
+        userCanResize: false
+        showSplit: false
+
+        StackLayout
+            Button caption: "Action 1" margin: 10
+            Button caption: "Action 2" margin: 10
+            Button caption: "Action 3" margin: 10
+            Button caption: "Close dialog" margin: 10 name: "closeDialogButton"

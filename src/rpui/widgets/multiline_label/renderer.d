@@ -23,7 +23,7 @@ final class MultilineLabelRenderer : Renderer {
     private Theme theme;
     private utf32string lastCaption;
 
-    override void onCreate(Widget widget) {
+    override void onCreate(Widget widget, in string style) {
         this.theme = widget.view.theme;
         this.widget = cast(MultilineLabel) widget;
     }

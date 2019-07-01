@@ -1,16 +1,17 @@
-module rpui.widgets.list_menu.renderer;
+module rpui.widgets.dialog.renderer;
 
 import rpui.theme;
 import rpui.events;
 import rpui.widget;
-import rpui.widgets.list_menu.widget;
+import rpui.widgets.panel.renderer;
+import rpui.widgets.dialog.widget;
 import rpui.render.components;
 import rpui.render.components_factory;
 import rpui.render.renderer;
 import rpui.render.transforms;
 
-final class ListMenuRenderer : Renderer {
-    private ListMenu widget;
+final class DialogRenderer : Renderer {
+    private Dialog widget;
     private Theme theme;
 
     private Block background;
@@ -18,7 +19,7 @@ final class ListMenuRenderer : Renderer {
 
     override void onCreate(Widget widget, in string style) {
         this.theme = widget.view.theme;
-        this.widget = cast(ListMenu) widget;
+        this.widget = cast(Dialog) widget;
         this.background = createBlockFromRdpl(theme, style);
     }
 
@@ -34,5 +35,8 @@ final class ListMenuRenderer : Renderer {
             widget.absolutePosition,
             widget.size
         );
+
+        import std.stdio;
+        writeln(widget.size);
     }
 }

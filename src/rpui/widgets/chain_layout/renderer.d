@@ -20,11 +20,10 @@ final class ChainLayoutRenderer : Renderer {
     private TexAtlasTextureQuad split;
     private Array!QuadTransforms splitTransforms;
 
-    override void onCreate(Widget widget) {
+    override void onCreate(Widget widget, in string style) {
         this.theme = widget.view.theme;
         this.widget = cast(ChainLayout) widget;
 
-        const style = this.widget.style;
         this.split = createTexAtlasTextureQuadFromRdpl(theme, style, "split");
         this.splitOffset = theme.tree.data.getVec2f(style ~ ".splitOffset");
     }

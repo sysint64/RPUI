@@ -26,10 +26,10 @@ final class PanelRenderer : Renderer {
     TransformsSystem transformsSystem;
     RenderSystem renderSystem;
 
-    override void onCreate(Widget widget) {
+    override void onCreate(Widget widget, in string style) {
         this.widget = cast(Panel) widget;
         this.theme = widget.view.theme;
-        this.style = widget.style;
+        this.style = style;
         this.renderData = this.widget.themeLoader.loadRenderData(theme, style);
 
         renderSystem = new PanelRenderSystem(this.widget, &renderData, &transforms);

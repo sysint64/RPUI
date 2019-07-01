@@ -21,10 +21,10 @@ class ButtonRenderer : Renderer {
     private TransformsSystem transformSystem;
     private RenderSystem renderSystem;
 
-    override void onCreate(Widget widget) {
+    override void onCreate(Widget widget, in string style) {
         this.widget = cast(Button) widget;
         this.theme = widget.view.theme;
-        this.style = widget.style;
+        this.style = style;
         this.renderData = this.widget.themeLoader.loadRenderData(theme, style);
 
         renderSystem = new ButtonRenderSystem(this.widget, &renderData, &transforms);

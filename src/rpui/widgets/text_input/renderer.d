@@ -24,14 +24,14 @@ final class TextInputRenderer : Renderer {
     private RenderData renderData;
     private RenderTransforms transforms;
 
-    override void onCreate(Widget widget) {
+    override void onCreate(Widget widget, in string style) {
         this.theme = widget.view.theme;
         this.widget = cast(TextInput) widget;
 
         renderSystem = new TextInputRenderSystem(this.widget, &renderData, &transforms);
         transformsSystem = new TextInputTransformsSystem(this.widget, &renderData, &transforms);
 
-        loadRenderData(widget.view.theme, widget.style);
+        loadRenderData(widget.view.theme, style);
         this.widget.editComponent.attach(this.widget, transformsSystem);
     }
 

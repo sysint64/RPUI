@@ -78,12 +78,12 @@ Block createBlockFromRdpl(Theme theme, in string style) {
     block.bottomChain = createChainFromRdpl(theme, Orientation.horizontal, style ~ ".Bottom");
 
     block.widths[BlockRow.top] = block.topChain.widths;
-    block.widths[BlockRow.middle] = block.topChain.widths;
-    block.widths[BlockRow.bottom] = block.topChain.widths;
+    block.widths[BlockRow.middle] = block.middleChain.widths;
+    block.widths[BlockRow.bottom] = block.bottomChain.widths;
 
     block.heights[BlockRow.top] = block.topChain.height;
-    block.heights[BlockRow.middle] = block.topChain.height;
-    block.heights[BlockRow.bottom] = block.topChain.height;
+    block.heights[BlockRow.middle] = block.middleChain.height;
+    block.heights[BlockRow.bottom] = block.bottomChain.height;
 
     return block;
 }

@@ -10,6 +10,9 @@ import rpui.events;
 import rpui.view;
 import rpui.view_component;
 import rpui.widget;
+import rpui.widgets.button.widget;
+import rpui.widgets.panel.widget;
+import rpui.widgets.dialog.widget;
 
 import gapi.vec;
 import gapi.camera;
@@ -31,7 +34,13 @@ void main() {
 }
 
 final class MyViewComponent : ViewComponent {
-    @bindWidget Widget okButton;
+    @bindWidget Button okButton;
+    @bindWidget Panel testPanel;
+    @bindWidget("cancelButton") Button myButton;
+    @bindWidget Dialog testDialog;
+    @bindGroupWidgets Button[3] buttons;
+
+    int a = 0;
 
     this(View view, in string laytoutFileName, in string shortcutsFileName) {
         super(view, laytoutFileName, shortcutsFileName);
@@ -41,6 +50,42 @@ final class MyViewComponent : ViewComponent {
         okButton.events.subscribe!KeyPressedEvent(delegate(in event) {
             writeln("Handle OkButton Key Pressed Event", event.key);
         });
+    }
+
+    @onClickListener("okButton")
+    void onOkButtonClick() {
+        writeln("Hello world! a = ", a);
+        a += 1;
+    }
+
+    @onClickListener("okButton")
+    void onOkButtonClick2() {
+        okButton.caption = "YAY!";
+        myButton.caption = "WORKS!";
+        buttons[2].caption = "YES!";
+    }
+
+    @shortcut("TestGroup.cancel")
+    void someShortcutAction() {
+        writeln("Wow! shortcut was executed!");
+    }
+
+    @onClickListener("closeButton")
+    @onClickListener("cancelButton")
+    void onCancelButtonClick() {
+        writeln("Close!");
+    }
+
+    @onClickListener("testMenuItem")
+    @onClickListener("testMenuItem2")
+    @onClickListener("openDialogButton")
+    void onOpenDialogButtonClick() {
+        testDialog.open();
+    }
+
+    @onClickListener("closeDialogButton")
+    void onCloseDialogButtonClick() {
+        testDialog.close();
     }
 }
 

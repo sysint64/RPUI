@@ -6,6 +6,8 @@ import std.meta;
 import std.traits;
 import std.path;
 
+import rpui.events;
+import rpui.widget_events;
 import rpui.shortcuts : Shortcuts;
 import rpui.view;
 import rpui.widget;
@@ -119,12 +121,12 @@ abstract class ViewComponent {
             assert(isFunction!symbol);
 
             foreach (uda; getUDAs!(symbol, event)) {
-                Widget widget = findWidgetByName(uda.widgetName);
-                assert(widget !is null, widget.name);
+                Widget widget = findWidgetByName!(uda.widgetName);
+                assert(widget !is null, "Widget hasn't found: " ~ uda.widgetName);
 
                 enum widgetEventName = eventName[2..$];
 
-                // widget.events.subscribe!(ClickEvent)(&viewComponent.onOkButtonClick);
+                // widget.events.subscribe!(clickEvent)(&viewComponent.onOkButtonClick);
                 mixin("widget.events.subscribe!(" ~ widgetEventName ~ "Event)(&viewComponent." ~ symbolName ~ ");");
             }
         }
@@ -187,7 +189,7 @@ abstract class ViewComponent {
             foreach (uda; getUDAs!(symbol, bindGroupWidgets)) {
                 enum parentWidgetName = getNameFromAttribute!uda(symbolName);
 
-                Widget parentWidget = findWidgetByName(parentWidgetName);
+                Widget parentWidget = findWidgetByName!(parentWidgetName);
                 assert(parentWidget !is null);
 
                 // alias WidgetType = ForeachType!(typeof(viewComponent.buttons));

@@ -15,11 +15,11 @@ final class LabelRenderer : Renderer {
     private Label widget;
     private Theme theme;
 
-    override void onCreate(Widget widget) {
+    override void onCreate(Widget widget, in string style) {
         this.theme = widget.view.theme;
         this.widget = cast(Label) widget;
 
-        text = createUiTextFromRdpl(theme, widget.style, "Regular");
+        text = createUiTextFromRdpl(theme, style, "Regular");
     }
 
     override void onRender() {

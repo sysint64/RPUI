@@ -32,38 +32,38 @@ final class CheckboxRenderer : Renderer {
         uncheckedBox.state = getTextState();
     }
 
-    override void onCreate(Widget widget) {
+    override void onCreate(Widget widget, in string style) {
         this.theme = widget.view.theme;
         this.widget = cast(Checkbox) widget;
 
         text = createStatefulUiTextFromRdpl(
             theme,
-            widget.style,
+            style,
             "Text",
             [State.leave, State.enter]
         );
 
         checkedBox = createStatefulTexAtlasTextureQuadFromRdpl(
             theme,
-            widget.style,
+            style,
             "checkedBox",
             [State.leave, State.enter]
         );
 
         uncheckedBox = createStatefulTexAtlasTextureQuadFromRdpl(
             theme,
-            widget.style,
+            style,
             "uncheckedBox",
             [State.leave, State.enter]
         );
 
         focusGlow = createTexAtlasTextureQuadFromRdpl(
             theme,
-            widget.style,
+            style,
             "Focus.glow"
         );
 
-        focusOffsets = theme.tree.data.getVec2f(widget.style ~ ".Focus.offsets");
+        focusOffsets = theme.tree.data.getVec2f(style ~ ".Focus.offsets");
     }
 
     override void onRender() {

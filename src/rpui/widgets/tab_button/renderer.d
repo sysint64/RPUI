@@ -8,8 +8,8 @@ import rpui.widgets.tab_button.widget;
 final class TabButtonRenderer : ButtonRenderer {
     private TabButton widget;
 
-    override void onCreate(Widget widget) {
-        super.onCreate(widget);
+    override void onCreate(Widget widget, in string style) {
+        super.onCreate(widget, style);
         this.widget = cast(TabButton) widget;
     }
 

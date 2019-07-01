@@ -20,7 +20,7 @@ import rpui.render.components;
 import rpui.primitives;
 
 interface Renderer {
-    void onCreate(Widget widget);
+    void onCreate(Widget widget, in string style);
 
     void onRender();
 
@@ -28,7 +28,7 @@ interface Renderer {
 }
 
 class DummyRenderer : Renderer {
-    override void onCreate(Widget widget) {
+    override void onCreate(Widget widget, in string style) {
     }
 
     override void onRender() {

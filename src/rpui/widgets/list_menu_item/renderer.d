@@ -19,13 +19,11 @@ final class ListMenuItemRenderer : ButtonRenderer {
     private StatefulTexAtlasTextureQuad arrow;
     private QuadTransforms arrowTransforms;
 
-    override void onCreate(Widget widget) {
-        super.onCreate(widget);
+    override void onCreate(Widget widget, in string style) {
+        super.onCreate(widget, style);
 
         this.theme = widget.view.theme;
         this.widget = cast(ListMenuItem) widget;
-
-        const style = widget.style;
 
         arrow = createStatefulTexAtlasTextureQuadFromRdpl(theme, style, "submenuArrow");
         submenuArrowOffset = theme.tree.data.getVec2f(style ~ ".submenuArrowOffset");

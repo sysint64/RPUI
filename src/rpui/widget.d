@@ -488,7 +488,7 @@ public:
     }
 
     void onCreate() {
-        renderer.onCreate(this);
+        renderer.onCreate(this, style);
     }
 
     void onPostCreate() {
