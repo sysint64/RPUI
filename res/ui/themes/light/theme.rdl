@@ -174,22 +174,28 @@ TreeListNode
         left                : 55, 180, 5, 21
         center              : 68, 180, 5, 21
         right               : 81, 180, 5, 21
-        textOffset          : 0, 0
-        textColor           : 0, 0, 0
+
+        Text
+            offset          : 0, 0
+            color           : 0, 0, 0
 
     Enter
         left                : 55, 131, 5, 21
         center              : 68, 131, 5, 21
         right               : 81, 131, 5, 21
-        textOffset          : 0, 0
-        textColor           : 0, 0, 0
+
+        Text
+            offset          : 0, 0
+            color           : 0, 0, 0
 
     Click
         left                : 55, 131, 5, 21
         center              : 68, 131, 5, 21
         right               : 81, 131, 5, 21
-        textOffset          : 0, 0
-        textColor           : 0, 0, 0
+
+        Text
+            offset          : 0, 0
+            color           : 0, 0, 0
 
     Focus
         left                : 55, 180, 5, 21

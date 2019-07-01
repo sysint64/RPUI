@@ -34,6 +34,8 @@ import rpui.widgets.chain_layout.widget;
 import rpui.widgets.check_button.widget;
 import rpui.widgets.switch_button.widget;
 import rpui.widgets.dialog.widget;
+import rpui.widgets.tree_list.widget;
+import rpui.widgets.tree_list_node.widget;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -119,6 +121,12 @@ final class RpdlWidgetFactory {
 
             case "SwitchButton":
                 return createWidget!SwitchButton(widgetNode, parentWidget);
+
+            case "TreeListNode":
+                return createWidget!TreeListNode(widgetNode, parentWidget);
+
+            case "TreeList":
+                return createWidget!TreeList(widgetNode, parentWidget);
 
             case "Dialog":
                 return createWidget!Dialog(widgetNode, parentWidget);
