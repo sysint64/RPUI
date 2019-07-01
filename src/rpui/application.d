@@ -171,12 +171,9 @@ abstract class Application {
 
                 if (event.type == SDL_MOUSEBUTTONDOWN) {
                     const button = createMouseButtonFromButtonSdlEvent(event);
+                    events.notify(MouseDownEvent(event.button.x, event.button.y, button));
 
                     switch (event.button.clicks) {
-                        case 1:
-                            events.notify(MouseDownEvent(event.button.x, event.button.y, button));
-                            break;
-
                         case 2:
                             events.notify(DblClickEvent(event.button.x, event.button.y, button));
                             break;
@@ -186,8 +183,7 @@ abstract class Application {
                             break;
 
                         default:
-                            events.notify(MouseDownEvent(event.button.x, event.button.y, button));
-                            break;
+                            // Ignore
                     }
                 }
 

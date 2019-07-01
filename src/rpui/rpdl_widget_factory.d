@@ -63,7 +63,7 @@ final class RpdlWidgetFactory {
         foreach (Node childNode; widgetNode.children) {
             if (auto objectNode = cast(ObjectNode) childNode) {
                 auto widget = createWidgetFromNode(objectNode);
-                // readVisibleRules(widget, objectNode);
+                readVisibleRules(widget, objectNode);
                 widget.onPostCreate();
             } else {
                 throw new Error("Failed to create widget");
@@ -287,13 +287,12 @@ final class RpdlWidgetFactory {
     private void readVisibleRules(Widget widget, ObjectNode widgetNode) {
         const rule = widgetNode.optString("tabVisibleRule.0", null);
 
-        // TODO:
-        // if (rule !is null ) {
-        //     auto dependWidget = cast(TabButton) rootWidget.resolver.findWidgetByName(rule);
+        if (rule !is null ) {
+            auto dependWidget = cast(TabButton) rootWidget.resolver.findWidgetByName(rule);
 
-        //     if (dependWidget !is null) {
-        //         widget.visibleRules.insert(() => dependWidget.checked);
-        //     }
-        // }
+            if (dependWidget !is null) {
+                widget.visibleRules.insert(() => dependWidget.checked);
+            }
+        }
     }
 }

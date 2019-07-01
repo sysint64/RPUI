@@ -30,7 +30,7 @@ package final class WidgetResolver {
      * Find the first element that satisfying the `predicate`
      * traversing down through its ancestors.
      */
-    Widget find(bool function(Widget) predicate) {
+    Widget find(bool delegate(Widget) predicate) {
         foreach (Widget widget; cursor.children) {
             if (predicate(widget))
                 return widget;
@@ -44,7 +44,7 @@ package final class WidgetResolver {
         return null;
     }
 
-    Widget findWidgetByName(alias name)() {
+    Widget findWidgetByName(in string name) {
         return find(widget => widget.name == name);
     }
 }

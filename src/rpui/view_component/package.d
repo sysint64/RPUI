@@ -156,7 +156,7 @@ abstract class ViewComponent {
         if (rootWidget.name == name) {
             return rootWidget;
         } else {
-            return rootWidget.resolver.findWidgetByName!(name);
+            return rootWidget.resolver.findWidgetByName(name);
         }
     }
 
