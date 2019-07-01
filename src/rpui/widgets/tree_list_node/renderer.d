@@ -1,5 +1,8 @@
 module rpui.widgets.tree_list_node.renderer;
 
+import std.container.array;
+import std.math;
+
 import rpui.theme;
 import rpui.events;
 import rpui.widget;
@@ -16,6 +19,15 @@ final class TreeListNodeRenderer : ButtonRenderer {
     private Theme theme;
     private const string treeListStyle;
 
+    private vec4 linesColor;
+    private float lineLength;
+    private float rootLineLength;
+
+    private LinesGeometry lines;
+    private Array!vec2 vertices;
+    private Array!uint indices;
+    private LinesTransforms linesTransforms;
+
     private bool needUpdateLines = true;
 
     this(in string treeListStyle) {
@@ -28,72 +40,82 @@ final class TreeListNodeRenderer : ButtonRenderer {
         this.theme = widget.view.theme;
         this.widget = cast(TreeListNode) widget;
 
-        //     treeLinesRenderObject = renderFactory.createLines(true);
-        //     linesGeometry = treeLinesRenderObject.geometry;
+        auto data = theme.tree.data;
 
-        //     with (linesGeometry) {
-        //         addVertex(vec2(0.0f, 0.0f));
-        //         addVertex(vec2(0.0f, 0.0f));
-        //         addVertex(vec2(0.0f, 0.0f));
-        //         addVertex(vec2(0.0f, 0.0f));
+        linesColor = data.getNormColor(treeListStyle ~ ".linesColor");
+        lineLength = data.getNumber(treeListStyle ~ ".lineLength.0");
+        rootLineLength = data.getNumber(treeListStyle ~ ".rootLineLength.0");
 
-        //         addIndices([0, 1, 2, 3]);
-        //     }
+        vertices.reserve(4);
+        indices.reserve(4);
 
-        //     linesGeometry.createGeometry();
+        vertices.insert(vec2(0.0f, 0.0f));
+        vertices.insert(vec2(0.0f, 0.0f));
+        vertices.insert(vec2(0.0f, 0.0f));
+        vertices.insert(vec2(0.0f, 0.0f));
 
+        indices.insert(0);
+        indices.insert(1);
+        indices.insert(2);
+        indices.insert(3);
+
+        lines = createDynamicLinesGeometry(vertices, indices);
     }
 
     override void onRender() {
         super.onRender();
+
+        if (widget.treeDepth > 2)
+            return;
+
+        renderColorLines(theme, lines, linesColor, linesTransforms);
     }
-
-    // override void render(Camera camera) {
-    //     super.render(camera);
-
-    //     if (treeDepth <= 2) {
-    //         renderer.renderColoredObject(
-    //             treeLinesRenderObject,
-    //             treeList.linesColor,
-    //             absolutePosition,
-    //             vec2(1.0f, 1.0f)
-    //         );
-    //     }
-    // }
 
     override void onProgress(in ProgressEvent event) {
         super.onProgress(event);
-        // if (treeDepth <= 2)
-            // updateLines();
+
+        if (widget.treeDepth > 2)
+            return;
+
+        linesTransforms = updateLinesTransforms(widget.view.cameraView, widget.absolutePosition);
+        updateLines();
     }
 
-    // private void updateLines() {
-    //     const length = parent == treeList ? treeList.rootLineLength : treeList.lineLength;
-    //     const isFirst = this == parent.children.front;
-    //     const halfHeight = height / 2.0f - 1.0f;  // -1 due-to line height
+    private void updateLines() {
+        with (widget) {
+            const length = parent == treeList ? rootLineLength : lineLength;
+            const isFirst = widget == parent.children.front;
+            const halfHeight = round(height / 2.0f) - 1.0f;  // -1 due-to line height
 
-    //     if (treeDepth == 2) {
-    //         const deltaBeetwenNodes = absolutePosition.y - prevWidget.absolutePosition.y;
+            if (treeDepth == 2) {
+                const deltaBeetwenNodes = absolutePosition.y - prevWidget.absolutePosition.y;
 
-    //         // TODO: -1 is magic a number and it's just adjustment for root node line.
-    //         const top = isFirst ? halfHeight - 1.0f : deltaBeetwenNodes;
+                // NOTE(Andrey): -1 it's a just adjustment for root node line.
+                const top = isFirst ? halfHeight - 1.0f : deltaBeetwenNodes;
 
+                vertices.clear();
+                vertices.insert(vec2(0.0f, -halfHeight));
+                vertices.insert(vec2(-length, -halfHeight));
+                vertices.insert(vec2(-length, -halfHeight));
+                vertices.insert(vec2(-length, -halfHeight + top));
 
-    //         linesGeometry.updateIndices([0, 1, 2, 3]);
-    //         linesGeometry.updateVertices([
-    //             vec2(0.0f, -halfHeight),
-    //             vec2(-length, -halfHeight),
-    //             vec2(-length, -halfHeight),
-    //             vec2(-length, -halfHeight + top),
-    //         ]);
-    //     } else {
-    //         linesGeometry.updateIndices([0, 1]);
-    //         linesGeometry.updateVertices([
-    //             vec2(0.0f, -halfHeight),
-    //             vec2(-length, -halfHeight)
-    //         ]);
-    //     }
+                indices.clear();
+                indices.insert(0);
+                indices.insert(1);
+                indices.insert(2);
+                indices.insert(3);
+            } else {
+                vertices.clear();
+                vertices.insert(vec2(0.0f, -halfHeight));
+                vertices.insert(vec2(-length, -halfHeight));
 
-    //     needUpdateLines = false;
-    // }
+                indices.clear();
+                indices.insert(0);
+                indices.insert(1);
+            }
+
+            updateLinesGeometryData(lines, vertices, indices);
+            needUpdateLines = false;
+        }
+    }
 }

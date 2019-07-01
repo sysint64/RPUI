@@ -12,10 +12,6 @@ class TreeList : Widget {
     @field bool drawLines = true;
 
     struct Measure {
-        // vec4 linesColor;
-        // float lineLength;
-        // float rootLineLength;
-
         float computedWrapHeight = 0;
         float nodeLeftOffset;
     }
@@ -30,9 +26,6 @@ class TreeList : Widget {
         super.onCreate();
 
         with (view.theme.tree) {
-            // measure.linesColor = data.getNormColor(style ~ ".linesColor");
-            // measure.lineLength = data.getNumber(style ~ ".lineLength.0");
-            // measure.rootLineLength = data.getNumber(style ~ ".rootLineLength.0");
             measure.nodeLeftOffset = data.getNumber(style ~ ".nodeLeftOffset.0");
         }
     }

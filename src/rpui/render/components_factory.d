@@ -2,6 +2,7 @@ module rpui.render.components_factory;
 
 import std.traits;
 import std.string;
+import std.container.array;
 
 import rpdl;
 
@@ -228,4 +229,24 @@ Geometry createGeometry() {
     createVector2fVAO(geometry.texCoordsBuffer, inAttrTextCoords);
 
     return geometry;
+}
+
+LinesGeometry createDynamicLinesGeometry(ref Array!vec2 vertices, ref Array!uint indices) {
+    LinesGeometry geometry;
+
+    geometry.indicesBuffer = createIndicesBuffer(indices, false);
+    geometry.verticesBuffer = createVector2fBuffer(vertices, false);
+
+    geometry.vao = createVAO();
+    bindVAO(geometry.vao);
+
+    createVector2fVAO(geometry.verticesBuffer, inAttrPosition);
+
+    return geometry;
+}
+
+void updateLinesGeometryData(ref LinesGeometry geometry, ref Array!vec2 vertices, ref Array!uint indices) {
+    updateIndicesBufferData(geometry.indicesBuffer, indices);
+    updateVector2fBufferData(geometry.verticesBuffer, vertices);
+    geometry.pointsCount = cast(uint) indices.length;
 }

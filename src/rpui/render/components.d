@@ -25,7 +25,21 @@ struct Geometry {
     VAO vao;
 }
 
+struct LinesGeometry {
+    Buffer indicesBuffer;
+    Buffer verticesBuffer;
+    uint pointsCount;
+
+    VAO vao;
+}
+
 struct QuadTransforms {
+    Transform2D transform;
+    mat4 modelMatrix;
+    mat4 mvpMatrix;
+}
+
+struct LinesTransforms {
     Transform2D transform;
     mat4 modelMatrix;
     mat4 mvpMatrix;

@@ -38,6 +38,18 @@ QuadTransforms updateQuadTransforms(
     return transforms;
 }
 
+LinesTransforms updateLinesTransforms(in CameraView cameraView, in vec2 position) {
+    LinesTransforms transforms;
+
+    with (transforms) {
+        const screenPosition = toScreenPosition(cameraView.viewportHeight, position, 0);
+        modelMatrix = create2DModelMatrixPosition(screenPosition);
+        mvpMatrix = cameraView.mvpMatrix * modelMatrix;
+    }
+
+    return transforms;
+}
+
 BlockTransforms updateBlockTransforms(
     in float[ChainPart][BlockRow] partWidths,
     in float[BlockRow] partHeights,

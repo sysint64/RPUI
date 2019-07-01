@@ -108,6 +108,24 @@ void renderColorQuad(
     renderIndexedGeometry(cast(uint) quadIndices.length, GL_TRIANGLE_STRIP);
 }
 
+void renderColorLines(
+    in Theme theme,
+    in LinesGeometry geometry,
+    in vec4 color,
+    in LinesTransforms transforms
+) {
+    const shader = theme.shaders.colorShader;
+    bindShaderProgram(shader);
+
+    setShaderProgramUniformMatrix(shader, "MVP", transforms.mvpMatrix);
+    setShaderProgramUniformVec4f(shader, "color", color);
+
+    bindVAO(geometry.vao);
+    bindIndices(geometry.indicesBuffer);
+
+    renderIndexedGeometry(geometry.pointsCount, GL_LINES);
+}
+
 void renderBlock(in Theme theme, in Block block, in BlockTransforms transforms) {
     renderHorizontalChain(theme, block.topChain, transforms.topChain);
     renderHorizontalChain(theme, block.bottomChain, transforms.bottomChain);

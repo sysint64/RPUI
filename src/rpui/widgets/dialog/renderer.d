@@ -35,8 +35,5 @@ final class DialogRenderer : Renderer {
             widget.absolutePosition,
             widget.size
         );
-
-        import std.stdio;
-        writeln(widget.size);
     }
 }
