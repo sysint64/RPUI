@@ -1,18 +1,6 @@
 module rpui.platform;
 
-import std.conv;
-import std.array;
-import std.string;
-
-import derelict.sdl2.sdl;
-import derelict.sdl2.ttf;
-import derelict.sdl2.image;
-
-import gapi.opengl;
-
-import rpui.events;
 import rpui.events_observer;
-import rpui.input;
 
 struct Window {
     void* handle;
@@ -27,7 +15,7 @@ extern(C) void platformSetMousePosition(void* window, in int x, in int y);
 
 extern(C) float platformGetTicks();
 
-extern(C) bool platformEventLoop(EventsObserver events);
+extern(C) bool platformEventLoop(void* window, EventsObserver events);
 
 extern(C) void platformSwapWindow(void* window);
 

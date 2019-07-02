@@ -102,7 +102,7 @@ abstract class Application : EventsListenerEmpty {
 
         while (running) {
             times.current = platformGetTicks();
-            running = platformEventLoop(events);
+            running = platformEventLoop(windowData.window, events);
             render();
         }
     }

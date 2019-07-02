@@ -33,7 +33,7 @@ extern(C) float platformGetTicks() {
     return SDL_GetTicks();
 }
 
-extern(C) bool platformEventLoop(EventsObserver events) {
+extern(C) bool platformEventLoop(void* window, EventsObserver events) {
     SDL_Event event;
 
     while (SDL_PollEvent(&event)) {
