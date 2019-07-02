@@ -1,0 +1,15 @@
+{
+    "authors": [
+	"Andrey Kabylin"
+    ],
+    "copyright": "Copyright © 2019, Andrey",
+    "description": "A minimal D application.",
+    "license": "MIT",
+    "name": "example",
+    "dependencies": {
+        ":rpui": "*"
+    },
+    "subPackages": [
+        "../"
+    ]
+}

@@ -34,7 +34,7 @@ final class CursorManager {
 
     ~this() {
         if (cursor !is null) {
-            // SDL_FreeCursor(cursor);
+            SDL_FreeCursor(cursor);
         }
     }
 
@@ -54,10 +54,10 @@ final class CursorManager {
         }
 
         if (cursor !is null) {
-            // SDL_FreeCursor(cursor);
+            SDL_FreeCursor(cursor);
         }
 
-        // cursor = SDL_CreateSystemCursor(cast(SDL_SystemCursor) sdlIcon);
-        // SDL_SetCursor(cursor);
+        cursor = SDL_CreateSystemCursor(cast(SDL_SystemCursor) sdlIcon);
+        SDL_SetCursor(cursor);
     }
 }

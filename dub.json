@@ -1,5 +1,5 @@
 {
-    "name": "sim",
+    "name": "rpui",
     "authors": [
         "Andrey Kabylin"
     ],
@@ -8,9 +8,9 @@
     "license": "MIT",
     "versions": [
         "DerelictGL3_CustomFreeFuncs",
-        "rpuiGlfw"
+        "rpuiSdl2"
     ],
-    "targetType": "executable",
+    "targetType": "library",
     "targetPath": "build",
     "configurations": [
         {
@@ -31,7 +31,7 @@
     "dependencies": {
         "gl3n": "~>1.3.1",
         "rpdl": "~>0.1.0-alpha.1",
-        "gapi": "~>0.0.1-alpha.1",
+        "gapi": "~>0.0.1-alpha.2",
         "derelict-glfw3": "~>4.0.0-beta.1"
     },
     "-ddoxFilterArgs": [

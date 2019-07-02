@@ -72,6 +72,9 @@ struct WindowResizeEvent {
     uint height;
 }
 
+struct WindowExposedEvent {
+}
+
 const windowEvents = [
     typeid(KeyPressedEvent),
     typeid(KeyReleasedEvent),
@@ -82,7 +85,8 @@ const windowEvents = [
     typeid(TripleClickEvent),
     typeid(MouseMoveEvent),
     typeid(MouseWheelEvent),
-    typeid(WindowResizeEvent)
+    typeid(WindowResizeEvent),
+    typeid(WindowExposedEvent),
 ];
 
 interface EventsListener {
@@ -96,6 +100,7 @@ interface EventsListener {
     void onMouseMove(in MouseMoveEvent event);
     void onMouseWheel(in MouseWheelEvent event);
     void onWindowResize(in WindowResizeEvent event);
+    void onWindowExposed(in WindowExposedEvent event);
 }
 
 abstract class EventsListenerEmpty : EventsListener {
@@ -109,4 +114,5 @@ abstract class EventsListenerEmpty : EventsListener {
     void onMouseMove(in MouseMoveEvent event) {}
     void onMouseWheel(in MouseWheelEvent event) {}
     void onWindowResize(in WindowResizeEvent event) {}
+    void onWindowExposed(in WindowExposedEvent event) {}
 }

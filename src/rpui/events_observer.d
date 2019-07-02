@@ -51,7 +51,8 @@ class EventsSubscriber(T) : Subscriber {
             "TripleClick",
             "MouseMove",
             "MouseWheel",
-            "WindowResize"
+            "WindowResize",
+            "WindowExposed",
         ];
         onEventReceivedFor!(events)(event);
     }

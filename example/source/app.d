@@ -26,11 +26,7 @@ import gapi.opengl;
 
 void main() {
     auto app = new TestApplication();
-    const a = 10;
-    writeln("hello world! a = ", a);
-    GC.disable();
     app.run();
-    GC.collect();
 }
 
 final class MyViewComponent : ViewComponent {
@@ -128,6 +124,7 @@ final class TestApplication : Application {
         cameraMatrices = createOrthoCameraMatrices(cameraTransform);
         spriteMVPMatrix = cameraMatrices.mvpMatrix * spriteModelMatrix;
 
+        glViewport(0, 0, cast(int) cameraTransform.viewportSize.x, cast(int) cameraTransform.viewportSize.y);
         rootView.onProgress(event);
     }
 
