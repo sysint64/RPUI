@@ -142,7 +142,7 @@ final class TestApplication : Application {
         rootView.onRender(RenderEvent(windowData.viewportWidth, windowData.viewportHeight, cameraMatrices.mvpMatrix));
     }
 
-    override void onCreate(in CreateEvent event) {
+    override void onCreate() {
         createSprite();
         createTexture();
         createShaders();
@@ -167,6 +167,8 @@ final class TestApplication : Application {
     }
 
     override void onWindowResize(in WindowResizeEvent event) {
+        super.onWindowResize(event);
+
         cameraTransform.viewportSize.x = event.width;
         cameraTransform.viewportSize.y = event.height;
     }
