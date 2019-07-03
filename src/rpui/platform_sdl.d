@@ -44,8 +44,6 @@ extern(C) bool platformEventLoop(void* window, EventsObserver events) {
             events.notify(WindowResizeEvent(event.window.data1, event.window.data2));
         }
         else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_EXPOSED) {
-            import std.stdio;
-            writeln(event.window.data1);
             events.notify(WindowExposedEvent());
         }
         else if (event.type == SDL_MOUSEMOTION) {

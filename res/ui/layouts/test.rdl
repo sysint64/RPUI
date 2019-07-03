@@ -30,6 +30,7 @@ Panel
             verticalLocationAlign: middle
             margin: 5
             icons: "info", "folder", "check"
+            isEnabled: false
 
         Panel
             size: 150, 50

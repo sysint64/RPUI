@@ -62,7 +62,7 @@ struct DropMenuDelegate {
     }
 
     void toggleMenu(in vec2 dropOffset) {
-        if (!menu.visible) {
+        if (!menu.isVisible) {
             dropMenu(dropOffset);
         } else {
             hideMenu();
@@ -71,11 +71,11 @@ struct DropMenuDelegate {
 
     void dropMenu(in vec2 dropOffset) {
         menu.position = widget.absolutePosition + dropOffset + menu.measure.downPopupOffset;
-        menu.visible = true;
+        menu.isVisible = true;
     }
 
     void hideMenu() {
-        menu.visible = false;
+        menu.isVisible = false;
         menu.hideAllSubMenus();
     }
 }

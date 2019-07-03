@@ -45,28 +45,32 @@ interface RenderSystem {
 void renderTexAtlasQuad(
     in Theme theme,
     in StatefulTexAtlasTextureQuad quad,
-    in QuadTransforms transforms
+    in QuadTransforms transforms,
+    in float alpha = 1.0f,
 ) {
     renderTexAtlasQuad(
         theme,
         quad.geometry,
         quad.texture,
         quad.texCoords[quad.state].normilizedTexCoords,
-        transforms
+        transforms,
+        alpha
     );
 }
 
 void renderTexAtlasQuad(
     in Theme theme,
     in TexAtlasTextureQuad quad,
-    in QuadTransforms transforms
+    in QuadTransforms transforms,
+    in float alpha = 1.0f,
 ) {
     renderTexAtlasQuad(
         theme,
         quad.geometry,
         quad.texture,
         quad.texCoords.normilizedTexCoords,
-        transforms
+        transforms,
+        alpha
     );
 }
 
@@ -75,7 +79,8 @@ void renderTexAtlasQuad(
     in Geometry geometry,
     in Texture2D texture,
     in Texture2DCoords texCoord,
-    in QuadTransforms transforms
+    in QuadTransforms transforms,
+    in float alpha = 1.0f,
 ) {
     const shader = theme.shaders.textureAtlasShader;
     bindShaderProgram(shader);
@@ -84,7 +89,7 @@ void renderTexAtlasQuad(
     setShaderProgramUniformTexture(shader, "texture", texture, 0);
     setShaderProgramUniformVec2f(shader,"texOffset", texCoord.offset);
     setShaderProgramUniformVec2f(shader,"texSize", texCoord.size);
-    setShaderProgramUniformFloat(shader, "alpha", 1.0f);
+    setShaderProgramUniformFloat(shader, "alpha", alpha);
 
     bindVAO(geometry.vao);
     bindIndices(geometry.indicesBuffer);
@@ -126,24 +131,26 @@ void renderColorLines(
     renderIndexedGeometry(geometry.pointsCount, GL_LINES);
 }
 
-void renderBlock(in Theme theme, in Block block, in BlockTransforms transforms) {
-    renderHorizontalChain(theme, block.topChain, transforms.topChain);
-    renderHorizontalChain(theme, block.bottomChain, transforms.bottomChain);
-    renderHorizontalChain(theme, block.middleChain, transforms.middleChain);
+void renderBlock(in Theme theme, in Block block, in BlockTransforms transforms, in float alpha = 1.0f) {
+    renderHorizontalChain(theme, block.topChain, transforms.topChain, Widget.PartDraws.all, alpha);
+    renderHorizontalChain(theme, block.bottomChain, transforms.bottomChain, Widget.PartDraws.all, alpha);
+    renderHorizontalChain(theme, block.middleChain, transforms.middleChain, Widget.PartDraws.all, alpha);
 }
 
 void renderHorizontalChain(
     in Theme theme,
     in StatefulChain chain,
     in HorizontalChainTransforms transforms,
-    in Widget.PartDraws partDraws = Widget.PartDraws.all
+    in Widget.PartDraws partDraws = Widget.PartDraws.all,
+    in float alpha = 1.0f
 ) {
     renderHorizontalChain(
         theme,
         chain.parts,
         chain.texCoords[chain.state],
         transforms,
-        partDraws
+        partDraws,
+        alpha
     );
 }
 
@@ -151,14 +158,16 @@ void renderHorizontalChain(
     in Theme theme,
     in Chain chain,
     in HorizontalChainTransforms transforms,
-    in Widget.PartDraws partDraws = Widget.PartDraws.all
+    in Widget.PartDraws partDraws = Widget.PartDraws.all,
+    in float alpha = 1.0f
 ) {
     renderHorizontalChain(
         theme,
         chain.parts,
         chain.texCoords,
         transforms,
-        partDraws
+        partDraws,
+        alpha
     );
 }
 
@@ -167,7 +176,8 @@ void renderHorizontalChain(
     in TextureQuad[ChainPart] parts,
     in Texture2DCoords[ChainPart] texCoords,
     in HorizontalChainTransforms transforms,
-    in Widget.PartDraws partDraws = Widget.PartDraws.all
+    in Widget.PartDraws partDraws = Widget.PartDraws.all,
+    in float alpha = 1.0f
 ) {
     if (partDraws == Widget.PartDraws.left || partDraws == Widget.PartDraws.all) {
         renderTexAtlasQuad(
@@ -175,7 +185,8 @@ void renderHorizontalChain(
             parts[ChainPart.left].geometry,
             parts[ChainPart.left].texture,
             texCoords[ChainPart.left],
-            transforms.quadTransforms[ChainPart.left]
+            transforms.quadTransforms[ChainPart.left],
+            alpha
         );
     }
 
@@ -185,7 +196,8 @@ void renderHorizontalChain(
             parts[ChainPart.right].geometry,
             parts[ChainPart.right].texture,
             texCoords[ChainPart.right],
-            transforms.quadTransforms[ChainPart.right]
+            transforms.quadTransforms[ChainPart.right],
+            alpha
         );
     }
 
@@ -194,7 +206,8 @@ void renderHorizontalChain(
         parts[ChainPart.center].geometry,
         parts[ChainPart.center].texture,
         texCoords[ChainPart.center],
-        transforms.quadTransforms[ChainPart.center]
+        transforms.quadTransforms[ChainPart.center],
+        alpha
     );
 }
 

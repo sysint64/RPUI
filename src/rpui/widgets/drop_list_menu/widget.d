@@ -31,7 +31,7 @@ class DropListMenu : Button, MenuActions {
         menu = cast(ListMenu) children.front;
         assert(menu !is null);
 
-        menu.visible = false;
+        menu.isVisible = false;
         menu.focusable = false;
         view.moveWidgetToFront(menu);
 

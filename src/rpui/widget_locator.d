@@ -139,7 +139,7 @@ package final class WidgetLocator {
             if (widget == holder)
                 break;
 
-            if (!widget.visible || widget.regionAlign == RegionAlign.none)
+            if (!widget.isVisible || widget.regionAlign == RegionAlign.none)
                 continue;
 
             switch (widget.regionAlign) {

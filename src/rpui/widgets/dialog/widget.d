@@ -25,7 +25,7 @@ final class Dialog : Widget {
     protected override void onCreate() {
         super.onCreate();
 
-        visible = false;
+        isVisible = false;
 
         with (view.theme.tree) {
             extraInnerOffset = data.getFrameRect(style ~ ".extraInnerOffset");
@@ -53,7 +53,7 @@ final class Dialog : Widget {
     }
 
     override void onMouseDown(in MouseDownEvent event) {
-        if (!isOver && closeOnClickOutsideArea && visible) {
+        if (!isOver && closeOnClickOutsideArea && isVisible) {
             close();
         } else {
             super.onMouseDown(event);
@@ -61,13 +61,13 @@ final class Dialog : Widget {
     }
 
     void open() {
-        visible = true;
+        isVisible = true;
         freezeUI(false);
         focusNavigator.focusPrimary();
     }
 
     void close() {
-        visible = false;
+        isVisible = false;
         unfreezeUI();
     }
 }

@@ -37,18 +37,22 @@ final class ButtonRenderSystem : RenderSystem {
         renderData.background.state = widget.state;
         renderData.captionText.state = widget.state;
 
+        // TODO: draw disabled
+        const alpha = widget.isEnabled ? 1.0 : 0.5;
+
         renderHorizontalChain(
             theme,
             renderData.background,
             transforms.background,
-            widget.partDraws
+            widget.partDraws,
+            alpha
         );
 
         if (renderData.textVisible && widget.caption != "") {
             renderUiText(theme, renderData.captionText, transforms.captionText);
         }
 
-        if (widget.focusable && widget.isFocused) {
+        if (widget.focusable && widget.isFocused && widget.isEnabled) {
             renderHorizontalChain(
                 theme,
                 renderData.focusGlow,

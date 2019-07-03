@@ -117,7 +117,7 @@ final class View : EventsListenerEmpty {
         rootWidget.collectOnProgressQueries();
 
         foreach (Widget widget; frontWidgets) {
-            if (!widget.visible && !widget.processPorgress())
+            if (!widget.isVisible && !widget.processPorgress())
                 continue;
 
             widget.collectOnProgressQueries();
@@ -136,7 +136,7 @@ final class View : EventsListenerEmpty {
         poll();
 
         foreach (Widget widget; frontWidgets) {
-            if (!widget.visible && !widget.processPorgress())
+            if (!widget.isVisible && !widget.processPorgress())
                 continue;
 
             if (widget.isOver)
@@ -159,7 +159,7 @@ final class View : EventsListenerEmpty {
         rootWidget.onRender();
 
         foreach (Widget widget; frontWidgets) {
-            if (widget.visible) {
+            if (widget.isVisible) {
                 widget.onRender();
             }
         }
@@ -178,7 +178,7 @@ final class View : EventsListenerEmpty {
             if (widget is null)
                 continue;
 
-            if (!widget.visible) {
+            if (!widget.isVisible || !widget.isEnabled) {
                 widget.isOver = false;
                 widget.isEnter = false;
                 widget.isClick = false;
@@ -214,7 +214,7 @@ final class View : EventsListenerEmpty {
             if (found !is null && !widget.overlay)
                 continue;
 
-            if (widget is null || !widget.isOver || !widget.visible)
+            if (widget is null || !widget.isOver || !widget.isVisible)
                 continue;
 
             if (isWidgetFrozen(widget))

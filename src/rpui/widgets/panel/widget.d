@@ -104,7 +104,7 @@ class Panel : Widget, FocusScrollNavigation {
         view.pushScissor(scissor);
 
         foreach (Widget child; children) {
-            if (!child.visible)
+            if (!child.isVisible)
                 continue;
 
             if (!pointInRect(view.mousePos, scissor)) {

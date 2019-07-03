@@ -50,8 +50,8 @@ class Widget : EventsListenerEmpty {
         string name = "";  /// Override name of variable.
     }
 
-    @field bool visible = true;
-    @field bool enabled = true;
+    @field bool isVisible = true;
+    @field bool isEnabled = true;
     @field bool focusable = true;
 
     /// If true, then focus navigation by children will be limited inside this widget.
@@ -152,7 +152,7 @@ class Widget : EventsListenerEmpty {
     @property WidgetEventsObserver events() { return p_events; }
     private WidgetEventsObserver p_events;
 
-    /// Additional rules appart from `visible` to set widget visible or not.
+    /// Additional rules appart from `isVisible` to set widget visible or not.
     Array!(bool delegate()) visibleRules;
 
     /// Additional rules appart from `enabled` to set widget enabled or not.
@@ -387,18 +387,18 @@ public:
 
     void checkRules() {
         if (!visibleRules.empty) {
-            visible = true;
+            isVisible = true;
 
             foreach (bool delegate() rule; visibleRules) {
-                visible = visible && rule();
+                isVisible = isVisible && rule();
             }
         }
 
         if (!enableRules.empty) {
-            enabled = true;
+            isEnabled = true;
 
             foreach (bool delegate() rule; enableRules) {
-                enabled = enabled && rule();
+                isEnabled = isEnabled && rule();
             }
         }
     }
@@ -433,7 +433,7 @@ public:
             return;
 
         foreach (Widget widget; children) {
-            if (!widget.visible && !widget.processPorgress())
+            if (!widget.isVisible && !widget.processPorgress())
                 continue;
 
             view.onProgressQueries.insert(widget);
@@ -459,7 +459,7 @@ public:
             return;
 
         foreach (Widget child; children) {
-            if (!child.visible)
+            if (!child.isVisible)
                 continue;
 
             child.onRender();
@@ -552,7 +552,7 @@ public:
         renderer.onProgress(ProgressEvent(0));
 
         foreach (Widget widget; children) {
-            if (widget.visible)
+            if (widget.isVisible)
                 widget.updateAll();
         }
     }

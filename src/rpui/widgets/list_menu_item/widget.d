@@ -53,7 +53,7 @@ class ListMenuItem : Button, MenuActions {
         if (menu is null)
             return;
 
-        menu.visible = false;
+        menu.isVisible = false;
         menu.focusable = false;
         view.moveWidgetToFront(menu);
 
@@ -81,7 +81,7 @@ class ListMenuItem : Button, MenuActions {
 
         if (dropMenuDelegate.isAttached()) {
             dropMenuDelegate.onProgress(vec2(size.x, 0) + menu.measure.rightPopupOffset);
-            overrideIsEnter = dropMenuDelegate.isInVisibilityArea && menu.visible;
+            overrideIsEnter = dropMenuDelegate.isInVisibilityArea && menu.isVisible;
         }
     }
 
