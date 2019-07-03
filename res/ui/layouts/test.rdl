@@ -144,33 +144,38 @@ Panel
         blackSplit: true
         userCanResize: true
 
-        # Tree -------------------------------------------------------------------------------------
-        TreeList
-            size: 200, 200
-            margin: 5
-
-            TreeListNode
-                caption: "Root"
-                icons: "grid"
-
-                TreeListNode caption: "Node 1" icons: "ghost"
-                TreeListNode caption: "Node 2" icons: "red_triangle"
+        StackLayout
+            # Tree ---------------------------------------------------------------------------------
+            TreeList
+                size: 200, 0
+                margin: 0
+                heightType: wrapContent
 
                 TreeListNode
-                    caption: "Group 1"
-                    icons: "folder"
+                    caption: "Root"
+                    icons: "grid"
 
-                    TreeListNode caption: "Node 3" icons: "ghost"
+                    TreeListNode caption: "Node 1" icons: "ghost"
+                    TreeListNode caption: "Node 2" icons: "red_triangle"
 
                     TreeListNode
-                        caption: "Node 4"
-                        icons: "ghost"
+                        caption: "Group 1"
+                        icons: "folder"
+                        isOpen: false
 
-                        TreeListNode caption: "Material 1" icons: "material"
-                        TreeListNode caption: "Texture 1" icons: "texture"
+                        TreeListNode caption: "Node 3" icons: "ghost"
 
-                TreeListNode caption: "Node 5" icons: "ghost"
-        # End tree ---------------------------------------------------------------------------------
+                        TreeListNode
+                            caption: "Node 4"
+                            icons: "ghost"
+
+                            TreeListNode caption: "Material 1" icons: "material"
+                            TreeListNode caption: "Texture 1" icons: "texture"
+
+                    TreeListNode caption: "Node 5" icons: "ghost"
+            # End tree -----------------------------------------------------------------------------
+
+            Button caption: ":)" margin: 0 widthType: matchParent
 
         Label
             caption: "Hi"

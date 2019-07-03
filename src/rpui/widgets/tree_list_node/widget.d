@@ -43,11 +43,11 @@ class TreeListNode : Button {
         debug assert(treeList !is null);
 
         super.onProgress(event);
+
         locator.updateAbsolutePosition();
         position.x = treeList.measure.nodeLeftOffset;
 
         innerHeight = size.y;
-        treeList.measure.computedWrapHeight += size.y;
 
         if (!isOpen)
             return;
