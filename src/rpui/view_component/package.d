@@ -72,7 +72,18 @@ abstract class ViewComponent {
     static createFromFile(T : ViewComponent)(View view, in string fileName) {
         const paths = createPathes();
         const layoutPath = buildPath(paths.resources, "ui", "layouts", fileName);
-        const shortcutsPath = buildPath(paths.resources, "ui", "shortcuts", fileName);
+        const shortcutsPath = buildPath(paths.resources, "ui", "shortcuts", "general.rdl");
+        return new T(view, layoutPath, shortcutsPath);
+    }
+
+    /**
+     * Create new view instance from file placed in $(I res/ui/layouts).
+     * Instance will be created of `T` type.
+     */
+    static createFromFileWithShortcuts(T : ViewComponent)(View view, in string fileName, in string shortcuts = "") {
+        const paths = createPathes();
+        const layoutPath = buildPath(paths.resources, "ui", "layouts", fileName);
+        const shortcutsPath = buildPath(paths.resources, "ui", "shortcuts", shortcuts == "" ? fileName : shortcuts);
         return new T(view, layoutPath, shortcutsPath);
     }
 

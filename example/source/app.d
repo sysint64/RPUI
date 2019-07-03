@@ -152,7 +152,7 @@ final class TestApplication : Application {
         events.join(rootView.events);
         events.subscribe(rootView);
 
-        ViewComponent.createFromFile!(MyViewComponent)(rootView, "test.rdl");
+        ViewComponent.createFromFileWithShortcuts!(MyViewComponent)(rootView, "test.rdl");
     }
 
     override void onDestroy() {
