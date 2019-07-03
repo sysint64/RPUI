@@ -418,6 +418,9 @@ final class View : EventsListenerEmpty {
         viewportHeight = event.height;
         screenCameraTransform.viewportSize.x = event.width;
         screenCameraTransform.viewportSize.y = event.height;
+
+        onProgress(ProgressEvent(0));
+        onRender();
     }
 
     private void blur() {
