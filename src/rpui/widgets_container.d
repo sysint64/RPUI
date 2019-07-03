@@ -38,7 +38,7 @@ package final class WidgetsContainer {
     }
 
     void addWidgetWithoutDecorator(Widget widget) {
-        widget.view = rootWidget.view;
+        widget.view_ = rootWidget.view_;
 
         widget.events.subscribeWidget(widget);
         rootWidget.events.join(widget.events, windowEvents);

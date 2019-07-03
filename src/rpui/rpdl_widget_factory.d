@@ -36,6 +36,7 @@ import rpui.widgets.switch_button.widget;
 import rpui.widgets.dialog.widget;
 import rpui.widgets.tree_list.widget;
 import rpui.widgets.tree_list_node.widget;
+import rpui.widgets.canvas.widget;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -130,6 +131,9 @@ final class RpdlWidgetFactory {
 
             case "Dialog":
                 return createWidget!Dialog(widgetNode, parentWidget);
+
+            case "Canvas":
+                return createWidget!Canvas(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);

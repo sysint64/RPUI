@@ -8,6 +8,7 @@ import std.container.slist;
 import gapi.vec;
 import gapi.opengl;
 import gapi.shader;
+import gapi.camera;
 
 import rpui.platform;
 import rpui.input;
@@ -70,11 +71,20 @@ final class View : EventsListenerEmpty {
     private Array!Rect scissorStack;
     private uint viewportHeight;
 
-    package CameraView cameraView;
+    public @property inout(CameraView) cameraView() inout { return cameraView_; }
+    package CameraView cameraView_;
+
     package ViewResources resources;
     private CursorManager cursorManager;
 
     private void* window;
+
+    private CameraMatrices screenCameraMatrices;
+    private OthroCameraTransform screenCameraTransform = {
+        viewportSize: vec2(1024, 768),
+        position: vec2(0, 0),
+        zoom: 1f
+    };
 
     private this() {
         events = new EventsObserver();
@@ -111,6 +121,7 @@ final class View : EventsListenerEmpty {
 
     /// Invokes all `onProgress` of all widgets and `poll` widgets.
     void onProgress(in ProgressEvent event) {
+        screenCameraMatrices = createOrthoCameraMatrices(screenCameraTransform);
         cursor = CursorIcon.inherit;
 
         onProgressQueries.clear();
@@ -148,13 +159,13 @@ final class View : EventsListenerEmpty {
     }
 
     /// Renders all widgets inside `camera` view.
-    void onRender(in RenderEvent event) {
-        cameraView.mvpMatrix = event.camertMVPMatrix;
-        cameraView.viewportWidth = event.viewportWidth;
-        cameraView.viewportHeight = event.viewportHeight;
+    void onRender() {
+        cameraView_.mvpMatrix = screenCameraMatrices.mvpMatrix;
+        cameraView_.viewportWidth = screenCameraTransform.viewportSize.x;
+        cameraView_.viewportHeight = screenCameraTransform.viewportSize.y;
 
-        rootWidget.size.x = event.viewportWidth;
-        rootWidget.size.y = event.viewportHeight;
+        rootWidget.size.x = screenCameraTransform.viewportSize.x;
+        rootWidget.size.y = screenCameraTransform.viewportSize.y;
 
         rootWidget.onRender();
 
@@ -405,6 +416,8 @@ final class View : EventsListenerEmpty {
 
     override void onWindowResize(in WindowResizeEvent event) {
         viewportHeight = event.height;
+        screenCameraTransform.viewportSize.x = event.width;
+        screenCameraTransform.viewportSize.y = event.height;
     }
 
     private void blur() {

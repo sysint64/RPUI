@@ -60,6 +60,7 @@ abstract class Application : EventsListenerEmpty {
     override void onWindowResize(in WindowResizeEvent event) {
         windowData.viewportWidth = event.width;
         windowData.viewportHeight = event.height;
+        glViewport(0, 0, event.width, event.height);
     }
 
     private void initPlatform() {
@@ -84,6 +85,7 @@ abstract class Application : EventsListenerEmpty {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glClearColor(150.0f/255.0f, 150.0f/255.0f, 150.0f/255.0f, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
     private void mainLoop() {

@@ -11,12 +11,6 @@ struct ProgressEvent {
 struct CreateEvent {
 }
 
-struct RenderEvent {
-    float viewportWidth;
-    float viewportHeight;
-    mat4 camertMVPMatrix;
-}
-
 struct KeyPressedEvent {
     KeyCode key;
 }

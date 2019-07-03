@@ -178,8 +178,9 @@ class Widget : EventsListenerEmpty {
     package PartDraws partDraws = PartDraws.all;
 
 package:
-    // TODO(Andrey): visibility
-    public View view;
+    public @property View view() { return view_; }
+    View view_;
+
     bool skipFocus = false;  /// Don't focus this element.
     bool drawChildren = true;
     FrameRect extraInnerOffset = FrameRect(0, 0, 0, 0);  /// Extra inner offset besides padding.
@@ -203,8 +204,8 @@ package:
      */
     bool isOver;
 
-    // TODO(Andrey): visibility
-    public vec2 absolutePosition = vec2(0, 0);
+    public @property inout(vec2) absolutePosition() inout { return absolutePosition_; }
+    vec2 absolutePosition_ = vec2(0, 0);
 
     /// Size of boundary over childern clamped to size of widget as minimum boundary size.
     vec2 innerBoundarySizeClamped = vec2(0, 0);
@@ -321,7 +322,7 @@ public:
 
     package this(View view) {
         this.style = "";
-        this.view = view;
+        this.view_ = view;
         createComponents();
     }
 

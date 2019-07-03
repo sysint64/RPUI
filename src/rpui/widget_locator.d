@@ -25,9 +25,9 @@ package final class WidgetLocator {
                 lastParent = lastParent.parent;
             }
 
-            absolutePosition = position + res + outerOffsetStart;
-            absolutePosition.x = round(absolutePosition.x);
-            absolutePosition.y = round(absolutePosition.y);
+            absolutePosition_ = position + res + outerOffsetStart;
+            absolutePosition_.x = round(absolutePosition_.x);
+            absolutePosition_.y = round(absolutePosition_.y);
         }
     }
 

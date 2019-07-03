@@ -333,6 +333,10 @@ Panel
         Label caption: "Material" size: 0, 21 widthType: matchParent
         Button caption: "Grouped"
 
+Canvas
+    name: "openglCanvas"
+    regionAlign: client
+
 Dialog
     name: "testDialog"
     size: 300, 0

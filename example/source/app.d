@@ -13,6 +13,7 @@ import rpui.widget;
 import rpui.widgets.button.widget;
 import rpui.widgets.panel.widget;
 import rpui.widgets.dialog.widget;
+import rpui.widgets.canvas.widget;
 
 import gapi.vec;
 import gapi.camera;
@@ -29,12 +30,38 @@ void main() {
     app.run();
 }
 
+final class TestApplication : Application {
+    private View rootView;
+
+    override void onProgress(in ProgressEvent event) {
+        rootView.onProgress(event);
+    }
+
+    override void onRender() {
+        rootView.onRender();
+    }
+
+    override void onCreate() {
+        auto viewResources = createViewResources("light");
+        viewResources.strings.setLocale("en");
+        viewResources.strings.addStrings("test_view.rdl");
+
+        rootView = new View(windowData.window, "light", cursorManager, viewResources);
+        events.join(rootView.events);
+        events.subscribe(rootView);
+
+        auto component = ViewComponent.createFromFileWithShortcuts!(MyViewComponent)(rootView, "test.rdl");
+        component.onCreate();
+    }
+}
+
 final class MyViewComponent : ViewComponent {
     @bindWidget Button okButton;
     @bindWidget Panel testPanel;
     @bindWidget("cancelButton") Button myButton;
     @bindWidget Dialog testDialog;
     @bindGroupWidgets Button[3] buttons;
+    @bindWidget Canvas openglCanvas;
 
     int a = 0;
 
@@ -46,6 +73,8 @@ final class MyViewComponent : ViewComponent {
         okButton.events.subscribe!KeyPressedEvent(delegate(in event) {
             writeln("Handle OkButton Key Pressed Event", event.key);
         });
+
+        openglCanvas.canvasRenderer = new OpenGLRenderer();
     }
 
     @onClickListener("okButton")
@@ -85,14 +114,7 @@ final class MyViewComponent : ViewComponent {
     }
 }
 
-final class TestApplication : Application {
-    private CameraMatrices cameraMatrices;
-    private OthroCameraTransform cameraTransform = {
-        viewportSize: vec2(1024, 768),
-        position: vec2(0, 0),
-        zoom: 1f
-    };
-
+final class OpenGLRenderer : CanvasRenderer {
     struct Geometry {
         Buffer indicesBuffer;
         Buffer verticesBuffer;
@@ -107,52 +129,14 @@ final class TestApplication : Application {
     private Transform2D spriteTransform;
     private mat4 spriteModelMatrix;
     private mat4 spriteMVPMatrix;
-    private View rootView;
+    private Widget widget;
 
-    override void onProgress(in ProgressEvent event) {
-        cameraTransform.viewportSize.x = windowData.viewportWidth;
-        cameraTransform.viewportSize.y = windowData.viewportHeight;
-
-        spriteTransform.position = vec2(
-            cameraTransform.viewportSize.x / 2,
-            cameraTransform.viewportSize.y / 2
-        );
-        spriteTransform.scaling = vec2(430.0f, 600.0f);
-        spriteTransform.rotation += 0.25f * event.deltaTime;
-
-        spriteModelMatrix = create2DModelMatrix(spriteTransform);
-        cameraMatrices = createOrthoCameraMatrices(cameraTransform);
-        spriteMVPMatrix = cameraMatrices.mvpMatrix * spriteModelMatrix;
-
-        glViewport(0, 0, cast(int) cameraTransform.viewportSize.x, cast(int) cameraTransform.viewportSize.y);
-        rootView.onProgress(event);
-    }
-
-    override void onRender() {
-        bindShaderProgram(transformShader);
-        setShaderProgramUniformMatrix(transformShader, "MVP", spriteMVPMatrix);
-        setShaderProgramUniformTexture(transformShader, "texture", spriteTexture, 0);
-
-        bindVAO(sprite.vao);
-        bindIndices(sprite.indicesBuffer);
-        renderIndexedGeometry(cast(uint) quadIndices.length, GL_TRIANGLE_STRIP);
-        rootView.onRender(RenderEvent(windowData.viewportWidth, windowData.viewportHeight, cameraMatrices.mvpMatrix));
-    }
-
-    override void onCreate() {
+    override void onCreate(Widget widget) {
         createSprite();
         createTexture();
         createShaders();
 
-        auto viewResources = createViewResources("light");
-        viewResources.strings.setLocale("en");
-        viewResources.strings.addStrings("test_view.rdl");
-
-        rootView = new View(windowData.window, "light", cursorManager, viewResources);
-        events.join(rootView.events);
-        events.subscribe(rootView);
-
-        ViewComponent.createFromFileWithShortcuts!(MyViewComponent)(rootView, "test.rdl");
+        this.widget = widget;
     }
 
     override void onDestroy() {
@@ -161,13 +145,6 @@ final class TestApplication : Application {
         deleteBuffer(sprite.texCoordsBuffer);
         deleteTexture2D(spriteTexture);
         deleteShaderProgram(transformShader);
-    }
-
-    override void onWindowResize(in WindowResizeEvent event) {
-        super.onWindowResize(event);
-
-        cameraTransform.viewportSize.x = event.width;
-        cameraTransform.viewportSize.y = event.height;
     }
 
     private void createSprite() {
@@ -197,5 +174,31 @@ final class TestApplication : Application {
         const fragmentShader = createShader("transform fragment shader", ShaderType.fragment, fragmentSource);
 
         transformShader = createShaderProgram("transform program", [vertexShader, fragmentShader]);
+    }
+
+    override void onRender() {
+        bindShaderProgram(transformShader);
+        setShaderProgramUniformMatrix(transformShader, "MVP", spriteMVPMatrix);
+        setShaderProgramUniformTexture(transformShader, "texture", spriteTexture, 0);
+
+        bindVAO(sprite.vao);
+        bindIndices(sprite.indicesBuffer);
+        renderIndexedGeometry(cast(uint) quadIndices.length, GL_TRIANGLE_STRIP);
+    }
+
+    override void onProgress(in ProgressEvent event) {
+        assert(widget !is null);
+        assert(widget.view !is null);
+
+        const screenCameraView = widget.view.cameraView;
+        spriteTransform.position = vec2(
+            screenCameraView.viewportWidth / 2,
+            screenCameraView.viewportHeight / 2
+        );
+        spriteTransform.scaling = vec2(430.0f, 600.0f);
+        spriteTransform.rotation += 0.025f * event.deltaTime;
+
+        spriteModelMatrix = create2DModelMatrix(spriteTransform);
+        spriteMVPMatrix = screenCameraView.mvpMatrix * spriteModelMatrix;
     }
 }
