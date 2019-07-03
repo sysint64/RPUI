@@ -50,12 +50,14 @@ struct StackLocator {
                 }
 
                 lastWidgetPosition += lastWidgetInStack.size + lastWidgetInStack.outerOffsetEnd;
-                maxSize = vec2(
-                    fmax(maxSize.x, lastWidgetInStack.outerSize.x),
-                    fmax(maxSize.y, lastWidgetInStack.outerSize.y),
-                );
 
-                cell.locator.updateAbsolutePosition();  // TODO: Maybe it's deprecated
+                if (lastWidgetInStack.widthType != SizeType.matchParent) {
+                    maxSize.x = fmax(maxSize.x, lastWidgetInStack.outerSize.x);
+                }
+
+                if (lastWidgetInStack.heightType != SizeType.matchParent) {
+                    maxSize.y = fmax(maxSize.y, lastWidgetInStack.outerSize.y);
+                }
             }
         }
     }
@@ -64,7 +66,7 @@ struct StackLocator {
         with (holder) {
             if (orientation == Orientation.vertical) {
                 if (widthType == SizeType.wrapContent) {
-                    size.x = maxSize.x > parent.innerSize.x ? maxSize.x : parent.innerSize.x;
+                    size.x = maxSize.x > innerSize.x ? maxSize.x : innerSize.x;
                 }
 
                 if (heightType == SizeType.wrapContent) {
