@@ -2,6 +2,8 @@ module rpui.view_component;
 
 public import rpui.view_component.attributes;
 
+import core.memory;
+
 import std.meta;
 import std.traits;
 import std.path;
@@ -31,13 +33,19 @@ abstract class ViewComponent {
     private Subscriber shortcutsSubscriber;
 
     @shortcut("General.focusNext")
-    void focusNext() {
+    final void focusNext() {
         view.focusNext();
     }
 
     @shortcut("General.focusPrev")
-    void focusPrev() {
+    final void focusPrev() {
         view.focusPrev();
+    }
+
+    void onCreate() {
+    }
+
+    void onDestroy() {
     }
 
     /**
@@ -59,10 +67,13 @@ abstract class ViewComponent {
         shortcutsSubscriber = view.events.subscribe!KeyReleasedEvent(
             event => shortcuts.onKeyReleased(event.key)
         );
+        GC.collect();
     }
 
     ~this() {
         view.events.unsubscribe(shortcutsSubscriber);
+        onDestroy();
+        GC.collect();
     }
 
     /**
@@ -73,7 +84,9 @@ abstract class ViewComponent {
         const paths = createPathes();
         const layoutPath = buildPath(paths.resources, "ui", "layouts", fileName);
         const shortcutsPath = buildPath(paths.resources, "ui", "shortcuts", "general.rdl");
-        return new T(view, layoutPath, shortcutsPath);
+        auto component = new T(view, layoutPath, shortcutsPath);
+        component.onCreate();
+        return component;
     }
 
     /**
@@ -84,7 +97,9 @@ abstract class ViewComponent {
         const paths = createPathes();
         const layoutPath = buildPath(paths.resources, "ui", "layouts", fileName);
         const shortcutsPath = buildPath(paths.resources, "ui", "shortcuts", shortcuts == "" ? fileName : shortcuts);
-        return new T(view, layoutPath, shortcutsPath);
+        auto component = new T(view, layoutPath, shortcutsPath);
+        component.onCreate();
+        return component;
     }
 
     /**
@@ -97,7 +112,9 @@ abstract class ViewComponent {
         const paths = createPathes();
         const layoutPath = buildPath(paths.resources, "ui", "layouts", layoutFileName);
         const shortcutsPath = buildPath(paths.resources, "ui", "shortcuts", shortcutsFilename);
-        return new T(view, layoutPath, shortcutsPath);
+        auto component = new T(view, layoutPath, shortcutsPath);
+        component.onCreate();
+        return component;
     }
 
     private void readAttributes(T : ViewComponent)() {

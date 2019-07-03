@@ -50,8 +50,7 @@ final class TestApplication : Application {
         events.join(rootView.events);
         events.subscribe(rootView);
 
-        auto component = ViewComponent.createFromFileWithShortcuts!(MyViewComponent)(rootView, "test.rdl");
-        component.onCreate();
+        ViewComponent.createFromFileWithShortcuts!(MyViewComponent)(rootView, "test.rdl");
     }
 }
 
@@ -69,7 +68,7 @@ final class MyViewComponent : ViewComponent {
         super(view, laytoutFileName, shortcutsFileName);
     }
 
-    void onCreate() {
+    override void onCreate() {
         okButton.events.subscribe!KeyPressedEvent(delegate(in event) {
             writeln("Handle OkButton Key Pressed Event", event.key);
         });
