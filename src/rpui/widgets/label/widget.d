@@ -22,8 +22,11 @@ class Label : Widget {
 
     this(in string style = "Label") {
         super(style);
+
         this.drawChildren = false;
         this.renderer = new LabelRenderer();
+        this.heightType = SizeType.wrapContent;
+        this.widthType = SizeType.wrapContent;
     }
 
     override void onProgress(in ProgressEvent event) {

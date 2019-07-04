@@ -145,11 +145,14 @@ Panel
         userCanResize: true
 
         StackLayout
+            widthType: matchParent
+
             # Tree ---------------------------------------------------------------------------------
             TreeList
                 size: 200, 0
                 margin: 0
                 heightType: wrapContent
+                widthType: matchParent
 
                 TreeListNode
                     caption: "Root"
@@ -161,7 +164,7 @@ Panel
                     TreeListNode
                         caption: "Group 1"
                         icons: "folder"
-                        isOpen: false
+                        isOpen: true
 
                         TreeListNode caption: "Node 3" icons: "ghost"
 
