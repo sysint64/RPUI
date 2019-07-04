@@ -352,6 +352,9 @@ public:
         innerBoundarySize = innerOffsetSize;
 
         foreach (Widget widget; children) {
+            if (!widget.isVisible)
+                continue;
+
             auto widgetFringePosition = vec2(
                 widget.position.x + widget.outerSize.x + innerOffset.left,
                 widget.position.y + widget.outerSize.y + innerOffset.top
