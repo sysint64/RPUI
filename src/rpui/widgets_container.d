@@ -41,7 +41,7 @@ package final class WidgetsContainer {
         widget.view_ = rootWidget.view_;
 
         widget.events.subscribeWidget(widget);
-        rootWidget.events.join(widget.events, windowEvents);
+        rootWidget.events.join(widget.events, windowEvents ~ commands);
 
         if (widgets.length == 0) {
             rootWidget.p_firstWidget = widget;

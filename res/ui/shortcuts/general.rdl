@@ -5,3 +5,5 @@ General
     cut: "Ctrl+X"
     copy: "Ctrl+C"
     paste: "Ctrl+V"
+    unselect: "Escape"
+    selectAll: "Ctrl+A"

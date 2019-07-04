@@ -160,3 +160,25 @@ extern(C) Window platformCreateWindow(in string title, uint width, uint height) 
 
     return Window(window, glContext);
 }
+
+extern(C) void platformSetClipboardTextUtf8(in string text) {
+    SDL_SetClipboardText(toStringz(text));
+}
+
+extern(C) void platformSetClipboardTextUtf32(in dstring text) {
+    // writeln("PLATFORM COPY: ", data.charString);
+
+    SDL_SetClipboardText(toStringz(to!string(text)));
+}
+
+extern(C) string platformGetClipboardTextUtf8() {
+    return to!string(fromStringz(SDL_GetClipboardText()));
+}
+
+extern(C) dstring platformGetClipboardTextUtf32() {
+    return to!dstring(fromStringz(SDL_GetClipboardText()));
+}
+
+extern(C) bool hasClipboardText() {
+    return cast(bool) SDL_HasClipboardText();
+}

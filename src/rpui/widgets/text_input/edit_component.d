@@ -131,13 +131,17 @@ struct EditComponent {
     }
 
     bool onTextEntered(in TextEnteredEvent event) {
+        return enterText(to!utf32string(event.key));
+    }
+
+    bool enterText(in utf32string charToPut) {
         carriage.timer = 0;
         carriage.visible = true;
 
-        const charToPut = event.key;
-
-        if (isISOControlCharacter(charToPut))
-            return false;
+        foreach (ch; charToPut) {
+            if (isISOControlCharacter(ch))
+                return false;
+        }
 
         // Splitting text to two parts by carriage position
 
@@ -148,12 +152,12 @@ struct EditComponent {
         if (!selectRegion.textIsSelected()) {
             leftPart = text[0 .. carriage.pos];
             rightPart = text[carriage.pos .. $];
-            newCarriagePos++;
+            newCarriagePos += charToPut.length;
         }
         else {
             leftPart = text[0 .. selectRegion.start];
             rightPart = text[selectRegion.end .. $];
-            newCarriagePos = selectRegion.start + 1;
+            newCarriagePos = selectRegion.start + cast(int) charToPut.length;
         }
 
         const newText = leftPart ~ charToPut ~ rightPart;
@@ -235,6 +239,12 @@ struct EditComponent {
         selectRegion.end = cast(int) text.length;
         selectRegion.startedSelection = true;
         carriage.pos = selectRegion.end;
+    }
+
+    void unselect() {
+        selectRegion.start = 0;
+        selectRegion.end = 0;
+        selectRegion.startedSelection = false;
     }
 
     void onFocus() {

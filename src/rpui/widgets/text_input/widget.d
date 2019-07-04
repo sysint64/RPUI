@@ -7,6 +7,7 @@ import rpui.input;
 import rpui.math;
 import rpui.primitives;
 import rpui.widget;
+import rpui.platform;
 import rpui.widgets.text_input.renderer;
 import rpui.widgets.text_input.edit_component;
 import rpui.widgets.text_input.number_input_type_component;
@@ -40,6 +41,10 @@ class TextInput : Widget {
 
     @property void text(in utf32string value) {
         editComponent.text = value;
+    }
+
+    @property utf32string selectedText() {
+        return editComponent.text[editComponent.selectRegion.start .. editComponent.selectRegion.end];
     }
 
     package struct Measure {
@@ -94,6 +99,61 @@ class TextInput : Widget {
         if (isNumberMode()) {
             textAlign = Align.center;
         }
+
+        events.subscribe!CopyCommand(&onCopy);
+        events.subscribe!CutCommand(&onCut);
+        events.subscribe!PasteCommand(&onPaste);
+        events.subscribe!UnselectCommand(&onUnselect);
+        events.subscribe!SelectAllCommand(&onSelectAll);
+    }
+
+    private void onCopy(in CopyCommand command) {
+        if (!isFocused) {
+            return;
+        }
+
+        platformSetClipboardTextUtf32(selectedText);
+        editComponent.unselect();
+    }
+
+    private void onCut(in CutCommand command) {
+        if (!isFocused) {
+            return;
+        }
+
+        if (selectedText.length == 0)
+            return;
+
+        platformSetClipboardTextUtf32(selectedText);
+        editComponent.removeSelectedRegion();
+        events.notify(ChangeEvent());
+    }
+
+    private void onPaste(in PasteCommand command) {
+        if (!isFocused) {
+            return;
+        }
+
+        const text = platformGetClipboardTextUtf32();
+
+        if (editComponent.enterText(text))
+            events.notify(ChangeEvent());
+    }
+
+    private void onUnselect(in UnselectCommand command) {
+        if (!isFocused) {
+            return;
+        }
+
+        editComponent.unselect();
+    }
+
+    private void onSelectAll(in SelectAllCommand command) {
+        if (!isFocused) {
+            return;
+        }
+
+        editComponent.selectAll();
     }
 
     private void loadMeasure() {

@@ -69,6 +69,21 @@ struct WindowResizeEvent {
 struct WindowExposedEvent {
 }
 
+struct CopyCommand {
+}
+
+struct PasteCommand {
+}
+
+struct CutCommand {
+}
+
+struct UnselectCommand {
+}
+
+struct SelectAllCommand {
+}
+
 const windowEvents = [
     typeid(KeyPressedEvent),
     typeid(KeyReleasedEvent),
@@ -81,6 +96,14 @@ const windowEvents = [
     typeid(MouseWheelEvent),
     typeid(WindowResizeEvent),
     typeid(WindowExposedEvent),
+];
+
+const commands = [
+    typeid(CopyCommand),
+    typeid(CutCommand),
+    typeid(PasteCommand),
+    typeid(UnselectCommand),
+    typeid(SelectAllCommand),
 ];
 
 interface EventsListener {

@@ -28,3 +28,13 @@ extern(C) void platformShutdown();
 extern(C) void platformInit();
 
 extern(C) Window platformCreateWindow(in string title, uint width, uint height);
+
+extern(C) void platformSetClipboardTextUtf8(in string text);
+
+extern(C) void platformSetClipboardTextUtf32(in dstring text);
+
+extern(C) string platformGetClipboardTextUtf8();
+
+extern(C) dstring platformGetClipboardTextUtf32();
+
+extern(C) bool hasClipboardText();

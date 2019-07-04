@@ -42,6 +42,31 @@ abstract class ViewComponent {
         view.focusPrev();
     }
 
+    @shortcut("General.copy")
+    final void copy() {
+        view.events.notify(CopyCommand());
+    }
+
+    @shortcut("General.paste")
+    final void paste() {
+        view.events.notify(PasteCommand());
+    }
+
+    @shortcut("General.cut")
+    final void cut() {
+        view.events.notify(CutCommand());
+    }
+
+    @shortcut("General.unselect")
+    final void unselect() {
+        view.events.notify(UnselectCommand());
+    }
+
+    @shortcut("General.selectAll")
+    final void selectAll() {
+        view.events.notify(SelectAllCommand());
+    }
+
     void onCreate() {
     }
 
