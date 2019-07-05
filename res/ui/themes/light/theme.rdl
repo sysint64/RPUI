@@ -210,6 +210,9 @@ TextInput
     textLeftMargin          : 6
     textRightMargin         : 6
     textTopMargin           : 0
+    prefixMargin            : 6
+    postfixMargin           : 6
+    softPostfixMargin       : 3
     carriageBoundary        : 1
     selectRegionHeight      : 16
     selectRegionOffset      : 1, 2
@@ -230,6 +233,14 @@ TextInput
             offset          : 0, -1
             color           : 20, 20, 20
 
+        PrefixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
+        PostfixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
     Enter
         left                : 4 , 59, 5, 21
         center              : 16, 59, 5, 21
@@ -243,6 +254,14 @@ TextInput
             offset          : 0, -1
             color           : 40, 40, 40
 
+        PrefixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
+        PostfixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
     Click
         left                : 4 , 59, 5, 21
         center              : 16, 59, 5, 21
@@ -255,6 +274,14 @@ TextInput
         Text
             offset          : 0, -1
             color           : 40, 40, 40
+
+        PrefixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
+        PostfixText
+            offset          : 0, -1
+            color           : 120, 120, 120
 
     Focus
         left                : 4 , 83, 5, 21

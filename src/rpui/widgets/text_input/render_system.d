@@ -20,6 +20,8 @@ struct RenderData {
     StatefulTexAtlasTextureQuad leftArrow;
     StatefulTexAtlasTextureQuad rightArrow;
     StatefulUiText text;
+    StatefulUiText prefix;
+    StatefulUiText postfix;
     Geometry selectRegion;
     vec4 selectRegionColor;
     vec4 selectedTextColor;
@@ -40,14 +42,36 @@ final class TextInputRenderSystem : RenderSystem {
 
     override void onRender() {
         renderBackground();
-
-        widget.pushScissor();
+        renderPrefix();
+        renderPostfix();
+        pushScissor();
         renderText();
+        renderSoftPostfix();
         renderSelectRegion();
         renderSelectedText();
         widget.view.popScissor();
         renderArrows();
         renderCarriage();
+    }
+
+    private void pushScissor() {
+        with (widget) {
+            Rect scissor;
+
+            const leftMargin = measure.textLeftMargin + widget.measure.prefixWidth;
+            const rightMargin = measure.textRightMargin + widget.measure.postfixWidth;
+
+            scissor.point = vec2(
+                absolutePosition.x + leftMargin,
+                absolutePosition.y
+            );
+            scissor.size = vec2(
+                size.x - leftMargin - rightMargin,
+                size.y
+            );
+
+            view.pushScissor(scissor);
+        }
     }
 
     private void renderBackground() {
@@ -100,7 +124,29 @@ final class TextInputRenderSystem : RenderSystem {
         }
     }
 
+    private void renderPrefix() {
+        if (widget.prefix != "") {
+            renderData.prefix.state = widget.state;
+            renderUiText(theme, renderData.prefix, transforms.prefix);
+        }
+    }
+
+    private void renderPostfix() {
+        if (widget.postfix != "" && !widget.softPostfix) {
+            renderData.postfix.state = widget.state;
+            renderUiText(theme, renderData.postfix, transforms.postfix);
+        }
+    }
+
+    private void renderSoftPostfix() {
+        if (widget.postfix != "" && widget.softPostfix) {
+            renderData.postfix.state = widget.state;
+            renderUiText(theme, renderData.postfix, transforms.postfix);
+        }
+    }
+
     private void renderText() {
+        renderData.text.state = widget.state;
         renderUiText(theme, renderData.text, transforms.text);
     }
 

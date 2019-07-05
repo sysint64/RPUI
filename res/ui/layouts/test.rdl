@@ -63,7 +63,8 @@ Panel
                 Button size: 100, 21 margin: 5 caption: "Button 3"
 
             TextInput size: 100, 21 margin: 5 text: "Hello world!"
-            TextInput size: 100, 21 margin: 5 text: "100" inputType: number
+            TextInput size: 100, 21 margin: 5 text: "100" inputType: number postfix: "%" softPostfix: true
+
             Label size: 100, 16 margin: 5 caption: "Hello world!"
             Button width: 100 margin: 5 caption: "Button 1"
             Button width: 100 margin: 5 caption: "Button 2" locationAlign: right
@@ -286,8 +287,8 @@ Panel
                 widthType: matchParent
                 margin: 4, 0
 
-                TextInput text: "X: 100 px" widthType: matchParent
-                TextInput text: "Y: 100 px" widthType: matchParent
+                TextInput prefix: "X:" postfix: "px" text: "100" widthType: matchParent
+                TextInput prefix: "X:" postfix: "px" text: "100" widthType: matchParent textAlign: center inputType: number
                 Button caption: "" icons: "settings"
 
             StackLayout

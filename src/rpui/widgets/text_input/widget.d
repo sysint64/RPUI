@@ -20,6 +20,10 @@ class TextInput : Widget {
     @field float maxValue = float.max;
     @field float minValue = float.min_normal;
     @field float numberStep = 1f;
+    @field utf32string prefix = "";
+    @field utf32string postfix = "";
+    @field bool softPostfix = false;
+    @field bool displaySlider = true;
 
     private InputType inputType_ = InputType.text;
 
@@ -53,6 +57,8 @@ class TextInput : Widget {
         float textTopMargin;
         float textLeftMargin;
         float textRightMargin;
+        float prefixWidth = 0;
+        float postfixWidth = 0;
         float carriageBoundary;
         vec2 textRelativePosition = vec2(0);
         float arrowsAreaWidth = 0;
@@ -192,20 +198,6 @@ class TextInput : Widget {
         return inputType == InputType.integer || inputType == InputType.number;
     }
 
-    package void pushScissor() {
-        Rect scissor;
-        scissor.point = vec2(
-            absolutePosition.x + measure.textLeftMargin,
-            absolutePosition.y
-        );
-        scissor.size = vec2(
-            size.x - measure.textLeftMargin - measure.textRightMargin,
-            size.y
-        );
-
-        view.pushScissor(scissor);
-    }
-
     /// Change system cursor when mouse entering to arrows.
     override void onCursor() {
         if (isFocused && (isEnter || isClick)) {
@@ -226,9 +218,10 @@ class TextInput : Widget {
             return;
         }
 
-        const rightBorder = absolutePosition.x + size.x - measure.textRightMargin;
-        const leftBorder = absolutePosition.x + measure.textLeftMargin;
-        const padding = measure.textRightMargin + measure.textLeftMargin;
+        const rightBorder = absolutePosition.x + size.x - measure.textRightMargin - measure.postfixWidth;
+        const leftBorder = absolutePosition.x + measure.textLeftMargin + measure.prefixWidth;
+        const padding = measure.textRightMargin + measure.textLeftMargin +
+            measure.postfixWidth + measure.prefixWidth;
         const regionOffset = editComponent.getTextRegionSize(0, editComponent.carriage.pos);
         const textSize = cast(float) measure.textWidth;
         const minScroll = -textSize + size.x - padding;

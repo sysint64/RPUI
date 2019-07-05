@@ -96,9 +96,12 @@ struct Carriage {
     }
 
     void setCarriagePosFromMousePos(in int x, in int y) {
-        const relativeCursorPos = x - editComponent.absoulteTextPosition.x;
+        const textPosition = editComponent.absoulteTextPosition.x +
+            editComponent.textInput.measure.textRelativePosition.x;
 
-        if (x > editComponent.absoulteTextPosition.x + editComponent.getTextWidth()) {
+        const relativeCursorPos = x - textPosition;
+
+        if (x > textPosition + editComponent.getTextWidth()) {
             setCarriagePosWithoutCheckSelection(cast(int) editComponent.text.length);
             return;
         }

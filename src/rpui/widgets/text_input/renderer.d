@@ -44,6 +44,8 @@ final class TextInputRenderer : Renderer {
         renderData.leftArrow = createStatefulTexAtlasTextureQuadFromRdpl(theme, style, "Arrow.left");
         renderData.rightArrow = createStatefulTexAtlasTextureQuadFromRdpl(theme, style, "Arrow.right");
         renderData.text = createStatefulUiTextFromRdpl(theme, style, "Text");
+        renderData.prefix = createStatefulUiTextFromRdpl(theme, style, "PrefixText");
+        renderData.postfix = createStatefulUiTextFromRdpl(theme, style, "PostfixText");
         renderData.selectRegion = createGeometry();
         renderData.selectRegionColor = data.getNormColor(style ~ ".selectColor");
         renderData.selectedTextColor = data.getNormColor(style ~ ".selectedTextColor");
@@ -53,6 +55,9 @@ final class TextInputRenderer : Renderer {
         transforms.selectRegionHeight = data.getNumber(style ~ ".selectRegionHeight.0");
         transforms.selectRegionOffset = data.getVec2f(style ~ ".selectRegionOffset");
         transforms.arrowOffsets = data.getVec2f(style ~ ".arrowOffsets");
+        transforms.prefixMargin = data.getNumber(style ~ ".prefixMargin.0");
+        transforms.postfixMargin = data.getNumber(style ~ ".postfixMargin.0");
+        transforms.softPostfixMargin = data.getNumber(style ~ ".softPostfixMargin.0");
     }
 
     override void onRender() {

@@ -20,11 +20,18 @@ struct RenderTransforms {
     float selectRegionHeight;
     vec2 selectRegionOffset;
     vec2 arrowOffsets;
+    float prefixMargin;
+    float postfixMargin;
+    float softPostfixMargin;
+    float arrowAreaSize;
+    float softPostfixHalfWidth;
 
     HorizontalChainTransforms background;
     HorizontalChainTransforms focusGlow;
     QuadTransforms carriage;
     UiTextTransforms text;
+    UiTextTransforms prefix;
+    UiTextTransforms postfix;
     QuadTransforms selectRegion;
     QuadTransforms leftArrow;
     QuadTransforms rightArrow;
@@ -46,7 +53,11 @@ final class TextInputTransformsSystem : TransformsSystem {
     override void onProgress(in ProgressEvent event) {
         updateBackground();
         updateCarriage();
+        updateTextPosition();
+        updatePrefix();
+        updatePostfix();
         updateText();
+        updateSoftPostfix();
         updateSelectRegion();
         updateArrows();
     }
@@ -80,6 +91,12 @@ final class TextInputTransformsSystem : TransformsSystem {
     }
 
     private void updateArrows() {
+        if (widget.isNumberMode()) {
+            transforms.arrowAreaSize = widget.measure.arrowsAreaWidth;
+        } else {
+            transforms.arrowAreaSize = 0;
+        }
+
         renderData.leftArrow.state = widget.numberInputTypeComponent.leftArrow.state;
         renderData.rightArrow.state = widget.numberInputTypeComponent.rightArrow.state;
 
@@ -118,20 +135,110 @@ final class TextInputTransformsSystem : TransformsSystem {
             textAlign = widget.textAlign;
         }
 
-        updateTextPosition();
+        vec2 textOffset = vec2(0);
+
+        if (widget.textAlign == Align.left) {
+            textOffset.x += widget.measure.prefixWidth;
+        }
+
+        if (widget.textAlign == Align.right) {
+            textOffset.x -= widget.measure.postfixWidth;
+        }
+
+        if (widget.softPostfix) {
+            textOffset.x -= transforms.softPostfixHalfWidth;
+        }
+
         transforms.text = updateUiTextTransforms(
             &renderData.text.render,
             &theme.regularFont,
             transforms.text,
             renderData.text.attrs[widget.state],
             widget.view.cameraView,
-            widget.editComponent.absoulteTextPosition,
+            widget.editComponent.absoulteTextPosition + textOffset,
             widget.size
         );
 
         widget.measure.textWidth = transforms.text.size.x;
         widget.measure.lineHeight = transforms.text.size.y;
-        widget.measure.textRelativePosition = vec2(transforms.text.relativePosition.x, 0);
+        widget.measure.textRelativePosition = vec2(transforms.text.relativePosition.x, 0) + textOffset;
+    }
+
+    private void updatePrefix() {
+        if (widget.prefix == "" /*|| widget.isFocused*/) {
+            widget.measure.prefixWidth = 0;
+            return;
+        }
+
+        with (renderData.prefix.attrs[widget.state]) {
+            caption = widget.prefix;
+            textAlign = Align.left;
+        }
+
+        transforms.prefix = updateUiTextTransforms(
+            &renderData.prefix.render,
+            &theme.regularFont,
+            transforms.prefix,
+            renderData.prefix.attrs[widget.state],
+            widget.view.cameraView,
+            widget.absolutePosition + vec2(widget.measure.textLeftMargin + transforms.arrowAreaSize, 0),
+            widget.size
+        );
+
+        widget.measure.prefixWidth = transforms.prefix.size.x + transforms.prefixMargin +
+            transforms.arrowAreaSize;
+    }
+
+    private void updatePostfix() {
+        if (widget.postfix == "" || widget.softPostfix) {
+            widget.measure.postfixWidth = 0;
+            return;
+        }
+
+        with (renderData.postfix.attrs[widget.state]) {
+            caption = widget.postfix;
+            textAlign = Align.right;
+        }
+
+        transforms.postfix = updateUiTextTransforms(
+            &renderData.postfix.render,
+            &theme.regularFont,
+            transforms.postfix,
+            renderData.postfix.attrs[widget.state],
+            widget.view.cameraView,
+            widget.absolutePosition - vec2(widget.measure.textRightMargin + transforms.arrowAreaSize, 0),
+            widget.size
+        );
+
+        widget.measure.postfixWidth = transforms.postfix.size.x + transforms.postfixMargin +
+            transforms.arrowAreaSize;
+    }
+
+    private void updateSoftPostfix() {
+        if (widget.postfix == "" || !widget.softPostfix) {
+            return;
+        }
+
+        with (renderData.postfix.attrs[widget.state]) {
+            caption = widget.postfix;
+            textAlign = Align.left;
+        }
+
+        const textOffset = widget.measure.textWidth + transforms.softPostfixMargin +
+            transforms.text.relativePosition.x - transforms.softPostfixHalfWidth;
+
+        transforms.postfix = updateUiTextTransforms(
+            &renderData.postfix.render,
+            &theme.regularFont,
+            transforms.postfix,
+            renderData.postfix.attrs[widget.state],
+            widget.view.cameraView,
+            widget.editComponent.absoulteTextPosition + vec2(textOffset, 0),
+            widget.size
+        );
+
+        transforms.softPostfixHalfWidth = transforms.postfix.size.x / 2;
+        widget.measure.postfixWidth = 0;
     }
 
     private void updateTextPosition() {
