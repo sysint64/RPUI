@@ -288,8 +288,15 @@ Panel
                 margin: 4, 0
 
                 TextInput prefix: "X:" postfix: "px" text: "100" widthType: matchParent
-                TextInput prefix: "X:" postfix: "px" text: "100" widthType: matchParent textAlign: center inputType: number
+                TextInput prefix: "Y:" postfix: "px" text: "100" widthType: matchParent textAlign: center inputType: number
                 Button caption: "" icons: "settings"
+
+            ChainLayout
+                widthType: matchParent
+                margin: 4, 0
+
+                TextInput prefix: "X:" postfix: "px" text: "100" widthType: matchParent softPostfix: true
+                TextInput prefix: "Y:" postfix: "px" text: "100" widthType: matchParent softPostfix: true textAlign: right
 
             StackLayout
                 orientation: horizontal

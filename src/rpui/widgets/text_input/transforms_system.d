@@ -24,7 +24,7 @@ struct RenderTransforms {
     float postfixMargin;
     float softPostfixMargin;
     float arrowAreaSize;
-    float softPostfixHalfWidth;
+    float softPostfixWidth;
 
     HorizontalChainTransforms background;
     HorizontalChainTransforms focusGlow;
@@ -145,8 +145,12 @@ final class TextInputTransformsSystem : TransformsSystem {
             textOffset.x -= widget.measure.postfixWidth;
         }
 
-        if (widget.softPostfix) {
-            textOffset.x -= transforms.softPostfixHalfWidth;
+        if (widget.softPostfix && widget.textAlign == Align.center) {
+            textOffset.x -= transforms.softPostfixWidth / 2;
+        }
+
+        if (widget.softPostfix && widget.textAlign == Align.right) {
+            textOffset.x -= transforms.softPostfixWidth + transforms.softPostfixMargin;
         }
 
         transforms.text = updateUiTextTransforms(
@@ -165,7 +169,7 @@ final class TextInputTransformsSystem : TransformsSystem {
     }
 
     private void updatePrefix() {
-        if (widget.prefix == "" /*|| widget.isFocused*/) {
+        if (widget.prefix == "") {
             widget.measure.prefixWidth = 0;
             return;
         }
@@ -224,8 +228,25 @@ final class TextInputTransformsSystem : TransformsSystem {
             textAlign = Align.left;
         }
 
-        const textOffset = widget.measure.textWidth + transforms.softPostfixMargin +
-            transforms.text.relativePosition.x - transforms.softPostfixHalfWidth;
+        float textOffset = widget.measure.textWidth + transforms.softPostfixMargin +
+            transforms.text.relativePosition.x;
+
+        switch (widget.textAlign) {
+            case Align.left:
+                textOffset += widget.measure.prefixWidth;
+                break;
+
+            case Align.right:
+                textOffset -= transforms.softPostfixWidth + transforms.softPostfixMargin;
+                break;
+
+            case Align.center:
+                textOffset -= transforms.softPostfixWidth / 2;
+                break;
+
+            default:
+                break;
+        }
 
         transforms.postfix = updateUiTextTransforms(
             &renderData.postfix.render,
@@ -237,7 +258,7 @@ final class TextInputTransformsSystem : TransformsSystem {
             widget.size
         );
 
-        transforms.softPostfixHalfWidth = transforms.postfix.size.x / 2;
+        transforms.softPostfixWidth = transforms.postfix.size.x;
         widget.measure.postfixWidth = 0;
     }
 
