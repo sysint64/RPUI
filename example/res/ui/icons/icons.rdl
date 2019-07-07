@@ -1,0 +1,24 @@
+Config
+    icons: "icons.png"
+    themed: true
+    size: 18, 18
+    start: 9, 9
+    gaps: 3, 3
+
+Icons
+    grid: 3, 3
+    ghost: 7, 5
+    red_triangle: 1, 4
+    file: 1, 1
+    folder: 2, 1
+    check: 4, 1
+    info: 6, 2
+    material: 4, 4
+    texture: 4, 7
+    settings: 2, 3
+    triangle: 6, 4
+    joins: 1, 8
+    particles: 2, 4
+    bounce: 5, 4
+    tape: 6, 9
+    birds: 10, 10

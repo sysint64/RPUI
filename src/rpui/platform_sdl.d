@@ -2,6 +2,7 @@ module rpui.platform_sdl;
 
 version(rpuiSdl2):
 
+import core.stdc.stdio;
 import std.conv;
 import std.array;
 import std.string;
@@ -12,6 +13,7 @@ import derelict.sdl2.image;
 
 import gapi.opengl;
 
+import rpui.primitives;
 import rpui.events;
 import rpui.events_observer;
 import rpui.input;
@@ -75,8 +77,22 @@ extern(C) bool platformEventLoop(void* window, EventsObserver events) {
             events.notify(MouseWheelEvent(event.wheel.x, event.wheel.y));
         }
         else if (event.type == SDL_TEXTINPUT) {
-            const ch = fromStringz(dtext(event.text.text[0..4]).ptr)[0];
-            events.notify(TextEnteredEvent(ch));
+            import std.stdio;
+            puts("INPUT:");
+            puts(&event.text.text[0]);
+            // writeln(fromStringz(event.text.text));
+            // const ch = fromStringz(dtext(event.text.text[0..4]).ptr)[0];
+            // events.notify(TextEnteredEvent(ch));
+        }
+        else if (event.type == SDL_TEXTEDITING) {
+            // import std.stdio;
+            // if (event.edit.length >= 4) {
+                // const ch = fromStringz(dtext(event.edit.text[0..4]).ptr)[0];
+                // writeln(ch);
+            // }
+            import std.stdio;
+            puts("EDIT:");
+            puts(&event.edit.text[0]);
         }
         else if (event.type == SDL_KEYDOWN) {
             try {
@@ -181,4 +197,14 @@ extern(C) dstring platformGetClipboardTextUtf32() {
 
 extern(C) bool hasClipboardText() {
     return cast(bool) SDL_HasClipboardText();
+}
+
+extern(C) void platformSetTextInputRect(in Rect rect) {
+    SDL_Rect sdlRect = SDL_Rect(
+        cast(int) rect.left,
+        cast(int) rect.top,
+        cast(int) rect.width,
+        cast(int) rect.height
+    );
+    SDL_SetTextInputRect(&sdlRect);
 }

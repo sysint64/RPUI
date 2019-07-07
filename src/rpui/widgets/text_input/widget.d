@@ -11,6 +11,7 @@ import rpui.platform;
 import rpui.widgets.text_input.renderer;
 import rpui.widgets.text_input.edit_component;
 import rpui.widgets.text_input.number_input_type_component;
+import derelict.sdl2.sdl;
 
 class TextInput : Widget {
     enum InputType { text, integer, number }
@@ -93,6 +94,10 @@ class TextInput : Widget {
         locator.updateRegionAlign();
 
         renderer.onProgress(event);
+
+        if (isFocused) {
+            platformSetTextInputRect(Rect(absolutePosition, size));
+        }
     }
 
     override void onCreate() {
@@ -185,9 +190,15 @@ class TextInput : Widget {
     override void onBlur(in BlurEvent event) {
         editComponent.reset();
         editComponent.onBlur();
+        SDL_StopTextInput();
+        import std.stdio;
+        writeln("STOP");
     }
 
     override void onFocus(in FocusEvent event) {
+        SDL_StartTextInput();
+        import std.stdio;
+        writeln("START");
         editComponent.onFocus();
 
         if (autoSelectOnFocus && !isFocused)

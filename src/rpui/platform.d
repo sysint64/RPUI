@@ -1,6 +1,7 @@
 module rpui.platform;
 
 import rpui.events_observer;
+import rpui.primitives;
 
 struct Window {
     void* handle;
@@ -38,3 +39,5 @@ extern(C) string platformGetClipboardTextUtf8();
 extern(C) dstring platformGetClipboardTextUtf32();
 
 extern(C) bool hasClipboardText();
+
+extern(C) void platformSetTextInputRect(in Rect rect);

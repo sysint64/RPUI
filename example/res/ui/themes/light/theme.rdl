@@ -1,0 +1,559 @@
+General
+    regularFont             : "DejaVuSans.ttf", 12, stretchAA
+    # regularFont             : "SourceHanSerif-Regular.otf", 18, strictAA
+
+Button
+    split                   : 44, 35, 3, 21
+    iconOffsets             : 3, -1
+    iconGaps                : 2
+    textLeftMargin          : 9
+    textRightMargin         : 9
+
+    Leave
+        left                : 55, 35, 5, 21
+        center              : 68, 35, 5, 21
+        right               : 81, 35, 5, 21
+
+        Text
+            offset          : 0,  -1
+            color           : 20, 20, 20
+
+    Enter
+        left                : 55, 59, 5, 21
+        center              : 68, 59, 5, 21
+        right               : 81, 59, 5, 21
+
+        Text
+            offset          : 0,  -1
+            color           : 40, 40, 40
+
+    Click
+        left                : 55, 83, 5, 21
+        center              : 68, 83, 5, 21
+        right               : 81, 83, 5, 21
+
+        Text
+            offset          : 0,  0
+            color           : 0, 0, 0
+
+    Focus
+        left                : 53, 105, 6, 25
+        center              : 68, 105, 6, 25
+        right               : 82, 105, 6, 25
+        offsets             : [-2, -2], 4
+
+Checkbox
+    Leave
+        uncheckedBox        : 4, 3, 16, 16
+        checkedBox          : 55, 3, 16, 16
+
+        Text
+            color           : 0, 0, 0
+            offset          : 21, 0
+
+    Enter
+        uncheckedBox        : 21, 3, 16, 16
+        checkedBox          : 72, 3, 16, 16
+
+        Text
+            color           : 100, 0, 0
+            offset          : 21, 0
+
+    Focus
+        glow                : 37, 3, 16, 16
+        offsets             : -1, 0
+
+Label
+    Regular
+        color               : 0, 0, 0, 100
+
+Panel
+    backgroundLight         : 213, 213, 213, 100
+    backgroundDark          : 172, 172, 172, 100
+    backgroundAction        : 205, 205, 205, 100
+
+    Split
+        thickness           : 1
+
+        Light
+            outerColor      : 0, 0, 0, 20
+            innerColor      : 255, 255, 255, 30
+
+        Dark
+            outerColor      : 0, 0, 0, 100
+            innerColor      : 0, 0, 0, 0
+
+    Header
+        height              : 20
+
+        Leave
+            background      : 242, 85, 11, 20
+
+            Text
+                offset      : 6, -1
+                color       : 0, 0, 0
+                textAlign   : left
+
+        Enter
+            background      : 257, 85, 11, 20
+
+            Text
+                offset      : 6, -1
+                color       : 0, 0, 0
+                textAlign   : left
+
+        Mark
+            open            : 5 , 21, 10, 10
+            close           : 22, 21, 10, 10
+            size            : 10, 10
+            position        : 6, 4
+
+    Scroll
+        buttonMinSize       : 20
+
+        Horizontal
+            regionWidth     : 10
+            left            : 0, 0, 0, 10
+            center          : 0, 0, 0, 10
+            right           : 0, 0, 0, 10
+
+            Button
+                Leave
+                    left    : 238, 161, 8, 10
+                    center  : 251, 161, 8, 10
+                    right   : 264, 161, 8, 10
+
+                Enter
+                    left    : 238, 172, 8, 10
+                    center  : 251, 172, 8, 10
+                    right   : 264, 172, 8, 10
+
+                Click
+                    left    : 240, 148, 8, 10
+                    center  : 251, 148, 8, 10
+                    right   : 262, 148, 8, 10
+
+        Vertical
+            regionWidth     : 10
+            top             : 0, 0, 10, 0
+            middle          : 0, 0, 10, 0
+            bottom          : 0, 0, 10, 0
+
+            Button
+                Leave
+                    top     : 288, 146, 10, 8
+                    middle  : 288, 159, 10, 8
+                    bottom  : 288, 172, 10, 8
+
+                Enter
+                    top     : 299, 146, 10, 8
+                    middle  : 299, 159, 10, 8
+                    bottom  : 299, 172, 10, 8
+
+                Click
+                    top     : 275, 148, 10, 8
+                    middle  : 275, 159, 10, 8
+                    bottom  : 275, 171, 10, 8
+
+TreeList
+    # linesColor              : 76, 76, 76
+    linesColor              : 0, 0, 0, 20
+    rootLineLength          : 14
+    lineLength              : 10
+    nodeLeftOffset          : 20
+
+TreeListNode
+    openIcon                : 4, 152, 9, 9
+    closeIcon               : 17, 152, 9, 9
+    expandButtonOffset      : -5, 5
+    enterExpandButtonAlpha  : 1
+    leaveExpandButtonAlpha  : 0.5
+    expandButtonBorders     : 5, 6, 5, 5
+    iconOffsets             : 2, -1
+    iconGaps                : 2
+    textLeftMargin          : 9
+    textRightMargin         : 9
+
+    Leave
+        left                : 55, 180, 5, 21
+        center              : 68, 180, 5, 21
+        right               : 81, 180, 5, 21
+
+        Text
+            offset          : 0, -1
+            color           : 0, 0, 0
+
+    Enter
+        left                : 55, 131, 5, 21
+        center              : 68, 131, 5, 21
+        right               : 81, 131, 5, 21
+
+        Text
+            offset          : 0, -1
+            color           : 0, 0, 0
+
+    Click
+        left                : 55, 131, 5, 21
+        center              : 68, 131, 5, 21
+        right               : 81, 131, 5, 21
+
+        Text
+            offset          : 0, -1
+            color           : 0, 0, 0
+
+    Focus
+        left                : 55, 180, 5, 21
+        center              : 68, 180, 5, 21
+        right               : 81, 180, 5, 21
+        offsets             : [0, 0], 0
+
+TextInput
+    carriage                : 38, 35, 5, 21
+    selectColor             : 98, 140, 206
+    selectOffset            : 2, 2
+    textLeftMargin          : 6
+    textRightMargin         : 6
+    textTopMargin           : 0
+    prefixMargin            : 6
+    postfixMargin           : 6
+    softPostfixMargin       : 3
+    carriageBoundary        : 1
+    selectRegionHeight      : 16
+    selectRegionOffset      : 1, 2
+    selectedTextColor       : 255, 255, 255
+    arrowOffsets            : 4, 5
+    arrowsAreaWidth         : 14
+
+    Leave
+        left                : 4 , 35, 5, 21
+        center              : 16, 35, 5, 21
+        right               : 30, 35, 5, 21
+
+        Arrow
+            left            : 40, 82, 5, 10
+            right           : 45, 82, 5, 10
+
+        Text
+            offset          : 0, -1
+            color           : 20, 20, 20
+
+        PrefixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
+        PostfixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
+    Enter
+        left                : 4 , 59, 5, 21
+        center              : 16, 59, 5, 21
+        right               : 30, 59, 5, 21
+
+        Arrow
+            left            : 40, 94, 5, 10
+            right           : 45, 94, 5, 10
+
+        Text
+            offset          : 0, -1
+            color           : 40, 40, 40
+
+        PrefixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
+        PostfixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
+    Click
+        left                : 4 , 59, 5, 21
+        center              : 16, 59, 5, 21
+        right               : 30, 59, 5, 21
+
+        Arrow
+            left            : 40, 94, 5, 10
+            right           : 45, 94, 5, 10
+
+        Text
+            offset          : 0, -1
+            color           : 40, 40, 40
+
+        PrefixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
+        PostfixText
+            offset          : 0, -1
+            color           : 120, 120, 120
+
+    Focus
+        left                : 4 , 83, 5, 21
+        center              : 16, 83, 5, 21
+        right               : 30, 83, 5, 21
+        offsets             : [0, 0], 0
+
+ListMenuItem(Button) # TODO: implement inheritance
+    split                   : 44, 35, 3, 21
+    iconOffsets             : 2, -1
+    iconGaps                : 2
+    textLeftMargin          : 9
+    textRightMargin         : 9
+    submenuArrowOffset      : 0, 0
+
+    Leave
+        left                : 55 , 180, 5, 21
+        center              : 68 , 180, 5, 21
+        right               : 81 , 180, 5, 21
+        submenuArrow        : 162, 131, 15, 21
+
+        Text
+            offset          : 0,  -2
+            color           : 200, 200, 200
+
+    Enter
+        left                : 129, 107, 5, 21
+        center              : 129, 107, 5, 21
+        right               : 129, 107, 5, 21
+        submenuArrow        : 178, 131, 15, 21
+
+        Text
+            offset          : 0,  -2
+            color           : 40, 40, 40
+
+    Click
+        left                : 129, 107, 5, 21
+        center              : 129, 107, 5, 21
+        right               : 129, 107, 5, 21
+        submenuArrow        : 178, 131, 15, 21
+
+        Text
+            offset          : 0,  -2
+            color           : 40, 40, 40
+
+    Focus
+        left                : 55, 180, 5, 21
+        center              : 68, 180, 5, 21
+        right               : 81, 180, 5, 21
+        offsets             : [0, 0], 0
+
+ListMenu
+    popupExtraPadding       : 4, 4, 4, 4
+    downPopupOffset         : -3, 0
+    rightPopupOffset        : 3, -3
+    extraMenuVisibleBorder  : 20, 20, 20, 50
+    displayDelay            : 500
+
+    Top
+        left                : 123, 39, 8, 8
+        center              : 157, 39, 8, 8
+        right               : 189, 39, 8, 8
+
+    Middle
+        left                : 123, 61, 8, 8
+        center              : 157, 61, 8, 8
+        right               : 189, 61, 8, 8
+
+    Bottom
+        left                : 123, 87, 8, 8
+        center              : 157, 87, 8, 8
+        right               : 189, 87, 8, 8
+
+ListMenuSplitLine
+    background              : 10, 141, 2, 2
+
+DropListMenu(Button)
+    split                   : 44, 35, 3, 21
+    iconOffsets             : 2, -1
+    iconGaps                : 2
+    textLeftMargin          : 9
+    textRightMargin         : 9
+
+    Leave
+        left                : 89 , 35, 5 , 21
+        center              : 102, 35, 5 , 21
+        right               : 115, 35, 5 , 21
+        dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 0,  -1
+            color           : 20, 20, 20
+
+    Enter
+        left                : 89 , 59, 5, 21
+        center              : 102, 59, 5, 21
+        right               : 115, 59, 5, 21
+        dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 0,  -1
+            color           : 40, 40, 40
+
+    Click
+        left                : 89 , 83, 5, 21
+        center              : 102, 83, 5, 21
+        right               : 115, 83, 5, 21
+        dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 0, -1
+            color           : 20, 20, 20
+
+    Focus
+        left                : 53, 105, 6, 25
+        center              : 68, 105, 6, 25
+        right               : 82, 105, 6, 25
+        offsets             : [-2, -2], 4
+
+TabButton(Button)
+    split                   : 44, 35, 3, 21
+    iconOffsets             : 6, 1
+    iconGaps                : 1
+    textLeftMargin          : 9
+    textRightMargin         : 9
+
+    Leave
+        left                : 289, 226, 6, 21
+        center              : 308, 226, 6, 21
+        right               : 327, 226, 6, 21
+
+        Text
+            offset          : 0, 1
+            color           : 20, 20, 20
+
+    Enter
+        left                : 338, 226, 6, 21
+        center              : 357, 226, 6, 21
+        right               : 376, 226, 6, 21
+
+        Text
+            offset          : 0, 1
+            color           : 20, 20, 20
+
+    Click
+        left                : 240, 226, 6, 21
+        center              : 259, 226, 6, 21
+        right               : 278, 226, 6, 21
+
+        Text
+            offset          : 0, 1
+            color           : 20, 20, 20
+
+    Focus
+        left                : 0, 0, 0, 0
+        center              : 0, 0, 0, 0
+        right               : 0, 0, 0, 0
+        offsets             : [0, 0], 0
+
+ChainLayout
+    split                   : 44, 35, 3, 21
+    splitOffset             : -1, 0
+    background              : 0, 0, 0, 100
+
+CheckButton(Button)
+    split                   : 44, 35, 3, 21
+    iconOffsets             : 2, -1
+    iconGaps                : 2
+    textLeftMargin          : 9
+    textRightMargin         : 9
+
+    Leave
+        left                : 89 , 35, 5 , 21
+        center              : 102, 35, 5 , 21
+        right               : 115, 35, 5 , 21
+        dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 1,  -1
+            color           : 20, 20, 20
+
+    Enter
+        left                : 89 , 59, 5, 21
+        center              : 102, 59, 5, 21
+        right               : 115, 59, 5, 21
+        dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 1,  -1
+            color           : 40, 40, 40
+
+    Click
+        left                : 89 , 107, 5, 21
+        center              : 102, 107, 5, 21
+        right               : 115, 107, 5, 21
+        dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 1, -1
+            color           : 0, 0, 0
+
+    Focus
+        left                : 53, 105, 6, 25
+        center              : 68, 105, 6, 25
+        right               : 82, 105, 6, 25
+        offsets             : [-2, -2], 4
+
+SwitchButton(Button)
+    split                   : 44, 35, 3, 21
+    iconOffsets             : 2, -1
+    iconGaps                : 2
+    textLeftMargin          : 9
+    textRightMargin         : 9
+
+    Leave
+        left                : 89 , 35, 5 , 21
+        center              : 102, 35, 5 , 21
+        right               : 115, 35, 5 , 21
+        dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 0,  -1
+            color           : 20, 20, 20
+
+    Enter
+        left                : 89 , 59, 5, 21
+        center              : 102, 59, 5, 21
+        right               : 115, 59, 5, 21
+        dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 0,  -1
+            color           : 40, 40, 40
+
+    Click
+        left                : 89 , 107, 5, 21
+        center              : 102, 107, 5, 21
+        right               : 115, 107, 5, 21
+        dropChevron         : 40, 59, 10, 21
+
+        Text
+            offset          : 0, -1
+            color           : 0, 0, 0
+
+    Focus
+        left                : 53, 105, 6, 25
+        center              : 68, 105, 6, 25
+        right               : 82, 105, 6, 25
+        offsets             : [-2, -2], 4
+
+Dialog
+    textOffset              : 0,  0
+    textColor               : 255, 255, 255
+    headerHeight            : 20
+    extraInnerOffset        : 15, 13, 15, 16
+    gaps                    : 3, 0, 3, 3
+
+    Top
+        left                : 235, 9, 19, 33
+        center              : 273, 9, 19, 33
+        right               : 312, 9, 19, 33
+
+    Middle
+        left                : 235, 44, 19, 17
+        center              : 273, 44, 19, 17
+        right               : 312, 44, 19, 17
+
+    Bottom
+        left                : 235, 67, 19, 20
+        center              : 273, 67, 19, 20
+        right               : 312, 67, 19, 20
