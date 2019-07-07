@@ -165,6 +165,10 @@ TreeList
 TreeListNode
     openIcon                : 4, 152, 9, 9
     closeIcon               : 17, 152, 9, 9
+    expandButtonOffset      : -5, 5
+    enterExpandButtonAlpha  : 1
+    leaveExpandButtonAlpha  : 0.5
+    expandButtonBorders     : 5, 6, 5, 5
     iconOffsets             : 2, -1
     iconGaps                : 2
     textLeftMargin          : 9

@@ -17,6 +17,7 @@ class TreeListNode : Button {
 
     private float innerHeight;
     private bool lastDepth = 0;
+    package bool isExpandButtonEnter = false;
 
     this(in string style = "TreeListNode") {
         super(style);
@@ -37,6 +38,10 @@ class TreeListNode : Button {
             auto treeListNode = cast(TreeListNode) parent;
             treeList_ = treeListNode.treeList;
         }
+    }
+
+    override void onRender() {
+        renderer.onRender();
     }
 
     override void onProgress(in ProgressEvent event) {
@@ -74,5 +79,13 @@ class TreeListNode : Button {
 
     @property uint treeDepth() {
         return depth - treeList.depth;
+    }
+
+    override void onMouseDown(in MouseDownEvent event) {
+        super.onMouseDown(event);
+
+        if (isExpandButtonEnter) {
+            isOpen = !isOpen;
+        }
     }
 }
