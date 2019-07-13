@@ -73,6 +73,9 @@ abstract class ViewComponent {
     void onDestroy() {
     }
 
+    void onProgress(in ProgressEvent event) {
+    }
+
     /**
      * Create viewComponent with `view` from `layoutFileName` and load shortcuts
      * from `shortcutsFileName`.

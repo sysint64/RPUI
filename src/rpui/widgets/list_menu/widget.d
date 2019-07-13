@@ -1,5 +1,7 @@
 module rpui.widgets.list_menu.widget;
 
+import std.container.array;
+
 import rpui.basic_rpdl_exts;
 import rpui.events;
 import rpui.input;
@@ -14,6 +16,7 @@ class ListMenu : Widget {
     @field bool transparent = false;
     @field bool checkList = false;
     @field bool isPopup = true;
+    @field bool isBindDataMode = false;
     @field string listItemStyle = "ListMenuItem";
 
     private StackLocator stackLocator;
@@ -86,7 +89,7 @@ class ListMenu : Widget {
     }
 
     // TODO(Andrey): visibility
-    public void hideAllSubMenusExcept(Widget menuItem) {
+    void hideAllSubMenusExcept(Widget menuItem) {
         foreach (Widget widget; children) {
             const row = widget.associatedWidget;
 
@@ -96,6 +99,16 @@ class ListMenu : Widget {
             if (auto item = cast(MenuActions) row) {
                 item.hideMenu();
             }
+        }
+    }
+
+    void bindData(T)(ref Array!(T) items, Widget function(T item) factory) {
+        children.clear();
+
+        for (int i = 0; i < items.length; ++i) {
+            auto widget = factory(items[i]);
+            children.addWidget(widget);
+            widget.onPostCreate();
         }
     }
 }

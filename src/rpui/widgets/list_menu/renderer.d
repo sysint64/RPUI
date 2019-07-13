@@ -24,7 +24,23 @@ final class ListMenuRenderer : Renderer {
 
     override void onRender() {
         renderBlock(theme, background, backgroundTransforms);
+
+        // if (!widget.isBindDataMode) {
+        //     widget.renderChildren();
+        // } else {
+        //     renderBindItems();
+        // }
     }
+
+    // private void renderBindItems() {
+    //     stackLocator.startWidgetsPositioning();
+
+    //     foreach (item; widget.bindItems) {
+    //         auto widgetToRender = widget.children.front.associatedWidget;
+    //         widget.visitBindItem(item, widgetToRender);
+    //         widgetToRender.onRender();
+    //     }
+    // }
 
     override void onProgress(in ProgressEvent event) {
         backgroundTransforms = updateBlockTransforms(

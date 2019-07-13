@@ -26,6 +26,10 @@ package final class WidgetsContainer {
     void deleteWidget(in size_t id) {
     }
 
+    void clear() {
+        widgets.clear();
+    }
+
     void addWidget(Widget widget) {
         if (decorator is null) {
             addWidgetWithoutDecorator(widget);

@@ -32,32 +32,43 @@ struct StackLocator {
 
     void updateWidgetsPosition() {
         with (holder) {
-            lastWidgetPosition = vec2(0, 0);
+            startWidgetsPositioning();
 
             foreach (Widget cell; children) {
-                lastWidgetInStack = cell.firstWidget;
+                pushWidgetPosition(cell);
+            }
+        }
+    }
 
-                if (orientation == Orientation.vertical) {
-                    cell.widthType = SizeType.matchParent;
-                    cell.size.y = lastWidgetInStack.outerSize.y;
-                    cell.position.y = lastWidgetPosition.y;
-                    cell.updateSize();
-                } else {
-                    cell.size.x = lastWidgetInStack.outerSize.x;
-                    cell.heightType = SizeType.matchParent;
-                    cell.position.x = lastWidgetPosition.x;
-                    cell.updateSize();
-                }
+    void startWidgetsPositioning() {
+        lastWidgetPosition = vec2(0, 0);
+        lastWidgetInStack = null;
+    }
 
-                lastWidgetPosition += lastWidgetInStack.size + lastWidgetInStack.outerOffsetEnd;
+    void pushWidgetPosition(Widget cell) {
+        with (holder) {
+            lastWidgetInStack = cell.firstWidget;
 
-                if (lastWidgetInStack.widthType != SizeType.matchParent) {
-                    maxSize.x = fmax(maxSize.x, lastWidgetInStack.outerSize.x);
-                }
+            if (orientation == Orientation.vertical) {
+                cell.widthType = SizeType.matchParent;
+                cell.size.y = lastWidgetInStack.outerSize.y;
+                cell.position.y = lastWidgetPosition.y;
+                cell.updateSize();
+            } else {
+                cell.size.x = lastWidgetInStack.outerSize.x;
+                cell.heightType = SizeType.matchParent;
+                cell.position.x = lastWidgetPosition.x;
+                cell.updateSize();
+            }
 
-                if (lastWidgetInStack.heightType != SizeType.matchParent) {
-                    maxSize.y = fmax(maxSize.y, lastWidgetInStack.outerSize.y);
-                }
+            lastWidgetPosition += lastWidgetInStack.size + lastWidgetInStack.outerOffsetEnd;
+
+            if (lastWidgetInStack.widthType != SizeType.matchParent) {
+                maxSize.x = fmax(maxSize.x, lastWidgetInStack.outerSize.x);
+            }
+
+            if (lastWidgetInStack.heightType != SizeType.matchParent) {
+                maxSize.y = fmax(maxSize.y, lastWidgetInStack.outerSize.y);
             }
         }
     }
@@ -72,6 +83,9 @@ struct StackLocator {
                 if (heightType == SizeType.wrapContent) {
                     if (lastWidgetInStack !is null) {
                         size.y = lastWidgetPosition.y + lastWidgetInStack.outerOffset.bottom + innerOffsetSize.y;
+                    } else {
+                        // TODO(Andrey): why *2 ?
+                        size.y = innerOffsetSize.y * 2;
                     }
                 }
             }

@@ -206,9 +206,23 @@ Panel
     Panel
         userCanResize: true
         regionAlign: top
-        size: 300, 100
+        size: 300, 150
 
-        Button margin: 5
+        StackLayout
+            widthType: matchParent
+
+            ListMenu
+                margin: 5
+                size: 200, 100
+                isPopup: true
+                isBindDataMode: true
+                name: "listWithData"
+
+            ChainLayout
+                margin: 5
+                widthType: matchParent
+                Button caption: "Add" widthType: matchParent name: "addListItemButton"
+                Button caption: "Remove" widthType: matchParent name: "removeListItemButton"
 
     TabLayout
         orientation: horizontal

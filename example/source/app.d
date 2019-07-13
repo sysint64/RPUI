@@ -3,10 +3,13 @@ module main;
 import std.stdio;
 import std.path;
 import std.file;
+import std.container.array;
+import std.conv;
 import core.memory;
 
 import rpui.application;
 import rpui.events;
+import rpui.widget_events;
 import rpui.view;
 import rpui.view_component;
 import rpui.widget;
@@ -14,6 +17,8 @@ import rpui.widgets.button.widget;
 import rpui.widgets.panel.widget;
 import rpui.widgets.dialog.widget;
 import rpui.widgets.canvas.widget;
+import rpui.widgets.list_menu.widget;
+import rpui.widgets.list_menu_item.widget;
 
 import gapi.vec;
 import gapi.camera;
@@ -32,8 +37,10 @@ void main() {
 
 final class TestApplication : Application {
     private View rootView;
+    private MyViewComponent viewComponent;
 
     override void onProgress(in ProgressEvent event) {
+        viewComponent.onProgress(event);
         rootView.onProgress(event);
     }
 
@@ -50,7 +57,7 @@ final class TestApplication : Application {
         events.join(rootView.events);
         events.subscribe(rootView);
 
-        ViewComponent.createFromFileWithShortcuts!(MyViewComponent)(rootView, "test.rdl");
+        viewComponent = ViewComponent.createFromFileWithShortcuts!(MyViewComponent)(rootView, "test.rdl");
     }
 }
 
@@ -61,6 +68,14 @@ final class MyViewComponent : ViewComponent {
     @bindWidget Dialog testDialog;
     @bindGroupWidgets Button[3] buttons;
     @bindWidget Canvas openglCanvas;
+    @bindWidget ListMenu listWithData;
+
+    struct ItemData {
+        dstring title;
+        int payload;
+    }
+
+    Array!ItemData listData;
 
     int a = 0;
 
@@ -73,7 +88,33 @@ final class MyViewComponent : ViewComponent {
             writeln("Handle OkButton Key Pressed Event", event.key);
         });
 
+        okButton.isEnabled = true;
         openglCanvas.canvasRenderer = new OpenGLRenderer();
+    }
+
+    private void bindData() {
+        listWithData.bindData(listData, function(ItemData data) {
+            auto listItem = new ListMenuItem();
+            listItem.caption = data.title;
+            listItem.events.subscribe!ClickEvent(delegate(in event) {
+                writeln("List item clicked; payload is: ", data.payload);
+            });
+            return listItem;
+        });
+    }
+
+    @onClickListener("addListItemButton")
+    void onAddListItemButton() {
+        listData.insert(ItemData("Item index: " ~ to!dstring(listData.length), a));
+        bindData();
+    }
+
+    @onClickListener("removeListItemButton")
+    void onRemoveListItemButton() {
+        if (!listData.empty) {
+            listData.removeBack(1);
+            bindData();
+        }
     }
 
     @onClickListener("okButton")
