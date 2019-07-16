@@ -57,25 +57,27 @@ final class PanelTransformsSystem : TransformsSystem {
     }
 
     private void updateHeaderTransforms() {
-        if (!widget.userCanHide)
-            return;
-
+        vec2 textPosition;
         const headerSize = vec2(widget.size.x, widget.measure.headerHeight);
 
-        transforms.headerBackground = updateQuadTransforms(
-            widget.view.cameraView,
-            widget.absolutePosition,
-            headerSize
-        );
+        if (widget.userCanHide) {
+            transforms.headerBackground = updateQuadTransforms(
+                widget.view.cameraView,
+                widget.absolutePosition,
+                headerSize
+            );
 
-        transforms.headerMark = updateQuadTransforms(
-            widget.view.cameraView,
-            widget.absolutePosition + renderData.headerMarkPosition,
-            renderData.headerMarkSize
-        );
+            transforms.headerMark = updateQuadTransforms(
+                widget.view.cameraView,
+                widget.absolutePosition + renderData.headerMarkPosition,
+                renderData.headerMarkSize
+            );
 
-        const textPosition = widget.absolutePosition +
-            vec2(renderData.headerMarkPosition.x + renderData.headerMarkSize.x, 0);
+            textPosition = widget.absolutePosition +
+                vec2(renderData.headerMarkPosition.x + renderData.headerMarkSize.x, 0);
+        } else {
+            textPosition = widget.absolutePosition + vec2(renderData.headerMarkPosition.x, 0);
+        }
 
         with (renderData.headerText.attrs[widget.headerState]) {
             caption = widget.caption;
@@ -93,8 +95,8 @@ final class PanelTransformsSystem : TransformsSystem {
     }
 
     private void updateSplitTransforms() {
-        if (!widget.userCanResize && !widget.showSplit)
-            return;
+        // if (!widget.userCanResize && !widget.showSplit)
+            // return;
 
         const splitTransforms = getSplitTransforms();
 
@@ -123,7 +125,7 @@ final class PanelTransformsSystem : TransformsSystem {
 
         const thickness = widget.split.thickness;
 
-        switch (widget.regionAlign) {
+        switch (widget.splitRegionAlign) {
             case RegionAlign.top:
                 outerPosition = widget.absolutePosition + vec2(0, widget.size.y - thickness);
                 innerPosition = outerPosition - vec2(0, thickness);

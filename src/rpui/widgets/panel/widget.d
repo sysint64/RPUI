@@ -50,6 +50,13 @@ class Panel : Widget, FocusScrollNavigation {
     @field bool showHorizontalScrollButton = true;
 
     @field utf32string caption = "";
+    @field RegionAlign splitAlign = RegionAlign.client;
+
+    package @property inout(RegionAlign) splitRegionAlign() inout {
+        return regionAlign == RegionAlign.client || regionAlign == RegionAlign.none
+            ? oppositeRegionAlign(splitAlign)
+            : regionAlign;
+    }
 
     struct Measure {
         float headerHeight;

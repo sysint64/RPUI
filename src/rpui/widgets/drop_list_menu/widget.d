@@ -41,6 +41,10 @@ class DropListMenu : Button, MenuActions {
     override void onProgress(in ProgressEvent event) {
         super.onProgress(event);
         dropMenuDelegate.onProgress(vec2(0, size.y));
+
+        if (menu.isVisible) {
+            isClick = true;
+        }
     }
 
     override void onMouseDown(in MouseDownEvent event) {

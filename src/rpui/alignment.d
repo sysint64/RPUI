@@ -25,6 +25,25 @@ enum VerticalAlign {
     bottom,
 }
 
+RegionAlign oppositeRegionAlign(in RegionAlign regionAlign) {
+    switch (regionAlign) {
+        case RegionAlign.top:
+            return RegionAlign.bottom;
+
+        case RegionAlign.bottom:
+            return RegionAlign.top;
+
+        case RegionAlign.left:
+            return RegionAlign.right;
+
+        case RegionAlign.right:
+            return RegionAlign.left;
+
+        default:
+            return regionAlign;
+    }
+}
+
 float alignBox(in Align align_, in float width, in float containerWidth) {
     switch (align_) {
         case Align.center:

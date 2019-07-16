@@ -9,7 +9,7 @@ import rpui.widget;
 import rpui.widgets.stack_layout.stack_locator;
 import rpui.widgets.chain_layout.renderer;
 
-class ChainLayout : Widget {
+final class ChainLayout : Widget {
     private StackLocator stackLocator;
 
     this(in string style = "ChainLayout") {

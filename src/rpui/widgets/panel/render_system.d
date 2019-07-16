@@ -7,6 +7,7 @@ import rpui.widgets.panel.transforms_system;
 import gapi.texture;
 import gapi.vec;
 import gapi.geometry;
+import rpui.primitives;
 import rpui.render.components;
 import rpui.render.components_factory;
 import rpui.render.renderer;
@@ -124,32 +125,31 @@ final class PanelRenderSystem : RenderSystem {
     }
 
     private void renderHeader() {
-        if (!widget.userCanHide)
-            return;
+        if (widget.userCanHide) {
+            renderTexAtlasQuad(
+                theme,
+                renderData.headerBackground.geometry,
+                renderData.headerBackground.texture,
+                renderData.headerBackground.texCoords[widget.headerState].normilizedTexCoords,
+                transforms.headerBackground
+            );
 
-        renderTexAtlasQuad(
-            theme,
-            renderData.headerBackground.geometry,
-            renderData.headerBackground.texture,
-            renderData.headerBackground.texCoords[widget.headerState].normilizedTexCoords,
-            transforms.headerBackground
-        );
+            Texture2DCoords markTexCoords;
 
-        Texture2DCoords markTexCoords;
+            if (widget.isOpen) {
+                markTexCoords = renderData.headerOpenMarkTexCoords;
+            } else {
+                markTexCoords = renderData.headerCloseMarkTexCoords;
+            }
 
-        if (widget.isOpen) {
-            markTexCoords = renderData.headerOpenMarkTexCoords;
-        } else {
-            markTexCoords = renderData.headerCloseMarkTexCoords;
+            renderTexAtlasQuad(
+                theme,
+                renderData.headerMark.geometry,
+                renderData.headerMark.texture,
+                markTexCoords,
+                transforms.headerMark
+            );
         }
-
-        renderTexAtlasQuad(
-            theme,
-            renderData.headerMark.geometry,
-            renderData.headerMark.texture,
-            markTexCoords,
-            transforms.headerMark
-        );
 
         renderUiText(
             theme,

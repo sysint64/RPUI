@@ -1,4 +1,36 @@
 Panel
+    regionAlign: top
+    userCanResize: false
+    heightType: wrapContent
+
+    MainMenu
+        MainMenuItem
+            margin: 2
+            caption: "File"
+
+            ListMenu
+                size: 200, 200
+                isPopup: true
+
+                ListMenuItem caption: "New"
+                ListMenuItem caption: "Open"
+                ListMenuItem caption: "Save"
+
+        MainMenuItem
+            margin: 2
+            caption: "Edit"
+
+            ListMenu
+                isPopup: true
+                widthtype: wrapContent
+                size: 200, 200
+
+                ListMenuItem caption: "Copy"
+                ListMenuItem caption: "Cut"
+                ListMenuItem caption: "Paste"
+                ListMenuItem caption: "Delete"
+
+Panel
     userCanResize: true
     regionAlign: right
     align: center
@@ -382,3 +414,44 @@ Dialog
             Button caption: "Action 2" margin: 10
             Button caption: "Action 3" margin: 10
             Button caption: "Close dialog" margin: 10 name: "closeDialogButton"
+
+Panel
+    userCanResize: true
+    regionAlign: bottom
+    size: 300, 300
+    finalFocusRegion: true
+    darkSplit: true
+    finalFocus: true
+    background: action
+    minSize: 150, 150
+
+    TabLayout
+        orientation: horizontal
+        height: 21
+        regionAlign: top
+        margin: 5
+
+        TabButton
+            checked: true
+            caption: "Tab 1"
+            width: 100
+
+        TabButton
+            caption: "Tab 2"
+            width: 100
+
+    Panel
+        regionAlign: client
+        size: 500, 200
+        # top: 25
+        # Panel
+        #     userCanResize: true
+        #     regionAlign: left
+        #     size: 300, 300
+        #     caption: "Frames"
+
+        # Panel
+        #     userCanResize: true
+        #     regionAlign: client
+        #     size: 300, 300
+        #     caption: "Variables"
