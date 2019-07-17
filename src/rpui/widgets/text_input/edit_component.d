@@ -34,6 +34,7 @@ struct EditComponent {
     void attach(TextInput textInput, TextInputTransformsSystem transformsSystem) {
         this.textInput = textInput;
         this.transformsSystem = transformsSystem;
+        this.selectRegion.attach(&this);
     }
 
     void reset() {
@@ -86,6 +87,8 @@ struct EditComponent {
                         removeRegion(carriage.pos, carriage.pos+1);
                     }
                 }
+
+                unselect();
                 break;
 
             case KeyCode.BackSpace:
@@ -99,6 +102,8 @@ struct EditComponent {
                         removeRegion(carriage.pos-1, carriage.pos);
                     }
                 }
+
+                unselect();
                 break;
 
             default:

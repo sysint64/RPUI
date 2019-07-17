@@ -286,6 +286,7 @@ final class TextInputTransformsSystem : TransformsSystem {
             if (!selectRegion.textIsSelected())
                 return;
 
+            selectRegion.clampSelectRegion();
             const regionSize = getRegionTextWidth(selectRegion.start, selectRegion.end);
 
             selectRegion.size = vec2(regionSize, transforms.selectRegionHeight);

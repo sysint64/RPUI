@@ -15,6 +15,11 @@ struct SelectRegion {
 
     bool startedSelection = false;
     int startSelectionPos = 0;
+    EditComponent* editComponent;
+
+    void attach(EditComponent* editComponent) {
+        this.editComponent = editComponent;
+    }
 
     void updateSelect(in int pos) {
         if (!startedSelection)
@@ -32,6 +37,9 @@ struct SelectRegion {
 
         start = regionMin;
         end = regionMax;
+
+        start = max(0, start);
+        end = min(end, cast(int) editComponent.text.length);
     }
 
     void startSelection(in int pos) {
