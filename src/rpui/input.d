@@ -126,6 +126,7 @@ enum KeyCode {
     Numpad7 = cast(int) SDLK_KP_7,
     Numpad8 = cast(int) SDLK_KP_8,
     Numpad9 = cast(int) SDLK_KP_9,
+    Super = cast(int) SDLK_APPLICATION,
     F1 = cast(int) SDLK_F1,
     F2 = cast(int) SDLK_F2,
     F3 = cast(int) SDLK_F3,
