@@ -2,6 +2,7 @@ module rpui.platform_sdl;
 
 version(rpuiSdl2):
 
+import std.utf;
 import std.conv;
 import std.array;
 import std.string;
@@ -75,8 +76,7 @@ extern(C) bool platformEventLoop(void* window, EventsObserver events) {
             events.notify(MouseWheelEvent(event.wheel.x, event.wheel.y));
         }
         else if (event.type == SDL_TEXTINPUT) {
-            const ch = fromStringz(dtext(event.text.text[0..4]).ptr)[0];
-            events.notify(TextEnteredEvent(ch));
+            events.notify(TextEnteredEvent(toUTF32(fromStringz(event.text.text.ptr))));
         }
         else if (event.type == SDL_KEYDOWN) {
             try {

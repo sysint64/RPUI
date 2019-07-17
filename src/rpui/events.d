@@ -20,7 +20,7 @@ struct KeyReleasedEvent {
 }
 
 struct TextEnteredEvent {
-    utf32char key;
+    utf32string key;
 }
 
 struct ChangeEvent {
