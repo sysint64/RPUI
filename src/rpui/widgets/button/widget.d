@@ -17,6 +17,7 @@ class Button : Widget {
     @field VerticalAlign textVerticalAlign = VerticalAlign.middle;
     @field Array!string icons;
     @field utf32string caption = "Button";
+    @field int uselessIconArea = 0;
 
     struct Measure {
         float textWidth = 0;

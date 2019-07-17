@@ -129,8 +129,8 @@ Panel
                 isPopup: true
 
                 ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
-                ListMenuItem caption: "Menu item 2"
-                ListMenuItem caption: "Menu item 3"
+                ListMenuItem caption: "Menu item 2" icons: "tape"
+                ListMenuItem caption: "Menu item 3" icons: "ghost"
                     ListMenu
                         size: 200, 200
                         isPoput: true
@@ -414,44 +414,3 @@ Dialog
             Button caption: "Action 2" margin: 10
             Button caption: "Action 3" margin: 10
             Button caption: "Close dialog" margin: 10 name: "closeDialogButton"
-
-Panel
-    userCanResize: true
-    regionAlign: bottom
-    size: 300, 300
-    finalFocusRegion: true
-    darkSplit: true
-    finalFocus: true
-    background: action
-    minSize: 150, 150
-
-    TabLayout
-        orientation: horizontal
-        height: 21
-        regionAlign: top
-        margin: 5
-
-        TabButton
-            checked: true
-            caption: "Tab 1"
-            width: 100
-
-        TabButton
-            caption: "Tab 2"
-            width: 100
-
-    Panel
-        regionAlign: client
-        size: 500, 200
-        # top: 25
-        # Panel
-        #     userCanResize: true
-        #     regionAlign: left
-        #     size: 300, 300
-        #     caption: "Frames"
-
-        # Panel
-        #     userCanResize: true
-        #     regionAlign: client
-        #     size: 300, 300
-        #     caption: "Variables"

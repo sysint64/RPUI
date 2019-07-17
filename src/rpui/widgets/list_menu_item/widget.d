@@ -43,6 +43,10 @@ class ListMenuItem : Button, MenuActions {
         parentMenu = cast(ListMenu) parent.parent;
         assert(parentMenu !is null);
 
+        if (parentMenu.isPopup) {
+            uselessIconArea = 1;
+        }
+
         events.subscribe!ClickEvent(&onClick);
 
         if (children.empty)

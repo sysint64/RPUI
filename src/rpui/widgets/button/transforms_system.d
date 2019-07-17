@@ -2,6 +2,7 @@ module rpui.widgets.button.transforms_system;
 
 import std.container.array;
 import std.math;
+import std.algorithm;
 
 import rpui.events;
 import rpui.widgets.button.widget;
@@ -125,6 +126,11 @@ final class ButtonTransformsSystem : TransformsSystem {
 
             if (icons.length > 0) {
                 measure.iconsAreaSize += iconLastOffset - measure.iconGaps * 2;
+            }
+
+            if (widget.uselessIconArea != 0) {
+                const count = max(icons.length, widget.uselessIconArea);
+                measure.iconsAreaSize = (iconSize.x + measure.iconGaps) * count - measure.iconGaps * 2;
             }
         }
     }
