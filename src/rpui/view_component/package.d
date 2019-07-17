@@ -24,9 +24,6 @@ import rpui.events_observer;
  * access widgets, attach shortcuts to view methods and so on.
  */
 abstract class ViewComponent {
-    @property Shortcuts shortcuts() { return shortcuts_; }
-    private Shortcuts shortcuts_;
-
     private View view;
     private Widget rootWidget;
     RpdlWidgetFactory widgetFactory;
@@ -84,12 +81,13 @@ abstract class ViewComponent {
         assert(view !is null);
         this.view = view;
 
+        auto shortcuts = Shortcuts.createFromFile(shortcutsFileName);
+        view.shortcuts.merge(shortcuts);
+
         widgetFactory = new RpdlWidgetFactory(view, layoutFileName);
         widgetFactory.createWidgets();
         rootWidget = widgetFactory.rootWidget;
         assert(rootWidget !is null);
-
-        shortcuts_ = Shortcuts.createFromFile(shortcutsFileName);
         readAttributes!T();
 
         shortcutsSubscriber = view.events.subscribe!KeyReleasedEvent(
@@ -298,9 +296,13 @@ abstract class ViewComponent {
             mixin("alias symbol = T." ~ symbolName ~ ";");
 
             foreach (uda; getUDAs!(symbol, shortcut)) {
-                enum shortcutPath = uda.shortcutPath;
-                // shortcuts.attach(shortcutPath, &viewComponent.shortcutAction);
-                shortcuts.attach(shortcutPath, &mixin("viewComponent." ~ symbolName));
+                if (uda.retrieve) {
+                    // shortcuts.attachByPath(shortcutPath, &viewComponent.shortcutAction);
+                    view.shortcuts.attachByPath(uda.value, &mixin("viewComponent." ~ symbolName));
+                } else {
+                    // shortcuts.attach(shortcutPath, &viewComponent.shortcutAction);
+                    view.shortcuts.attach(uda.value, &mixin("viewComponent." ~ symbolName));
+                }
             }
         }
     }

@@ -127,8 +127,8 @@ final class Shortcuts {
         }
     }
 
-    /// Attach `action` to particular shortcut placed by `path` (in `rpdl` file).
-    void attach(in string path, void delegate() action) {
+    /// Attach `action` to particular shortcut placed by `path` (in `rpdl` file)
+    void attachByPath(in string path, void delegate() action) {
         try {
             const shortcut = shortcutsData.data.getString(path ~ ".0");
             auto shortcutAction = Shortcuts.ShortcutAction(shortcut, action);
@@ -137,6 +137,21 @@ final class Shortcuts {
         } catch (NotFoundException) {
             debug assert(false, "Not found shortcut with path " ~ path);
         }
+    }
+
+    /// Attach `action` to particular shortcut
+    void attach(in string shortcut, void delegate() action) {
+        auto shortcutAction = Shortcuts.ShortcutAction(shortcut, action);
+        shortcuts[shortcut] = shortcutAction;
+    }
+
+    string getShourtcutString(in string path) {
+        return shortcutsData.data.getString(path ~ ".0");
+    }
+
+    ///
+    void merge(Shortcuts shortcuts) {
+        shortcutsData.merge(shortcuts.shortcutsData);
     }
 
     /// Invoke shortcut action if all keys from shortcut is pressed.

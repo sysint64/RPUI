@@ -128,9 +128,9 @@ Panel
                 size: 200, 200
                 isPopup: true
 
-                ListMenuItem shortcut: "@TestGroup.cancel" caption: "Menu item 1"
-                ListMenuItem caption: "Menu item 2" icons: "tape"
-                ListMenuItem caption: "Menu item 3" icons: "ghost"
+                ListMenuItem shortcut: "@TestGroup.menuItem" caption: "Menu item 1" name: "menuItem1"
+                ListMenuItem shortcut: "Ctrl+D" caption: "Menu item 2" icons: "tape" name: "menuItem2"
+                ListMenuItem caption: "Menu item 3" icons: "ghost" shortcut: "Ctrl+B"
                     ListMenu
                         size: 200, 200
                         isPoput: true

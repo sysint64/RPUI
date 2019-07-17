@@ -109,6 +109,16 @@ final class MyViewComponent : ViewComponent {
         bindData();
     }
 
+    @onClickListener("menuItem1")
+    void onMenuItem1Click() {
+        writeln("MenuItem1 clicked");
+    }
+
+    @onClickListener("menuItem2")
+    void onMenuItem2Click() {
+        writeln("MenuItem2 clicked");
+    }
+
     @onClickListener("removeListItemButton")
     void onRemoveListItemButton() {
         if (!listData.empty) {
@@ -133,6 +143,11 @@ final class MyViewComponent : ViewComponent {
     @shortcut("TestGroup.cancel")
     void someShortcutAction() {
         writeln("Wow! shortcut was executed!");
+    }
+
+    @shortcut("Ctrl+U", false)
+    void someShortcutAction2() {
+        writeln("Manual set chortcut");
     }
 
     @onClickListener("closeButton")

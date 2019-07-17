@@ -48,6 +48,7 @@ class ListMenuItem : Button, MenuActions {
         }
 
         events.subscribe!ClickEvent(&onClick);
+        attachShortcut();
 
         if (children.empty)
             return;
@@ -68,6 +69,18 @@ class ListMenuItem : Button, MenuActions {
                 dropMenuDelegate.dropMenu(vec2(size.x, 0) + menu.measure.rightPopupOffset);
             }
         // });
+    }
+
+    void attachShortcut() {
+        if (shortcut.length == 0)
+            return;
+
+        if (shortcut[0] == '@') {
+            const shortcutPath = shortcut[1 .. $];
+            view.shortcuts.attachByPath(shortcutPath, () => events.notify(ClickEvent()));
+        } else {
+            view.shortcuts.attach(shortcut, () => events.notify(ClickEvent()));
+        }
     }
 
     override void onProgress(in ProgressEvent event) {

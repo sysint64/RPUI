@@ -18,8 +18,8 @@ class ButtonRenderer : Renderer {
     private RenderTransforms transforms;
     private string style;
 
-    private TransformsSystem transformSystem;
-    private RenderSystem renderSystem;
+    protected ButtonTransformsSystem transformSystem;
+    protected RenderSystem renderSystem;
 
     override void onCreate(Widget widget, in string style) {
         this.widget = cast(Button) widget;

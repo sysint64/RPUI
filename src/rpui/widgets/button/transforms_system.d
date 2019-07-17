@@ -67,19 +67,7 @@ final class ButtonTransformsSystem : TransformsSystem {
             return;
         }
 
-        const textBoxSize = widget.size - vec2(widget.measure.iconsAreaSize, 0);
-        auto textPosition = vec2(widget.measure.iconsAreaSize, 0) + widget.absolutePosition;
-
-        if (widget.textAlign == Align.left) {
-            textPosition.x += widget.measure.textLeftMargin;
-        }
-        else if (widget.textAlign == Align.right) {
-            textPosition.x -= widget.measure.textRightMargin;
-        }
-
-        if (widget.partDraws == Widget.PartDraws.left || widget.partDraws == Widget.PartDraws.right) {
-            textPosition.x -= 1;
-        }
+        const captionTransforms = getCaptonTransforms(widget.textAlign);
 
         with (renderData.captionText.attrs[widget.state]) {
             caption = widget.caption;
@@ -93,11 +81,37 @@ final class ButtonTransformsSystem : TransformsSystem {
             transforms.captionText,
             renderData.captionText.attrs[widget.state],
             widget.view.cameraView,
-            textPosition,
-            textBoxSize
+            captionTransforms.position,
+            captionTransforms.size
         );
 
         widget.measure.textWidth = transforms.captionText.size.x;
+    }
+
+    struct CaptionTransforms {
+        vec2 position;
+        vec2 size;
+    }
+
+    CaptionTransforms getCaptonTransforms(in Align textAlign) {
+        const textBoxSize = widget.size - vec2(widget.measure.iconsAreaSize, 0);
+        auto textPosition = vec2(widget.measure.iconsAreaSize, 0) + widget.absolutePosition;
+
+        if (textAlign == Align.left) {
+            textPosition.x += widget.measure.textLeftMargin;
+        }
+        else if (textAlign == Align.right) {
+            textPosition.x -= widget.measure.textRightMargin;
+        }
+
+        if (widget.partDraws == Widget.PartDraws.left || widget.partDraws == Widget.PartDraws.right) {
+            textPosition.x -= 1;
+        }
+
+        return CaptionTransforms(
+            textPosition,
+            textBoxSize
+        );
     }
 
     private void updateIcons() {

@@ -10,6 +10,7 @@ import gapi.opengl;
 import gapi.shader;
 import gapi.camera;
 
+import rpui.shortcuts : Shortcuts;
 import rpui.platform;
 import rpui.input;
 import rpui.cursor;
@@ -48,6 +49,9 @@ final class View : EventsListenerEmpty {
     Theme theme;
     EventsObserver events;
     package Array!Widget onProgressQueries;
+
+    @property Shortcuts shortcuts() { return shortcuts_; }
+    private Shortcuts shortcuts_;
 
     private Widget p_widgetUnderMouse = null;
     @property Widget widgetUnderMouse() { return p_widgetUnderMouse; }
@@ -103,6 +107,7 @@ final class View : EventsListenerEmpty {
         this.resources = resources;
         this.cursorManager = cursorManager;
         this.window = window;
+        this.shortcuts_ = Shortcuts.createFromFile("general.rdl");
     }
 
     this(void* window, in string themeName) {
@@ -343,6 +348,8 @@ final class View : EventsListenerEmpty {
     }
 
     override void onKeyReleased(in KeyReleasedEvent event) {
+        shortcuts_.onKeyReleased(event.key);
+
         if (focusedWidget !is null && isClickKey(event.key)) {
             focusedWidget.isClick = false;
             focusedWidget.onClickActionInvoked();
