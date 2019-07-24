@@ -1,5 +1,6 @@
 module rpui.view;
 
+import std.algorithm;
 import std.path;
 import std.file;
 import std.container.array;
@@ -308,6 +309,14 @@ final class View : EventsListenerEmpty {
                 if (currentScissor.bottom > scissor.absolute.bottom)
                     currentScissor.bottom = scissor.absolute.bottom;
             }
+        }
+
+        if (currentScissor.right < currentScissor.left) {
+            currentScissor.right = currentScissor.left;
+        }
+
+        if (currentScissor.bottom < currentScissor.top) {
+            currentScissor.bottom = currentScissor.top;
         }
 
         auto screenScissor = IntRect(currentScissor);

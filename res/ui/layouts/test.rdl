@@ -2,6 +2,7 @@ Panel
     regionAlign: top
     userCanResize: false
     heightType: wrapContent
+    showSplit: false
 
     MainMenu
         MainMenuItem
@@ -29,6 +30,17 @@ Panel
                 ListMenuItem caption: "Cut"
                 ListMenuItem caption: "Paste"
                 ListMenuItem caption: "Delete"
+
+Toolbar
+    icons: "main_toolbar_icons"
+
+    # ToolbarTab
+        # icon: "wrench"
+        # caption: "main"
+
+        # ToolbarItem
+            # icon: "sprite"
+            # caption: "Sprite"
 
 Panel
     userCanResize: true
@@ -170,6 +182,7 @@ Panel
     userCanResize: true
     background: action
     finalFocus: true
+    darkSplit: true
 
     Panel
         regionAlign: top
@@ -211,7 +224,7 @@ Panel
                     TreeListNode caption: "Node 5" icons: "ghost"
             # End tree -----------------------------------------------------------------------------
 
-            Button caption: ":)" margin: 0 widthType: matchParent
+            Button caption: ":)" margin: 5 widthType: matchParent
 
         Label
             caption: "Hi"

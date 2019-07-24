@@ -613,3 +613,31 @@ Dialog
         left                : 235, 67, 19, 20
         center              : 273, 67, 19, 20
         right               : 312, 67, 19, 20
+
+Toolbar
+    background              : 45 , 226, 5, 80
+    split                   : 114, 226, 5, 80
+    height                  : 78
+    tabOffset               : 10
+
+ToolbarItem
+    Leave
+        alpha               : 75
+
+        Text
+            offset          : 0, 0
+            color           : 110, 110, 110
+
+    Enter
+        alpha               : 100
+
+        Text
+            offset          : 0, 0
+            color           : 0, 0, 0
+
+    Click
+        alpha               : 100
+
+        Text
+            offset          : 0, 0
+            color           : 10, 10, 210

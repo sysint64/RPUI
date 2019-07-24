@@ -39,6 +39,7 @@ import rpui.widgets.tree_list_node.widget;
 import rpui.widgets.canvas.widget;
 import rpui.widgets.main_menu.widget;
 import rpui.widgets.main_menu_item.widget;
+import rpui.widgets.toolbar.widget;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -142,6 +143,9 @@ final class RpdlWidgetFactory {
 
             case "MainMenuItem":
                 return createWidget!MainMenuItem(widgetNode, parentWidget);
+
+            case "Toolbar":
+                return createWidget!Toolbar(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);
