@@ -4,6 +4,7 @@ import rpdl;
 
 import rpui.theme;
 import rpui.primitives;
+import rpui.basic_rpdl_exts;
 import rpui.render.components;
 import rpui.render.components_factory;
 import rpui.widgets.button.widget;
@@ -21,7 +22,8 @@ struct ButtonThemeLoader {
             textLeftMargin: data.getNumber(style ~ ".textLeftMargin.0"),
             textRightMargin: data.getNumber(style ~ ".textRightMargin.0"),
             iconGaps: data.getNumber(style ~ ".iconGaps.0"),
-            iconOffsets: data.getVec2f(style ~ ".iconOffsets")
+            iconOffsets: data.getVec2f(style ~ ".iconOffsets"),
+            uselessBorders: data.optFrameRect(style ~ ".uselessBorders", FrameRect(0, 0, 0, 0)),
         };
         return measure;
     }

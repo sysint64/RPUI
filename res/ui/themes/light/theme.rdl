@@ -620,6 +620,50 @@ Toolbar
     height                  : 78
     tabOffset               : 10
 
+ToolbarTabLayout
+    borderColor             : 0, 0, 0, 0
+
+ToolbarTabButton(TabButton)
+    split                   : 44, 35, 3, 21
+    iconOffsets             : 8, 2
+    iconGaps                : 1
+    textLeftMargin          : 14
+    textRightMargin         : 9
+    uselessBorders          : 5, 0, 5, 3
+
+    Leave
+        left                : 125, 226, 13, 22
+        center              : 141, 226, 13, 22
+        right               : 158, 226, 13, 22
+
+        Text
+            offset          : 0, 1
+            color           : 20, 20, 20
+
+    Enter
+        left                : 176, 226, 13, 22
+        center              : 192, 226, 13, 22
+        right               : 209, 226, 13, 22
+
+        Text
+            offset          : 0, 1
+            color           : 40, 40, 40
+
+    Click
+        left                : 125, 253, 13, 22
+        center              : 142, 253, 13, 22
+        right               : 158, 253, 13, 22
+
+        Text
+            offset          : 0, 1
+            color           : 40, 40, 40
+
+    Focus
+        left                : 0, 0, 0, 0
+        center              : 0, 0, 0, 0
+        right               : 0, 0, 0, 0
+        offsets             : [0, 0], 0
+
 ToolbarItem
     Leave
         alpha               : 75

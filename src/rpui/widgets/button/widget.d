@@ -28,6 +28,7 @@ class Button : Widget {
         float iconGaps;
         vec2 iconOffsets;
         float iconsAreaSize = 0;
+        FrameRect uselessBorders;
     }
 
     package string iconsGroup;

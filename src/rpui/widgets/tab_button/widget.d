@@ -7,7 +7,7 @@ import rpui.widgets.button.widget;
 import rpui.widgets.tab_button.renderer;
 import rpui.widgets.tab_layout.widget;
 
-final class TabButton : Button {
+class TabButton : Button {
     @field bool checked = false;
     @field bool hideCaptionWhenUnchecked = false;
 

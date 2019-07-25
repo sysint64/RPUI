@@ -3,40 +3,63 @@ Panel
     userCanResize: false
     heightType: wrapContent
     showSplit: false
+    background: action
 
-    MainMenu
-        MainMenuItem
-            margin: 2
-            caption: "File"
+    ToolbarTabLayout
+        orientation: horizontal
+        widthType: matchParent
 
-            ListMenu
-                size: 200, 200
-                isPopup: true
+        MainMenu
+            margin: 0, 0, 10, 0
 
-                ListMenuItem caption: "New"
-                ListMenuItem caption: "Open"
-                ListMenuItem caption: "Save"
+            MainMenuItem
+                margin: 1, 2
+                caption: "File"
 
-        MainMenuItem
-            margin: 2
-            caption: "Edit"
+                ListMenu
+                    size: 200, 200
+                    isPopup: true
 
-            ListMenu
-                isPopup: true
-                widthtype: wrapContent
-                size: 200, 200
+                    ListMenuItem caption: "New"
+                    ListMenuItem caption: "Open"
+                    ListMenuItem caption: "Save"
 
-                ListMenuItem caption: "Copy"
-                ListMenuItem caption: "Cut"
-                ListMenuItem caption: "Paste"
-                ListMenuItem caption: "Delete"
+            MainMenuItem
+                margin: 1, 2
+                caption: "Edit"
+
+                ListMenu
+                    isPopup: true
+                    widthtype: wrapContent
+                    size: 200, 200
+
+                    ListMenuItem caption: "Copy"
+                    ListMenuItem caption: "Cut"
+                    ListMenuItem caption: "Paste"
+                    ListMenuItem caption: "Delete"
+
+            # width: 200
+            # widthType: wrapContent
+            # verticalLocationAlign: bottom
+
+        ToolbarTabButton
+            name: "toolbarTabMain"
+            icons: "wrench"
+            caption: "Main"
+            checked: true
+            # margin: 0, 0, -10, -3
+
+        ToolbarTabButton
+            name: "toolbarTabMaterials"
+            icons: "material"
+            caption: "Materials"
+            # margin: 0, 0, -10, -3
 
 Toolbar
     icons: "main_toolbar_icons"
 
-    # ToolbarTab
-        # icon: "wrench"
-        # caption: "main"
+    # ToolbarItemsLayout
+        # tabVisibleRule: "toolbarTabMain"
 
         # ToolbarItem
             # icon: "sprite"

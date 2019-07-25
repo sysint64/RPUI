@@ -63,6 +63,7 @@ final class View : EventsListenerEmpty {
     package Widget rootWidget;
     package Array!Widget frontWidgets;  // This widgets are drawn last.
     package Array!Widget frontWidgetsOrdering;  // This widgets are process firstly.
+    package Array!Widget frontWidgetsRenderQueries;
     package Widget focusedWidget = null;
     package Array!Widget widgetOrdering;
     package Array!Widget unfocusedWidgets;
@@ -173,7 +174,14 @@ final class View : EventsListenerEmpty {
         rootWidget.size.x = screenCameraTransform.viewportSize.x;
         rootWidget.size.y = screenCameraTransform.viewportSize.y;
 
+        frontWidgetsRenderQueries.clear();
         rootWidget.onRender();
+
+        foreach (Widget widget; frontWidgetsRenderQueries) {
+            if (widget.isVisible) {
+                widget.onRender();
+            }
+        }
 
         foreach (Widget widget; frontWidgets) {
             if (widget.isVisible) {
@@ -462,6 +470,10 @@ final class View : EventsListenerEmpty {
         moveChildrensToFrontOrdering(widget);
         widget.parent.children.deleteWidget(widget);
         widget.p_parent = rootWidget;
+    }
+
+    void queryRenderWidgetInFront(Widget widget) {
+        frontWidgetsRenderQueries.insert(widget);
     }
 
     @property bool isNestedFreeze() {

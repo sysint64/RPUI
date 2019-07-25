@@ -42,11 +42,17 @@ final class ButtonTransformsSystem : TransformsSystem {
     }
 
     private void updateBackground() {
+        const uselseeBorderSize = vec2(
+            widget.measure.uselessBorders.left + widget.measure.uselessBorders.right,
+            0
+            // widget.measure.uselessBorders.top + widget.measure.uselessBorders.bottom
+        );
+
         transforms.background = updateHorizontalChainTransforms(
             renderData.background.widths,
             widget.view.cameraView,
-            widget.absolutePosition,
-            widget.size,
+            widget.absolutePosition - vec2(widget.measure.uselessBorders.left, -widget.measure.uselessBorders.bottom),
+            widget.size + uselseeBorderSize,
             widget.partDraws
         );
 
