@@ -10,10 +10,10 @@ Panel
         widthType: matchParent
 
         MainMenu
-            margin: 0, 0, 10, 0
+            margin: 2, 0, 10, 0
 
             MainMenuItem
-                margin: 1, 2
+                margin: 0, 2, 0, 1
                 caption: "File"
 
                 ListMenu
@@ -25,7 +25,7 @@ Panel
                     ListMenuItem caption: "Save"
 
             MainMenuItem
-                margin: 1, 2
+                margin: 0, 2, 0, 1
                 caption: "Edit"
 
                 ListMenu
@@ -47,23 +47,41 @@ Panel
             icons: "wrench"
             caption: "Main"
             checked: true
-            # margin: 0, 0, -10, -3
 
         ToolbarTabButton
             name: "toolbarTabMaterials"
             icons: "material"
             caption: "Materials"
-            # margin: 0, 0, -10, -3
 
 Toolbar
     icons: "main_toolbar_icons"
 
-    # ToolbarItemsLayout
-        # tabVisibleRule: "toolbarTabMain"
+    ToolbarItemsLayout
+        tabVisibleRule: "toolbarTabMain"
+        padding: 3
 
-        # ToolbarItem
-            # icon: "sprite"
-            # caption: "Sprite"
+        ToolbarItem icon: "sprite" caption: "Sprite"
+        ToolbarItem icon: "surface" caption: "Surface"
+        ToolbarItem icon: "tiles" caption: "Tiles"
+        ToolbarItem icon: "point" caption: "Point"
+        ToolbarItem icon: "light" caption: "Light"
+        ToolbarItem icon: "sound" caption: "Sound"
+
+        # ToolbarDivider
+
+        ToolbarItem icon: "knife" caption: "Knife"
+        ToolbarItem icon: "knife" caption: "Knife"
+        ToolbarItem icon: "cut" caption: "Cut"
+        ToolbarItem icon: "partition" caption: "Partition"
+
+        # ToolbarDivider
+
+        ToolbarItem icon: "bend" caption: "Bend"
+        ToolbarItem icon: "twist" caption: "Twist"
+        ToolbarItem icon: "wave" caption: "Wave"
+        ToolbarItem icon: "edge" caption: "Edge"
+        ToolbarItem icon: "arc" caption: "Arc"
+        ToolbarItem icon: "widen" caption: "Widen"
 
 Panel
     userCanResize: true

@@ -665,6 +665,9 @@ ToolbarTabButton(TabButton)
         offsets             : [0, 0], 0
 
 ToolbarItem
+    size: 56, 70
+    iconBoxSize: 56, 56
+
     Leave
         alpha               : 75
 

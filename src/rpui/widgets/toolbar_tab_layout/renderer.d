@@ -42,7 +42,6 @@ final class ToolbarTabLayoutRenderer : Renderer {
         }
 
         if (activeTab !is null) {
-            // activeTab.onRender();
             widget.view.queryRenderWidgetInFront(activeTab);
         }
     }

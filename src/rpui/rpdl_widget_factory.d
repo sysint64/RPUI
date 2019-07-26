@@ -42,6 +42,8 @@ import rpui.widgets.main_menu_item.widget;
 import rpui.widgets.toolbar.widget;
 import rpui.widgets.toolbar_tab_layout.widget;
 import rpui.widgets.toolbar_tab_button.widget;
+import rpui.widgets.toolbar_items_layout.widget;
+import rpui.widgets.toolbar_item.widget;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -154,6 +156,12 @@ final class RpdlWidgetFactory {
 
             case "ToolbarTabButton":
                 return createWidget!ToolbarTabButton(widgetNode, parentWidget);
+
+            case "ToolbarItemsLayout":
+                return createWidget!ToolbarItemsLayout(widgetNode, parentWidget);
+
+            case "ToolbarItem":
+                return createWidget!ToolbarItem(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);

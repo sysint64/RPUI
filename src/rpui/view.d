@@ -38,6 +38,7 @@ ViewResources createViewResources(in string theme) {
     auto icons = new IconsRes(images);
 
     icons.addIcons("icons", "icons.rdl");
+    icons.addIcons("main_toolbar_icons", "main_toolbar_icons.rdl");
 
     return ViewResources(
         new StringsRes(),
