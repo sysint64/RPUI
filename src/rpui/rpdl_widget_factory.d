@@ -44,6 +44,7 @@ import rpui.widgets.toolbar_tab_layout.widget;
 import rpui.widgets.toolbar_tab_button.widget;
 import rpui.widgets.toolbar_items_layout.widget;
 import rpui.widgets.toolbar_item.widget;
+import rpui.widgets.toolbar_items_divider.widget;
 
 /// Factory for construction view from rpdl layout data.
 final class RpdlWidgetFactory {
@@ -162,6 +163,9 @@ final class RpdlWidgetFactory {
 
             case "ToolbarItem":
                 return createWidget!ToolbarItem(widgetNode, parentWidget);
+
+            case "ToolbarItemsDivider":
+                return createWidget!ToolbarItemsDivider(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);

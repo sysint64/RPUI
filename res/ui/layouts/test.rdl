@@ -67,14 +67,14 @@ Toolbar
         ToolbarItem icon: "light" caption: "Light"
         ToolbarItem icon: "sound" caption: "Sound"
 
-        # ToolbarDivider
+        ToolbarItemsDivider name: "divider"
 
         ToolbarItem icon: "knife" caption: "Knife"
-        ToolbarItem icon: "knife" caption: "Knife"
+        ToolbarItem icon: "divide" caption: "Divide"
         ToolbarItem icon: "cut" caption: "Cut"
         ToolbarItem icon: "partition" caption: "Partition"
 
-        # ToolbarDivider
+        ToolbarItemsDivider name: "divider2"
 
         ToolbarItem icon: "bend" caption: "Bend"
         ToolbarItem icon: "twist" caption: "Twist"

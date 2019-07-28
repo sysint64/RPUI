@@ -616,9 +616,13 @@ Dialog
 
 Toolbar
     background              : 45 , 226, 5, 80
-    split                   : 114, 226, 5, 80
     height                  : 78
     tabOffset               : 10
+
+ToolbarItemsDivider
+    divider                 : 114, 226, 5, 80
+    dividerOffset           : 10, 2
+    width                   : 19
 
 ToolbarTabLayout
     borderColor             : 0, 0, 0, 0
