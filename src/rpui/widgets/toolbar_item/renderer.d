@@ -19,6 +19,7 @@ final class ToolbarItemRenderer : Renderer {
     private Geometry iconQuad;
     private QuadTransforms iconTransforms;
     private vec2 iconBoxSize;
+    private float[State] iconAlpha;
 
     override void onCreate(Widget widget, in string style) {
         this.theme = widget.view.theme;
@@ -26,6 +27,9 @@ final class ToolbarItemRenderer : Renderer {
         this.text = createStatefulUiTextFromRdpl(theme, style, "Text");
         this.iconQuad = createGeometry();
         this.iconBoxSize = theme.tree.data.getVec2f(style ~ ".iconBoxSize");
+        this.iconAlpha[State.leave] = theme.tree.data.getNumber(style ~ ".Leave.alpha.0") / 100f;
+        this.iconAlpha[State.enter] = theme.tree.data.getNumber(style ~ ".Enter.alpha.0") / 100f;
+        this.iconAlpha[State.click] = theme.tree.data.getNumber(style ~ ".Click.alpha.0") / 100f;
     }
 
     override void onRender() {
@@ -38,7 +42,8 @@ final class ToolbarItemRenderer : Renderer {
             iconQuad,
             iconsTexture,
             icon.texCoord,
-            iconTransforms
+            iconTransforms,
+            iconAlpha[widget.state]
         );
 
         renderUiText(theme, text.render, text.attrs[text.state], textTransforms);
