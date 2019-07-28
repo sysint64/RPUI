@@ -4,6 +4,7 @@ import rpui.primitives;
 import rpui.events;
 import rpui.widget;
 import rpui.widgets.stack_layout.stack_locator;
+import rpui.widgets.main_menu_item.widget;
 
 final class MainMenu : Widget {
     private StackLocator stackLocator;
@@ -34,5 +35,17 @@ final class MainMenu : Widget {
 
         stackLocator.updateWidgetsPosition();
         stackLocator.updateSize();
+    }
+
+    @property bool isOpen() {
+        foreach (Widget child; children) {
+            auto item = cast(MainMenuItem) child.associatedWidget;
+
+            if (item !is null && item.isOpen) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

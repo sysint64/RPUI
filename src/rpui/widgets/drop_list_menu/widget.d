@@ -14,8 +14,16 @@ import rpui.widgets.drop_list_menu.drop_menu_delegate;
 class DropListMenu : Button, MenuActions {
     private bool isInVisibilityArea = false;
     private bool isInMenuArea = false;
-    private DropMenuDelegate dropMenuDelegate;
+    protected DropMenuDelegate dropMenuDelegate;
     private ListMenu menu = null;
+
+    @property inout(bool) isOpen() inout {
+        if (menu is null) {
+            return false;
+        } else {
+            return menu.isVisible;
+        }
+    }
 
     this(in string style = "DropListMenu", in string iconsGroup = "icons") {
         super(style, iconsGroup);
