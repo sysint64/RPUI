@@ -36,6 +36,7 @@ Panel
                     ListMenuItem caption: "Copy"
                     ListMenuItem caption: "Cut"
                     ListMenuItem caption: "Paste"
+                    ListMenuItemsDivider name: "menuDivider"
                     ListMenuItem caption: "Delete"
 
             # width: 200

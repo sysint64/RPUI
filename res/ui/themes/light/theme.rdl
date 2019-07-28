@@ -458,6 +458,11 @@ MainMenuItem(DropListMenu)
         right               : 81, 180, 5, 21
         offsets             : [0, 0], 0
 
+ListMenuItemsDivider
+    dividerOffsets          : 5, 5, 5, 5
+    innerColor              : 0, 0, 0, 20
+    outerColor              : 255, 255, 255, 10
+
 TabLayout
     borderColor             : 0, 0, 0, 10
 

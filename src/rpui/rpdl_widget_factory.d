@@ -27,6 +27,7 @@ import rpui.widgets.checkbox.widget;
 import rpui.widgets.text_input.widget;
 import rpui.widgets.list_menu.widget;
 import rpui.widgets.list_menu_item.widget;
+import rpui.widgets.list_menu_items_divider.widget;
 import rpui.widgets.drop_list_menu.widget;
 import rpui.widgets.tab_layout.widget;
 import rpui.widgets.tab_button.widget;
@@ -166,6 +167,9 @@ final class RpdlWidgetFactory {
 
             case "ToolbarItemsDivider":
                 return createWidget!ToolbarItemsDivider(widgetNode, parentWidget);
+
+            case "ListMenuItemsDivider":
+                return createWidget!ListMenuItemsDivider(widgetNode, parentWidget);
 
             default:
                 throw new Error("Unspecified widget type " ~ widgetNode.name);
