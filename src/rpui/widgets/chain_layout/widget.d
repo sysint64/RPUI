@@ -64,6 +64,10 @@ final class ChainLayout : Widget {
         foreach (Widget row; children) {
             const widget = row.associatedWidget;
 
+            if (!widget.isVisible) {
+                continue;
+            }
+
             if (widget.widthType != SizeType.matchParent) {
                 fixedSize += widget.size.x;
             } else {
@@ -78,6 +82,10 @@ final class ChainLayout : Widget {
 
         foreach (Widget row; children) {
             Widget widget = row.associatedWidget;
+
+            if (!widget.isVisible) {
+                continue;
+            }
 
             if (widget.widthType == SizeType.matchParent) {
                 widget.size.x = partWidth;

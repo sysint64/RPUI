@@ -46,6 +46,10 @@ struct StackLocator {
     }
 
     void pushWidgetPosition(Widget cell) {
+        if (!cell.associatedWidget.isVisible) {
+            return;
+        }
+
         with (holder) {
             lastWidgetInStack = cell.firstWidget;
 

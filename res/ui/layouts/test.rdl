@@ -390,8 +390,8 @@ Panel
                 margin: 4, 0
 
                 Button caption: "Hello"
-                TextInput text: "world!" width: 100
-                Button caption: "Grouped"
+                TextInput text: "world!" width: 100 isVisible: false widthType: matchParent
+                Button caption: "Grouped" widthType: matchParent
 
             ChainLayout
                 widthType: matchParent

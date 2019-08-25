@@ -44,6 +44,9 @@ final class ChainLayoutRenderer : Renderer {
             if (widget.children.back == child)
                 continue;
 
+            if (!child.associatedWidget.isVisible)
+                continue;
+
             splitPos += child.associatedWidget.width;
             const transforms = updateQuadTransforms(
                 widget.view.cameraView,
