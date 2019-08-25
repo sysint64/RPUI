@@ -102,13 +102,18 @@ class ListMenu : Widget {
         }
     }
 
-    void bindData(T)(ref Array!(T) items, Widget function(T item) factory) {
+    void bindData(T)(ref Array!(T) items, Widget delegate(T item) factory) {
         children.clear();
 
         for (int i = 0; i < items.length; ++i) {
             auto widget = factory(items[i]);
             children.addWidget(widget);
             widget.onPostCreate();
+        }
+
+        if (parent == view.rootWidget) {
+            // NOTE(Andrey): reorder children
+            view.moveWidgetToFront(this);
         }
     }
 }

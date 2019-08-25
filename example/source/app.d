@@ -69,6 +69,7 @@ final class MyViewComponent : ViewComponent {
     @bindGroupWidgets Button[3] buttons;
     @bindWidget Canvas openglCanvas;
     @bindWidget ListMenu listWithData;
+    @bindWidget ListMenu dropListWithData;
 
     struct ItemData {
         dstring title;
@@ -93,7 +94,16 @@ final class MyViewComponent : ViewComponent {
     }
 
     private void bindData() {
-        listWithData.bindData(listData, function(ItemData data) {
+        listWithData.bindData(listData, delegate(ItemData data) {
+            auto listItem = new ListMenuItem();
+            listItem.caption = data.title;
+            listItem.events.subscribe!ClickEvent(delegate(in event) {
+                writeln("List item clicked; payload is: ", data.payload);
+            });
+            return listItem;
+        });
+
+        dropListWithData.bindData(listData, delegate(ItemData data) {
             auto listItem = new ListMenuItem();
             listItem.caption = data.title;
             listItem.events.subscribe!ClickEvent(delegate(in event) {

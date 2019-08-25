@@ -305,6 +305,15 @@ Panel
                 isBindDataMode: true
                 name: "listWithData"
 
+            DropListMenu
+                margin: 5
+
+                ListMenu
+                    size: 200, 100
+                    isPopup: true
+                    isBindDataMode: true
+                    name: "dropListWithData"
+
             ChainLayout
                 margin: 5
                 widthType: matchParent
