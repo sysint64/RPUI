@@ -38,8 +38,6 @@ final class StringsRes {
         if (strings is null)
             return source;
 
-        import std.stdio;
-        writeln(strings);
         utf32string result = "";
 
         for (size_t i = 0; i < source.length; ++i) {
