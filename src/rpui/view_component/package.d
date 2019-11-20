@@ -105,6 +105,7 @@ abstract class ViewComponent {
 
         this.view = view;
         this.rootWidget = rootWidget;
+        readAttributes!T();
     }
 
     ~this() {
