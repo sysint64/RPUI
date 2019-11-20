@@ -29,6 +29,10 @@ abstract class ViewComponent {
     RpdlWidgetFactory widgetFactory;
     private Subscriber shortcutsSubscriber;
 
+    final View getView() {
+        return view;
+    }
+
     @shortcut("General.focusNext")
     final void focusNext() {
         view.focusNext();
@@ -93,13 +97,19 @@ abstract class ViewComponent {
         shortcutsSubscriber = view.events.subscribe!KeyReleasedEvent(
             event => shortcuts.onKeyReleased(event.key)
         );
-        GC.collect();
+    }
+
+    this(this T)(View view, Widget rootWidget) {
+        assert(view !is null);
+        assert(rootWidget !is null);
+
+        this.view = view;
+        this.rootWidget = rootWidget;
     }
 
     ~this() {
         view.events.unsubscribe(shortcutsSubscriber);
         onDestroy();
-        GC.collect();
     }
 
     /**
