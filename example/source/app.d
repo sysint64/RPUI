@@ -244,7 +244,7 @@ final class OpenGLRenderer : CanvasRenderer {
     override void onRender() {
         bindShaderProgram(transformShader);
         setShaderProgramUniformMatrix(transformShader, "MVP", spriteMVPMatrix);
-        setShaderProgramUniformTexture(transformShader, "texture", spriteTexture, 0);
+        setShaderProgramUniformTexture(transformShader, "utexture", spriteTexture, 0);
 
         bindVAO(sprite.vao);
         bindIndices(sprite.indicesBuffer);

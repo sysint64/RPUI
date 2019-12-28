@@ -86,7 +86,7 @@ void renderTexAtlasQuad(
     bindShaderProgram(shader);
 
     setShaderProgramUniformMatrix(shader, "MVP", transforms.mvpMatrix);
-    setShaderProgramUniformTexture(shader, "texture", texture, 0);
+    setShaderProgramUniformTexture(shader, "utexture", texture, 0);
     setShaderProgramUniformVec2f(shader,"texOffset", texCoord.offset);
     setShaderProgramUniformVec2f(shader,"texSize", texCoord.size);
     setShaderProgramUniformFloat(shader, "alpha", alpha);
@@ -264,7 +264,7 @@ void renderUiText(
     bindShaderProgram(theme.shaders.textShader);
 
     setShaderProgramUniformVec4f(theme.shaders.textShader, "color", attrs.color);
-    setShaderProgramUniformTexture(theme.shaders.textShader, "texture", text.texture, 0);
+    setShaderProgramUniformTexture(theme.shaders.textShader, "utexture", text.texture, 0);
     setShaderProgramUniformMatrix(theme.shaders.textShader, "MVP", transforms.mvpMatrix);
 
     bindVAO(text.geometry.vao);

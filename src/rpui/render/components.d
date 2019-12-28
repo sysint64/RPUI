@@ -15,6 +15,8 @@ struct CameraView {
     mat4 mvpMatrix;
     float viewportWidth;
     float viewportHeight;
+    float scaleX;
+    float scaleY;
 }
 
 struct Geometry {

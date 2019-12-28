@@ -60,7 +60,9 @@ abstract class Application : EventsListenerEmpty {
     override void onWindowResize(in WindowResizeEvent event) {
         windowData.viewportWidth = event.width;
         windowData.viewportHeight = event.height;
-        glViewport(0, 0, event.width, event.height);
+        const scaleX = event.originalWidth / event.width;
+        const scaleY = event.originalHeight / event.height;
+        glViewport(0, 0, event.width * scaleX, event.height * scaleY);
     }
 
     private void initPlatform() {
@@ -90,14 +92,27 @@ abstract class Application : EventsListenerEmpty {
 
     private void mainLoop() {
         bool running = true;
-        events.notify(WindowResizeEvent(windowData.viewportWidth, windowData.viewportHeight));
+        int width;
+        int height;
+        int originalWidth;
+        int originalHeight;
+
+        SDL_GetWindowSize(cast(SDL_Window*) windowData.window, &width, &height);
+        SDL_GL_GetDrawableSize(cast(SDL_Window*) windowData.window, &originalWidth, &originalHeight);
+
+        events.notify(
+            WindowResizeEvent(
+                width,
+                height,
+                originalWidth,
+                originalHeight
+            )
+        );
 
         while (running) {
-            int width;
-            int height;
             SDL_GetWindowSize(cast(SDL_Window*) windowData.window, &width, &height);
 
-            windowData.viewportHeight = width;
+            windowData.viewportWidth = width;
             windowData.viewportHeight = height;
 
             times.current = platformGetTicks();
@@ -124,7 +139,7 @@ abstract class Application : EventsListenerEmpty {
         int height;
         SDL_GetWindowSize(cast(SDL_Window*) windowData.window, &width, &height);
 
-        windowData.viewportHeight = width;
+        windowData.viewportWidth = width;
         windowData.viewportHeight = height;
 
         onProgress(ProgressEvent(0));

@@ -90,7 +90,8 @@ final class View : EventsListenerEmpty {
     private OthroCameraTransform screenCameraTransform = {
         viewportSize: vec2(1024, 768),
         position: vec2(0, 0),
-        zoom: 1f
+        scaleX: 1f,
+        scaleY: 1f
     };
 
     private this() {
@@ -330,7 +331,15 @@ final class View : EventsListenerEmpty {
 
         auto screenScissor = IntRect(currentScissor);
         screenScissor.top = viewportHeight - screenScissor.top - screenScissor.height;
-        glScissor(screenScissor.left, screenScissor.top, screenScissor.width, screenScissor.height);
+
+        with (screenScissor) {
+            left = cast(int) (left * cameraView_.scaleX);
+            top = cast(int) (top * cameraView_.scaleY);
+            width = cast(int) (width * cameraView_.scaleX);
+            height = cast(int) (height * cameraView_.scaleY);
+
+            glScissor(left, top, width, height);
+        }
 
         return Rect(currentScissor);
     }
@@ -443,6 +452,8 @@ final class View : EventsListenerEmpty {
         viewportHeight = event.height;
         screenCameraTransform.viewportSize.x = event.width;
         screenCameraTransform.viewportSize.y = event.height;
+        cameraView_.scaleX = event.originalWidth / event.width;
+        cameraView_.scaleY = event.originalHeight / event.height;
 
         onProgress(ProgressEvent(0));
         onRender();

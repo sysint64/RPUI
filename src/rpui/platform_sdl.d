@@ -42,7 +42,11 @@ extern(C) bool platformEventLoop(void* window, EventsObserver events) {
             return false;
         }
         else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-            events.notify(WindowResizeEvent(event.window.data1, event.window.data2));
+            import std.stdio;
+            int w, h;
+            SDL_GL_GetDrawableSize(cast(SDL_Window*) window, &w, &h);
+            writeln(w, "x", h);
+            events.notify(WindowResizeEvent(event.window.data1, event.window.data2, w, h));
         }
         else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_EXPOSED) {
             events.notify(WindowExposedEvent());
@@ -131,7 +135,7 @@ extern(C) void platformInit() {
         throw new Error("Failed to init SDL TTF");
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetSwapInterval(2);
@@ -144,7 +148,7 @@ extern(C) Window platformCreateWindow(in string title, uint width, uint height) 
         SDL_WINDOWPOS_CENTERED,
         width,
         height,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI
     );
 
     if (window == null)

@@ -64,6 +64,8 @@ struct MouseWheelEvent {
 struct WindowResizeEvent {
     uint width;
     uint height;
+    uint originalWidth;
+    uint originalHeight;
 }
 
 struct WindowExposedEvent {
