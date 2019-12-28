@@ -1,5 +1,7 @@
 module rpui.render.components;
 
+import std.algorithm;
+
 import gapi.geometry;
 import gapi.geometry_quad;
 import gapi.texture;
@@ -17,6 +19,8 @@ struct CameraView {
     float viewportHeight;
     float scaleX;
     float scaleY;
+
+    @property float fontScale() { return min(scaleX, scaleY); }
 }
 
 struct Geometry {

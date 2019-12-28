@@ -168,13 +168,14 @@ UiTextTransforms updateUiTextTransforms(
     in UiTextAttributes attrs,
     in CameraView cameraView,
     in vec2 position,
-    in vec2 size = vec2(0, 0)
+    in vec2 size = vec2(0, 0),
+    in float fontScaling = 1f,
 ) {
     UiTextTransforms measure;
 
     if (oldTransforms.cachedString != attrs.caption) {
         UpdateTextInput updateTextInput = {
-            textSize: attrs.fontSize,
+            textSize: cast(int) ceil(attrs.fontSize * fontScaling),
             font: font,
             text: attrs.caption
         };
@@ -184,9 +185,16 @@ UiTextTransforms updateUiTextTransforms(
         uiText.texture = textUpdateResult.texture;
         measure.size = textUpdateResult.surfaceSize;
     } else {
-        measure.size = oldTransforms.size;
+        measure.size = oldTransforms.size * fontScaling;
     }
 
+    measure.size = vec2(
+        ceil(measure.size.x / fontScaling),
+        ceil(measure.size.y / fontScaling)
+    );
+
+    import std.stdio;
+    writeln("measure size: ", measure.size);
     measure.cachedString = attrs.caption;
     vec2 textPosition = position + attrs.offset;
 
