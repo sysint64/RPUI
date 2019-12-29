@@ -20,7 +20,7 @@ struct CameraView {
     float scaleX;
     float scaleY;
 
-    @property float fontScale() { return min(scaleX, scaleY); }
+    @property inout(float) fontScale() inout { return scaleY; }
 }
 
 struct Geometry {

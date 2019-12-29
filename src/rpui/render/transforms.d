@@ -168,10 +168,10 @@ UiTextTransforms updateUiTextTransforms(
     in UiTextAttributes attrs,
     in CameraView cameraView,
     in vec2 position,
-    in vec2 size = vec2(0, 0),
-    in float fontScaling = 1f,
+    in vec2 size = vec2(0, 0)
 ) {
     UiTextTransforms measure;
+    const fontScaling = cameraView.fontScale;
 
     if (oldTransforms.cachedString != attrs.caption) {
         UpdateTextInput updateTextInput = {
