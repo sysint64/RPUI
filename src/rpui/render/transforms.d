@@ -193,8 +193,6 @@ UiTextTransforms updateUiTextTransforms(
         ceil(measure.size.y / fontScaling)
     );
 
-    import std.stdio;
-    writeln("measure size: ", measure.size);
     measure.cachedString = attrs.caption;
     vec2 textPosition = position + attrs.offset;
 
